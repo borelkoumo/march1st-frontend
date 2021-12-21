@@ -1,0 +1,31 @@
+# Full options at 
+version: 1
+backend:
+  phases:
+    build:
+      commands: 
+        # because local project use latest CLI version, it madatory to update cloud CLI to the latest version before building backend"
+        # @quasar/app requires Node 12.22.1 or superior
+        - nvm install 14.18.0
+        - npm install -g @aws-amplify/cli
+        - npm install -g @quasar/cli
+  cache:
+    paths:
+      - /usr/local/lib/node_modules/**/*
+frontend:
+  phases:
+    build:
+      # Builds the app for production to the build folder.
+      # It correctly bundles React in production mode and optimizes the build for the best performance.
+      # The build is minified and the filenames include the hashes.
+      commands:
+        # This command is similar to npm install, except it's meant to be used in automated environments such as test platforms, continuous integration, and deployment -- or any situation where you want to make sure you're doing a clean install of your dependencies
+        - npm ci
+        - quasar build
+  artifacts:
+    baseDirectory: dist/spa
+    files:
+      - "**/*" # représente tous les fichiers de manière récursive.
+  cache:
+    paths:
+      - node_modules/**/*
