@@ -92,7 +92,7 @@ import {mapActions} from 'vuex';
                     companyName:null,
                     fullName:null,
                     title:null,
-                    typeUser:2
+                    typeUser:1
                 },
                 step:1
             }

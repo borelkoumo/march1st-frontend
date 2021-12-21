@@ -4,17 +4,17 @@ const cognitoConfig = {
     // identityPoolId: 'XX-XXXX-X:XXXXXXXX-XXXX-1234-abcd-1234567890ab',
 
     // REQUIRED - Amazon Cognito Region
-    region: "us-east-1",
+    region: process.env.VUE_APP_COGNITO_REGION,
 
     // OPTIONAL - Amazon Cognito Federated Identity Pool Region
     // Required only if it's different from Amazon Cognito Region
     // identityPoolRegion: 'XX-XXXX-X',
 
     // OPTIONAL - Amazon Cognito User Pool ID
-    userPoolId: "us-east-1_SfETjGPWo",
+    userPoolId: process.env.VUE_APP_COGNITO_USER_POOL_ID,
 
     // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
-    userPoolWebClientId: "4kadjg947l5gn19k7vbh2j4q9m",
+    userPoolWebClientId: process.env.VUE_APP_COGNITO_USER_POOL_CLIENT_ID,
 
     // OPTIONAL - Enforce user authentication prior to accessing AWS resources or not
     // mandatorySignIn: false,
