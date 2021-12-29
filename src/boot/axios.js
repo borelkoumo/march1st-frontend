@@ -13,7 +13,8 @@ const { CONFIG } = require("../../appConfig");
 //   baseURL: "https://6lnymbzvpa.execute-api.us-east-1.amazonaws.com/v1",
 // });
 const webAuthnServer = axios.create({
-  baseURL: `${CONFIG.PROTOCOL}://${CONFIG.RPID}:${CONFIG.WEBAUTHN_PORT}/rpbackend`,
+  /* baseURL: `${CONFIG.PROTOCOL}://${CONFIG.RPID}:${CONFIG.WEBAUTHN_PORT}/rpbackend`, */
+  baseURL:'http://3.95.209.230:8080/rpbackend'
 });
 
 export default boot(({ app }) => {

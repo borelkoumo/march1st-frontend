@@ -48,11 +48,11 @@
                         />
                     </div>
                 </q-form>
-                <q-form @submit="onCheckEmail()" class="q-col-gutter-lg q-pb-sm" v-if="step==2">
+                <q-form @submit="verifyCode()" class="q-col-gutter-lg q-pb-sm" v-if="step==2">
                     <div class="form-control">
                         <div>Code verification</div>
                         <div class="q-pt-sm">
-                            <q-input dense placeholder="Enter the code" v-model="formData.code" color="grey-3" bg-color="white" outlined />
+                            <q-input dense placeholder="Enter the code" v-model="code" color="grey-3" bg-color="white" outlined />
                         </div>
                     </div>
                     <div class="form-control">
@@ -86,28 +86,58 @@ import {mapActions} from 'vuex';
         data(){
             return{
                 formData:{
-                    email:null,
-                    username:null,
-                    code:null,
-                    companyName:null,
-                    fullName:null,
-                    title:null,
-                    typeUser:1
+                    companyName:"Test",
+                    fullName:"Steve william",
+                    title:"Test title",
+                    email:"williamsteve216@gmail.com",
+                    typeUser:2
                 },
+                code:null,
                 step:1
             }
         },
         methods: {
             ...mapActions('global',[
-                ''
+                'onSubmitSignUpForm',
+                'onSubmitValidationCode'
             ]),
-            onSendEmailValidation(){
-
-                this.step=2;
+            async onSendEmailValidation(){
+                if(this.formData.typeUser==2){
+                    try {
+                        const result = await this.onSubmitSignUpForm(this.formData)
+                        this.step=2;
+                    } catch (error) {
+                        
+                    }
+                }
             },
-            onCheckEmail(){
-
-            }
+            async verifyCode() {
+                this.$q.loading.show({
+                    message: "Checking code ...",
+                });
+                try{
+                    const res = await this.onSubmitValidationCode(this.code);
+                    debugger;
+                    this.$q.loading.hide();
+                    console.log(`Resustat = ${res}`);
+                    this.$q.notify({
+                        message: res,
+                        type: "positive",
+                        position: "top",
+                    });
+                    console.log("Code ok");
+                }
+                catch(err){
+                    this.$q.loading.hide();
+                    this.$q.notify({
+                        message: err,
+                        type: "negative",
+                        position: "top",
+                        icon: "error",
+                    });
+                    this.step = 2;
+                };
+            },
         },
     }
 </script>

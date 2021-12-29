@@ -12,6 +12,7 @@ const state = {
   sessionId: "",
   credentialOptions: {},
   signInOptions: {},
+  locale:{ label:"English (United States)", value:"en-US"}
 };
 
 const getters = {
@@ -51,7 +52,7 @@ const mutations = {
 };
 
 const actions = {
-  onSubmitSignUpForm({ commit }, userData) {
+  async onSubmitSignUpForm({ commit }, userData) {
     printLog("UserData", userData);
 
     if (!window.PublicKeyCredential) {
@@ -67,17 +68,40 @@ const actions = {
     const userAttr = {
       name: userData.fullName,
       email: userData.email,
-      preferred_username: userData.username,
+      locale: state.locale.value,
+      "custom:companyName" : userData.companyName,
+      "custom:title" : userData.title,
       "custom:userId": "",
       "custom:joinedOn": new Date().toISOString().substring(0, 10),
     };
+    try {
+      const cognitoUser = await Auth.signUp({
+        /* email: userData.email, */
+        username:userData.email,
+        password: "fakePassword@12345",
+        attributes: userAttr,
+      })
+      printLog("Auth.signUp SUCCESSFULL");
+      printLog("Cognito user", cognitoUser);
 
-    // Signup in Cognito
+      // Set userData with payload
+      commit("setUserData", userData);
+
+      // Set also cognitoUser
+      commit("setCognitoUser", cognitoUser);
+      return cognitoUser.codeDeliveryDetails;
+    } catch (error) {
+        printLog("Error in Auth.signUp");
+        printLog(error);
+        return error.name;
+    }
+    /* // Signup in Cognito
     return Auth.signUp({
-      username: userData.username,
+      username:userData.email,
       password: "fakePassword@12345",
       attributes: userAttr,
     })
+
       .then((cognitoUser) => {
         printLog("Auth.signUp SUCCESSFULL");
         printLog("Cognito user", cognitoUser);
@@ -93,7 +117,7 @@ const actions = {
         printLog("Error in Auth.signUp");
         printLog(error);
         return Promise.reject(error.name);
-      });
+      }); */
   },
 
   onSubmitValidationCode({ commit, state }, code) {
@@ -102,7 +126,7 @@ const actions = {
      * User confirm signUp in cognito user pool
      */
     const userData = getters.getUserData(state);
-    return Auth.confirmSignUp(userData.username, code)
+    return Auth.confirmSignUp(userData.email, code)
       .then((status) => {
         // User is confirmed.
         printLog(`Auth.confirmSignUp status = ${status}`);
@@ -110,7 +134,7 @@ const actions = {
         // Get credential options
         const url = "/attestation/options";
         const params = {
-          username: userData.username,
+          username: userData.email,
           displayName: userData.fullName,
         };
         return _queryServer(url, params)
