@@ -1,6 +1,6 @@
 import { boot } from "quasar/wrappers";
 import axios from "axios";
-const { CONFIG } = require("../../appConfig");
+// const { CONFIG } = require("../../appConfig");
 
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
@@ -14,7 +14,7 @@ const { CONFIG } = require("../../appConfig");
 // });
 const webAuthnServer = axios.create({
   /* baseURL: `${CONFIG.PROTOCOL}://${CONFIG.RPID}:${CONFIG.WEBAUTHN_PORT}/rpbackend`, */
-  baseURL:'http://3.95.209.230:8080/rpbackend'
+  baseURL: "https://backend.march1st.com/rpbackend",
 });
 
 export default boot(({ app }) => {

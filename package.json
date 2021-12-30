@@ -1,8 +1,8 @@
 {
-  "name": "march1",
+  "name": "march1st",
   "version": "0.0.1",
-  "description": "A Quasar Framework app",
-  "productName": "Quasar App",
+  "description": "March 1st app",
+  "productName": "March 1st",
   "author": "William",
   "private": true,
   "scripts": {
