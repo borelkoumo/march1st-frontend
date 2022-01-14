@@ -14,7 +14,7 @@ const { CONFIG } = require("../../appConfig");
 // });
 const webAuthnServer = axios.create({
   /* baseURL: `${CONFIG.PROTOCOL}://${CONFIG.RPID}:${CONFIG.WEBAUTHN_PORT}/rpbackend`, */
-  baseURL:'http://3.95.209.230:8080/rpbackend'
+  baseURL:process.env.VUE_APP_RP_BACKEND
 });
 
 export default boot(({ app }) => {
