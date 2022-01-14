@@ -102,12 +102,22 @@ import {mapActions} from 'vuex';
                 'onSubmitValidationCode'
             ]),
             async onSendEmailValidation(){
+                this.$q.loading.show();
                 if(this.formData.typeUser==2){
                     try {
-                        const result = await this.onSubmitSignUpForm(this.formData)
-                        this.step=2;
+                        const result = await this.onSubmitSignUpForm(this.formData);
+                        if(result!=-1){
+                            this.step=2;
+                        }
+                        this.$q.loading.hide();
                     } catch (error) {
-                        
+                        //console.log("error")
+                        this.$q.notify({
+                            message:"Network Error",
+                            type:"negative",
+                            position:"top",
+                            icon:"error"
+                        })
                     }
                 }
             },
@@ -117,7 +127,7 @@ import {mapActions} from 'vuex';
                 });
                 try{
                     const res = await this.onSubmitValidationCode(this.code);
-                    debugger;
+                    //debugger;
                     this.$q.loading.hide();
                     console.log(`Resustat = ${res}`);
                     this.$q.notify({

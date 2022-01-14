@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lff">
-    <q-header v-if="$route.name!='login' && $route.name!='register'" class="q-pt-lg bg-transparent">
+    <q-header v-scroll="onScroll" v-if="$route.name!='login' && $route.name!='register'" class="q-pt-md q-pb-md" :class="{'bg-transparent':isTransparent, 'bg-white':!isTransparent, 'text-primary':!isTransparent}">
       <q-toolbar class="" v-if="$route.name=='navigator'">
         <q-toolbar-title>
           <q-icon name="report_problem" size="30px"/> WebAuthn Error
@@ -8,7 +8,8 @@
       </q-toolbar>
       <q-toolbar class="" v-else>
         <div>
-          <q-img src="vectors/logo-02.svg" width="150px"/>
+          <q-img src="vectors/logo-02.svg" width="150px" v-if="isTransparent"/>
+          <q-img src="vectors/logo-01.svg" width="150px" v-else/>
         </div>
         <q-space/>
         <div>
@@ -19,34 +20,38 @@
           <menu-item :name="'RESEARCHERS'"/>
         </div>
         <q-space/>
-        <q-btn-dropdown class="btn-dropdown bg-none text-white q-pl-sm q-mr-xs" dense :label="language.value" flat>
-          <q-list>
-            <q-item clickable v-close-popup @click="language.value='EN'">
-              <q-item-section>
-                <q-item-label>English</q-item-label>
-              </q-item-section>
-            </q-item>
+        <div class="flex no-wrap">
+          <q-btn-dropdown class="btn-dropdown bg-none q-pl-sm q-mr-xs" dense :label="language.value" flat :class="{'text-primary':!isTransparent, 'text-white':isTransparent}">
+            <q-list>
+              <q-item clickable v-close-popup @click="language.value='EN'">
+                <q-item-section>
+                  <q-item-label>English</q-item-label>
+                </q-item-section>
+              </q-item>
 
-            <q-item clickable v-close-popup @click="language.value='AR'">
-              <q-item-section>
-                <q-item-label>Arabe</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-btn-dropdown>
-        <q-separator vertical inset color="white"/>
-        <q-btn dense flat class="q-ml-xs">
-          <q-avatar size="22px">
-            <img src="vectors/burgermenu-white.svg">
-          </q-avatar>
-        </q-btn>
+              <q-item clickable v-close-popup @click="language.value='AR'">
+                <q-item-section>
+                  <q-item-label>Arabe</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+          <q-separator vertical inset color="white" v-if="isTransparent"/>
+          <q-separator vertical inset color="primary" v-else />
+          <q-btn dense flat class="q-ml-xs">
+            <q-avatar size="22px">
+              <img src="vectors/burgermenu-white.svg" v-if="isTransparent">
+              <img src="vectors/burgermenu-dark.svg" v-else>
+            </q-avatar>
+          </q-btn>
+        </div>
       </q-toolbar>
     </q-header>
     <q-header v-else class="bg-container">
       <q-toolbar class="bg-container">
-        <q-toolbar-title class="text-dark">
-          Logo ici
-        </q-toolbar-title>
+        <div>
+          <q-img src="vectors/logo-02.svg" width="150px"/>
+        </div>
         <q-space/>
         <q-btn-dropdown class="bg-grey-3 text-dark q-pl-sm btn-dropdown" dense :label="language.value" flat>
           <q-list>
@@ -198,6 +203,7 @@ export default defineComponent({
         label:"English",
         value:"EN"
       },
+      isTransparent:true
     }
   },
   methods: {
@@ -221,6 +227,15 @@ export default defineComponent({
           });
         });
     },
+    onScroll(position){
+      if(position>150){
+        this.isTransparent=false;
+      }
+      else{
+        this.isTransparent=true;
+      }
+      console.log(position)
+    }
   },
 });
 </script>

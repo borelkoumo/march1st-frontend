@@ -3,6 +3,7 @@ import { webAuthnServer } from "../boot/axios";
 // Amplify libraries
 import { Auth } from "@aws-amplify/auth";
 import { cognitoConfig } from "../../cognitoConfig";
+import { Notify } from 'quasar';
 Auth.configure(cognitoConfig);
 
 const state = {
@@ -91,9 +92,16 @@ const actions = {
       commit("setCognitoUser", cognitoUser);
       return cognitoUser.codeDeliveryDetails;
     } catch (error) {
-        printLog("Error in Auth.signUp");
-        printLog(error);
-        return error.name;
+        //printLog("Error in Auth.signUp");
+        //printLog(error);
+        //return error.name;
+        Notify.create({
+          message:error.message,
+          type:'negative',
+          position:"top",
+          icon:"error"
+        })
+        return -1;
     }
     /* // Signup in Cognito
     return Auth.signUp({

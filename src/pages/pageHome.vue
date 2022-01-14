@@ -63,8 +63,9 @@
               <div class="second-title">TIME</div>
             </div>
             <div class="flex flex-center no-wrap">
-              <div class="" style="padding-right:100px">
+              <div class="flex" style="width:100%; margin-top:-70px;">
                 <q-img src="vectors/frame.svg" width="200px"/>
+                <q-img src="images/load-1.png" width="200px" style="left:120px; bottom:50px;" class="absolute"/>
               </div>
               <div>
                 <q-list padding>
@@ -77,7 +78,10 @@
                       <q-item-label caption>Continuos programs are recommanded for all customers, esp. for high value targets and dynamic/agile environnements.</q-item-label>
                     </q-item-section>
                   </q-item>
-                  <div class="separator"></div>
+                  <div class="flex">
+                    <div class="q-mt-xs separator" style="width:80%; height:0px;"></div>
+                    <div style="margin-top:-6px; padding-left:10px;">VS</div>
+                  </div>
                   <q-item>
                     <q-item-section class="" style="max-width:120px">
                       <q-img src="vectors/Project Based.svg" width="100px"/>
@@ -132,10 +136,44 @@
         </div>
       </div>
     </div>
-    <div class="section" style="height:400px;">
+    <div class="section" style="height:500px">
       <div class="header-section">
         <div class="first-title">CUSTOMERS</div>
         <div class="second-title">HOW IT WORKS FOR CUSTOMERS?</div>
+      </div>
+      <div class="content-box flex flex-center">
+        <div>
+          <!-- <canvas id="myCanvas" width="600" height="400" style="border:1px solid #000000;"></canvas> -->
+          <div class="background-frame relative-position">
+            <q-img class="relative-position" style="left:-25px; top:-5px;" src="vectors/frame-02.svg" width="250px"/>
+            
+            <div class="relative-position" style="left:-100px; top:-150px;max-width:100px; text-align:center">
+              <q-img class="relative-position" src="steps/step1.svg" width="50px"/>
+              <div>Tailor your Bug BountyProgram</div>
+            </div>
+
+            <div class="relative-position" style="left:-70px; top:-150px;max-width:100px; text-align:center">
+              <q-img class="relative-position" src="steps/step2.svg" width="50px"/>
+              <div>All partis agree on Terms & Condition</div>
+            </div>
+
+            <div class="relative-position" style="left:15px; top:-215px;max-width:170px; text-align:center">
+              <q-img class="relative-position" src="steps/step3.svg" width="50px"/>
+              <div>Researches search for and securely submit Vulnerabilities to march1st</div>
+            </div>
+
+            <div class="relative-position" style="left:135px; top:-385px;max-width:170px; text-align:center">
+              <q-img class="relative-position" src="steps/step4.svg" width="50px"/>
+              <div>March1st validates and Triages the submissions</div>
+            </div>
+
+            <div class="relative-position" style="left:225px; top:-585px;min-width:300px;">
+              <q-img class="relative-position" src="steps/step4.svg" width="50px"/>
+              <div>Client Receives Only Validated and Properly Documented Vulnerability Reports with Recommendation For Remediation</div>
+            </div>
+
+          </div>
+        </div>
       </div>
     </div>
     <div class="section q-pt-lg q-pb-lg" style="background-color:#ebf5ff; font-family:'nunito'">
@@ -148,35 +186,35 @@
           <q-img src="vectors/Project Based.svg" width="150px"/>
         </div>
         <div style="font-size:15px;" class="text-center">
-          Proin eget tortor risus. Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Cras ultricies ligula sed magna dictum porta. Donec rutrum congue leo eget malesuada. Quisque velit nisi, pretium ut lacinia in, elementum id enim.
+          <div style="margin: auto;">Proin eget tortor risus. Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Cras ultricies ligula sed magna dictum porta. Donec rutrum congue leo eget malesuada. Quisque velit nisi, pretium ut lacinia in, elementum id enim.</div>
+          <q-carousel
+            v-model="slide"
+            swipeable
+            animated
+            control-color="secondary"
+            navigation
+            class="rounded-borders bg-transparent q-pt-lg q-pb-none"
+            height="400px"
+          >
+            <q-carousel-slide name="style" class="column no-wrap q-pt-none">
+              <div class="flex no-wrap flex-center">
+                <div>
+                  <q-img src="vectors/Project Based.svg" width="300px"/>
+                </div>
+                <div style="min-width:500px; text-align:left;">
+                  <div>HELPING EMIRATES AIRLINE TO SECURE THIER SYSTEM</div>
+                  <ul>
+                    <li>Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus.</li>
+                    <li>Pellentesque in ipsum id orci porta dapibus. Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem.</li>
+                    <li>Nulla porttitor accumsan tincidunt. Sed porttitor lectus nibh.</li>
+                  </ul>
+                  <q-btn flat class="bg-secondary text-white">READ STUDY CASE</q-btn>
+                </div>
+              </div>
+            </q-carousel-slide>
+          </q-carousel>
         </div>
       </div>
-      <q-carousel
-        v-model="slide"
-        swipeable
-        animated
-        control-color="purple"
-        navigation
-        class="rounded-borders bg-transparent q-pt-none q-pb-none"
-        height="400px"
-      >
-        <q-carousel-slide name="style" class="column no-wrap flex-center q-pt-none">
-          <div class="flex no-wrap flex-center">
-            <div>
-              <q-img src="vectors/Project Based.svg" width="350px"/>
-            </div>
-            <div>
-              <div>HELPING EMIRATES AIRLINE TO SECURE THIER SYSTEM</div>
-              <ul>
-                <li>Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus.</li>
-                <li>Pellentesque in ipsum id orci porta dapibus. Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem.</li>
-                <li>Nulla porttitor accumsan tincidunt. Sed porttitor lectus nibh.</li>
-              </ul>
-              <q-btn>READ STUDY CASE</q-btn>
-            </div>
-          </div>
-        </q-carousel-slide>
-      </q-carousel>
     </div>
     <div class="section">
       <div class="header-section">
@@ -504,6 +542,7 @@
 import thumbnail from 'src/components/thumbnail.vue';
 import { defineComponent } from 'vue';
 import GroupFrame from '../components/group-frame.vue';
+import {drawImage, drawLine} from './utils/draw.js';
 
 export default defineComponent({
   components: { thumbnail,GroupFrame },
@@ -517,6 +556,12 @@ export default defineComponent({
       progress2:0.65,
       progress3:0.55
     }
+  },
+  mounted(){
+    /* const canvas = document.getElementById("myCanvas");
+    const ctx = canvas.getContext("2d");
+    //drawLine(ctx);
+    drawImage(ctx); */
   }
 })
 </script>
@@ -626,5 +671,16 @@ export default defineComponent({
   .header-section-2 .second-title{
     font-size: 15px;
     margin-top: -25px;
+  }
+  .separator{
+    border:1px dashed #ababab;
+  }
+
+  .background-frame{
+    background-image:url("~assets/bg-01.png");
+    background-size: cover;
+     height:200px; 
+     width:200px; 
+     border-radius:50%
   }
 </style>
