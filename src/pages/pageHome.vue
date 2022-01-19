@@ -63,35 +63,31 @@
               <div class="second-title">TIME</div>
             </div>
             <div class="flex flex-center no-wrap">
-              <div class="flex" style="width:100%; margin-top:-70px;">
+              <div class="flex gt-xs" style="width:100%; margin-top:-70px;">
                 <q-img src="vectors/frame.svg" width="200px"/>
                 <q-img src="images/load-1.png" width="200px" style="left:120px; bottom:50px;" class="absolute"/>
               </div>
               <div>
-                <q-list padding>
-                  <q-item>
-                    <q-item-section class="" style="max-width:120px">
-                      <q-img src="vectors/Continuous.svg" width="100px"/>
-                    </q-item-section>
-                    <q-item-section>
-                      <q-item-label>CONTINUOS</q-item-label>
-                      <q-item-label caption>Continuos programs are recommanded for all customers, esp. for high value targets and dynamic/agile environnements.</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                  <div class="flex">
-                    <div class="q-mt-xs separator" style="width:80%; height:0px;"></div>
-                    <div style="margin-top:-6px; padding-left:10px;">VS</div>
+                <div class="item-flex">
+                  <div class="first-elt">
+                    <q-img src="vectors/Continuous.svg" width="100px"/>
                   </div>
-                  <q-item>
-                    <q-item-section class="" style="max-width:120px">
-                      <q-img src="vectors/Project Based.svg" width="100px"/>
-                    </q-item-section>
-                    <q-item-section>
-                      <q-item-label>PROJECT BASED</q-item-label>
-                      <q-item-label caption>Project based programs are limited to an agreed duration, similar to a traditional penetration test.</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
+                  <div class="second-elt">
+                    <div>CONTINUOS</div>
+                      <div caption>Continuos programs are recommanded for all customers, esp. for high value targets and dynamic/agile environnements.
+                      </div>
+                  </div>
+                </div>
+                <div class="item-flex">
+                  <div class="first-elt">
+                    <q-img src="vectors/Continuous.svg" width="100px"/>
+                  </div>
+                  <div class="second-elt">
+                    <div>PROJECT BASED</div>
+                      <div caption>Project based programs are limited to an agreed duration, similar to a traditional penetration test.
+                      </div>
+                  </div>
+                </div>
               </div>
             </div>
           </q-tab-panel>
@@ -105,11 +101,11 @@
     <div class="section q-pt-lg q-pb-lg" style="background-color:#ebf5ff; font-family:'nunito'">
       <div class="content-box" style="font-family:'nunito'">
         <p class="q-pt-lg text-center">We recommend a <b>crawl/walk/run</b> approach to your bug bounty program by adjusting the above parameters. This allows you to streamline your patching processes and prepared, and equipped to promptly resolve discovered vulnerabilities.</p>
-        <div class="flex flex-center no-wrap q-pb-lg q-pt-md">
+        <div class="flex flex-center no-wrap q-pb-lg q-pt-md gt-xs">
           <q-card class="my-card bg-transparent" flat>
             <group-frame style="text-align:center;"/>
             <q-card-section style="text-align:center; font-family:'good-time';">
-              <div class="text-h6">CRAWL</div>
+              <div class="text-h6 q-pt-lg">CRAWL</div>
             </q-card-section>
             <q-card-section class="q-pt-none text-center text-grey-7">
               Launch private bug bounty with limited scope
@@ -118,7 +114,7 @@
           <q-card class="my-card bg-transparent" flat>
             <group-frame style="text-align:center;"/>
             <q-card-section style="text-align:center; font-family:'good-time';">
-              <div class="text-h6">WALK</div>
+              <div class="text-h6 q-pt-lg">WALK</div>
             </q-card-section>
             <q-card-section class="q-pt-none text-center text-grey-7">
               Transition to public program
@@ -127,12 +123,59 @@
           <q-card class="my-card bg-transparent" flat>
             <group-frame style="text-align:center;"/>
             <q-card-section style="text-align:center; font-family:'good-time';">
-              <div class="text-h6">RUN</div>
+              <div class="text-h6 q-pt-lg">RUN</div>
             </q-card-section>
             <q-card-section class="q-pt-none text-center text-grey-7">
               Increase rewards. add targets
             </q-card-section>
           </q-card>
+        </div>
+        <div class="q-pt-md xs carousel-approach">
+          <q-carousel
+            v-model="slideApproach"
+            transition-prev="scale"
+            transition-next="scale"
+            swipeable
+            animated
+            control-color="primary"
+            infinite
+            :autoplay="true"
+            class="bg-transparent"
+          >
+            <q-carousel-slide name="crawl" class="column no-wrap flex-center">
+              <q-card class="my-card bg-transparent" flat>
+                <group-frame style="text-align:center;"/>
+                <q-card-section style="text-align:center; font-family:'good-time';">
+                  <div class="text-h6 q-pt-lg">CRAWL</div>
+                </q-card-section>
+                <q-card-section class="q-pt-none text-center text-grey-7">
+                  Launch private bug bounty with limited scope
+                </q-card-section>
+              </q-card>
+            </q-carousel-slide>
+            <q-carousel-slide name="walk" class="column no-wrap flex-center">
+              <q-card class="my-card bg-transparent" flat>
+                <group-frame style="text-align:center;"/>
+                <q-card-section style="text-align:center; font-family:'good-time';">
+                  <div class="text-h6 q-pt-lg">WALK</div>
+                </q-card-section>
+                <q-card-section class="q-pt-none text-center text-grey-7">
+                  Transition to public program
+                </q-card-section>
+              </q-card>
+            </q-carousel-slide>
+            <q-carousel-slide name="run" class="column no-wrap flex-center">
+              <q-card class="my-card bg-transparent" flat>
+                <group-frame style="text-align:center;"/>
+                <q-card-section style="text-align:center; font-family:'good-time';">
+                  <div class="text-h6 q-pt-lg">RUN</div>
+                </q-card-section>
+                <q-card-section class="q-pt-none text-center text-grey-7">
+                  Increase rewards. add targets
+                </q-card-section>
+              </q-card>
+            </q-carousel-slide>
+          </q-carousel>
         </div>
       </div>
     </div>
@@ -181,8 +224,8 @@
         <div class="first-title-white">MARCH FIRST</div>
         <div class="second-title">CUSTOMERS THAT MARCH FIRST</div>
       </div>
-      <div class="content-box flex no-wrap">
-        <div style="margin-top:-30px; margin-left:-20px; opacity:.5">
+      <div class="content-box flex-content">
+        <div class="gt-xs" style="margin-top:-30px; margin-left:-20px; opacity:.5">
           <q-img src="vectors/Project Based.svg" width="150px"/>
         </div>
         <div style="font-size:15px;" class="text-center">
@@ -194,14 +237,14 @@
             control-color="secondary"
             navigation
             class="rounded-borders bg-transparent q-pt-lg q-pb-none"
-            height="400px"
+            style="height:inherit;"
           >
-            <q-carousel-slide name="style" class="column no-wrap q-pt-none">
-              <div class="flex no-wrap flex-center">
+            <q-carousel-slide name="style" class="q-pt-none">
+              <div class="flex-content flex-center">
                 <div>
-                  <q-img src="vectors/Project Based.svg" width="300px"/>
+                  <img src="vectors/Project Based.svg"/>
                 </div>
-                <div style="min-width:500px; text-align:left;">
+                <div style="text-align:left;">
                   <div>HELPING EMIRATES AIRLINE TO SECURE THIER SYSTEM</div>
                   <ul>
                     <li>Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus.</li>
@@ -228,22 +271,42 @@
               <q-icon name="search" color="primary" />
             </template>
           </q-input>
-          <div class="q-gutter-sm">
+          <div class="q-gutter-sm gt-xs">
             <q-btn label="PUBLIC (25)" class="bg-primary text-white" flat/>
             <q-btn label="PRIVATE (55)" class="bg-primary text-white" flat/>
             <q-btn label="POINONLY (55)" class="bg-primary text-white" flat/>
             <q-btn label="REWARD (55)" class="bg-primary text-white" flat/>
           </div>
+          <q-btn label="ALL" icon-right="menu" dense no-wrap class="bg-primary text-white"/>
         </q-toolbar>
       </div>
-      <div class="content-box q-pa-sm shadow-0" style="display:grid; grid-template-columns:1fr 1fr 1fr; grid-gap:15px; background-color:#f2f6f7; border-radius:5px;">
+      <div class="content-box grid-content q-pa-sm shadow-0" style="margin-bottom:0px;">
         <thumbnail/>
         <thumbnail/>
         <thumbnail/>
       </div>
     </div>
-    <div class="section">
-
+    <div class="section q-pl-md q-pr-md" style="background-color:#ebf5ff; font-family:'nunito';">
+      <div class="header-section q-pb-lg">
+        <div class="first-title-white">MARCH1STX</div>
+        <div class="second-title">WHY HACK WITH MARCH<span class="text-secondary">1</span><sup>ST</sup>?</div>
+      </div>
+      <div class="item-block q-mb-lg">
+        <div class="title">OUR PRIOGRAMS ARE NOT CROWDED</div>
+        <div class="q-pt-sm">March1st is a new platform & we are very selective with the researchers we work with</div>
+      </div>
+      <div class="item-block q-mb-lg">
+        <div class="title">THE MIDDLE EAST IS STILL AN ACENT MARKET FOR BUG BOUNTIES </div>
+        <div class="q-pt-sm">March1st is a new platform & we are very selective with the researchers we work with</div>
+      </div>
+      <div class="item-block q-mb-lg">
+        <div class="title">NO TAXES FORMS</div>
+        <div class="q-pt-sm">March1st is a new platform & we are very selective with the researchers we work with</div>
+      </div>
+      <div class="item-block q-mb-lg">
+        <div class="title">PROTECTION FOR UNSOLICITED DISCLOSURE</div>
+        <div class="q-pt-sm">March1st is a new platform & we are very selective with the researchers we work with</div>
+      </div>
     </div>
     <div class="section q-pt-lg q-pb-lg" style="background-color:#102540;">
       <div class="flex flex-center content-box-2">
@@ -253,17 +316,17 @@
             ENLIST AS A <q-img src="vectors/logo.svg" width="80px" class="q-mr-sm q-ml-sm"/> HACKER</div>
         </div>
       </div>
-      <div class="content-box-2 text-white" style="text-align:center; font-size:15px;">
+      <div class="content-box-2 text-white" style="font-size:15px;">
         <p>Join march1st and make name for yourself as part of our distinguished community of ethical hackers protecting our clients.</p>
         <q-btn class="bg-secondary" flat>READ STUDY CASE</q-btn>
       </div>
     </div>
-    <div class="section q-pt-lg q-pb-lg">
-      <div class="header-section q-pt-lg">
+    <div class="section q-pb-lg">
+      <div class="header-section">
         <div class="first-title">BOARD</div>
         <div class="second-title">LEADER BOARD</div>
       </div>
-      <div class="content-box" style="display:grid; grid-template-columns:2fr 4fr;">
+      <div class="content-box box-leader" style="">
         <div class="q-pt-md q-pb-md bg-secondary">
           <q-toolbar>
             <q-avatar>
@@ -349,7 +412,7 @@
         <div style="">
           <q-card>
             <q-card-section>
-              <q-toolbar class="bg-transparent">
+              <q-toolbar class="bg-transparent btn-leader">
                 <q-btn label="all time" flat class="text-white bg-primary"/>
                 <q-space/>
                 <q-btn label="Last 90 days" flat class="text-primary"/>
@@ -455,13 +518,13 @@
         </div>
       </div>
     </div>
-    <div class="section q-pb-lg q-pt-sm" style="background-color:#023577;">
+    <div class="section section-2 q-pb-lg q-pt-sm" style="background-color:#023577;">
       <div class="header-section-2 content-box">
         <div class="first-title">EAQ</div>
         <div class="second-title text-white">FREQUENTLY ASKED QUESTIONS</div>
       </div>
       <div class="content-box">
-        <div class="text-grey-4 q-pl-sm" style="max-height:min-content; font-size:13px; width:600px; border-left:3px solid #0676e2;">
+        <div class="text-grey-4 q-pl-sm box-text" style="">
           <p>Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Quisque velit nisi, pretium ut lacinia in, elementum id enim.</p>
         </div>
         <q-list class="q-pt-sm q-gutter-md">
@@ -554,7 +617,8 @@ export default defineComponent({
       slide:"style",
       progress:0.85,
       progress2:0.65,
-      progress3:0.55
+      progress3:0.55,
+      slideApproach:"crawl"
     }
   },
   mounted(){
@@ -575,6 +639,8 @@ export default defineComponent({
     left: 0;
     z-index: 999;
     color:white;
+    padding-left:10px;
+    padding-right:10px;
   }
   .absolute-scroll{
     position: absolute;
@@ -586,6 +652,8 @@ export default defineComponent({
     position: relative;
     top: 50%;
     transform: perspective(1px) translateY(-50%);
+    font-family: 'good-time';
+    font-size: 40px;
   }
   .scroll-btn{
     position: relative;
@@ -595,10 +663,6 @@ export default defineComponent({
     font-size: 10px;
   }
 
-  .text-banner{
-    font-family: 'good-time';
-    font-size: 40px;
-  }
   .text-banner .text-banner-2{
     color: #ababab;
     opacity: 0.6;
@@ -639,6 +703,10 @@ export default defineComponent({
     font-weight: bold;
     margin-top: -30px;
   }
+  .flex-content{
+    display:flex;
+    flex-wrap:nowrap;
+  }
   .content-box{
     width: 768px;
     margin: 30px auto;
@@ -648,10 +716,18 @@ export default defineComponent({
     width: 480px;
     margin: 30px auto;
     font-family: 'nunito';
+    text-align:center;
   }
   .content-box.text-box{
     font-size: 17px;
     text-align: center;
+  }
+  .item-flex{
+    display: flex;
+    flex-wrap:nowrap;
+  }
+  .item-flex .first-elt{
+    padding-right:20px;
   }
   .tab-elt{
     font-size: 30px;
@@ -672,6 +748,12 @@ export default defineComponent({
     font-size: 15px;
     margin-top: -25px;
   }
+  .section-2 .box-text{
+    max-height:min-content; 
+    font-size:13px; 
+    width:600px; 
+    border-left:3px solid #0676e2;
+  }
   .separator{
     border:1px dashed #ababab;
   }
@@ -682,5 +764,115 @@ export default defineComponent({
      height:200px; 
      width:200px; 
      border-radius:50%
+  }
+  .grid-content{
+    display:grid; 
+    grid-template-columns:1fr 1fr 1fr; 
+    grid-gap:15px; 
+    background-color:#f2f6f7; 
+    border-radius:5px;
+  }
+  .item-block{
+    border-left:2px solid #0676e2;
+    padding-left:10px;
+    font-family:'nunito';
+  }
+  .item-block .title{
+    font-weight: bolder;
+    font-family:'good-time';
+  }
+  .box-leader{
+    display:grid; 
+    grid-template-columns:2fr 4fr;
+  }
+  @media (max-width: 599px){
+    .text-banner{
+      font-size: 20px;
+    }
+    .content-box{
+      width: 100%;
+      padding-left:10px;
+      padding-right:10px;
+    }
+    .item-flex{
+      display: flex;
+      flex-wrap:wrap;
+      text-align: center;
+      padding-top:20px;
+    }
+    .item-flex .first-elt{
+      padding-right:20px;
+      margin:auto;
+    }
+    .item-flex .second-elt{
+      padding-top:15px;
+    }
+    .carousel-approach .q-carousel{
+      height: inherit;
+    }
+    .flex-content{
+      display:block;
+      flex-wrap:wrap;
+    }
+    .grid-content{
+      grid-template-columns:1fr; 
+    }
+    .content-box-2{
+      width: 100%;
+      margin: auto;
+      text-align:left;
+      padding-left:10px;
+      padding-right: 10px;
+    }
+    .content-box-2 p{
+      padding-top:12px;
+      font-size:12px;
+      font-family: 'nunito';
+      color:lightgray;
+    }
+    .content-box-2 .header-section {
+        padding-top: 0px;
+    }
+    .box-leader{
+      grid-template-columns:1fr;
+      width: 100%;
+      padding-left: 0;
+      padding-right: 0;
+    }
+    .box-leader .q-card{
+      padding-left:0;
+      padding-right:0;
+      margin-left:0;
+      margin-right:0;
+    }
+    .box-leader .q-card__section--vert {
+        padding-left: 0px;
+        padding-right:0px;
+    }
+    .box-leader .q-gutter-sm > * {
+        margin-left: 0px;
+    }
+    .btn-leader .q-btn{
+      font-size:11px;
+    }
+    .q-toolbar.btn-leader{
+      padding-left:5px;
+      padding-right: 5px;
+      padding-top: 0px;
+      padding-bottom: 0px;
+    }
+    .header-section-2{
+      padding-top:0px;
+    }
+    .header-section-2.content-box{
+      margin-top:0px;
+      margin-bottom: 0px;
+    }
+    .section-2 .box-text{
+      max-height:min-content; 
+      font-size:10px; 
+      width:100%; 
+      border-left:3px solid #0676e2;
+    }
   }
 </style>

@@ -129,7 +129,7 @@ import {mapActions} from 'vuex';
                     const res = await this.onSubmitValidationCode(this.code);
                     //debugger;
                     this.$q.loading.hide();
-                    console.log(`Resustat = ${res}`);
+                    console.log(`Resultat = ${JSON.stringify(res)}`);
                     this.$q.notify({
                         message: res,
                         type: "positive",

@@ -12,7 +12,7 @@
           <q-img src="vectors/logo-01.svg" width="150px" v-else/>
         </div>
         <q-space/>
-        <div>
+        <div class="gt-xs">
           <menu-item :name="'INTRODUCTION'"/>
           <menu-item :name="'SOLUTIONS'"/>
           <menu-item :name="'CUSTOMERS'"/>
@@ -74,7 +74,7 @@
     <q-footer v-if="$route.name!='login' && $route.name!='register'">
       <div class="content-box">
         <div class="row">
-          <div class="flex flex-center col-3">
+          <div class="flex flex-center col-sm-3 col-xs-12">
             <div>
               <div><q-img src="vectors/logo-02.svg" width="150px"/></div>
               <div class="text-center q-pt-md q-gutter-sm">
@@ -84,9 +84,9 @@
               </div>
             </div>
           </div>
-          <div class="col-4 q-pl-lg contact-us" style="border-left:1px solid grey;">
+          <div class="col-sm-4 col-xs-12 q-pl-lg contact-us" style="">
             <div class="footer-title">CONTACT US</div>
-            <q-list class="text-grey-4" style="font-family:'nunito'; font-size:10px;">
+            <q-list class="text-grey-4" style="">
               <q-item
                 clickable
               >
@@ -120,9 +120,9 @@
               </q-item>
             </q-list>
           </div>
-          <div class="col-5 q-pl-lg" style="border-left:1px solid grey;">
+          <div class="col-sm-5 col-xs-12 q-pl-lg top-quick-links" style="">
             <div class="footer-title">QUICK LINKS</div>
-            <div class="flex quick-links q-gutter-lg no-wrap">
+            <div class="flex quick-links q-gutter-lg">
               <q-list style="font-size:10px;" class="text-grey-4">
                 <q-item>
                   <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
@@ -256,12 +256,22 @@ export default defineComponent({
     min-width: 0px;
     padding-right: 10px;
   }
+  .quick-links{
+    flex-wrap: nowrap;
+  }
   .quick-links .q-item {
     min-height: 0px;
     padding: 0px;
   }
   .contact-us .q-item{
     min-height: 0px;
+  }
+  .contact-us .q-list{
+    font-family:'nunito'; 
+    font-size:10px;
+  }
+  .contact-us, .top-quick-links{
+    border-left:1px solid grey;
   }
   .footer-title{
     font-family: 'good-time';
@@ -273,6 +283,35 @@ export default defineComponent({
   }
   .q-footer p{
     margin-bottom: 0px;
+  }
+  @media (max-width: 599px){
+    .quick-links{
+      display: block;
+      padding-top:24px;
+    }
+    .quick-links.q-gutter-lg > * {
+        margin-top: 0px;
+    }
+    .contact-us{
+      padding-left: 5px;
+      border-bottom:1px solid grey;
+      border-left:none;
+    }
+    .contact-us .q-list{
+      font-size:12px;
+    }
+    .contact-us .q-item{
+      padding-left: 0px;
+    }
+    .top-quick-links{
+      border-left:none;
+    }
+    .quick-links.q-gutter-lg > * {
+        margin-left: 0px;
+    }
+    .quick-links .q-list{
+      display: block;
+    }
   }
 </style>
 
