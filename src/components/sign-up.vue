@@ -1,10 +1,10 @@
 <template>
-    <div>
-        <q-card class="my-card bg-container" flat bordered style="min-width:320px">
+    <div class="wrap-auth">
+        <q-card class="my-card bg-container" flat bordered style="min-width:320px; border-radius:3px;">
             <q-card-section>
                 <div class="title-header q-pb-md q-pt-md">
-                    <p class="text-center" v-if="formData.typeUser==1">Sign up for hacker</p>
-                    <p class="text-center" v-else>Sign up for client</p>
+                    <p class="text-center" style="font-size:18px;" v-if="formData.typeUser==1">Sign up for hacker</p>
+                    <p class="text-center" style="font-size:18px;" v-else>Sign up for client</p>
                 </div>
                 <q-form @submit="onSendEmailValidation()" class="q-col-gutter-sm q-pb-sm" v-if="step==1">
                     <div class="form-control" v-if="formData.typeUser==2">
@@ -40,11 +40,12 @@
                     <div class="form-control">
                         <q-btn
                             outlined
+                            flat
                             label="Check my email"
-                            class="bg-primary col text-white"
+                            class="bg-secondary col text-white"
                             no-caps
                             type="submit"
-                            style="width:100%"
+                            style="width:100%; border-radius:3px;"
                         />
                     </div>
                 </q-form>
@@ -58,11 +59,12 @@
                     <div class="form-control">
                         <q-btn
                             outlined
+                            flat
                             label="Check the code"
-                            class="bg-primary col text-white"
+                            class="bg-secondary col text-white"
                             no-caps
                             type="submit"
-                            style="width:100%"
+                            style="width:100%; border-radius:3px;"
                         />
                     </div>
                 </q-form>
@@ -70,7 +72,7 @@
                     <q-toolbar class="">
                         <span>Already have an account?</span>
                         <div class="q-pl-sm">
-                        <q-btn flat label="Sign in" class="text-primary" no-caps to="/auth/login" />
+                        <q-btn flat label="Sign in" class="text-secondary" no-caps to="/auth/login" />
                         </div>
                     </q-toolbar>
                 </div>
@@ -90,7 +92,7 @@ import {mapActions} from 'vuex';
                     fullName:"Steve william",
                     title:"Test title",
                     email:"williamsteve216@gmail.com",
-                    typeUser:2
+                    typeUser:1
                 },
                 code:null,
                 step:1
@@ -153,5 +155,8 @@ import {mapActions} from 'vuex';
 </script>
 
 <style scoped>
-    
+    .wrap-auth{
+        font-family: 'nunito';
+        color:#333333; 
+    }
 </style>

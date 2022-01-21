@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lff">
+  <q-layout view="hHr Lpr lff">
     <q-header v-scroll="onScroll" v-if="$route.name!='login' && $route.name!='register'" class="q-pt-md q-pb-md" :class="{'bg-transparent':isTransparent, 'bg-white':!isTransparent, 'text-primary':!isTransparent}">
       <q-toolbar class="" v-if="$route.name=='navigator'">
         <q-toolbar-title>
@@ -38,7 +38,56 @@
           </q-btn-dropdown>
           <q-separator vertical inset color="white" v-if="isTransparent"/>
           <q-separator vertical inset color="primary" v-else />
-          <q-btn dense flat class="q-ml-xs">
+          <q-btn flat class="">
+            <q-avatar size="22px">
+              <img src="vectors/login-white.svg" v-if="isTransparent">
+              <img src="vectors/login-dark.svg" v-else>
+            </q-avatar>
+            <q-menu
+              :offset="[25, 10]"
+              transition-show="jump-down"
+              transition-hide="jump-up"
+              class="menu-user"
+            >
+              <q-list style="min-width: 200px">
+                <q-item clickable v-ripple class="q-pt-sm q-pb-sm">
+                  <q-item-section avatar>
+                    <q-avatar>
+                      <img src="https://cdn.quasar.dev/img/boy-avatar.png">
+                    </q-avatar>
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label class="text-bold text-primary">Nom d'utilisateur</q-item-label>
+                    <q-item-label caption lines="1">Lorem ipsum dolor sit amet</q-item-label>
+                  </q-item-section>
+                </q-item>
+                <q-separator color="info"/>
+                <q-item clickable v-ripple class="q-pt-xs q-pb-xs">
+                  <q-item-section avatar>
+                    <q-avatar color="white" text-color="secondary" icon="person_outline" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label class="text-primary">My Profile</q-item-label>
+                  </q-item-section>
+                </q-item>
+                <q-separator color="info"/>
+                <q-item clickable v-ripple class="q-pt-xs q-pb-xs">
+                  <q-item-section avatar>
+                    <q-avatar color="white" text-color="secondary" icon="settings" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label class="text-primary">Settings</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+              <div style="width:100%; font-family:'nunito';">
+                <q-btn flat class="text-primary" style="background-color:#eaf5ff; width:100%" label="Sign out" no-caps icon="logout"/>
+              </div>
+            </q-menu>
+          </q-btn>
+          <q-separator vertical inset color="white" v-if="isTransparent"/>
+          <q-separator vertical inset color="primary" v-else />
+          <q-btn dense flat class="" @click="drawerRight=true">
             <q-avatar size="22px">
               <img src="vectors/burgermenu-white.svg" v-if="isTransparent">
               <img src="vectors/burgermenu-dark.svg" v-else>
@@ -50,7 +99,7 @@
     <q-header v-else class="bg-container">
       <q-toolbar class="bg-container">
         <div>
-          <q-img src="vectors/logo-02.svg" width="150px"/>
+          <q-img src="vectors/logo-01.svg" width="150px"/>
         </div>
         <q-space/>
         <q-btn-dropdown class="bg-grey-3 text-dark q-pl-sm btn-dropdown" dense :label="language.value" flat>
@@ -70,6 +119,32 @@
         </q-btn-dropdown>
       </q-toolbar>
     </q-header>
+
+    <q-drawer
+        side="right"
+        v-model="drawerRight"
+        bordered
+        :width="600"
+        overlay
+        :breakpoint="500"
+        class="bg-primary"
+      >
+        <div class="relative-position" style="height:100%;">
+          <q-toolbar>
+            <q-space/>
+            <q-btn class="text-white" flat icon="close" @click="drawerRight=false"/>
+          </q-toolbar>
+          <div class="absolute flex-center" style="top:0; margin-top:50%; margin-bootom:50%">
+            <div style="height:100%;" class="draw-menu">
+              <q-list>
+                <q-item clickable>ABOUT US</q-item>
+                <q-item clickable>FAQ</q-item>
+                <q-item clickable>CONTACT US</q-item>
+              </q-list>
+            </div>
+          </div>
+        </div>
+      </q-drawer>
 
     <q-footer v-if="$route.name!='login' && $route.name!='register'">
       <div class="content-box">
@@ -203,7 +278,8 @@ export default defineComponent({
         label:"English",
         value:"EN"
       },
-      isTransparent:true
+      isTransparent:true,
+      drawerRight:false
     }
   },
   methods: {
@@ -283,6 +359,18 @@ export default defineComponent({
   }
   .q-footer p{
     margin-bottom: 0px;
+  }
+  .draw-menu{
+    padding-left:25px;
+  }
+  .draw-menu .q-item{
+    color:white;
+    font-family: 'good-time';
+    font-size:24px;
+    padding-bottom: 25px;
+  }
+  .menu-user{
+    font-family: 'nunito';
   }
   @media (max-width: 599px){
     .quick-links{

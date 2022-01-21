@@ -1,9 +1,9 @@
 <template>
-    <div>
-        <q-card class="my-card bg-container" flat bordered style="min-width:320px">
+    <div class="wrap-auth">
+        <q-card class="my-card bg-container" flat bordered style="min-width:320px; border-radius:3px;">
             <q-card-section>
                 <div class="title-header q-pb-md q-pt-md">
-                    <p class="text-center">Welcome Back!</p>
+                    <p class="text-center" style="font-size:18px;">Welcome Back!</p>
                 </div>
                 <q-form @submit="onSubmit()" class="q-col-gutter-lg q-pb-sm">
                     <div class="form-control">
@@ -14,12 +14,13 @@
                     </div>
                     <div class="form-control">
                         <q-btn
+                            flat
                             outlined
                             label="Passwordless Login"
-                            class="bg-primary col text-white"
+                            class="bg-secondary col text-white"
                             no-caps
                             type="submit"
-                            style="width:100%"
+                            style="width:100%; border-radius:3px;"
                         />
                     </div>
                 </q-form>
@@ -27,7 +28,7 @@
                     <q-toolbar class="">
                         <span>Don't have an account?</span>
                         <div class="q-pl-sm">
-                        <q-btn flat label="Create account" class="text-primary" no-caps to="/auth/register" />
+                        <q-btn flat label="Create account" class="text-secondary" no-caps to="/auth/register" />
                         </div>
                     </q-toolbar>
                 </div>
@@ -55,5 +56,8 @@
 </script>
 
 <style scoped>
-    
+    .wrap-auth{
+        font-family: 'nunito';
+        color:#333333; 
+    }
 </style>
