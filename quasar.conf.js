@@ -76,9 +76,9 @@ module.exports = configure(function (ctx) {
         VUE_APP_RP_RPID:'march1st.com',
         VUE_APP_RP_BACKEND:'https://backend.march1st.com/rpbackend',
 
-        VUE_APP_COGNITO_USER_POOL_ID:'us-east-1_iT2G8p9Lk',
-        VUE_APP_COGNITO_USER_POOL_CLIENT_ID:'2n8iadk3n49a4p8raqn311h886',
-        VUE_APP_COGNITO_IDENTITY_POOL_ID:'us-east-1:013bc078-e312-4f0f-9144-d3e6a1520735',
+        VUE_APP_COGNITO_USER_POOL_ID:'us-east-1_wV3vHeG4Q',
+        VUE_APP_COGNITO_USER_POOL_CLIENT_ID:'4dh0qhhgjbpl8bhqra0delp84a',
+        VUE_APP_COGNITO_IDENTITY_POOL_ID:'us-east-1:8cceb6e1-e074-413b-a474-480967b85b40',
         VUE_APP_COGNITO_REGION:'us-east-1'
         
         

@@ -68,7 +68,29 @@
                         />
                     </div>
                 </q-form>
-                <div class="q-pt-xs">
+                <q-form @submit="generatePublicKey()" class="q-col-gutter-lg q-pb-sm" v-if="step==3">
+                    <!-- <div class="form-control">
+                        <div>Code verification</div>
+                        <div class="q-pt-sm">
+                            <q-input dense placeholder="Enter the code" v-model="code" color="grey-3" bg-color="white" outlined />
+                        </div>
+                    </div> -->
+                    <div class="form-control">
+                        <q-btn
+                            outlined
+                            flat
+                            label="Generate public key"
+                            class="bg-secondary col text-white"
+                            no-caps
+                            type="submit"
+                            style="width:100%; border-radius:3px;"
+                        />
+                    </div>
+                </q-form>
+                <div class="" v-if="step==4">
+                    <div>good</div>
+                </div>
+                <div class="q-pt-xs" v-if="step!=4">
                     <q-toolbar class="">
                         <span>Already have an account?</span>
                         <div class="q-pl-sm">
@@ -92,16 +114,18 @@ import {mapActions} from 'vuex';
                     fullName:"Steve william",
                     title:"Test title",
                     email:"williamsteve216@gmail.com",
-                    typeUser:1
+                    typeUser:2
                 },
                 code:null,
+                credentialOptions:null,
                 step:1
             }
         },
         methods: {
             ...mapActions('global',[
                 'onSubmitSignUpForm',
-                'onSubmitValidationCode'
+                'onSubmitValidationCode',
+                'callAuthenticator'
             ]),
             async onSendEmailValidation(){
                 this.$q.loading.show();
@@ -132,12 +156,14 @@ import {mapActions} from 'vuex';
                     //debugger;
                     this.$q.loading.hide();
                     console.log(`Resultat = ${JSON.stringify(res)}`);
+                    this.credentialOptions=res;
                     this.$q.notify({
-                        message: res,
+                        message: "Cognito Account Created",
                         type: "positive",
                         position: "top",
                     });
                     console.log("Code ok");
+                    this.step=3;
                 }
                 catch(err){
                     this.$q.loading.hide();
@@ -150,6 +176,29 @@ import {mapActions} from 'vuex';
                     this.step = 2;
                 };
             },
+            generatePublicKey(){
+                this.$q.loading.show({
+                    message: "Public keys generation ...",
+                });
+                this.callAuthenticator(this.credentialOptions)
+                .then((userData) => {
+                    this.$q.loading.hide();
+                    this.$q.notify({
+                        message: `Account created for ${userData.username}. You can Login`,
+                        type: "positive",
+                        position: "top",
+                    });
+                    this.step = 4;
+                })
+                .catch((err) => {
+                        this.$q.notify({
+                            message: err,
+                            type: "negative",
+                            position: "top",
+                        });
+                        this.$q.loading.hide();
+                    });
+            }
         },
     }
 </script>
