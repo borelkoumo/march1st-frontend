@@ -1,10 +1,10 @@
 <template>
-    <div>
-        <q-card class="my-card bg-container" flat bordered style="min-width:320px">
+    <div class="wrap-auth">
+        <q-card class="my-card bg-container" flat bordered style="min-width:320px; border-radius:3px;">
             <q-card-section>
                 <div class="title-header q-pb-md q-pt-md">
-                    <p class="text-center" v-if="formData.typeUser==1">Sign up for hacker</p>
-                    <p class="text-center" v-else>Sign up for client</p>
+                    <p class="text-center" style="font-size:18px;" v-if="formData.typeUser==1">Sign up for hacker</p>
+                    <p class="text-center" style="font-size:18px;" v-else>Sign up for client</p>
                 </div>
                 <q-form @submit="onSendEmailValidation()" class="q-col-gutter-sm q-pb-sm" v-if="step==1">
                     <div class="form-control" v-if="formData.typeUser==2">
@@ -40,11 +40,12 @@
                     <div class="form-control">
                         <q-btn
                             outlined
+                            flat
                             label="Check my email"
-                            class="bg-primary col text-white"
+                            class="bg-secondary col text-white"
                             no-caps
                             type="submit"
-                            style="width:100%"
+                            style="width:100%; border-radius:3px;"
                         />
                     </div>
                 </q-form>
@@ -58,19 +59,42 @@
                     <div class="form-control">
                         <q-btn
                             outlined
+                            flat
                             label="Check the code"
-                            class="bg-primary col text-white"
+                            class="bg-secondary col text-white"
                             no-caps
                             type="submit"
-                            style="width:100%"
+                            style="width:100%; border-radius:3px;"
                         />
                     </div>
                 </q-form>
-                <div class="q-pt-xs">
+                <q-form @submit="generatePublicKey()" class="q-col-gutter-lg q-pb-sm" v-if="step==3">
+                    <!-- <div class="form-control">
+                        <div>Code verification</div>
+                        <div class="q-pt-sm">
+                            <q-input dense placeholder="Enter the code" v-model="code" color="grey-3" bg-color="white" outlined />
+                        </div>
+                    </div> -->
+                    <div class="form-control">
+                        <q-btn
+                            outlined
+                            flat
+                            label="Generate public key"
+                            class="bg-secondary col text-white"
+                            no-caps
+                            type="submit"
+                            style="width:100%; border-radius:3px;"
+                        />
+                    </div>
+                </q-form>
+                <div class="" v-if="step==4">
+                    <div>good</div>
+                </div>
+                <div class="q-pt-xs" v-if="step!=4">
                     <q-toolbar class="">
                         <span>Already have an account?</span>
                         <div class="q-pl-sm">
-                        <q-btn flat label="Sign in" class="text-primary" no-caps to="/auth/login" />
+                        <q-btn flat label="Sign in" class="text-secondary" no-caps to="/auth/login" />
                         </div>
                     </q-toolbar>
                 </div>
@@ -93,21 +117,33 @@ import {mapActions} from 'vuex';
                     typeUser:2
                 },
                 code:null,
+                credentialOptions:null,
                 step:1
             }
         },
         methods: {
             ...mapActions('global',[
                 'onSubmitSignUpForm',
-                'onSubmitValidationCode'
+                'onSubmitValidationCode',
+                'callAuthenticator'
             ]),
             async onSendEmailValidation(){
+                this.$q.loading.show();
                 if(this.formData.typeUser==2){
                     try {
-                        const result = await this.onSubmitSignUpForm(this.formData)
-                        this.step=2;
+                        const result = await this.onSubmitSignUpForm(this.formData);
+                        if(result!=-1){
+                            this.step=2;
+                        }
+                        this.$q.loading.hide();
                     } catch (error) {
-                        
+                        //console.log("error")
+                        this.$q.notify({
+                            message:"Network Error",
+                            type:"negative",
+                            position:"top",
+                            icon:"error"
+                        })
                     }
                 }
             },
@@ -117,15 +153,17 @@ import {mapActions} from 'vuex';
                 });
                 try{
                     const res = await this.onSubmitValidationCode(this.code);
-                    debugger;
+                    //debugger;
                     this.$q.loading.hide();
-                    console.log(`Resustat = ${res}`);
+                    console.log(`Resultat = ${JSON.stringify(res)}`);
+                    this.credentialOptions=res;
                     this.$q.notify({
-                        message: res,
+                        message: "Cognito Account Created",
                         type: "positive",
                         position: "top",
                     });
                     console.log("Code ok");
+                    this.step=3;
                 }
                 catch(err){
                     this.$q.loading.hide();
@@ -138,10 +176,36 @@ import {mapActions} from 'vuex';
                     this.step = 2;
                 };
             },
+            generatePublicKey(){
+                this.$q.loading.show({
+                    message: "Public keys generation ...",
+                });
+                this.callAuthenticator(this.credentialOptions)
+                .then((userData) => {
+                    this.$q.loading.hide();
+                    this.$q.notify({
+                        message: `Account created for ${userData.username}. You can Login`,
+                        type: "positive",
+                        position: "top",
+                    });
+                    this.step = 4;
+                })
+                .catch((err) => {
+                        this.$q.notify({
+                            message: err,
+                            type: "negative",
+                            position: "top",
+                        });
+                        this.$q.loading.hide();
+                    });
+            }
         },
     }
 </script>
 
 <style scoped>
-    
+    .wrap-auth{
+        font-family: 'nunito';
+        color:#333333; 
+    }
 </style>
