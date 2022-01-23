@@ -14,11 +14,7 @@ import axios from "axios";
 // });
 const webAuthnServer = axios.create({
   /* baseURL: `${CONFIG.PROTOCOL}://${CONFIG.RPID}:${CONFIG.WEBAUTHN_PORT}/rpbackend`, */
-<<<<<<< HEAD
-  baseURL: "https://backend.march1st.com/rpbackend",
-=======
-  baseURL:process.env.VUE_APP_RP_BACKEND
->>>>>>> 5f5aeb49148a884c23bf08b1d129919c124b769f
+  baseURL: process.env.VUE_APP_RP_BACKEND,
 });
 
 export default boot(({ app }) => {
