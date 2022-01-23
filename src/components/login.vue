@@ -5,7 +5,7 @@
                 <div class="title-header q-pb-md q-pt-md">
                     <p class="text-center" style="font-size:18px;">Welcome Back!</p>
                 </div>
-                <q-form @submit="onSubmit()" class="q-col-gutter-lg q-pb-sm">
+                <q-form @submit="login()" class="q-col-gutter-lg q-pb-sm">
                     <div class="form-control">
                         <div>Enter Your Email Address</div>
                         <div class="q-pt-sm">
@@ -38,6 +38,7 @@
 </template>
 
 <script>
+    import {mapActions} from 'vuex';
     export default {
         name: "login",
         data(){
@@ -48,9 +49,60 @@
             }
         },
         methods: {
-            onSubmit(){
-
-            }
+            ...mapActions('global',[
+                'onSubmitLoginForm',
+                'getCredentialInNavigator'
+            ]),
+            login() {
+                /* let data = {
+                    email: this.email
+                }; */
+                
+                this.$q.loading.show({
+                    message: "Getting sign in authentication challenge ...",
+                });
+                
+                this.onSubmitLoginForm(this.formData)
+                    .then((user) => {
+                    console.log(`result 1`);
+                    this.$q.loading.show({
+                        message: `Sign in authentication challenge available ...`,
+                    });
+                    this.getCredentialInNavigator(user)
+                        .then((result) => {
+                        console.log(`result 2`);
+                        this.$q.loading.hide();
+                        this.$q.notify({
+                            message: `User is logged in`,
+                            type: "positive",
+                            position: "top",
+                        });
+                        this.$router.push("/");
+                        })
+                        .catch((err) => {
+                        console.log(`err 2 ${err}`);
+                        this.$q.loading.hide();
+                        this.$q.notify({
+                            message: err,
+                            type: "negative",
+                            position: "top",
+                            icon: "error",
+                        });
+                        // return Promise.reject(err);
+                        });
+                    return Promise.resolve(1);
+                    })
+                    .catch((err) => {
+                    console.log(`err 1`);
+                    this.$q.loading.hide();
+                    this.$q.notify({
+                        message: err,
+                        type: "negative",
+                        position: "top",
+                        icon: "error",
+                    });
+                    });
+            },
         },
     }
 </script>

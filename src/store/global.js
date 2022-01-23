@@ -250,11 +250,11 @@ const actions = {
     /**
      * https://docs.amplify.aws/lib/auth/switch-auth/q/platform/js/#customauth-flow
      */
-    // Auth.configure({
-    //   authenticationFlowType: "CUSTOM_AUTH",
-    // });
+    Auth.configure({
+      authenticationFlowType: "CUSTOM_AUTH",
+    });
     try {
-      const user = await Auth.signIn(payload.username);
+      const user = await Auth.signIn(payload.email);
       printLog("SignIn result. User=", user);
       if (user.challengeName === "CUSTOM_CHALLENGE") {
         // Here generate options to call custom challenge
