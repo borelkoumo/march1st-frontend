@@ -63,10 +63,9 @@ module.exports = configure(function (ctx) {
       chainWebpack(/* chain */) {
         //
       },
-<<<<<<< HEAD
       env: {
-        VUE_APP_RP_PROTOCOL: "https",
         VUE_APP_RP_RPID: "march1st.com",
+        VUE_APP_RP_BACKEND: "https://backend.march1st.com/rpbackend",
 
         VUE_APP_COGNITO_USER_POOL_ID: "us-east-1_wV3vHeG4Q",
         VUE_APP_COGNITO_USER_POOL_CLIENT_ID: "4dh0qhhgjbpl8bhqra0delp84a",
@@ -74,19 +73,6 @@ module.exports = configure(function (ctx) {
           "us-east-1:8cceb6e1-e074-413b-a474-480967b85b40",
         VUE_APP_COGNITO_REGION: "us-east-1",
       },
-=======
-      env:{
-        VUE_APP_RP_RPID:'march1st.com',
-        VUE_APP_RP_BACKEND:'https://backend.march1st.com/rpbackend',
-
-        VUE_APP_COGNITO_USER_POOL_ID:'us-east-1_wV3vHeG4Q',
-        VUE_APP_COGNITO_USER_POOL_CLIENT_ID:'4dh0qhhgjbpl8bhqra0delp84a',
-        VUE_APP_COGNITO_IDENTITY_POOL_ID:'us-east-1:8cceb6e1-e074-413b-a474-480967b85b40',
-        VUE_APP_COGNITO_REGION:'us-east-1'
-        
-        
-      }
->>>>>>> 5f5aeb49148a884c23bf08b1d129919c124b769f
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
