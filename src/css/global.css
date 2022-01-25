@@ -1,6 +1,9 @@
 .bg-container{
     background-color: #fbfbfb;
 }
+.section-pt{
+    padding-top: 100px;
+}
 /*.title-header{
     font-weight: bold;
     font-size: 18px;

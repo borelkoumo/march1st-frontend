@@ -6,30 +6,37 @@
           <q-icon name="report_problem" size="30px"/> WebAuthn Error
         </q-toolbar-title>
       </q-toolbar>
-      <q-toolbar class="" v-else>
-        <div>
+      <q-toolbar  v-else class="q-pt-md">
+        <div class="q-pl-md">
           <q-img src="vectors/logo-02.svg" width="150px" v-if="isTransparent"/>
           <q-img src="vectors/logo-01.svg" width="150px" v-else/>
         </div>
         <q-space/>
         <div class="gt-xs">
-          <menu-item :name="'INTRODUCTION'"/>
-          <menu-item :name="'SOLUTIONS'"/>
-          <menu-item :name="'CUSTOMERS'"/>
-          <menu-item :name="'PROGRAMS'"/>
-          <menu-item :name="'RESEARCHERS'"/>
+          <menu-item :name="'INTRODUCTION'" class="q-mx-md"/>
+          <menu-item :name="'SOLUTIONS'" class="q-mx-md"/>
+          <menu-item :name="'CUSTOMERS'" class="q-mx-md"/>
+          <menu-item :name="'PROGRAMS'" class="q-mx-md"/>
+          <menu-item :name="'RESEARCHERS'" class="q-mx-md"/>
         </div>
         <q-space/>
-        <div class="flex no-wrap">
-          <q-btn-dropdown class="btn-dropdown bg-none q-pl-sm q-mr-xs" dense :label="language.value" flat :class="{'text-primary':!isTransparent, 'text-white':isTransparent}">
-            <q-list>
-              <q-item clickable v-close-popup @click="language.value='EN'">
+        <div class="flex no-wrap q-pr-md">
+          <q-btn-dropdown class="btn-dropdown bg-none q-pl-sm q-mr-xs" dense :label="language.value" flat :class="{'text-primary':!isTransparent, 'text-white':isTransparent}"
+          >
+            <q-list style="min-width:150px;" separator>
+              <q-item class="q-pt-sm q-pb-sm" clickable v-close-popup @click="language.value='EN'">
+                <q-item-section>
+                  <q-img src="flag1.png" width="40px"/>
+                </q-item-section>
                 <q-item-section>
                   <q-item-label>English</q-item-label>
                 </q-item-section>
               </q-item>
 
-              <q-item clickable v-close-popup @click="language.value='AR'">
+              <q-item class="q-pt-sm q-pb-sm" clickable v-close-popup @click="language.value='AR'">
+                <q-item-section>
+                  <q-img src="flag2.png" width="40px"/>
+                </q-item-section>
                 <q-item-section>
                   <q-item-label>Arabe</q-item-label>
                 </q-item-section>
@@ -47,9 +54,12 @@
               :offset="[25, 10]"
               transition-show="jump-down"
               transition-hide="jump-up"
-              class="menu-user"
+              class="menu-user relative-position bg-transparent"
             >
-              <q-list style="min-width: 200px">
+              <div style="width:100%; position:relative; min-height:20px;" class="relative-position">
+                <div class="triangle absolute"></div>
+              </div>
+              <q-list style="min-width: 200px" class="bg-white">
                 <q-item clickable v-ripple class="q-pt-sm q-pb-sm">
                   <q-item-section avatar>
                     <q-avatar>
@@ -64,7 +74,7 @@
                 <q-separator color="info"/>
                 <q-item clickable v-ripple class="q-pt-xs q-pb-xs">
                   <q-item-section avatar>
-                    <q-avatar color="white" text-color="secondary" icon="person_outline" />
+                    <q-avatar color="white" text-color="secondary" icon="person_outline" size="55px"/>
                   </q-item-section>
                   <q-item-section>
                     <q-item-label class="text-primary">My Profile</q-item-label>
@@ -73,7 +83,7 @@
                 <q-separator color="info"/>
                 <q-item clickable v-ripple class="q-pt-xs q-pb-xs">
                   <q-item-section avatar>
-                    <q-avatar color="white" text-color="secondary" icon="settings" />
+                    <q-avatar color="white" text-color="secondary" icon="settings" size="55px" />
                   </q-item-section>
                   <q-item-section>
                     <q-item-label class="text-primary">Settings</q-item-label>
@@ -87,7 +97,7 @@
           </q-btn>
           <q-separator vertical inset color="white" v-if="isTransparent"/>
           <q-separator vertical inset color="primary" v-else />
-          <q-btn dense flat class="" @click="drawerRight=true">
+          <q-btn dense flat class="q-ml-sm" @click="drawerRight=true">
             <q-avatar size="22px">
               <img src="vectors/burgermenu-white.svg" v-if="isTransparent">
               <img src="vectors/burgermenu-dark.svg" v-else>
@@ -123,11 +133,11 @@
     <q-drawer
         side="right"
         v-model="drawerRight"
-        bordered
-        :width="600"
+        :width="$q.screen.width/2"
         overlay
         :breakpoint="500"
         class="bg-primary"
+        style=""
       >
         <div class="relative-position" style="height:100%;">
           <q-toolbar>
@@ -147,15 +157,15 @@
       </q-drawer>
 
     <q-footer v-if="$route.name!='login' && $route.name!='register'">
-      <div class="content-box">
+      <div class="content-box pt-box">
         <div class="row">
           <div class="flex flex-center col-sm-3 col-xs-12">
             <div>
-              <div><q-img src="vectors/logo-02.svg" width="150px"/></div>
+              <div><q-img src="vectors/logo-02.svg" width="220px"/></div>
               <div class="text-center q-pt-md q-gutter-sm">
-                <q-btn outline round size="9px"><i class="fab fa-facebook-f"></i></q-btn>
-                <q-btn outline round size="9px"><i class="fab fa-twitter"></i></q-btn>
-                <q-btn outline round size="9px"><i class="fab fa-linkedin-in"></i></q-btn>
+                <q-btn outline round size="12px"><i class="fab fa-facebook-f"></i></q-btn>
+                <q-btn outline round size="12px"><i class="fab fa-twitter"></i></q-btn>
+                <q-btn outline round size="12px"><i class="fab fa-linkedin-in"></i></q-btn>
               </div>
             </div>
           </div>
@@ -166,7 +176,7 @@
                 clickable
               >
                 <q-item-section avatar class="text-secondary">
-                  <q-icon name="place" size="18px"/>
+                  <q-icon name="place" size="30px"/>
                 </q-item-section>
                 <q-item-section>
                   <div>Company, 24643 21B Ave</div>
@@ -177,7 +187,7 @@
                 clickable
               >
                 <q-item-section avatar class="text-secondary">
-                  <q-icon name="call" size="18px"/>
+                  <q-icon name="call" size="30px"/>
                 </q-item-section>
                 <q-item-section>
                   <div>Phone: +604 856 0303</div>
@@ -187,7 +197,7 @@
                 clickable
               >
                 <q-item-section avatar class="text-secondary">
-                  <q-icon name="mail" size="18px"/>
+                  <q-icon name="mail" size="30px"/>
                 </q-item-section>
                 <q-item-section>
                   <div>Email: info@company.com</div>
@@ -198,7 +208,7 @@
           <div class="col-sm-5 col-xs-12 q-pl-lg top-quick-links" style="">
             <div class="footer-title">QUICK LINKS</div>
             <div class="flex quick-links q-gutter-lg">
-              <q-list style="font-size:10px;" class="text-grey-4">
+              <q-list style="font-size:18px;" class="text-grey-4">
                 <q-item>
                   <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
                   <q-item-section class="">Home</q-item-section>
@@ -224,7 +234,7 @@
                   <q-item-section class="">Product</q-item-section>
                 </q-item>
               </q-list>
-              <q-list style="font-size:10px;" class="text-grey-4">
+              <q-list style="font-size:18px;" class="text-grey-4">
                 <q-item>
                   <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
                   <q-item-section class="">About Us</q-item-section>
@@ -254,7 +264,7 @@
           </div>
         </div>
         <q-separator color="grey-7" inset class="q-mt-md"/>
-        <div class="q-pt-md q-pb-md text-center text-grey-5" style="font-size:12px;"><p>Copyright &copy; 2021 March1<sup>st</sup> Cybersecurity. All Rights Reserved. | Privicy Policy | Terms & Conditions</p></div>
+        <div class="q-pt-md q-pb-md text-center text-grey-5" style="font-size:16px;"><p>Copyright &copy; 2021 March1<sup>st</sup> Cybersecurity. All Rights Reserved. | Privicy Policy | Terms & Conditions</p></div>
       </div>
     </q-footer>
 
@@ -338,13 +348,14 @@ export default defineComponent({
   .quick-links .q-item {
     min-height: 0px;
     padding: 0px;
+    padding-top:5px;
   }
   .contact-us .q-item{
     min-height: 0px;
   }
   .contact-us .q-list{
     font-family:'nunito'; 
-    font-size:10px;
+    font-size:18px;
   }
   .contact-us, .top-quick-links{
     border-left:1px solid grey;
@@ -353,6 +364,7 @@ export default defineComponent({
     font-family: 'good-time';
     padding: 10px;
     padding-bottom: 15px;
+    font-size:24px;
   }
   .q-footer .content-box{
     margin-bottom: 0px;
@@ -371,6 +383,14 @@ export default defineComponent({
   }
   .menu-user{
     font-family: 'nunito';
+  }
+  .triangle {
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 20px solid white;
+    right:40px
   }
   @media (max-width: 599px){
     .quick-links{
