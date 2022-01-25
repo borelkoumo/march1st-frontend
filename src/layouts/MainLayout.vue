@@ -156,115 +156,117 @@
         </div>
       </q-drawer>
 
-    <q-footer v-if="$route.name!='login' && $route.name!='register'">
-      <div class="content-box pt-box">
-        <div class="row">
-          <div class="flex flex-center col-sm-3 col-xs-12">
-            <div>
-              <div><q-img src="vectors/logo-02.svg" width="220px"/></div>
-              <div class="text-center q-pt-md q-gutter-sm">
-                <q-btn outline round size="12px"><i class="fab fa-facebook-f"></i></q-btn>
-                <q-btn outline round size="12px"><i class="fab fa-twitter"></i></q-btn>
-                <q-btn outline round size="12px"><i class="fab fa-linkedin-in"></i></q-btn>
+    <q-footer v-if="$route.name!='login' && $route.name!='register'" class="bg-footer">
+      <div class="opacity-background2">
+        <div class="content-box pt-box">
+          <div class="row">
+            <div class="flex flex-center col-sm-3 col-xs-12">
+              <div>
+                <div><q-img src="vectors/logo-02.svg" width="220px"/></div>
+                <div class="text-center q-pt-md q-gutter-sm">
+                  <q-btn outline round size="12px"><i class="fab fa-facebook-f"></i></q-btn>
+                  <q-btn outline round size="12px"><i class="fab fa-twitter"></i></q-btn>
+                  <q-btn outline round size="12px"><i class="fab fa-linkedin-in"></i></q-btn>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4 col-xs-12 q-pl-lg contact-us" style="">
+              <div class="footer-title">CONTACT US</div>
+              <q-list class="text-grey-4" style="">
+                <q-item
+                  clickable
+                >
+                  <q-item-section avatar class="text-secondary">
+                    <q-icon name="place" size="30px"/>
+                  </q-item-section>
+                  <q-item-section>
+                    <div>Company, 24643 21B Ave</div>
+                    <div>Langley, BC, Canada V2Z 1J3</div>
+                  </q-item-section>
+                </q-item>
+                <q-item
+                  clickable
+                >
+                  <q-item-section avatar class="text-secondary">
+                    <q-icon name="call" size="30px"/>
+                  </q-item-section>
+                  <q-item-section>
+                    <div>Phone: +604 856 0303</div>
+                  </q-item-section>
+                </q-item>
+                <q-item
+                  clickable
+                >
+                  <q-item-section avatar class="text-secondary">
+                    <q-icon name="mail" size="30px"/>
+                  </q-item-section>
+                  <q-item-section>
+                    <div>Email: info@company.com</div>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </div>
+            <div class="col-sm-5 col-xs-12 q-pl-lg top-quick-links" style="">
+              <div class="footer-title">QUICK LINKS</div>
+              <div class="flex quick-links q-gutter-lg">
+                <q-list style="font-size:18px;" class="text-grey-4">
+                  <q-item>
+                    <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
+                    <q-item-section class="">Home</q-item-section>
+                  </q-item>
+                  <q-item>
+                    <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
+                    <q-item-section class="">Contact Info & Dealer List</q-item-section>
+                  </q-item>
+                  <q-item>
+                    <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
+                    <q-item-section class="">Privacy Statement</q-item-section>
+                  </q-item>
+                  <q-item>
+                    <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
+                    <q-item-section class="">Service & Support</q-item-section>
+                  </q-item>
+                  <q-item>
+                    <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
+                    <q-item-section class="">Size Recommendation</q-item-section>
+                  </q-item>
+                  <q-item>
+                    <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
+                    <q-item-section class="">Product</q-item-section>
+                  </q-item>
+                </q-list>
+                <q-list style="font-size:18px;" class="text-grey-4">
+                  <q-item>
+                    <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
+                    <q-item-section class="">About Us</q-item-section>
+                  </q-item>
+                  <q-item>
+                    <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
+                    <q-item-section class="">Return Policy</q-item-section>
+                  </q-item>
+                  <q-item>
+                    <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
+                    <q-item-section class="">FAQs</q-item-section>
+                  </q-item>
+                  <q-item>
+                    <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
+                    <q-item-section class="">Order Info</q-item-section>
+                  </q-item>
+                  <q-item>
+                    <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
+                    <q-item-section class="">Applications</q-item-section>
+                  </q-item>
+                  <q-item>
+                    <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
+                    <q-item-section class="">Site Map</q-item-section>
+                  </q-item>
+                </q-list>
               </div>
             </div>
           </div>
-          <div class="col-sm-4 col-xs-12 q-pl-lg contact-us" style="">
-            <div class="footer-title">CONTACT US</div>
-            <q-list class="text-grey-4" style="">
-              <q-item
-                clickable
-              >
-                <q-item-section avatar class="text-secondary">
-                  <q-icon name="place" size="30px"/>
-                </q-item-section>
-                <q-item-section>
-                  <div>Company, 24643 21B Ave</div>
-                  <div>Langley, BC, Canada V2Z 1J3</div>
-                </q-item-section>
-              </q-item>
-              <q-item
-                clickable
-              >
-                <q-item-section avatar class="text-secondary">
-                  <q-icon name="call" size="30px"/>
-                </q-item-section>
-                <q-item-section>
-                  <div>Phone: +604 856 0303</div>
-                </q-item-section>
-              </q-item>
-              <q-item
-                clickable
-              >
-                <q-item-section avatar class="text-secondary">
-                  <q-icon name="mail" size="30px"/>
-                </q-item-section>
-                <q-item-section>
-                  <div>Email: info@company.com</div>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </div>
-          <div class="col-sm-5 col-xs-12 q-pl-lg top-quick-links" style="">
-            <div class="footer-title">QUICK LINKS</div>
-            <div class="flex quick-links q-gutter-lg">
-              <q-list style="font-size:18px;" class="text-grey-4">
-                <q-item>
-                  <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
-                  <q-item-section class="">Home</q-item-section>
-                </q-item>
-                <q-item>
-                  <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
-                  <q-item-section class="">Contact Info & Dealer List</q-item-section>
-                </q-item>
-                <q-item>
-                  <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
-                  <q-item-section class="">Privacy Statement</q-item-section>
-                </q-item>
-                <q-item>
-                  <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
-                  <q-item-section class="">Service & Support</q-item-section>
-                </q-item>
-                <q-item>
-                  <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
-                  <q-item-section class="">Size Recommendation</q-item-section>
-                </q-item>
-                <q-item>
-                  <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
-                  <q-item-section class="">Product</q-item-section>
-                </q-item>
-              </q-list>
-              <q-list style="font-size:18px;" class="text-grey-4">
-                <q-item>
-                  <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
-                  <q-item-section class="">About Us</q-item-section>
-                </q-item>
-                <q-item>
-                  <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
-                  <q-item-section class="">Return Policy</q-item-section>
-                </q-item>
-                <q-item>
-                  <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
-                  <q-item-section class="">FAQs</q-item-section>
-                </q-item>
-                <q-item>
-                  <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
-                  <q-item-section class="">Order Info</q-item-section>
-                </q-item>
-                <q-item>
-                  <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
-                  <q-item-section class="">Applications</q-item-section>
-                </q-item>
-                <q-item>
-                  <q-item-section avatar class=""><q-icon name="navigate_next"/></q-item-section>
-                  <q-item-section class="">Site Map</q-item-section>
-                </q-item>
-              </q-list>
-            </div>
-          </div>
+          <q-separator color="grey-7" inset class="q-mt-md"/>
+          <div class="q-pt-md q-pb-md text-center text-grey-5" style="font-size:16px;"><p>Copyright &copy; 2021 March1<sup>st</sup> Cybersecurity. All Rights Reserved. | Privicy Policy | Terms & Conditions</p></div>
         </div>
-        <q-separator color="grey-7" inset class="q-mt-md"/>
-        <div class="q-pt-md q-pb-md text-center text-grey-5" style="font-size:16px;"><p>Copyright &copy; 2021 March1<sup>st</sup> Cybersecurity. All Rights Reserved. | Privicy Policy | Terms & Conditions</p></div>
       </div>
     </q-footer>
 
@@ -391,6 +393,14 @@ export default defineComponent({
     border-right: 10px solid transparent;
     border-bottom: 20px solid white;
     right:40px
+  }
+  .bg-footer{
+    background-image:url("~assets/bg-footer.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  .opacity-background2{
+    background-color:rgba(22, 48, 83, .85);
   }
   @media (max-width: 599px){
     .quick-links{

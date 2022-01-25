@@ -229,8 +229,8 @@
         <div class="second-title">CUSTOMERS THAT MARCH FIRST</div>
       </div>
       <div class="content-box flex-content relative-position">
-        <div class="gt-xs absolute" style="top:0px; left:0px; opacity:.5">
-          <q-img src="vectors/Project Based.svg" width="150px"/>
+        <div class="gt-xs absolute" style="top:100px; left:-150px; opacity:.5">
+          <q-img src="vectors/Project Based.svg" width="200px"/>
         </div>
         <div class="" style="margin:auto;">
           <div class="text-center text-customer-1">march1st is the the first cyber security company in the Middle East to provide managed bug bounty and vulnerability disclosure programs. Our customers realize that a bug bounty program has the highest ROI of any cyber security investment. It is the reality check for their defenses and keeps thier IS teams on thier toes...</div>
@@ -248,7 +248,7 @@
                 <q-img src="emirate.png" width=""/>
                 <div style="text-align:left; padding-left:140px;">
                   <div class="title-custumer-1">HELPING EMIRATES AIRLINE TO SECURE THIER SYSTEM</div>
-                  <ul style="font-size:22px; color:#555555;">
+                  <ul class="march-list" style="font-size:22px; color:#555555;">
                     <li>Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus.</li>
                     <li>Pellentesque in ipsum id orci porta dapibus. Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem.</li>
                     <li>Nulla porttitor accumsan tincidunt. Sed porttitor lectus nibh.</li>
@@ -326,7 +326,7 @@
         <div class="q-pt-sm">March1st is a new platform & we are very selective with the researchers we work with</div>
       </div>
     </div>
-    <div class="section pt-box pb-box" style="background-color:#102540;">
+    <div class="section background-image2 pt-box pb-box" style="background-color:#132a48;">
       <div class="flex flex-center content-box-2">
         <div class="header-section">
           <div class="first-title">MAHACKER</div>
@@ -536,89 +536,91 @@
         </div>
       </div>
     </div>
-    <div class="section section-2 pt-box pb-box" style="background-color:#023577;">
-      <div class="header-section-2 content-box" style="padding-bottom:30px;">
-        <div class="first-title">EAQ</div>
-        <div class="second-title text-white">FREQUENTLY ASKED QUESTIONS</div>
-      </div>
-      <div class="content-box">
-        <div class="q-pl-sm box-text" style="">
-          <p class="">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem</p>
+    <div class="section background-image3 relative-position section-2" style="">
+      <div class="pt-box pb-box opacity-background3" style="">
+        <div class="header-section-2 content-box" style="padding-bottom:30px;">
+          <div class="first-title">EAQ</div>
+          <div class="second-title text-white">FREQUENTLY ASKED QUESTIONS</div>
         </div>
-        <q-list class="q-pt-sm q-gutter-md">
-          <q-expansion-item
-            group="somegroup"
-            style="font-size:18px; color:black;"
-            label="Is Anyone Can Register In The Program?"
-            header-class="bg-white"
-            expand-icon-class="text-secondary"
-          >
-            <q-card>
-              <q-card-section>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, eius reprehenderit eos corrupti
-                commodi magni quaerat ex numquam, dolorum officiis modi facere maiores architecto suscipit iste
-                eveniet doloribus ullam aliquid.
-              </q-card-section>
-            </q-card>
-          </q-expansion-item>
-          
-          <q-expansion-item group="somegroup" label="How We Get The Awrd" default-opened header-class="bg-secondary" expand-icon-class="text-secondary" style="font-size:22px; color:white; font-family:'nunito'">
-            <q-separator color="white"/>
-            <q-card class="bg-secondary" style="font-size:18px; color:white; font-family:'nunito'">
-              <q-card-section>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, eius reprehenderit eos corrupti
-                commodi magni quaerat ex numquam, dolorum officiis modi facere maiores architecto suscipit iste
-                eveniet doloribus ullam aliquid.
-              </q-card-section>
-            </q-card>
-          </q-expansion-item>
+        <div class="content-box">
+          <div class="q-pl-sm box-text" style="">
+            <p class="">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem</p>
+          </div>
+          <q-list class="q-pt-sm q-gutter-md">
+            <q-expansion-item
+              group="somegroup"
+              style="font-size:18px; color:black;"
+              label="Is Anyone Can Register In The Program?"
+              header-class="bg-white"
+              expand-icon-class="text-secondary"
+            >
+              <q-card>
+                <q-card-section>
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, eius reprehenderit eos corrupti
+                  commodi magni quaerat ex numquam, dolorum officiis modi facere maiores architecto suscipit iste
+                  eveniet doloribus ullam aliquid.
+                </q-card-section>
+              </q-card>
+            </q-expansion-item>
+            
+            <q-expansion-item group="somegroup" label="How We Get The Awrd" default-opened header-class="bg-secondary" expand-icon-class="text-secondary" style="font-size:22px; color:white; font-family:'nunito'">
+              <q-separator color="white"/>
+              <q-card class="bg-secondary" style="font-size:18px; color:white; font-family:'nunito'">
+                <q-card-section>
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, eius reprehenderit eos corrupti
+                  commodi magni quaerat ex numquam, dolorum officiis modi facere maiores architecto suscipit iste
+                  eveniet doloribus ullam aliquid.
+                </q-card-section>
+              </q-card>
+            </q-expansion-item>
 
-          <q-expansion-item group="somegroup" label="When It Will Be Last Day To Submit A Report" header-class="bg-white text-primary" expand-icon-class="text-secondary" style="font-size:18px; color:black; font-family:'nunito'">
-            <q-card>
-              <q-card-section>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, eius reprehenderit eos corrupti
-                commodi magni quaerat ex numquam, dolorum officiis modi facere maiores architecto suscipit iste
-                eveniet doloribus ullam aliquid.
-              </q-card-section>
-            </q-card>
-          </q-expansion-item>
+            <q-expansion-item group="somegroup" label="When It Will Be Last Day To Submit A Report" header-class="bg-white text-primary" expand-icon-class="text-secondary" style="font-size:18px; color:black; font-family:'nunito'">
+              <q-card>
+                <q-card-section>
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, eius reprehenderit eos corrupti
+                  commodi magni quaerat ex numquam, dolorum officiis modi facere maiores architecto suscipit iste
+                  eveniet doloribus ullam aliquid.
+                </q-card-section>
+              </q-card>
+            </q-expansion-item>
 
-          <q-expansion-item
-            group="somegroup"
-            label="Is Anyone Can Register In The Program ?"
-            header-class="bg-white text-primary"
-            expand-icon-class="text-secondary"
-            style="font-size:18px; color:black; font-family:'nunito'"
-          >
-            <q-card class="bg-teal-2">
-              <q-card-section>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, eius reprehenderit eos corrupti
-                commodi magni quaerat ex numquam, dolorum officiis modi facere maiores architecto suscipit iste
-                eveniet doloribus ullam aliquid.
-              </q-card-section>
-            </q-card>
-          </q-expansion-item>
+            <q-expansion-item
+              group="somegroup"
+              label="Is Anyone Can Register In The Program ?"
+              header-class="bg-white text-primary"
+              expand-icon-class="text-secondary"
+              style="font-size:18px; color:black; font-family:'nunito'"
+            >
+              <q-card class="bg-teal-2">
+                <q-card-section>
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, eius reprehenderit eos corrupti
+                  commodi magni quaerat ex numquam, dolorum officiis modi facere maiores architecto suscipit iste
+                  eveniet doloribus ullam aliquid.
+                </q-card-section>
+              </q-card>
+            </q-expansion-item>
 
-          <q-expansion-item
-            group="somegroup"
-            label="How We Get The Awd"
-            header-class="bg-white text-primary"
-            expand-icon-class="text-secondary"
-            style="font-size:18px; color:black; font-family:'nunito'"
-          >
-            <q-card class="bg-teal-2">
-              <q-card-section>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, eius reprehenderit eos corrupti
-                commodi magni quaerat ex numquam, dolorum officiis modi facere maiores architecto suscipit iste
-                eveniet doloribus ullam aliquid.
-              </q-card-section>
-            </q-card>
-          </q-expansion-item>
-        </q-list>
-      </div>
-      <div class="text-center q-pt-lg">
-        <q-btn label="View More" flat no-caps class="text-center bg-secondary text-white" style="min-width:170px; font-family:'nunito'; font-size:18px;"/>
-      </div>
+            <q-expansion-item
+              group="somegroup"
+              label="How We Get The Awd"
+              header-class="bg-white text-primary"
+              expand-icon-class="text-secondary"
+              style="font-size:18px; color:black; font-family:'nunito'"
+            >
+              <q-card class="bg-teal-2">
+                <q-card-section>
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, eius reprehenderit eos corrupti
+                  commodi magni quaerat ex numquam, dolorum officiis modi facere maiores architecto suscipit iste
+                  eveniet doloribus ullam aliquid.
+                </q-card-section>
+              </q-card>
+            </q-expansion-item>
+          </q-list>
+        </div>
+        <div class="text-center q-pt-lg">
+          <q-btn label="View More" flat no-caps class="text-center bg-secondary text-white" style="min-width:170px; font-family:'nunito'; font-size:18px;"/>
+        </div>
+      </div>  
     </div>
   </q-page>
 </template>
@@ -879,6 +881,29 @@ export default defineComponent({
   .box-leader{
     display:grid; 
     grid-template-columns:2fr 4fr;
+  }
+  ul.march-list li::before{
+    content: "\2022";
+    width: 1em;
+    margin-left: -1.05em;
+    color: #0676e2;
+    font-weight: bold;
+    display: inline-block; 
+  }
+  .background-image2{
+    background-image:url("~assets/bg-image-1.png");
+    background-repeat: no-repeat;
+    background-size: 50%;
+    background-position-x: 120%;
+    background-position-y: -30px;
+  }
+  .background-image3{ 
+    background-image:url("~assets/bg-image-2.png");
+    background-repeat: no-repeat;
+    
+  }
+  .opacity-background3{
+    background-color:rgba(3, 119, 224, .4);
   }
   @media (max-width: 599px){
     .text-banner{
