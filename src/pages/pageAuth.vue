@@ -1,13 +1,12 @@
 <template>
-  <q-page class="flex flex-center bg-container" v-if="$route.name == 'login'">
+  <q-page class="flex flex-center bg-container q-mt-lg" v-if="$route.name == 'login'">
     <div>
       <login/>
-      <!-- <qrcode-vue :value="value" v-if="IS_PF_AUTH_AVAIL==false"></qrcode-vue> -->
     </div>
   </q-page>
-  <q-page class="flex flex-center bg-container" v-else>
+  <q-page class="flex flex-center bg-container q-mt-lg" v-else>
     <div>
-      <sign-up/>
+      <sign-up :typeUser="type"/>
     </div>
   </q-page>
 </template>
@@ -19,8 +18,6 @@ import login from 'src/components/login.vue';
 import SignUp from 'src/components/sign-up.vue';
 
 //import WebSocketClient from 'src/utils/WebSocketClient.ts';
-import * as WebAuthnUtils from "src/utils/WebAuthnUtils.ts";
-const PF_AUTH_AVAIL = WebAuthnUtils.isPlatformAuthenticatorAvailable();
 //const a = window.PublicKeyCredential ? true : false;
 
 const metaData = {
@@ -47,9 +44,8 @@ const metaData = {
     },
   },
 };
-import QrcodeVue from 'qrcode.vue';
 export default {
-  components: { login, SignUp, QrcodeVue },
+  components: { login, SignUp },
   name: "pageAuth",
   setup() {
     useMeta(metaData), (metaData.title = "Login");
@@ -57,11 +53,14 @@ export default {
   data() {
     return {
       value:"https://example.com",
-      IS_PF_AUTH_AVAIL:false
+      IS_PF_AUTH_AVAIL:false,
+      type:1
     };
   },
   watch: {
-    
+    '$route.params.type':function(val){
+      this.type=val;
+    }
   },
   methods: {
     ...mapActions("global", [
@@ -74,10 +73,9 @@ export default {
     
   },
   mounted() {
-    PF_AUTH_AVAIL.then((res)=>{
-      this.IS_PF_AUTH_AVAIL=res;
-      //console.log(this.IS_PF_AUTH_AVAIL)
-    })
+    if(this.$route.params.type){
+      this.type=this.$route.params.type;
+    }
   },
 };
 </script>

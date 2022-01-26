@@ -28,7 +28,7 @@
                     <q-toolbar class="">
                         <span>Don't have an account?</span>
                         <div class="q-pl-sm">
-                        <q-btn flat label="Create account" class="text-secondary" no-caps to="/auth/register" />
+                        <q-btn flat label="Create account" class="text-secondary" no-caps to="/auth/register/2" />
                         </div>
                     </q-toolbar>
                 </div>

@@ -68,23 +68,43 @@
                         />
                     </div>
                 </q-form>
-                <q-form @submit="generatePublicKey()" class="q-col-gutter-lg q-pb-sm" v-if="step==3">
+                <q-form @submit="generatePublicKey()" class="q-pb-sm" v-if="step==3">
                     <!-- <div class="form-control">
                         <div>Code verification</div>
                         <div class="q-pt-sm">
                             <q-input dense placeholder="Enter the code" v-model="code" color="grey-3" bg-color="white" outlined />
                         </div>
                     </div> -->
-                    <div class="form-control">
+                    <div class="form-control q-mb-md">
                         <q-btn
                             outlined
                             flat
-                            label="Generate public key"
+                            label="Generate public key with desktop"
                             class="bg-secondary col text-white"
                             no-caps
                             type="submit"
                             style="width:100%; border-radius:3px;"
                         />
+                    </div>
+                    <div class="q-mt-lg form-control divider relative-position" style="border-bottom:1px solid #163053;">
+                        <div class="absolute" style=" width:100%; top:-10px; text-align:center;">
+                            <div class="text-primary text-bold q-pl-sm q-pr-sm bg-container" style="max-width:max-content; margin:auto;">OR</div>
+                        </div>
+                    </div>
+                    <div class="q-pt-lg text-center"><span>Use mobile to generate public key</span></div>
+                    <div class="form-control q-pt-md" v-if="showQrCode==false">
+                        <q-btn
+                            outlined
+                            flat
+                            label="Generate public key with mobile"
+                            class="bg-secondary col text-white"
+                            no-caps
+                            @click="showQrCode=true"
+                            style="width:100%; border-radius:3px;"
+                        />
+                    </div>
+                    <div class="q-pt-md" style="text-align:center; margin:auto" v-if="showQrCode">
+                        <qrcode-vue :value="value"></qrcode-vue>
                     </div>
                 </q-form>
                 <div class="" v-if="step==4">
@@ -104,9 +124,14 @@
 </template>
 
 <script>
+import * as WebAuthnUtils from "src/utils/WebAuthnUtils.ts";
+const PF_AUTH_AVAIL = WebAuthnUtils.isPlatformAuthenticatorAvailable();
+import QrcodeVue from 'qrcode.vue';
 import {mapActions} from 'vuex';
     export default {
         name: "login",
+        props:['typeUser'],
+        components: { QrcodeVue },
         data(){
             return{
                 formData:{
@@ -114,11 +139,19 @@ import {mapActions} from 'vuex';
                     fullName:"Steve william",
                     title:"Test title",
                     email:"williamsteve216@gmail.com",
-                    typeUser:2
+                    typeUser:1
                 },
+                showQrCode:false,
                 code:null,
                 credentialOptions:null,
-                step:1
+                step:3,
+                value:"https://example.com",
+                IS_PF_AUTH_AVAIL:false
+            }
+        },
+        watch:{
+            typeUser:function(val){
+                this.formData.typeUser=Number(val);
             }
         },
         methods: {
@@ -200,6 +233,13 @@ import {mapActions} from 'vuex';
                     });
             }
         },
+        mounted(){
+            this.formData.typeUser=Number(this.typeUser);
+            PF_AUTH_AVAIL.then((res)=>{
+            this.IS_PF_AUTH_AVAIL=res;
+            //console.log(this.IS_PF_AUTH_AVAIL)
+    })
+        }
     }
 </script>
 

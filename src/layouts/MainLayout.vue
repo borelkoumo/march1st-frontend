@@ -55,6 +55,7 @@
               transition-show="jump-down"
               transition-hide="jump-up"
               class="menu-user relative-position bg-transparent"
+              v-if="userData.userId"
             >
               <div style="width:100%; position:relative; min-height:20px;" class="relative-position">
                 <div class="triangle absolute"></div>
@@ -94,6 +95,39 @@
                 <q-btn flat class="text-primary" style="background-color:#eaf5ff; width:100%" label="Sign out" no-caps icon="logout"/>
               </div>
             </q-menu>
+            <q-menu
+              :offset="[25, 10]"
+              transition-show="jump-down"
+              transition-hide="jump-up"
+              class="menu-user relative-position bg-transparent"
+              v-else
+            >
+              <div style="width:100%; position:relative; min-height:20px;" class="relative-position">
+                <div class="triangle absolute"></div>
+              </div>
+              <q-list style="min-width: 200px" class="bg-white">
+                <q-item clickable v-ripple class="q-pt-xs q-pb-xs" to="/auth/register/2">
+                  <!-- <q-item-section avatar>
+                    <q-avatar color="white" text-color="secondary" icon="person_outline" size="55px"/>
+                  </q-item-section> -->
+                  <q-item-section>
+                    <q-item-label class="text-primary">Signup For Client</q-item-label>
+                  </q-item-section>
+                </q-item>
+                <q-separator color="info"/>
+                <q-item clickable v-ripple class="q-pt-xs q-pb-xs" to="/auth/register/1">
+                  <!-- <q-item-section avatar>
+                    <q-avatar color="white" text-color="secondary" icon="settings" size="55px" />
+                  </q-item-section> -->
+                  <q-item-section>
+                    <q-item-label class="text-primary">Signup For Hacker</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+              <div style="width:100%; font-family:'nunito';">
+                <q-btn flat class="text-primary" style="background-color:#eaf5ff; width:100%" label="Sign In" no-caps icon="login" to="/auth/login"/>
+              </div>
+            </q-menu>
           </q-btn>
           <q-separator vertical inset color="white" v-if="isTransparent"/>
           <q-separator vertical inset color="primary" v-else />
@@ -107,9 +141,9 @@
       </q-toolbar>
     </q-header>
     <q-header v-else class="bg-container">
-      <q-toolbar class="bg-container">
-        <div>
-          <q-img src="vectors/logo-01.svg" width="150px"/>
+      <q-toolbar class="bg-container q-pt-md">
+        <div class="q-pl-md">
+          <q-img src="vectors/logo-01.svg" width="150px" @click="goHome()" class="cursor-pointer"/>
         </div>
         <q-space/>
         <q-btn-dropdown class="bg-grey-3 text-dark q-pl-sm btn-dropdown" dense :label="language.value" flat>
@@ -279,7 +313,7 @@
 <script>
 import menuItem from "src/components/menu-item.vue";
 import { defineComponent } from "vue";
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default defineComponent({
   components: { menuItem },
@@ -293,6 +327,11 @@ export default defineComponent({
       isTransparent:true,
       drawerRight:false
     }
+  },
+  computed:{
+    ...mapState('global',[
+      'userData'
+    ])
   },
   methods: {
     ...mapActions("global", ["logoutUser"]),
@@ -314,6 +353,9 @@ export default defineComponent({
             icon: "error",
           });
         });
+    },
+    goHome(){
+      this.$router.push('/');
     },
     onScroll(position){
       if(position>150){

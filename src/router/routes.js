@@ -17,7 +17,7 @@ const routes = [
         component: () => import('layouts/MainLayout.vue'),
         children: [
             { path: 'login', component: () => import('pages/pageAuth.vue'), name:'login'},
-            { path: 'register', component: () => import('pages/pageAuth.vue'), name:'register'}
+            { path: 'register/:type', component: () => import('pages/pageAuth.vue'), name:'register'}
         ],
         meta: {
           requiresSettings:true
