@@ -144,7 +144,7 @@ import {mapActions} from 'vuex';
                 showQrCode:false,
                 code:null,
                 credentialOptions:null,
-                step:3,
+                step:1,
                 value:"https://example.com",
                 IS_PF_AUTH_AVAIL:false
             }
@@ -231,6 +231,9 @@ import {mapActions} from 'vuex';
                         });
                         this.$q.loading.hide();
                     });
+            },
+            generatePublicKeyWithMobile(){
+                
             }
         },
         mounted(){

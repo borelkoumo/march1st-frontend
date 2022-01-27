@@ -183,42 +183,41 @@
         </div>
       </div>
     </div>
-    <div class="section pt-box pb-box" style="">
-      <div class="header-section">
+    <div class="section pt-box pb-box relative-position" style="min-height:max-content;">
+      <div class="header-section relative-position" style="z-index:99; background-color:white; padding-bottom:60px;">
         <div class="first-title">CUSTOMER?</div>
         <div class="second-title">HOW IT WORKS FOR CUSTOMERS?</div>
       </div>
-      <div class="relative-position box-blanc" style="height:60px; background-color:white; z-index:999"></div>
-      <div class="content-box flex flex-center" style="margin-top:-60px;">
+      <!-- <div class="relative-position box-blanc" style="height:100px; background-color:white; z-index:999"></div> -->
+      <div class="content-box flex flex-center" style="z-index:-99; margin-top:-330px; height:800px;">
         <div>
           <!-- <canvas id="myCanvas" width="600" height="400" style="border:1px solid #000000;"></canvas> -->
-          <div class="background-frame relative-position">
+          <div class="background-frame relative-position" style="font-famimy:'nunito'">
             <q-img class="relative-position" style="left:-48px; top:-13px;" src="vectors/frame-02.svg" width="445px">    
             </q-img>
-            <!-- <div class="absolute" style="top:125px; left:-160px; text-align:center">
+            <div class="absolute" style="top:125px; left:-160px; text-align:center">
                 <q-img class="relative-position" src="steps/step1.svg" width="100px"/>
-                <div class="q-pt-md text-bold text-center" style="font-size:18px; max-width:130px;">Tailor your Bug BountyProgram</div>
-            </div> -->
-            <!-- <div class="absolute" style="top:310px; left:-85px; text-align:center">
+                <div class="text-bold text-center" style="font-size:18px; max-width:130px;">Tailor your Bug BountyProgram</div>
+            </div>
+            <div class="absolute" style="top:290px; left:-110px; text-align:center">
                 <q-img class="relative-position" src="steps/step2.svg" width="100px"/>
-                <div class="q-pt-md text-center" style="font-size:18px; max-width:150px;">All partis agree on Terms & Condition</div>
-            </div> -->
+                <div class="text-center" style="font-size:18px; max-width:150px;">All partis agree on Terms & Condition</div>
+            </div>
 
-           <!-- <div class="absolute" style="top:390px; left:100px; text-align:center">
+            <div class="absolute" style="top:390px; left:25px; text-align:center">
               <q-img class="relative-position" src="steps/step3.svg" width="100px"/>
-              <div class="q-pt-md text-center" style="font-size:18px; min-width:400px;">Researches search for and securely submit Vulnerabilities to march1st</div>
-            </div> -->
+              <div class="text-center" style="font-size:18px; max-width:300px;">Researches search for and securely submit Vulnerabilities to march1st</div>
+            </div>
 
-            <!-- <div class="absolute" style="top:310px; left:330px; text-align:center">
+            <div class="absolute" style="top:312px; left:260px; text-align:center">
               <q-img class="relative-position" src="steps/step4.svg" width="100px"/>
-              <div class="q-pt-md text-center" style="font-size:18px; max-width:150px;">March1st validates and Triages the submissions</div>
-            </div> -->
+              <div class="text-center" style="font-size:18px; width:200px;">March1st validates and Triages the submissions</div>
+            </div>
 
-            <!-- <div class="absolute" style="top:310px; left:330px; text-align:center">
-              <q-img class="relative-position" src="steps/step4.svg" width="100px"/>
-              <div class="q-pt-md text-center" style="font-size:18px; max-width:150px;">Client Receives Only Validated and Properly Documented Vulnerability Reports with Recommendation For Remediation</div>
-            </div> -->
-
+            <div class="absolute" style="top:120px; left:350px;">
+              <q-img class="relative-position" src="steps/step4.svg" width="100px" style="margin-left:45px;"/>
+              <div class="text-center" style="text-align:center; font-size:18px; width:380px;">Client Receives Only Validated and Properly Documented Vulnerability Reports with Recommendation For Remediation</div>
+            </div>
           </div>
         </div>
       </div>
@@ -306,24 +305,27 @@
     </div>
     <div class="section pt-box pb-box" style="background-color:#ebf5ff; font-family:'nunito';">
       <div class="header-section q-pb-lg">
-        <div class="first-title-white">MARCH1STX</div>
+        <div class="first-title-white">MARCH1ST?</div>
         <div class="second-title">WHY HACK WITH MARCH<span class="text-secondary">1</span><sup>ST</sup>?</div>
       </div>
-      <div class="item-block q-mb-lg">
-        <div class="title">OUR PRIOGRAMS ARE NOT CROWDED</div>
-        <div class="q-pt-sm">March1st is a new platform & we are very selective with the researchers we work with</div>
-      </div>
-      <div class="item-block q-mb-lg">
-        <div class="title">THE MIDDLE EAST IS STILL AN ACENT MARKET FOR BUG BOUNTIES </div>
-        <div class="q-pt-sm">March1st is a new platform & we are very selective with the researchers we work with</div>
-      </div>
-      <div class="item-block q-mb-lg">
-        <div class="title">NO TAXES FORMS</div>
-        <div class="q-pt-sm">March1st is a new platform & we are very selective with the researchers we work with</div>
-      </div>
-      <div class="item-block q-mb-lg">
-        <div class="title">PROTECTION FOR UNSOLICITED DISCLOSURE</div>
-        <div class="q-pt-sm">March1st is a new platform & we are very selective with the researchers we work with</div>
+      <div class="text-center relative-position pb-box" style="margin-top:30px; margin-bottom:60px;">
+        <q-img src="vectors/log.svg" width="300px"/>
+        <div class="item-block block-1 q-mb-lg absolute">
+          <div class="title">OUR PRIOGRAMS ARE NOT CROWDED</div>
+          <div class="q-pt-sm">March1st is a new platform & we are very selective with the researchers we work with</div>
+        </div>
+        <div class="item-block block-2 q-mb-lg absolute">
+          <div class="title">THE MIDDLE EAST IS STILL AN ACENT MARKET FOR BUG BOUNTIES </div>
+          <div class="q-pt-sm">March1st is a new platform & we are very selective with the researchers we work with</div>
+        </div>
+        <div class="item-block block-3 q-mb-lg absolute">
+          <div class="title">NO TAXES FORMS</div>
+          <div class="q-pt-sm">March1st is a new platform & we are very selective with the researchers we work with</div>
+        </div>
+        <div class="item-block block-4 q-mb-lg absolute">
+          <div class="title">PROTECTION FOR UNSOLICITED</div>
+          <div class="q-pt-sm">March1st is a new platform & we are very selective with the researchers we work with</div>
+        </div>
       </div>
     </div>
     <div class="section background-image2 pt-box pb-box" style="background-color:#132a48;">
@@ -871,12 +873,41 @@ export default defineComponent({
   }
   .item-block{
     border-left:2px solid #0676e2;
-    padding-left:10px;
+    padding-left:15px;
+    padding-right:15px;
     font-family:'nunito';
+    font-size:18px;
+    color:#545454;
+    max-width: 300px;
+  }
+  .item-block.block-1 , .item-block.block-2{
+    border-left:none;
+    border-right:2px solid #0676e2;
+    text-align: right;
   }
   .item-block .title{
     font-weight: bolder;
     font-family:'good-time';
+    font-size:17px;
+    color:black;
+  }
+  .item-block.block-1{
+    top:0;
+    left:240px;
+  }
+  .item-block.block-2{
+    top:200px;
+    left:120px;
+  }
+  .item-block.block-3{
+    top:0px;
+    right:190px;
+    text-align: left;
+  }
+  .item-block.block-4{
+    top:200px;
+    right:190px;
+    text-align: left;
   }
   .box-leader{
     display:grid; 
