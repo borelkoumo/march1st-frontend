@@ -24,7 +24,12 @@
     <div class="section section-pt">
       <div class="header-section">
         <div class="first-title">PROGRAM</div>
-        <div class="second-title">A ANATOMY OF BUG BOUNTY PROGRAM</div>
+        <div class="second-title relative-position">
+          A ANATOMY OF BUG BOUNTY PROGRAM
+          <div class="tiret-wrap relative-position" style="margin:auto; width:523px;">
+            <div class="tiret relative-position" style="margin-left:-148px;margin-top:-11px; width:523px;"></div>
+          </div>
+        </div>
       </div>
       <div class="content-box text-box pt-box pb-box">
         <p>Your Bug Bounty Program can take on many different forms depending on your organization's maturity, objectives, scope, testing timelines, and budget
@@ -60,7 +65,12 @@
           <q-tab-panel name="time">
             <div class="header-section pb-box pt-box">
               <div class="first-title">TIME</div>
-              <div class="second-title">TIME</div>
+              <div class="second-title relative-position">
+                TIME
+                <div class="tiret-wrap relative-position" style="margin:auto; width:40px;">
+                  <div class="tiret relative-position" style="margin-left:-21px;margin-top:-11px; width:40px;"></div>
+                </div>
+              </div>
             </div>
             <div class="flex flex-center no-wrap">
               <div class="flex gt-xs" style="margin-top:-95px;">
@@ -186,7 +196,12 @@
     <div class="section pt-box pb-box relative-position" style="min-height:max-content;">
       <div class="header-section relative-position" style="z-index:99; background-color:white; padding-bottom:60px;">
         <div class="first-title">CUSTOMER?</div>
-        <div class="second-title">HOW IT WORKS FOR CUSTOMERS?</div>
+        <div class="second-title relative-position">
+          HOW IT WORKS FOR CUSTOMERS?
+          <div class="tiret-wrap relative-position" style="margin:auto; width:376px;">
+            <div class="tiret relative-position" style="margin-left:-142px;margin-top:-11px; width:376px;"></div>
+          </div>
+        </div>
       </div>
       <!-- <div class="relative-position box-blanc" style="height:100px; background-color:white; z-index:999"></div> -->
       <div class="content-box flex flex-center" style="z-index:-99; margin-top:-330px; height:800px;">
@@ -225,7 +240,12 @@
     <div class="section q-pt-lg q-pb-lg" style="background-color:#ebf5ff; font-family:'nunito'">
       <div class="header-section q-pt-lg q-pb-lg">
         <div class="first-title-white">MARCH FIRST</div>
-        <div class="second-title">CUSTOMERS THAT MARCH FIRST</div>
+        <div class="second-title relative-position">
+          CUSTOMERS THAT MARCH FIRST
+          <div class="tiret-wrap relative-position" style="margin:auto; width:334px;">
+            <div class="tiret relative-position" style="margin-left:-149px;margin-top:-11px; width:334px;"></div>
+          </div>
+        </div>
       </div>
       <div class="content-box flex-content relative-position">
         <div class="gt-xs absolute" style="top:100px; left:-150px; opacity:.5">
@@ -277,7 +297,12 @@
     <div class="section pt-box pb-box">
       <div class="header-section">
         <div class="first-title">SERVICE</div>
-        <div class="second-title">ACTIVE PROGRAMS</div>
+        <div class="second-title relative-position">
+          ACTIVE PROGRAMS
+          <div class="tiret-wrap relative-position" style="margin:auto; width:142px;">
+            <div class="tiret relative-position" style="margin-left:-129px;margin-top:-11px; width:142px;"></div>
+          </div>
+        </div>
       </div>
       <div class="content-box" style="padding-top:50px;">
         <q-toolbar class="grid-header">
@@ -306,7 +331,12 @@
     <div class="section pt-box pb-box" style="background-color:#ebf5ff; font-family:'nunito';">
       <div class="header-section q-pb-lg">
         <div class="first-title-white">MARCH1ST?</div>
-        <div class="second-title">WHY HACK WITH MARCH<span class="text-secondary">1</span><sup>ST</sup>?</div>
+        <div class="second-title relative-position">
+          WHY HACK WITH MARCH<span class="text-secondary">1</span><sup>ST</sup>?
+          <div class="tiret-wrap relative-position" style="margin:auto; width:298px;">
+            <div class="tiret relative-position" style="margin-left:-129px;margin-top:-11px; width:298px;"></div>
+          </div>
+        </div>
       </div>
       <div class="text-center relative-position pb-box" style="margin-top:30px; margin-bottom:60px;">
         <q-img src="vectors/log.svg" width="300px"/>
@@ -332,8 +362,14 @@
       <div class="flex flex-center content-box-2">
         <div class="header-section">
           <div class="first-title">MAHACKER</div>
-          <div class="second-title-2 text-white flex flex-center" no-wrap>
-            ENLIST AS A <q-img src="vectors/logo.svg" width="115px" class="q-mr-sm q-ml-sm" style="margin-top:0px;"/> HACKER</div>
+          <div class="second-title-2 relative-position text-white">
+            <div class="flex flex-center" no-wrap>
+              ENLIST AS A <q-img src="vectors/logo.svg" width="115px" class="q-mr-sm q-ml-sm" style="margin-top:0px;"/> HACKER
+            </div>
+            <div class="tiret-wrap relative-position" style="margin:auto; width:298px; display:block;">
+              <div class="tiret relative-position" style="margin-left:-112px;margin-top:-11px; width:298px;"></div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="content-box-2 text-white q-pt-lg" style="font-size:22px; max-width:650px;">
@@ -344,7 +380,12 @@
     <div class="section pt-box pb-box">
       <div class="header-section" style="padding-bottom:40px;">
         <div class="first-title">BOARD</div>
-        <div class="second-title">LEADER BOARD</div>
+        <div class="second-title relative-position">
+          LEADER BOARD
+          <div class="tiret-wrap relative-position" style="margin:auto; width:145px; display:block;">
+            <div class="tiret relative-position" style="margin-left:-80px;margin-top:-11px; width:145px;"></div>
+          </div>
+        </div>
       </div>
       <div class="content-box box-leader" style="">
         <div class="q-pt-md bg-secondary" style="padding-bottom:50px;">
@@ -542,7 +583,12 @@
       <div class="pt-box pb-box opacity-background3" style="">
         <div class="header-section-2 content-box" style="padding-bottom:30px;">
           <div class="first-title">EAQ</div>
-          <div class="second-title text-white">FREQUENTLY ASKED QUESTIONS</div>
+          <div class="second-title text-white">
+            FREQUENTLY ASKED QUESTIONS
+            <div class="tiret-wrap relative-position" style="width:228px; display:block;">
+              <div class="tiret relative-position" style="margin-left:0px;margin-top:-11px; width:228px;"></div>
+            </div>
+          </div>
         </div>
         <div class="content-box">
           <div class="q-pl-sm box-text" style="">
@@ -707,12 +753,21 @@ export default defineComponent({
     text-align: center;
     /* padding-top: 50px; */
   }
+  .header-section .tiret{
+    height: 4px;
+    background-color:#0377e0;
+  }
+  .header-section-2 .tiret{
+    height: 4px;
+    background-color:#0377e0;
+  }
   
   .header-section .first-title{
     font-size: 80px;
     color: #eee;
     opacity: 1;
     font-weight: bold;
+    letter-spacing: 2.75px;
   }
   .header-section .first-title-white{
     font-size: 80px;
@@ -724,6 +779,7 @@ export default defineComponent({
     font-size: 29px;
     font-weight: bold;
     margin-top: -50px;
+    letter-spacing: 2.75px;
   }
   .header-section .second-title-2{
     font-weight: bold;
