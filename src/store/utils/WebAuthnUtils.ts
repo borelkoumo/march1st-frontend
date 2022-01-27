@@ -49,7 +49,6 @@ const isPlatformAuthenticatorAvailable = () => {
   } else {
     return PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
       .then(function (available) {
-        //console.log(available);
         if (available) {
           // We can proceed with the creation of a PublicKeyCredential
           // with this authenticator

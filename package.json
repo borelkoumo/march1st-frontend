@@ -17,7 +17,8 @@
     "qrcode.vue": "^3.3.3",
     "quasar": "^2.0.0",
     "vue-i18n": "^9.0.0",
-    "vuex": "^4.0.1"
+    "vuex": "^4.0.1",
+    "websocket": "^1.0.34"
   },
   "devDependencies": {
     "@quasar/app": "^3.0.0",

@@ -72,6 +72,11 @@ module.exports = configure(function (ctx) {
         VUE_APP_COGNITO_IDENTITY_POOL_ID:
           "us-east-1:8cceb6e1-e074-413b-a474-480967b85b40",
         VUE_APP_COGNITO_REGION: "us-east-1",
+
+        //Websocket Params
+        CONNECTION_KEY_IN_LOCAL_STORAGE :"connectionId",
+        WEBSOCKET_URL:"wss://8tgc8xvjq9.execute-api.us-east-1.amazonaws.com/Prod",
+        MOBILE_URL:"https://march1st.com"
       },
     },
 

@@ -1,3 +1,4 @@
+import {handleSignUpWithPhone} from './websocket';
 import { webAuthnServer } from "../boot/axios";
 
 // Amplify libraries
@@ -392,27 +393,9 @@ const actions = {
       console.log("error resending code: ", err);
     }
   },
-  async handleSignUpWithPhone () {
-    //event.preventDefault();
-    console.log("In function handleSignUpWithPhone");
 
-    if (!wssClient) {
-      // Loading button
-      setIsLoading(true);
+  signUpWithPhone({state},payload){
 
-      // Show message
-      setProgressMsg("Openning websocket connection...");
-
-      const client = new WebSocketClient(
-        onOpenCallback,
-        onConnectionIdCallback,
-        onCloseCallback
-      );
-      // Set state value
-      setWssClient(client);
-    } else {
-      console.log("WssClient already is already in state");
-    }
   }
 };
 
@@ -510,38 +493,6 @@ function printLog(name, object) {
 function isJSON(obj) {
   return obj !== undefined && obj !== null && obj.constructor == Object;
 }
-
-/******************************************************
- * WebSocket functions
- */
- const getAssertionUrl = (connectionId) => {
-  // const currentUrl = new URL(window.location.href);
-  // console.log("siteUrl = ", currentUrl.origin);
-
-  // Verify if this env var exists
-  if (process.env.REACT_APP_MOBILE_URL) {
-    const mobileUrl = new URL(process.env.REACT_APP_MOBILE_URL);
-    console.log("siteUrl = ", mobileUrl.origin);
-
-    // Create params
-    const params = {
-      connectionId: connectionId,
-      username: username,
-      fullname: fullname,
-    };
-
-    // Create query string
-    const queryString = new URLSearchParams(params);
-
-    // create Assertion URL
-    const assertionUrl = new URL(`/getassertion?${queryString}`, mobileUrl);
-    console.log("Assertion URL = " + assertionUrl);
-
-    return assertionUrl.toString();
-  } else {
-    throw new Error("process.env.REACT_APP_MOBILE_URL is null");
-  }
-};
 
 export default {
   namespaced: true,

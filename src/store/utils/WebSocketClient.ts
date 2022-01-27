@@ -1,12 +1,11 @@
 // import React from "react";
-
 import { IMessageEvent, w3cwebsocket as W3CWebSocket } from "websocket";
+
 export default class WebSocketClient {
-  
   private CONNECTION_KEY =
-    process.env.REACT_APP_CONNECTION_KEY_IN_LOCAL_STORAGE || "";
-  private WEBSOCKET_URL = process.env.REACT_APP_WEBSOCKET_URL || "";
-  private client: W3CWebSocket;
+    process.env.CONNECTION_KEY_IN_LOCAL_STORAGE || "";
+    private WEBSOCKET_URL = process.env.WEBSOCKET_URL || "";
+    private client: W3CWebSocket;
 
   constructor(
     onOpenCallback: () => void,
