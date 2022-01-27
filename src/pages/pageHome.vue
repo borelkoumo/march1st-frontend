@@ -304,7 +304,7 @@
           </div>
         </div>
       </div>
-      <div class="content-box" style="padding-top:50px;">
+      <div class="content-box" style="padding-top:50px; padding-bottom:30px;">
         <q-toolbar class="grid-header">
           <div>
             <q-input color="primary" outlined v-model="search" placeholder="Search To Provider Service" dense class="q-mr-sm">
@@ -323,9 +323,7 @@
         </q-toolbar>
       </div>
       <div class="content-box grid-content q-pa-sm shadow-0" style="margin-bottom:0px;">
-        <thumbnail/>
-        <thumbnail/>
-        <thumbnail/>
+        <thumbnail v-for="(service,i) in services" :service="service" :key="i" class="q-mb-lg"/>
       </div>
     </div>
     <div class="section pt-box pb-box" style="background-color:#ebf5ff; font-family:'nunito';">
@@ -690,7 +688,15 @@ export default defineComponent({
       progress:0.85,
       progress2:0.65,
       progress3:0.55,
-      slideApproach:"crawl"
+      slideApproach:"crawl",
+      services:[
+        {color:"white", image:"service-1.png", title:"Bitbucket discover vernubality Programme Full reward", description:"Programme to test emirate Airlane System and programmes", isProgram:true, hasPrice:true, price:"100$ 1.000$"},
+        {color:"#7ebf51", image:"service-2.png", title:"Digistorm", description:"Programme to test emirate Airlane System and programmes", isProgram:true, hasPrice:true, price:"100$ 1.000$"},
+        {color:"#fff1e6", image:"service-3.png", title:"Twilio", description:"A Cloud Communications Company", isProgram:false, hasPrice:false},
+        {color:"black", image:"service-4.png", title:"Western Union", description:"Moving money for better", isProgram:true, hasPrice:true, price:"100$ 1.000$"},
+        {color:"#ff639a", image:"service-5.png", title:"Bitbucket discover vernubality Programme Full reward", description:"Programme to test emirate Airlane System and programmes", isProgram:false, hasPrice:false},
+        {color:"black", image:"service-6.png", title:"Bitbucket discover", description:"Programme to test emirate Airlane System and programmes", isProgram:true, hasPrice:true,price:"100$ 1.000$"}
+      ]
     }
   },
   mounted(){
