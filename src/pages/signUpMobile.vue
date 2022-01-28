@@ -169,6 +169,7 @@ export default {
           onOpenCallback,
           onConnectionIdCallback,
           onCloseCallback,
+          () => {}, // onGetCredentialOptions
           onReceiveCredentialOptions
         );
 

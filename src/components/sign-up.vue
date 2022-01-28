@@ -437,7 +437,7 @@ export default {
           onConnectionIdCallback,
           onCloseCallback,
           onGetCredentialOptions,
-          () => {}
+          () => {} // onReceiveCredentialOptions
         );
         console.log(assertionUrl);
 

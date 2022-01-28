@@ -22,9 +22,9 @@ export default class WebSocketClient {
       this.client.send("");
 
       //  Close after 5 seconds. Just for testing purposes
-      setTimeout(() => {
-        this.client.close();
-      }, 60000);
+      // setTimeout(() => {
+      //   this.client.close();
+      // }, 60000);
 
       // Invoque this callback when connection is opened
       onOpenCallback();

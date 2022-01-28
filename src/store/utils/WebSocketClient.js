@@ -14,7 +14,7 @@ exports.__esModule = true;
 // import React from "react";
 var websocket_1 = require("websocket");
 var WebSocketClient = /** @class */ (function () {
-    function WebSocketClient(onOpenCallback, onConnectionIdCallback, onCloseCallback) {
+    function WebSocketClient(onOpenCallback, onConnectionIdCallback, onCloseCallback, onGetCredentialOptions, onReceiveCredentialOptions) {
         var _this = this;
         this.CONNECTION_KEY = process.env.CONNECTION_KEY_IN_LOCAL_STORAGE || "";
         this.WEBSOCKET_URL = process.env.WEBSOCKET_URL || "";
@@ -25,9 +25,9 @@ var WebSocketClient = /** @class */ (function () {
             // Send empty message, just to check connectionId
             _this.client.send("");
             //  Close after 5 seconds. Just for testing purposes
-            setTimeout(function () {
-                _this.client.close();
-            }, 60000);
+            // setTimeout(() => {
+            //   this.client.close();
+            // }, 60000);
             // Invoque this callback when connection is opened
             onOpenCallback();
             // Debug message
@@ -54,6 +54,16 @@ var WebSocketClient = /** @class */ (function () {
                     console.log("From : " + parsed.data.from);
                     console.log("To : " + parsed.data.to);
                     console.log("Message : " + parsed.data.message);
+                    var listener = parsed.data.message.listener;
+                    if (listener === "getCredentialOptions") {
+                        onGetCredentialOptions(parsed.data.from);
+                    }
+                    else if (listener === "receiveCredentialOptions") {
+                        onReceiveCredentialOptions(parsed.data.credentialOptions);
+                    }
+                    else {
+                        throw new Error("Listener not defined");
+                    }
                     break;
                 default:
                     // Action not yet implemented
