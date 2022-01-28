@@ -190,7 +190,7 @@
         </div>
       </q-drawer>
 
-    <q-footer v-if="$route.name!='login' && $route.name!='register'" class="bg-footer">
+    <q-footer v-if="$route.name!='login' && $route.name!='register' && $route.name!='assertion'" class="bg-footer">
       <div class="opacity-background2">
         <div class="content-box pt-box">
           <div class="row">

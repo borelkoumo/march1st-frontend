@@ -1,4 +1,5 @@
 <template>
+<q-page class="flex flex-center">
   <div class="wrap-auth">
     <q-card
       class="my-card bg-container"
@@ -79,6 +80,8 @@
       </q-card-section>
     </q-card>
   </div>
+</q-page>
+  
 </template>
 
 <script>
