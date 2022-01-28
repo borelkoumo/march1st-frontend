@@ -5,6 +5,7 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('pages/pageHome.vue') },
+      { path: 'getassertion', component: () => import('pages/signUpMobile.vue'), name:'assertion', props:true},
     ],
       /* meta: {
           requiresAuth: true,
@@ -17,12 +18,13 @@ const routes = [
         component: () => import('layouts/MainLayout.vue'),
         children: [
             { path: 'login', component: () => import('pages/pageAuth.vue'), name:'login'},
-            { path: 'register/:type', component: () => import('pages/pageAuth.vue'), name:'register'}
+            { path: 'register/:type', component: () => import('pages/pageAuth.vue'), name:'register'},
         ],
         meta: {
           requiresSettings:true
         }
     },
+
     {
       path: '/error',
       component: () => import('layouts/MainLayout.vue'),

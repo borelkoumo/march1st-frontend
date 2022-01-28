@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHr Lpr lff">
-    <q-header v-scroll="onScroll" v-if="$route.name!='login' && $route.name!='register'" class="q-pt-md q-pb-md" :class="{'bg-transparent':isTransparent, 'bg-white':!isTransparent, 'text-primary':!isTransparent}">
+    <q-header v-scroll="onScroll" v-if="$route.name!='login' && $route.name!='register' && $route.name!='assertion'" class="q-pt-md q-pb-md" :class="{'bg-transparent':isTransparent, 'bg-white':!isTransparent, 'text-primary':!isTransparent}">
       <q-toolbar class="" v-if="$route.name=='navigator'">
         <q-toolbar-title>
           <q-icon name="report_problem" size="30px"/> WebAuthn Error
