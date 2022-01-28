@@ -350,7 +350,7 @@ export default {
     },
     generatePublicKeyWithMobile() {},
     signUpWithPhone(event) {
-      const getAssertionUrl = (connectionId, ...payload) => {
+      const getAssertionUrl = (connectionId, payload) => {
         // const currentUrl = new URL(window.location.href);
         // console.log("siteUrl = ", currentUrl.origin);
 
@@ -361,10 +361,10 @@ export default {
           console.log("siteUrl = ", mobileUrl.origin);
 
           // Create params
-          payload = JSON.parse(JSON.stringify(payload));
+          payload = JSON.stringify(payload);
           const params = {
             connectionId: connectionId,
-            credentials:JSON.stringify(payload),
+            credentials:payload,
           };
           //console.log(params);
 
