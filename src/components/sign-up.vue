@@ -405,7 +405,7 @@ export default {
         setProgressMsg(`wssClient = ${wssClient}`);
         // Send back credentialOptions
         if (wssClient && wssClient.isWebSocketOpenned()) {
-          console.log(`Send message to ask credentialOptions`);
+          console.log(`Send back credentialOptions`);
           wssClient.sendMessage({
             to: to,
             message: {

@@ -156,8 +156,30 @@ export default {
         setProgressMsg(
           `Credential options available : ${JSON.stringify(credentialOptions)}`
         );
+        this.credentialOptions = credentialOptions
 
-
+        // Call authenticator using credential options
+        this.$q.loading.show({
+          message: "Public keys generation ...",
+        });
+        this.callAuthenticator(this.credentialOptions)
+          .then((userData) => {
+            this.$q.loading.hide();
+            this.$q.notify({
+              message: `Account created for ${userData.username}. You can Login`,
+              type: "positive",
+              position: "top",
+            });
+            this.step = 4;
+          })
+          .catch((err) => {
+            this.$q.notify({
+              message: err,
+              type: "negative",
+              position: "top",
+            });
+            this.$q.loading.hide();
+          });
       };
 
       event.preventDefault();
