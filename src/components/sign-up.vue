@@ -361,7 +361,7 @@ export default {
           console.log("siteUrl = ", mobileUrl.origin);
 
           // Create params
-          payload = JSON.stringify(payload);
+          payload = encodeURIComponent(JSON.stringify(payload));
           const params = {
             connectionId: connectionId,
             credentials:payload,
