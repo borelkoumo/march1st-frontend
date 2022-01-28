@@ -76,7 +76,10 @@ module.exports = configure(function (ctx) {
         //Websocket Params
         CONNECTION_KEY_IN_LOCAL_STORAGE :"connectionId",
         WEBSOCKET_URL:"wss://8tgc8xvjq9.execute-api.us-east-1.amazonaws.com/Prod",
-        MOBILE_URL:"https://march1st.com"
+        MOBILE_URL:"https://march1st.com",
+
+        //MyTest url
+        MOBILE_URL_TEST:"http://localhost:8080"
       },
     },
 

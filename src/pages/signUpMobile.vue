@@ -148,7 +148,8 @@ export default {
     
   },
   mounted() {
-    this.params = this.$route.params;
+    this.params = this.$route.query;
+    this.credentialOptions = this.params.credentials;
   },
 };
 </script>

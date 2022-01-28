@@ -185,6 +185,7 @@
             v-if="showQrCode"
           >
             <qrcode-vue :value="value"></qrcode-vue>
+            <!-- <q-btn :to="urlTest" label="bouton test" class="" /> -->
           </div>
         </q-form>
         <div class="" v-if="step == 4">
@@ -223,36 +224,8 @@ const PF_AUTH_AVAIL = WebAuthnUtils.isPlatformAuthenticatorAvailable();
 //const IS_PF_AUTH_AVAIL = WebAuthnUtils.isPlatformAuthenticatorAvailable();
 let wssClient = null;
 let assertionUrl = null;
-
 const setProgressMsg = (message) => {
   console.log(message);
-};
-const getAssertionUrl = (connectionId, ...payload) => {
-  // const currentUrl = new URL(window.location.href);
-  // console.log("siteUrl = ", currentUrl.origin);
-
-  // Verify if this env var exists
-  if (process.env.MOBILE_URL) {
-    const mobileUrl = new URL(process.env.MOBILE_URL);
-    console.log("siteUrl = ", mobileUrl.origin);
-
-    // Create params
-    const params = {
-      connectionId: connectionId,
-      ...payload,
-    };
-
-    // Create query string
-    const queryString = new URLSearchParams(params);
-
-    // create Assertion URL
-    const assertionUrl = new URL(`/getassertion?${queryString}`, mobileUrl);
-    console.log("Assertion URL = " + assertionUrl);
-
-    return assertionUrl.toString();
-  } else {
-    throw new Error("process.env.MOBILE_URL is null");
-  }
 };
 
 export default {
@@ -260,10 +233,11 @@ export default {
   props: ["typeUser"],
   components: { QrcodeVue },
   setup() {
-    const urlValue = ref(assertionUrl);
+    
+    //const urlValue = ref(assertionUrl);
 
     return {
-      urlValue,
+      assertionUrl,
     };
   },
   data() {
@@ -274,11 +248,16 @@ export default {
         title: "Test title",
         email: "williamsteve216@gmail.com",
         typeUser: 1,
-        username:""
+        username: "",
       },
       showQrCode: false,
       code: null,
       credentialOptions: null,
+      /* credentialOptions: {
+        id: "ID2543",
+        userData: { username: "utilisateur" },
+      }, */
+      urlTest:null,
       step: 1,
       value: null,
       IS_PF_AUTH_AVAIL: false,
@@ -371,6 +350,40 @@ export default {
     },
     generatePublicKeyWithMobile() {},
     signUpWithPhone(event) {
+      const getAssertionUrl = (connectionId, ...payload) => {
+        // const currentUrl = new URL(window.location.href);
+        // console.log("siteUrl = ", currentUrl.origin);
+
+        // Verify if this env var exists
+        if (process.env.MOBILE_URL) {
+          const mobileUrl = new URL(process.env.MOBILE_URL);
+          //const mobileUrl = new URL(process.env.MOBILE_URL_TEST);
+          console.log("siteUrl = ", mobileUrl.origin);
+
+          // Create params
+          payload = JSON.parse(JSON.stringify(payload));
+          const params = {
+            connectionId: connectionId,
+            credentials:JSON.stringify(payload),
+          };
+          //console.log(params);
+
+          // Create query string
+          const queryString = new URLSearchParams(params);
+
+          // create Assertion URL
+          //this.urlTest = `/getassertion?${queryString}`;
+          const assertionUrl = new URL(
+            `/getassertion?${queryString}`,
+            mobileUrl
+          );
+          console.log("Assertion URL = " + assertionUrl);
+        
+          return assertionUrl.toString();
+        } else {
+          throw new Error("process.env.MOBILE_URL is null");
+        }
+      };
       /******************************************************
        * WebSocket events callbacks
        */
