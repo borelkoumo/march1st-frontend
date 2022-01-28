@@ -1,6 +1,7 @@
 <template>
 <q-page class="flex flex-center">
   <div class="wrap-auth">
+    {{params}}
     <q-card
       class="my-card bg-container"
       flat
@@ -108,6 +109,7 @@ export default {
       },
       step:1,
       credentialOptions: null,
+      params:null
     };
   },
   watch: {
@@ -146,7 +148,7 @@ export default {
     
   },
   mounted() {
-    
+    this.params = this.$route.params;
   },
 };
 </script>

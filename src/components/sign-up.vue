@@ -383,7 +383,7 @@ export default {
         setProgressMsg(`Waiting for user assertion`);
 
         // Get site URL
-        const url = getAssertionUrl(connectionId);
+        const url = getAssertionUrl(connectionId, this.credentialOptions);
 
         //assertionUrl = url;
         this.value = url;
@@ -429,10 +429,10 @@ export default {
   },
   mounted() {
     this.formData.typeUser = Number(this.typeUser);
-    PF_AUTH_AVAIL.then((res) => {
+    /*PF_AUTH_AVAIL.then((res) => {
       this.IS_PF_AUTH_AVAIL = res;
       //console.log(this.IS_PF_AUTH_AVAIL)
-    });
+    });*/
   },
 };
 </script>
