@@ -279,7 +279,7 @@ export default {
       showQrCode: false,
       code: null,
       credentialOptions: null,
-      step: 3,
+      step: 1,
       value: null,
       IS_PF_AUTH_AVAIL: false,
     };

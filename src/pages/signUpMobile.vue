@@ -48,7 +48,7 @@
           </div>
         </div>
         
-        <q-form @submit="generatePublicKey()" class="q-pb-sm" v-if="step == 1">
+        <q-form @submit="generatePublicKey()" class="q-pb-sm q-pt-md" v-if="step == 1">
           <div class="form-control q-mb-md">
             <q-btn
               outlined
