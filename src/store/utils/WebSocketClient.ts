@@ -2,15 +2,16 @@
 import { IMessageEvent, w3cwebsocket as W3CWebSocket } from "websocket";
 
 export default class WebSocketClient {
-  private CONNECTION_KEY =
-    process.env.CONNECTION_KEY_IN_LOCAL_STORAGE || "";
-    private WEBSOCKET_URL = process.env.WEBSOCKET_URL || "";
-    private client: W3CWebSocket;
+  private CONNECTION_KEY = process.env.CONNECTION_KEY_IN_LOCAL_STORAGE || "";
+  private WEBSOCKET_URL = process.env.WEBSOCKET_URL || "";
+  private client: W3CWebSocket;
 
   constructor(
     onOpenCallback: () => void,
     onConnectionIdCallback: (connectionId: string) => void,
-    onCloseCallback: () => void
+    onCloseCallback: () => void,
+    onGetCredentialOptions: (to: string) => void,
+    onReceiveCredentialOptions: (credentialOptions: string) => void
   ) {
     console.log("Creating new wssClient");
     const client = new W3CWebSocket(this.WEBSOCKET_URL);
@@ -53,6 +54,14 @@ export default class WebSocketClient {
           console.log("From : " + parsed.data.from);
           console.log("To : " + parsed.data.to);
           console.log("Message : " + parsed.data.message);
+          const listener = parsed.data.message.listener;
+          if (listener === "getCredentialOptions") {
+            onGetCredentialOptions(parsed.data.from);
+          } else if (listener === "receiveCredentialOptions") {
+            onReceiveCredentialOptions(parsed.data.credentialOptions);
+          } else {
+            throw new Error("Listener not defined");
+          }
           break;
 
         default:

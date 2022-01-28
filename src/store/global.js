@@ -71,18 +71,18 @@ const actions = {
       name: userData.fullName,
       email: userData.email,
       locale: state.locale.value,
-      "custom:companyName" : userData.companyName,
-      "custom:title" : userData.title,
+      "custom:companyName": userData.companyName,
+      "custom:title": userData.title,
       "custom:userId": "",
       "custom:joinedOn": new Date().toISOString().substring(0, 10),
     };
     try {
       const cognitoUser = await Auth.signUp({
         /* email: userData.email, */
-        username:userData.email,
+        username: userData.email,
         password: "fakePassword@12345",
         attributes: userAttr,
-      })
+      });
       printLog("Auth.signUp SUCCESSFULL");
       printLog("Cognito user", cognitoUser);
 
@@ -93,16 +93,16 @@ const actions = {
       commit("setCognitoUser", cognitoUser);
       return cognitoUser.codeDeliveryDetails;
     } catch (error) {
-        //printLog("Error in Auth.signUp");
-        //printLog(error);
-        //return error.name;
-        Notify.create({
-          message:error.message,
-          type:'negative',
-          position:"top",
-          icon:"error"
-        })
-        return -1;
+      //printLog("Error in Auth.signUp");
+      //printLog(error);
+      //return error.name;
+      Notify.create({
+        message: error.message,
+        type: "negative",
+        position: "top",
+        icon: "error",
+      });
+      return -1;
     }
     /* // Signup in Cognito
     return Auth.signUp({
@@ -393,10 +393,6 @@ const actions = {
       console.log("error resending code: ", err);
     }
   },
-
-  signUpWithPhone({state},payload){
-
-  }
 };
 
 //helper function

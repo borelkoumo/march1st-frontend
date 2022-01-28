@@ -184,7 +184,7 @@
             style="text-align: center; margin: auto"
             v-if="showQrCode"
           >
-            <qrcode-vue :value="value"></qrcode-vue>
+            <qrcode-vue :value="assertionUrl"></qrcode-vue>
             <!-- <q-btn :to="urlTest" label="bouton test" class="" /> -->
           </div>
         </q-form>
@@ -211,17 +211,13 @@
 </template>
 
 <script>
-import { ref } from "vue";
-
 /* import * as WebAuthnUtils from "src/store/utils/WebAuthnUtils"; */
 import QrcodeVue from "qrcode.vue";
 import { mapActions } from "vuex";
-import { handleSignUpWithPhone } from "src/store/websocket";
 
 import WebSocketClient from "src/store/utils/WebSocketClient";
 import * as WebAuthnUtils from "src/store/utils/WebAuthnUtils";
 const PF_AUTH_AVAIL = WebAuthnUtils.isPlatformAuthenticatorAvailable();
-//const IS_PF_AUTH_AVAIL = WebAuthnUtils.isPlatformAuthenticatorAvailable();
 let wssClient = null;
 let assertionUrl = null;
 const setProgressMsg = (message) => {
@@ -233,9 +229,6 @@ export default {
   props: ["typeUser"],
   components: { QrcodeVue },
   setup() {
-    
-    //const urlValue = ref(assertionUrl);
-
     return {
       assertionUrl,
     };
@@ -257,9 +250,9 @@ export default {
         id: "ID2543",
         userData: { username: "utilisateur" },
       }, */
-      urlTest:null,
+      urlTest: null,
       step: 1,
-      value: null,
+      assertionUrl: null,
       IS_PF_AUTH_AVAIL: false,
     };
   },
@@ -267,7 +260,7 @@ export default {
     typeUser: function (val) {
       this.formData.typeUser = Number(val);
     },
-    value: function (val) {
+    assertionUrl: function (val) {
       this.showQrCode = true;
     },
   },
@@ -277,6 +270,7 @@ export default {
       "onSubmitValidationCode",
       "callAuthenticator",
     ]),
+
     async onSendEmailValidation() {
       this.$q.loading.show();
       if (this.formData.typeUser == 2) {
@@ -297,6 +291,7 @@ export default {
         }
       }
     },
+
     async verifyCode() {
       this.$q.loading.show({
         message: "Checking code ...",
@@ -325,6 +320,7 @@ export default {
         this.step = 2;
       }
     },
+
     generatePublicKey() {
       this.$q.loading.show({
         message: "Public keys generation ...",
@@ -348,9 +344,11 @@ export default {
           this.$q.loading.hide();
         });
     },
+
     generatePublicKeyWithMobile() {},
+
     signUpWithPhone(event) {
-      const getAssertionUrl = (connectionId, payload) => {
+      const getAssertionUrl = (connectionId, ...payload) => {
         // const currentUrl = new URL(window.location.href);
         // console.log("siteUrl = ", currentUrl.origin);
 
@@ -363,10 +361,10 @@ export default {
           // Create params
           payload = encodeURIComponent(JSON.stringify(payload));
           const params = {
-            connectionId: connectionId,
-            credentials:payload,
+            connectionId,
+            ...payload,
           };
-          //console.log(params);
+          console.log(params);
 
           // Create query string
           const queryString = new URLSearchParams(params);
@@ -378,7 +376,7 @@ export default {
             mobileUrl
           );
           console.log("Assertion URL = " + assertionUrl);
-        
+
           return assertionUrl.toString();
         } else {
           throw new Error("process.env.MOBILE_URL is null");
@@ -396,50 +394,61 @@ export default {
         setProgressMsg(`Waiting for user assertion`);
 
         // Get site URL
-        const url = getAssertionUrl(connectionId, this.credentialOptions);
-
-        //assertionUrl = url;
-        this.value = url;
-        //setAssertionUrl(assertionUrl);
+        const url = getAssertionUrl(
+          connectionId,
+          this.formData.email,
+          this.formData.fullName
+        );
+        this.assertionUrl = url;
       };
 
       const onCloseCallback = () => {
         setProgressMsg(`Websocket connection closed...`);
         wssClient = null;
-        //assertionUrl = null;
-        this.value = null;
-        //setWssClient(null);
-        //setIsLoading(false);
-        //setAssertionUrl(null);
-        //setProgressMsg("");
+        this.assertionUrl = null;
       };
-      //handleSignUpWithPhone(event);
-      //const handleSignUpWithPhone = (event) => {
+
+      const onGetCredentialOptions = (to) => {
+        setProgressMsg(`Sending credential options...`);
+        // Send back credentialOptions
+        if (wssClient && wssClient.isWebSocketOpenned()) {
+          console.log(`Send message to ask credentialOptions`);
+          wssClient.sendMessage({
+            to: to,
+            message: {
+              listener: "receiveCredentialOptions",
+              data: this.credentialOptions,
+            },
+          });
+        } else {
+          throw new Error("websocket client is null or is not openned");
+        }
+      };
+
       event.preventDefault();
       console.log("In function handleSignUpWithPhone");
 
       if (!wssClient) {
-        // Loading button
-        //setIsLoading(true);
-
         // Show message
         setProgressMsg("Openning websocket connection...");
 
         const client = new WebSocketClient(
           onOpenCallback,
           onConnectionIdCallback,
-          onCloseCallback
+          onCloseCallback,
+          onGetCredentialOptions,
+          () => {}
         );
         console.log(assertionUrl);
+
         // Set state value
         wssClient = client;
-        //setWssClient(client);
       } else {
         console.log("WssClient already is already in state");
       }
-      //  };
     },
   },
+
   mounted() {
     this.formData.typeUser = Number(this.typeUser);
     /*PF_AUTH_AVAIL.then((res) => {
