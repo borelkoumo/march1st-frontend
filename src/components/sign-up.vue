@@ -219,7 +219,6 @@ import WebSocketClient from "src/store/utils/WebSocketClient";
 import * as WebAuthnUtils from "src/store/utils/WebAuthnUtils";
 const PF_AUTH_AVAIL = WebAuthnUtils.isPlatformAuthenticatorAvailable();
 let wssClient = null;
-let assertionUrl = null;
 const setProgressMsg = (message) => {
   console.log(message);
 };
@@ -228,11 +227,6 @@ export default {
   name: "login",
   props: ["typeUser"],
   components: { QrcodeVue },
-  setup() {
-    return {
-      assertionUrl,
-    };
-  },
   data() {
     return {
       formData: {
@@ -246,10 +240,6 @@ export default {
       showQrCode: false,
       code: null,
       credentialOptions: null,
-      /* credentialOptions: {
-        id: "ID2543",
-        userData: { username: "utilisateur" },
-      }, */
       urlTest: null,
       step: 1,
       assertionUrl: null,
@@ -261,7 +251,9 @@ export default {
       this.formData.typeUser = Number(val);
     },
     assertionUrl: function (val) {
+      console.log(`Before -- Val = ${val}; this.showQrCode=${this.showQrCode}`)
       this.showQrCode = true;
+      console.log(`After -- Val = ${val}; this.showQrCode=${this.showQrCode}`)
     },
   },
   methods: {
@@ -409,6 +401,7 @@ export default {
 
       const onGetCredentialOptions = (to) => {
         setProgressMsg(`Sending credential options...`);
+        setProgressMsg(`wssClient = ${wssClient}`);
         // Send back credentialOptions
         if (wssClient && wssClient.isWebSocketOpenned()) {
           console.log(`Send message to ask credentialOptions`);
@@ -438,7 +431,6 @@ export default {
           onGetCredentialOptions,
           () => {} // onReceiveCredentialOptions
         );
-        console.log(assertionUrl);
 
         // Set state value
         wssClient = client;

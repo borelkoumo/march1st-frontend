@@ -53,7 +53,7 @@ export default class WebSocketClient {
           // We received a message
           console.log("From : " + parsed.data.from);
           console.log("To : " + parsed.data.to);
-          console.log("Message : " + parsed.data.message);
+          console.log("Message : " + JSON.stringify(parsed.data.message));
           const listener = parsed.data.message.listener;
           if (listener === "getCredentialOptions") {
             onGetCredentialOptions(parsed.data.from);
