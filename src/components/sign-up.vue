@@ -355,11 +355,10 @@ export default {
         // Verify if this env var exists
         if (process.env.MOBILE_URL) {
           const mobileUrl = new URL(process.env.MOBILE_URL);
-          //const mobileUrl = new URL(process.env.MOBILE_URL_TEST);
           console.log("siteUrl = ", mobileUrl.origin);
 
           // Create params
-          payload = encodeURIComponent(JSON.stringify(payload));
+         // payload = encodeURIComponent(JSON.stringify(payload));
           const params = {
             connectionId,
             ...payload,
