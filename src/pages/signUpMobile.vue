@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex flex-center">
     <div class="wrap-auth">
-      {{ params }}
+      <!-- {{ params }} -->
       <q-card
         class="my-card bg-container"
         flat
@@ -21,7 +21,7 @@
                 <q-input
                   dense
                   placeholder="Enter your full name"
-                  v-model="formData.fullName"
+                  v-model="params.fullName"
                   color="grey-3"
                   bg-color="white"
                   outlined
@@ -35,7 +35,7 @@
                 <q-input
                   dense
                   placeholder="Enter your email"
-                  v-model="formData.email"
+                  v-model="params.email"
                   color="grey-3"
                   bg-color="white"
                   outlined
@@ -156,6 +156,8 @@ export default {
         setProgressMsg(
           `Credential options available : ${JSON.stringify(credentialOptions)}`
         );
+
+
       };
 
       event.preventDefault();

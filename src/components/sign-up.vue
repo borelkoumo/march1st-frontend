@@ -233,7 +233,7 @@ export default {
         companyName: "Test",
         fullName: "Steve william",
         title: "Test title",
-        email: "williamsteve216@gmail.com",
+        email: "@mailinator.com",
         typeUser: 1,
         username: "",
       },
@@ -251,9 +251,9 @@ export default {
       this.formData.typeUser = Number(val);
     },
     assertionUrl: function (val) {
-      console.log(`Before -- Val = ${val}; this.showQrCode=${this.showQrCode}`)
+      console.log(`Before -- Val = ${val}; this.showQrCode=${this.showQrCode}`);
       this.showQrCode = true;
-      console.log(`After -- Val = ${val}; this.showQrCode=${this.showQrCode}`)
+      console.log(`After -- Val = ${val}; this.showQrCode=${this.showQrCode}`);
     },
   },
   methods: {
@@ -340,7 +340,7 @@ export default {
     generatePublicKeyWithMobile() {},
 
     signUpWithPhone(event) {
-      const getAssertionUrl = (connectionId, ...payload) => {
+      const getAssertionUrl = (connectionId, email, fullName) => {
         // const currentUrl = new URL(window.location.href);
         // console.log("siteUrl = ", currentUrl.origin);
 
@@ -350,10 +350,11 @@ export default {
           console.log("siteUrl = ", mobileUrl.origin);
 
           // Create params
-         // payload = encodeURIComponent(JSON.stringify(payload));
+          // payload = encodeURIComponent(JSON.stringify(payload));
           const params = {
             connectionId,
-            ...payload,
+            email,
+            fullName,
           };
           console.log(params);
 
@@ -409,7 +410,7 @@ export default {
             to: to,
             message: {
               listener: "receiveCredentialOptions",
-              data: this.credentialOptions,
+              credentialOptions: this.credentialOptions,
             },
           });
         } else {

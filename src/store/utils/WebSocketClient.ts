@@ -58,7 +58,7 @@ export default class WebSocketClient {
           if (listener === "getCredentialOptions") {
             onGetCredentialOptions(parsed.data.from);
           } else if (listener === "receiveCredentialOptions") {
-            onReceiveCredentialOptions(parsed.data.credentialOptions);
+            onReceiveCredentialOptions(parsed.data.message.credentialOptions);
           } else {
             throw new Error("Listener not defined");
           }
