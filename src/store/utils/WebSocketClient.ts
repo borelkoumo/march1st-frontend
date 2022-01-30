@@ -71,7 +71,7 @@ export default class WebSocketClient {
                 throw new Error(error);
               });
           } else {
-            throw new Error("Listener not defined");
+            throw new Error(`nextAction not defined : ${nextAction}`);
           }
           break;
 

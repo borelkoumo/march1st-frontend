@@ -14,7 +14,7 @@ exports.__esModule = true;
 // import React from "react";
 var websocket_1 = require("websocket");
 var WebSocketClient = /** @class */ (function () {
-    function WebSocketClient(onOpenCallback, onConnectionIdCallback, onCloseCallback, onGetCredentialOptions, onReceiveCredentialOptions) {
+    function WebSocketClient(onOpenCallback, onConnectionIdCallback, onCloseCallback, onGetCredentialOptions, onReceiveCredentialOptions, onAttestationAvailable) {
         var _this = this;
         this.CONNECTION_KEY = process.env.CONNECTION_KEY_IN_LOCAL_STORAGE || "";
         this.WEBSOCKET_URL = process.env.WEBSOCKET_URL || "";
@@ -54,15 +54,24 @@ var WebSocketClient = /** @class */ (function () {
                     console.log("From : " + parsed.data.from);
                     console.log("To : " + parsed.data.to);
                     console.log("Message : " + JSON.stringify(parsed.data.message));
-                    var listener = parsed.data.message.listener;
-                    if (listener === "getCredentialOptions") {
+                    var nextAction = parsed.data.message.nextAction;
+                    if (nextAction === "getCredentialOptions") {
                         onGetCredentialOptions(parsed.data.from);
                     }
-                    else if (listener === "receiveCredentialOptions") {
-                        onReceiveCredentialOptions(parsed.data.message.credentialOptions);
+                    else if (nextAction === "receiveCredentialOptions") {
+                        onReceiveCredentialOptions(parsed.data.message.credentialOptions)
+                            .then(function () { })["catch"](function (error) {
+                            throw new Error(error);
+                        });
+                    }
+                    else if (nextAction === "onAttestationAvailable") {
+                        onAttestationAvailable(parsed.data.message.attestation)
+                            .then(function () { })["catch"](function (error) {
+                            throw new Error(error);
+                        });
                     }
                     else {
-                        throw new Error("Listener not defined");
+                        throw new Error("nextAction not defined : ".concat(nextAction));
                     }
                     break;
                 default:
