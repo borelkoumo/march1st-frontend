@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex flex-center">
     <div class="wrap-auth">
-      {{ params }}
+      <!-- {{ params }} -->
       <q-card
         class="my-card bg-container"
         flat
