@@ -123,7 +123,7 @@ export default {
        * WebSocket events callbacks
        *******************************************************/
       const onOpenCallback = () => {
-        setProgressMsg("Websocket connection openned...");
+        this.setProgressMsg("Websocket connection openned...");
       };
 
       const onConnectionIdCallback = (connectionId) => {
@@ -131,7 +131,7 @@ export default {
 
         // Send message to ask credentialOptions
         if (wssClient) {
-          setProgressMsg(
+          this.setProgressMsg(
             `Connection established. Waiting for credentialOptions...`
           );
           wssClient.sendMessage({
@@ -145,13 +145,13 @@ export default {
       };
 
       const onCloseCallback = () => {
-        setProgressMsg(`Websocket connection closed !`);
+        this.setProgressMsg(`Websocket connection closed !`);
         this.$q.loading.hide();
         wssClient = null;
       };
 
       const onReceiveCredentialOptions = async (credentialOptions) => {
-        setProgressMsg(
+        this.setProgressMsg(
           `Credential options available. Public key generation...`
         );
         this.credentialOptions = credentialOptions;
@@ -164,7 +164,7 @@ export default {
 
           // Send back info to desktop view
           if (wssClient) {
-            setProgressMsg("Sending back public keys to caller ...");
+            this.setProgressMsg("Sending back public keys to caller ...");
             wssClient.sendMessage({
               to: this.params.connectionId,
               message: {
@@ -203,7 +203,7 @@ export default {
 
       if (!wssClient) {
         // Show message
-        setProgressMsg("Openning websocket connection...");
+        this.setProgressMsg("Openning websocket connection...");
         wssClient = new WebSocketClient(
           onOpenCallback,
           onConnectionIdCallback,
