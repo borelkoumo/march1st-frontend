@@ -147,7 +147,7 @@ const actions = {
     }
   },
 
-  async callAuthenticator(credentialOptions) {
+  async callAuthenticator({ state }, credentialOptions) {
     if (!window.PublicKeyCredential) {
       return Promise.reject(
         `WebAuthn not supported in this navigator. See https://caniuse.com/?search=webauthn`
@@ -193,7 +193,9 @@ const actions = {
       }
 
       printLog(
-        `Public key with key ID  ${attestation.id} generated`
+        `Public key with key ID ${attestation.id} generated for user ${
+          getters.getUserData(state).email
+        }`
       );
       return attestation;
     } catch (error) {
