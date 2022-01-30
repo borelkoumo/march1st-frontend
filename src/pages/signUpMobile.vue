@@ -218,9 +218,9 @@ export default {
 
 const setProgressMsg = (message) => {
   console.log(message);
-  this.$q.loading.show({
-    message: message,
-  });
+  // this.$q.loading.show({
+  //   message: message,
+  // });
 };
 </script>
 

@@ -430,7 +430,7 @@ export default {
       }
 
       function onCloseCallback() {
-        setProgressMsg(`Websocket connection closed...`);
+        tsetProgressMsg(`Websocket connection closed...`);
         this.$q.loading.hide();
         wssClient = null;
         this.assertionUrl = null;
@@ -486,13 +486,20 @@ export default {
   mounted() {
     this.formData.typeUser = Number(this.typeUser);
   },
+
+  // setProgressMsg(message) {
+  //   console.log(message);
+  //   this.$q.loading.show({
+  //     message: message,
+  //   });
+  // },
 };
 
 const setProgressMsg = (message) => {
   console.log(message);
-  this.$q.loading.show({
-    message: message,
-  });
+  // this.$q.loading.show({
+  //   message: message,
+  // });
 };
 </script>
 
