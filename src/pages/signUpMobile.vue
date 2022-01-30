@@ -110,22 +110,7 @@ export default {
 
     generatePublicKey(event) {
       event.preventDefault();
-      console.log("In function handleSignUpWithPhone");
-
-      if (!wssClient) {
-        // Show message
-        setProgressMsg("Openning websocket connection...");
-        wssClient = new WebSocketClient(
-          onOpenCallback,
-          onConnectionIdCallback,
-          onCloseCallback,
-          () => {}, // onGetCredentialOptions
-          onReceiveCredentialOptions,
-          () => {} // onAttestationAvailable
-        );
-      } else {
-        console.log("WssClient already is already in state");
-      }
+      console.log("In function generatePublicKey");
 
       /******************************************************
        * WebSocket events callbacks
@@ -206,6 +191,21 @@ export default {
           throw new Error(error);
         }
       };
+
+      if (!wssClient) {
+        // Show message
+        setProgressMsg("Openning websocket connection...");
+        wssClient = new WebSocketClient(
+          onOpenCallback,
+          onConnectionIdCallback,
+          onCloseCallback,
+          () => {}, // onGetCredentialOptions
+          onReceiveCredentialOptions,
+          () => {} // onAttestationAvailable
+        );
+      } else {
+        console.log("WssClient already is already in state");
+      }
     },
   },
 
