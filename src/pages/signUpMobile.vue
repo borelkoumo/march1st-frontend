@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex flex-center">
     <div class="wrap-auth">
-      <!-- {{ params }} -->
+      {{ params }}
       <q-card
         class="my-card bg-container"
         flat
@@ -20,7 +20,6 @@
               <div class="q-pt-sm">
                 <q-input
                   dense
-                  placeholder="Enter your full name"
                   v-model="params.fullName"
                   color="grey-3"
                   bg-color="white"
@@ -34,7 +33,6 @@
               <div class="q-pt-sm">
                 <q-input
                   dense
-                  placeholder="Enter your email"
                   v-model="params.email"
                   color="grey-3"
                   bg-color="white"
@@ -132,11 +130,11 @@ export default {
       /******************************************************
        * WebSocket events callbacks
        *******************************************************/
-      function onOpenCallback() {
+      const onOpenCallback = () => {
         setProgressMsg("Websocket connection openned...");
-      }
+      };
 
-      function onConnectionIdCallback(connectionId) {
+      const onConnectionIdCallback = (connectionId) => {
         console.log(`My Connection ID : ${connectionId}`);
 
         // Send message to ask credentialOptions
@@ -152,15 +150,15 @@ export default {
           this.$q.loading.hide();
           throw new Error("websocket client is null or is not openned");
         }
-      }
+      };
 
-      function onCloseCallback() {
+      const onCloseCallback = () => {
         setProgressMsg(`Websocket connection closed...`);
         this.$q.loading.hide();
         wssClient = null;
-      }
+      };
 
-      async function onReceiveCredentialOptions(credentialOptions) {
+      const onReceiveCredentialOptions = async (credentialOptions) => {
         setProgressMsg(
           `Credential options available. Public key generation...`
         );
@@ -207,7 +205,7 @@ export default {
           });
           throw new Error(error);
         }
-      }
+      };
     },
   },
 
