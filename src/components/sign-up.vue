@@ -408,6 +408,7 @@ export default {
           this.formData.fullName
         );
         this.assertionUrl = url;
+        this.$q.loading.hide();
       };
 
       const onCloseCallback = () => {
@@ -485,13 +486,6 @@ export default {
   mounted() {
     this.formData.typeUser = Number(this.typeUser);
   },
-};
-
-const setProgressMsg = (message) => {
-  console.log(message);
-  // this.$q.loading.show({
-  //   message: message,
-  // });
 };
 </script>
 

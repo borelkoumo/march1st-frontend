@@ -108,6 +108,13 @@ export default {
       "callAuthenticator",
     ]),
 
+    setProgressMsg(message) {
+      console.log(message);
+      this.$q.loading.show({
+        message: message,
+      });
+    },
+
     generatePublicKey(event) {
       event.preventDefault();
       console.log("In function generatePublicKey");
@@ -138,7 +145,7 @@ export default {
       };
 
       const onCloseCallback = () => {
-        setProgressMsg(`Websocket connection closed...`);
+        setProgressMsg(`Websocket connection closed !`);
         this.$q.loading.hide();
         wssClient = null;
       };
@@ -176,7 +183,9 @@ export default {
               `William stp corrige this.step=3 avec la bonne action a faire`
             );
             this.step = 3;
-            window.close();
+            setTimeout(() => {
+              window.close();
+            }, 5000);
           } else {
             this.$q.loading.hide();
             throw new Error("Websocket client is null");
@@ -212,13 +221,6 @@ export default {
   mounted() {
     this.params = this.$route.query;
   },
-};
-
-const setProgressMsg = (message) => {
-  console.log(message);
-  // this.$q.loading.show({
-  //   message: message,
-  // });
 };
 </script>
 
