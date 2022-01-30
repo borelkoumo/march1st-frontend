@@ -116,11 +116,7 @@ export default {
 
       if (!wssClient) {
         // Show message
-        this.$q.loading.show({
-          message: "Openning websocket connection ...",
-        });
         setProgressMsg("Openning websocket connection...");
-
         wssClient = new WebSocketClient(
           onOpenCallback,
           onConnectionIdCallback,
@@ -138,22 +134,16 @@ export default {
        *******************************************************/
       function onOpenCallback() {
         setProgressMsg("Websocket connection openned...");
-        this.$q.loading.show({
-          message: "Websocket connection openned...",
-        });
       }
 
       function onConnectionIdCallback(connectionId) {
-        setProgressMsg(`My Connection ID : ${connectionId}`);
-        setProgressMsg(`Connection ID received : ${this.params.connectionId}`);
-        setProgressMsg(`Waiting for credentialOptions`);
-        this.$q.loading.show({
-          message: "Connection ID received. Waiting for credential options...",
-        });
+        console.log(`My Connection ID : ${connectionId}`);
 
         // Send message to ask credentialOptions
         if (wssClient) {
-          console.log(`Send message to ask credentialOptions`);
+          setProgressMsg(
+            `Connection established. Waiting for credentialOptions...`
+          );
           wssClient.sendMessage({
             to: this.params.connectionId,
             message: { nextAction: "getCredentialOptions", data: {} },
@@ -166,21 +156,15 @@ export default {
 
       function onCloseCallback() {
         setProgressMsg(`Websocket connection closed...`);
-        this.$q.loading.show({
-          message: `Websocket connection closed...`,
-        });
         this.$q.loading.hide();
         wssClient = null;
       }
 
       async function onReceiveCredentialOptions(credentialOptions) {
         setProgressMsg(
-          `Credential options available : ${JSON.stringify(credentialOptions)}`
+          `Credential options available. Public key generation...`
         );
         this.credentialOptions = credentialOptions;
-        this.$q.loading.show({
-          message: `Credential options available. Public key generation...`,
-        });
 
         try {
           // Generate public key with available credential options
@@ -190,9 +174,7 @@ export default {
 
           // Send back info to desktop view
           if (wssClient) {
-            this.$q.loading.show({
-              message: "Sending back public keys to caller ...",
-            });
+            setProgressMsg("Sending back public keys to caller ...");
             wssClient.sendMessage({
               to: this.params.connectionId,
               message: {
@@ -236,6 +218,9 @@ export default {
 
 const setProgressMsg = (message) => {
   console.log(message);
+  this.$q.loading.show({
+    message: message,
+  });
 };
 </script>
 

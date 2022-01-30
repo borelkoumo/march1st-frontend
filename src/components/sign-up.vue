@@ -420,8 +420,6 @@ export default {
 
       function onConnectionIdCallback(connectionId) {
         setProgressMsg(`Connection id received : ${connectionId}`);
-        setProgressMsg(`Waiting for user assertion`);
-
         // Get site URL
         const url = getAssertionUrl(
           connectionId,
@@ -433,16 +431,16 @@ export default {
 
       function onCloseCallback() {
         setProgressMsg(`Websocket connection closed...`);
+        this.$q.loading.hide();
         wssClient = null;
         this.assertionUrl = null;
       }
 
       function onGetCredentialOptions(to) {
-        setProgressMsg(`Sending credential options...`);
-        setProgressMsg(`wssClient = ${wssClient}`);
+        console.log(`wssClient = ${wssClient}`);
         // Send back credentialOptions
         if (wssClient) {
-          console.log(`Send back credentialOptions`);
+          setProgressMsg(`Sending credential options to phone...`);
           wssClient.sendMessage({
             to: to,
             message: {
@@ -451,24 +449,21 @@ export default {
             },
           });
         } else {
+          this.$q.loading.hide();
           throw new Error("websocket client is null or is not openned");
         }
       }
 
       async function onAttestationAvailable(attestation) {
-        setProgressMsg(`Attestation generated on phone is available ...`);
-        setProgressMsg(`wssClient = ${wssClient}`);
-        setProgressMsg(
-          `Sending attestation to authentication server ${attestation}`
-        );
         try {
+          setProgressMsg(`Attestation generated on phone is available ...`);
           setProgressMsg("Sending attestation to authentication server ...");
           this.$q.loading.show({
             message: "Sending attestation to authentication server ...",
           });
+
           // Send attestation result to authentication server
           const userData = await this.sendAttestationResult(attestation);
-
           this.$q.loading.hide();
           this.$q.notify({
             message: `Account created for user ${userData.email}. You can now sign in`,
@@ -495,6 +490,9 @@ export default {
 
 const setProgressMsg = (message) => {
   console.log(message);
+  this.$q.loading.show({
+    message: message,
+  });
 };
 </script>
 
