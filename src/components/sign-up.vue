@@ -257,9 +257,11 @@ export default {
     ]),
 
     async submitSignupForm() {
-      this.$q.loading.show();
       if (this.formData.typeUser == 2) {
         try {
+          this.$q.loading.show({
+            message: "Submitting sign up form ...",
+          });
           const codeDeliveryDetails = await this.onSubmitSignUpForm(
             this.formData
           );
@@ -333,13 +335,13 @@ export default {
         const attestation = await this.callAuthenticator(
           this.credentialOptions
         );
-        this.$q.loading.hide();
         this.$q.loading.show({
           message:
             "Public keys generated. Sending attestation to authentication server ...",
         });
         // Send attestation result to authentication server
         const userData = await this.sendAttestationResult(attestation);
+
         this.$q.loading.hide();
         this.$q.notify({
           message: `Account  created for user ${userData.email}. You can now sign in`,
@@ -358,7 +360,31 @@ export default {
     },
 
     signUpWithPhone(event) {
-      const getAssertionUrl = (connectionId, email, fullName) => {
+      event.preventDefault();
+      console.log("In function handleSignUpWithPhone");
+
+      if (!wssClient) {
+        // Show message
+        setProgressMsg("Openning websocket connection...");
+        const client = new WebSocketClient(
+          onOpenCallback,
+          onConnectionIdCallback,
+          onCloseCallback,
+          onGetCredentialOptions,
+          () => {}, // onReceiveCredentialOptions
+          onAttestationAvailable
+        );
+
+        // Set state value
+        wssClient = client;
+      } else {
+        console.log("WssClient already is already in state");
+      }
+
+      /******************************************************
+       * WebSocket events callbacks
+       *******************************************************/
+      function getAssertionUrl(connectionId, email, fullName) {
         // Verify if this env var exists
         if (process.env.MOBILE_URL) {
           const mobileUrl = new URL(process.env.MOBILE_URL);
@@ -386,15 +412,13 @@ export default {
         } else {
           throw new Error("process.env.MOBILE_URL is null");
         }
-      };
-      /******************************************************
-       * WebSocket events callbacks
-       */
-      const onOpenCallback = () => {
-        setProgressMsg("Websocket connection openned...");
-      };
+      }
 
-      const onConnectionIdCallback = (connectionId) => {
+      function onOpenCallback() {
+        setProgressMsg("Websocket connection openned...");
+      }
+
+      function onConnectionIdCallback(connectionId) {
         setProgressMsg(`Connection id received : ${connectionId}`);
         setProgressMsg(`Waiting for user assertion`);
 
@@ -405,15 +429,15 @@ export default {
           this.formData.fullName
         );
         this.assertionUrl = url;
-      };
+      }
 
-      const onCloseCallback = () => {
+      function onCloseCallback() {
         setProgressMsg(`Websocket connection closed...`);
         wssClient = null;
         this.assertionUrl = null;
-      };
+      }
 
-      const onGetCredentialOptions = (to) => {
+      function onGetCredentialOptions(to) {
         setProgressMsg(`Sending credential options...`);
         setProgressMsg(`wssClient = ${wssClient}`);
         // Send back credentialOptions
@@ -429,19 +453,22 @@ export default {
         } else {
           throw new Error("websocket client is null or is not openned");
         }
-      };
+      }
 
-      const onAttestationAvailable = async (attestation) => {
+      async function onAttestationAvailable(attestation) {
         setProgressMsg(`Attestation generated on phone is available ...`);
         setProgressMsg(`wssClient = ${wssClient}`);
+        setProgressMsg(
+          `Sending attestation to authentication server ${attestation}`
+        );
         try {
-          
+          setProgressMsg("Sending attestation to authentication server ...");
           this.$q.loading.show({
-            message:
-              "Sending attestation to authentication server ...",
+            message: "Sending attestation to authentication server ...",
           });
           // Send attestation result to authentication server
           const userData = await this.sendAttestationResult(attestation);
+
           this.$q.loading.hide();
           this.$q.notify({
             message: `Account created for user ${userData.email}. You can now sign in`,
@@ -457,28 +484,6 @@ export default {
             position: "top",
           });
         }
-      };
-
-      event.preventDefault();
-      console.log("In function handleSignUpWithPhone");
-
-      if (!wssClient) {
-        // Show message
-        setProgressMsg("Openning websocket connection...");
-
-        const client = new WebSocketClient(
-          onOpenCallback,
-          onConnectionIdCallback,
-          onCloseCallback,
-          onGetCredentialOptions,
-          () => {}, // onReceiveCredentialOptions
-          onAttestationAvailable
-        );
-
-        // Set state value
-        wssClient = client;
-      } else {
-        console.log("WssClient already is already in state");
       }
     },
   },

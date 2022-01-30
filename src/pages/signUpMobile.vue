@@ -111,91 +111,14 @@ export default {
     ]),
 
     generatePublicKey(event) {
-      /******************************************************
-       * WebSocket events callbacks
-       */
-      const onOpenCallback = () => {
-        setProgressMsg("Websocket connection openned...");
-      };
-
-      const onConnectionIdCallback = (connectionId) => {
-        setProgressMsg(`My Connection ID : ${connectionId}`);
-        setProgressMsg(`Connection ID received : ${this.params.connectionId}`);
-        setProgressMsg(`Waiting for credentialOptions`);
-
-        // Send message to ask credentialOptions
-        if (wssClient) {
-          console.log(`Send message to ask credentialOptions`);
-          wssClient.sendMessage({
-            to: this.params.connectionId,
-            message: { nextAction: "getCredentialOptions", data: {} },
-          });
-        }
-      };
-
-      const onCloseCallback = () => {
-        setProgressMsg(`Websocket connection closed...`);
-        wssClient = null;
-      };
-
-      const onReceiveCredentialOptions = async (credentialOptions) => {
-        setProgressMsg(
-          `Credential options available : ${JSON.stringify(credentialOptions)}`
-        );
-        this.credentialOptions = credentialOptions;
-
-        try {
-          // Generate public key with available credential options
-          this.$q.loading.show({
-            message: "Public keys generation ...",
-          });
-          const attestation = await this.callAuthenticator(
-            this.credentialOptions
-          );
-          this.$q.loading.hide();
-
-          // Send back info to desktop view
-          this.$q.loading.show({
-            message: "Sending back public keys to caller",
-          });
-          if (wssClient) {
-            wssClient.sendMessage({
-              to: this.params.connectionId,
-              message: {
-                nextAction: "onAttestationAvailable",
-                attestation: { ...attestation },
-              },
-            });
-            this.$q.loading.hide();
-            this.$q.notify({
-              message: `Public key generated for user ${userData.username}. Thank you`,
-              type: "positive",
-              position: "top",
-            });
-            // Do the correct action here
-            console.error(
-              `William stp corrige this.step=3 avec la bonne action a faire`
-            );
-            this.step = 3;
-          } else {
-            throw new Error("Websocket client is null");
-          }
-        } catch (error) {
-          this.$q.loading.hide();
-          this.$q.notify({
-            message: error.message,
-            type: "negative",
-            position: "top",
-          });
-          throw new Error(error);
-        }
-      };
-
       event.preventDefault();
       console.log("In function handleSignUpWithPhone");
 
       if (!wssClient) {
         // Show message
+        this.$q.loading.show({
+          message: "Openning websocket connection ...",
+        });
         setProgressMsg("Openning websocket connection...");
 
         wssClient = new WebSocketClient(
@@ -208,6 +131,100 @@ export default {
         );
       } else {
         console.log("WssClient already is already in state");
+      }
+
+      /******************************************************
+       * WebSocket events callbacks
+       *******************************************************/
+      function onOpenCallback() {
+        setProgressMsg("Websocket connection openned...");
+        this.$q.loading.show({
+          message: "Websocket connection openned...",
+        });
+      }
+
+      function onConnectionIdCallback(connectionId) {
+        setProgressMsg(`My Connection ID : ${connectionId}`);
+        setProgressMsg(`Connection ID received : ${this.params.connectionId}`);
+        setProgressMsg(`Waiting for credentialOptions`);
+        this.$q.loading.show({
+          message: "Connection ID received. Waiting for credential options...",
+        });
+
+        // Send message to ask credentialOptions
+        if (wssClient) {
+          console.log(`Send message to ask credentialOptions`);
+          wssClient.sendMessage({
+            to: this.params.connectionId,
+            message: { nextAction: "getCredentialOptions", data: {} },
+          });
+        } else {
+          this.$q.loading.hide();
+          throw new Error("websocket client is null or is not openned");
+        }
+      }
+
+      function onCloseCallback() {
+        setProgressMsg(`Websocket connection closed...`);
+        this.$q.loading.show({
+          message: `Websocket connection closed...`,
+        });
+        this.$q.loading.hide();
+        wssClient = null;
+      }
+
+      async function onReceiveCredentialOptions(credentialOptions) {
+        setProgressMsg(
+          `Credential options available : ${JSON.stringify(credentialOptions)}`
+        );
+        this.credentialOptions = credentialOptions;
+        this.$q.loading.show({
+          message: `Credential options available. Public key generation...`,
+        });
+
+        try {
+          // Generate public key with available credential options
+          const attestation = await this.callAuthenticator(
+            this.credentialOptions
+          );
+
+          // Send back info to desktop view
+          if (wssClient) {
+            this.$q.loading.show({
+              message: "Sending back public keys to caller ...",
+            });
+            wssClient.sendMessage({
+              to: this.params.connectionId,
+              message: {
+                nextAction: "onAttestationAvailable",
+                attestation: { ...attestation },
+              },
+            });
+            this.$q.loading.hide();
+            this.$q.notify({
+              message: `Public key generated for user ${this.params.email}. Thank you`,
+              type: "positive",
+              position: "top",
+            });
+            // Do the correct action here
+            console.error(
+              `William stp corrige this.step=3 avec la bonne action a faire`
+            );
+            this.step = 3;
+            window.close();
+          } else {
+            this.$q.loading.hide();
+            throw new Error("Websocket client is null");
+          }
+        } catch (error) {
+          this.$q.loading.hide();
+          this.$q.notify({
+            message: error.message,
+            type: "negative",
+            position: "top",
+          });
+          throw new Error(error);
+        }
       }
     },
   },
