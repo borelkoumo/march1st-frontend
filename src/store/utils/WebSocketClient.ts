@@ -11,7 +11,8 @@ export default class WebSocketClient {
     onConnectionIdCallback: (connectionId: string) => void,
     onCloseCallback: () => void,
     onGetCredentialOptions: (to: string) => void,
-    onReceiveCredentialOptions: (credentialOptions: string) => void
+    onReceiveCredentialOptions: (credentialOptions: string) => Promise<void>,
+    onAttestationAvailable: (attestation: string) => Promise<void>
   ) {
     console.log("Creating new wssClient");
     const client = new W3CWebSocket(this.WEBSOCKET_URL);
@@ -54,11 +55,21 @@ export default class WebSocketClient {
           console.log("From : " + parsed.data.from);
           console.log("To : " + parsed.data.to);
           console.log("Message : " + JSON.stringify(parsed.data.message));
-          const listener = parsed.data.message.listener;
-          if (listener === "getCredentialOptions") {
+          const nextAction = parsed.data.message.nextAction;
+          if (nextAction === "getCredentialOptions") {
             onGetCredentialOptions(parsed.data.from);
-          } else if (listener === "receiveCredentialOptions") {
-            onReceiveCredentialOptions(parsed.data.message.credentialOptions);
+          } else if (nextAction === "receiveCredentialOptions") {
+            onReceiveCredentialOptions(parsed.data.message.credentialOptions)
+              .then(() => {})
+              .catch((error) => {
+                throw new Error(error);
+              });
+          } else if (nextAction === "onAttestationAvailable") {
+            onAttestationAvailable(parsed.data.message.attestation)
+              .then(() => {})
+              .catch((error) => {
+                throw new Error(error);
+              });
           } else {
             throw new Error("Listener not defined");
           }

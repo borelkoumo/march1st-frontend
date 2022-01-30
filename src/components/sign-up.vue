@@ -20,7 +20,7 @@
           </p>
         </div>
         <q-form
-          @submit="onSendEmailValidation()"
+          @submit="submitSignupForm()"
           class="q-col-gutter-sm q-pb-sm"
           v-if="step == 1"
         >
@@ -102,12 +102,12 @@
           </div>
         </q-form>
         <q-form
-          @submit="verifyCode()"
+          @submit="submitValidationCode()"
           class="q-col-gutter-lg q-pb-sm"
           v-if="step == 2"
         >
           <div class="form-control">
-            <div>Code verification</div>
+            <div>Enter validation code</div>
             <div class="q-pt-sm">
               <q-input
                 dense
@@ -116,6 +116,7 @@
                 color="grey-3"
                 bg-color="white"
                 outlined
+                autofocus
               />
             </div>
           </div>
@@ -185,7 +186,6 @@
             v-if="showQrCode"
           >
             <qrcode-vue :value="assertionUrl"></qrcode-vue>
-            <!-- <q-btn :to="urlTest" label="bouton test" class="" /> -->
           </div>
         </q-form>
         <div class="" v-if="step == 4">
@@ -211,17 +211,11 @@
 </template>
 
 <script>
-/* import * as WebAuthnUtils from "src/store/utils/WebAuthnUtils"; */
 import QrcodeVue from "qrcode.vue";
 import { mapActions } from "vuex";
 
 import WebSocketClient from "src/store/utils/WebSocketClient";
-import * as WebAuthnUtils from "src/store/utils/WebAuthnUtils";
-const PF_AUTH_AVAIL = WebAuthnUtils.isPlatformAuthenticatorAvailable();
 let wssClient = null;
-const setProgressMsg = (message) => {
-  console.log(message);
-};
 
 export default {
   name: "login",
@@ -230,9 +224,9 @@ export default {
   data() {
     return {
       formData: {
-        companyName: "Test",
+        companyName: "My Company",
         fullName: "Steve william",
-        title: "Test title",
+        title: "Developer",
         email: "@mailinator.com",
         typeUser: 1,
         username: "",
@@ -251,60 +245,76 @@ export default {
       this.formData.typeUser = Number(val);
     },
     assertionUrl: function (val) {
-      console.log(`Before -- Val = ${val}; this.showQrCode=${this.showQrCode}`);
       this.showQrCode = true;
-      console.log(`After -- Val = ${val}; this.showQrCode=${this.showQrCode}`);
     },
   },
   methods: {
     ...mapActions("global", [
       "onSubmitSignUpForm",
       "onSubmitValidationCode",
+      "getCredentialOptions",
       "callAuthenticator",
     ]),
 
-    async onSendEmailValidation() {
+    async submitSignupForm() {
       this.$q.loading.show();
       if (this.formData.typeUser == 2) {
         try {
-          const result = await this.onSubmitSignUpForm(this.formData);
-          if (result != -1) {
-            this.step = 2;
-          }
+          const codeDeliveryDetails = await this.onSubmitSignUpForm(
+            this.formData
+          );
           this.$q.loading.hide();
-        } catch (error) {
-          //console.log("error")
           this.$q.notify({
-            message: "Network Error",
+            message: `An ${codeDeliveryDetails.AttributeName} has been sent to ${codeDeliveryDetails.Destination}`,
+            type: "positive",
+            position: "top",
+          });
+          this.step = 2;
+        } catch (error) {
+          this.$q.loading.hide();
+          this.$q.notify({
+            message: error.message,
             type: "negative",
             position: "top",
             icon: "error",
           });
         }
+      } else {
+        throw new Error(
+          `Not yet implemented for this.formData.typeUser = ${this.formData.typeUser}`
+        );
       }
     },
 
-    async verifyCode() {
-      this.$q.loading.show({
-        message: "Checking code ...",
-      });
+    async submitValidationCode() {
       try {
-        const res = await this.onSubmitValidationCode(this.code);
-        //debugger;
+        // Check if validation code is ok
+        this.$q.loading.show({
+          message: "Checking validation code ...",
+        });
+        const message = await this.onSubmitValidationCode(this.code);
+        console.log(`onSubmitValidationCode result = ${message}`);
+
+        // Get attestation options
+        this.$q.loading.show({
+          message: "Getting credential options ...",
+        });
+        const credentialOptions = await this.getCredentialOptions();
+        this.credentialOptions = credentialOptions;
+        console.log(`onSubmitValida tionCode result = ${message}`);
+
+        // Show messages
         this.$q.loading.hide();
-        console.log(`Resultat = ${JSON.stringify(res)}`);
-        this.credentialOptions = res;
         this.$q.notify({
-          message: "Cognito Account Created",
+          message: message,
           type: "positive",
           position: "top",
         });
-        console.log("Code ok");
         this.step = 3;
-      } catch (err) {
+      } catch (error) {
         this.$q.loading.hide();
         this.$q.notify({
-          message: err,
+          message: error.message,
           type: "negative",
           position: "top",
           icon: "error",
@@ -313,44 +323,48 @@ export default {
       }
     },
 
-    generatePublicKey() {
-      this.$q.loading.show({
-        message: "Public keys generation ...",
-      });
-      this.callAuthenticator(this.credentialOptions)
-        .then((userData) => {
-          this.$q.loading.hide();
-          this.$q.notify({
-            message: `Account created for ${userData.username}. You can Login`,
-            type: "positive",
-            position: "top",
-          });
-          this.step = 4;
-        })
-        .catch((err) => {
-          this.$q.notify({
-            message: err,
-            type: "negative",
-            position: "top",
-          });
-          this.$q.loading.hide();
+    async generatePublicKey() {
+      try {
+        this.$q.loading.show({
+          message: "Public keys generation ...",
         });
-    },
 
-    generatePublicKeyWithMobile() {},
+        // Generate public key
+        const attestation = await this.callAuthenticator(
+          this.credentialOptions
+        );
+        this.$q.loading.hide();
+        this.$q.loading.show({
+          message:
+            "Public keys generated. Sending attestation to authentication server ...",
+        });
+        // Send attestation result to authentication server
+        const userData = await this.sendAttestationResult(attestation);
+        this.$q.loading.hide();
+        this.$q.notify({
+          message: `Account  created for user ${userData.email}. You can now sign in`,
+          type: "positive",
+          position: "top",
+        });
+        this.step = 4;
+      } catch (error) {
+        this.$q.loading.hide();
+        this.$q.notify({
+          message: error.message,
+          type: "negative",
+          position: "top",
+        });
+      }
+    },
 
     signUpWithPhone(event) {
       const getAssertionUrl = (connectionId, email, fullName) => {
-        // const currentUrl = new URL(window.location.href);
-        // console.log("siteUrl = ", currentUrl.origin);
-
         // Verify if this env var exists
         if (process.env.MOBILE_URL) {
           const mobileUrl = new URL(process.env.MOBILE_URL);
           console.log("siteUrl = ", mobileUrl.origin);
 
           // Create params
-          // payload = encodeURIComponent(JSON.stringify(payload));
           const params = {
             connectionId,
             email,
@@ -362,7 +376,6 @@ export default {
           const queryString = new URLSearchParams(params);
 
           // create Assertion URL
-          //this.urlTest = `/getassertion?${queryString}`;
           const assertionUrl = new URL(
             `/getassertion?${queryString}`,
             mobileUrl
@@ -404,17 +417,45 @@ export default {
         setProgressMsg(`Sending credential options...`);
         setProgressMsg(`wssClient = ${wssClient}`);
         // Send back credentialOptions
-        if (wssClient && wssClient.isWebSocketOpenned()) {
+        if (wssClient) {
           console.log(`Send back credentialOptions`);
           wssClient.sendMessage({
             to: to,
             message: {
-              listener: "receiveCredentialOptions",
+              nextAction: "receiveCredentialOptions",
               credentialOptions: this.credentialOptions,
             },
           });
         } else {
           throw new Error("websocket client is null or is not openned");
+        }
+      };
+
+      const onAttestationAvailable = async (attestation) => {
+        setProgressMsg(`Attestation generated on phone is available ...`);
+        setProgressMsg(`wssClient = ${wssClient}`);
+        try {
+          
+          this.$q.loading.show({
+            message:
+              "Sending attestation to authentication server ...",
+          });
+          // Send attestation result to authentication server
+          const userData = await this.sendAttestationResult(attestation);
+          this.$q.loading.hide();
+          this.$q.notify({
+            message: `Account created for user ${userData.email}. You can now sign in`,
+            type: "positive",
+            position: "top",
+          });
+          this.step = 4;
+        } catch (error) {
+          this.$q.loading.hide();
+          this.$q.notify({
+            message: error.message,
+            type: "negative",
+            position: "top",
+          });
         }
       };
 
@@ -430,7 +471,8 @@ export default {
           onConnectionIdCallback,
           onCloseCallback,
           onGetCredentialOptions,
-          () => {} // onReceiveCredentialOptions
+          () => {}, // onReceiveCredentialOptions
+          onAttestationAvailable
         );
 
         // Set state value
@@ -443,11 +485,11 @@ export default {
 
   mounted() {
     this.formData.typeUser = Number(this.typeUser);
-    /*PF_AUTH_AVAIL.then((res) => {
-      this.IS_PF_AUTH_AVAIL = res;
-      //console.log(this.IS_PF_AUTH_AVAIL)
-    });*/
   },
+};
+
+const setProgressMsg = (message) => {
+  console.log(message);
 };
 </script>
 

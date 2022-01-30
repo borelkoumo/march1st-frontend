@@ -1,12 +1,9 @@
-import {handleSignUpWithPhone} from './websocket';
 import { webAuthnServer } from "../boot/axios";
 
 // Amplify libraries
 import { Auth } from "@aws-amplify/auth";
 import { cognitoConfig } from "../../cognitoConfig";
-import { Notify } from 'quasar';
 Auth.configure(cognitoConfig);
-
 const state = {
   userData: {},
   cognitoUser: {},
@@ -14,7 +11,7 @@ const state = {
   sessionId: "",
   credentialOptions: {},
   signInOptions: {},
-  locale:{ label:"English (United States)", value:"en-US"}
+  locale: { label: "English (United States)", value: "en-US" },
 };
 
 const getters = {
@@ -64,7 +61,7 @@ const actions = {
     }
     /**
      * User initiate account creation to my-app.com
-     * "Here is my username and email"
+     * "Here is my fullName and email"
      *  POST /authn/signup/init
      */
     const userAttr = {
@@ -93,92 +90,64 @@ const actions = {
       commit("setCognitoUser", cognitoUser);
       return cognitoUser.codeDeliveryDetails;
     } catch (error) {
-      //printLog("Error in Auth.signUp");
-      //printLog(error);
-      //return error.name;
-      Notify.create({
-        message: error.message,
-        type: "negative",
-        position: "top",
-        icon: "error",
-      });
-      return -1;
+      printLog("Error in Auth.signUp", error);
+      throw new Error(error);
     }
-    /* // Signup in Cognito
-    return Auth.signUp({
-      username:userData.email,
-      password: "fakePassword@12345",
-      attributes: userAttr,
-    })
-
-      .then((cognitoUser) => {
-        printLog("Auth.signUp SUCCESSFULL");
-        printLog("Cognito user", cognitoUser);
-
-        // Set userData with payload
-        commit("setUserData", userData);
-
-        // Set also cognitoUser
-        commit("setCognitoUser", cognitoUser);
-        return Promise.resolve(cognitoUser.codeDeliveryDetails);
-      })
-      .catch((error) => {
-        printLog("Error in Auth.signUp");
-        printLog(error);
-        return Promise.reject(error.name);
-      }); */
   },
 
-  onSubmitValidationCode({ commit, state }, code) {
+  async onSubmitValidationCode({ commit, state }, code) {
     printLog(`Code = ${code}`);
     /**
      * User confirm signUp in cognito user pool
      */
     const userData = getters.getUserData(state);
-    return Auth.confirmSignUp(userData.email, code)
-      .then((status) => {
-        // User is confirmed.
-        printLog(`Auth.confirmSignUp status = ${status}`);
-
-        // Get credential options
-        const url = "/attestation/options";
-        const params = {
-          username: userData.email,
-          displayName: userData.fullName,
-        };
-        return _queryServer(url, params)
-          .then((result) => {
-            printLog(`Response from ${url}`, result);
-
-            // CredentialOptions
-            const credentialOptions = { ...result };
-            delete credentialOptions.serverResponse;
-            delete credentialOptions.sessionId;
-            _removeEmpty(credentialOptions);
-
-            // Set also userId
-            commit("setUserId", result.user.id);
-            // Set also sessionId
-            commit("setSessionId", result.sessionId);
-            printLog("SESSION ID = " + result.sessionId);
-            printLog("USER ID = " + result.user.id);
-            printLog(`Cognito Account created !`);
-
-            return Promise.resolve(credentialOptions);
-          })
-          .catch((e) => {
-            // a simple message is returned
-            printLog(`Request to ${url} failed : ${e}`);
-            return Promise.reject(e);
-          });
-      })
-      .catch((error) => {
-        printLog(`Error in Auth.confirmSignUp : ${JSON.stringify(error)}`);
-        return Promise.reject(error.name);
-      });
+    try {
+      const status = await Auth.confirmSignUp(userData.email, code);
+      // User is confirmed.
+      printLog(`Auth.confirmSignUp status = ${status}`);
+      return "Cognito account created.";
+    } catch (error) {
+      printLog(`Error in Auth.confirmSignUp`, error);
+      throw new Error(error);
+    }
   },
 
-  callAuthenticator({ commit, state }, credentialOptions) {
+  async getCredentialOptions({ commit, state }) {
+    const userData = getters.getUserData(state);
+    // Get credential options
+    const url = "/attestation/options";
+    const params = {
+      username: userData.email,
+      displayName: userData.fullName,
+    };
+    try {
+      const result = await _queryServer(url, params);
+      printLog(`Response from ${url}`, result);
+
+      // CredentialOptions
+      const credentialOptions = { ...result };
+      delete credentialOptions.serverResponse;
+      delete credentialOptions.sessionId;
+      _removeEmpty(credentialOptions);
+
+      // Set userId and sessionId
+      commit("setUserId", result.user.id);
+      commit("setSessionId", result.sessionId);
+
+      // Logs
+      printLog("SESSION ID = " + result.sessionId);
+      printLog("USER ID = " + result.user.id);
+      printLog(`Credential options available !`);
+
+      return credentialOptions;
+    } catch (error) {
+      // a simple message is returned
+      printLog(`Request to ${url} failed`, error);
+      throw new Error(error);
+    }
+  },
+
+  async callAuthenticator(credentialOptions) {
     if (!window.PublicKeyCredential) {
       return Promise.reject(
         `WebAuthn not supported in this navigator. See https://caniuse.com/?search=webauthn`
@@ -192,58 +161,62 @@ const actions = {
     const abortController = new AbortController();
     const abortSignal = abortController.signal;
 
-    return navigator.credentials
-      .create({
+    try {
+      const rawAttestation = await navigator.credentials.create({
         publicKey: credentialOptions,
         signal: abortSignal,
-      })
-      .then((rawAttestation) => {
-        printLog("rawAttestation", rawAttestation);
-
-        let attestation = {
-          rawId: base64UrlEncode(rawAttestation.rawId),
-          id: base64UrlEncode(rawAttestation.rawId),
-          response: {
-            clientDataJSON: base64UrlEncode(
-              rawAttestation.response.clientDataJSON
-            ),
-            attestationObject: base64UrlEncode(
-              rawAttestation.response.attestationObject
-            ),
-          },
-          type: rawAttestation.type,
-        };
-
-        if (rawAttestation.getClientExtensionResults) {
-          attestation.extensions = rawAttestation.getClientExtensionResults();
-        }
-
-        // set transports if it is available
-        if (typeof rawAttestation.response.getTransports === "function") {
-          attestation.response.transports =
-            rawAttestation.response.getTransports();
-        }
-
-        const url = "/attestation/result";
-        const params = {
-          sessionId: getters.getSessionId(state),
-          requestOrigin: "front",
-          ...attestation,
-        };
-        return _queryServer(url, params)
-          .then((response) => {
-            printLog("Public Key Credential", response);
-            return Promise.resolve(getters.getUserData(state));
-          })
-          .catch((error) => {
-            printLog(`Error when parsing credentials ${error}`);
-            return Promise.reject(`${error}`);
-          });
-      })
-      .catch((error) => {
-        printLog(`Error when creating credentials ${error}`);
-        return Promise.reject(`${error}`);
       });
+      printLog("rawAttestation", rawAttestation);
+
+      let attestation = {
+        rawId: base64UrlEncode(rawAttestation.rawId),
+        id: base64UrlEncode(rawAttestation.rawId),
+        response: {
+          clientDataJSON: base64UrlEncode(
+            rawAttestation.response.clientDataJSON
+          ),
+          attestationObject: base64UrlEncode(
+            rawAttestation.response.attestationObject
+          ),
+        },
+        type: rawAttestation.type,
+      };
+
+      if (rawAttestation.getClientExtensionResults) {
+        attestation.extensions = rawAttestation.getClientExtensionResults();
+      }
+
+      // set transports if it is available
+      if (typeof rawAttestation.response.getTransports === "function") {
+        attestation.response.transports =
+          rawAttestation.response.getTransports();
+      }
+
+      printLog(
+        `Public key with key ID  ${attestation.id} generated`
+      );
+      return attestation;
+    } catch (error) {
+      printLog(`Error when creating credentials`, error);
+      throw new Error(error);
+    }
+  },
+
+  async sendAttestationResult({ state }, attestation) {
+    const url = "/attestation/result";
+    const params = {
+      sessionId: getters.getSessionId(state),
+      requestOrigin: "front",
+      ...attestation,
+    };
+    try {
+      const response = await _queryServer(url, params);
+      printLog("Public Key Credential", response);
+      return getters.getUserData(state);
+    } catch (error) {
+      printLog(`Error when parsing credentials`, error);
+      throw new Error(error);
+    }
   },
 
   async onSubmitLoginForm({ commit }, payload) {
@@ -302,11 +275,11 @@ const actions = {
       }
     } catch (error) {
       printLog(`Unable to sign in`, error);
-      return Promise.reject(`Unable to sign in : ${error}`);
+      throw new Error(error);
     }
   },
 
-  async getCredentialInNavigator({ commit, state }, user) {
+  async getCredentialInNavigator({ state }, user) {
     printLog(`Inside getCredentialInNavigator function`);
     //get sign in credentials from authenticator
     const signInOptions = getters.getSignInOptions(state);
@@ -361,36 +334,35 @@ const actions = {
         // User is logged in
         return "User is logged in";
       } else {
-        printLog(`Unable to retrieve credential respons`, rawAttestation);
+        printLog(`Unable to retrieve credential response`, rawAttestation);
         return Promise.reject(`Unable to retrieve credential response`);
       }
     } catch (error) {
-      printLog(`Error in getCredentialInNavigator : `, error);
-      return Promise.reject(
-        "Error in getCredentialInNavigator : " + error.message
-      );
+      printLog(`Error in getCredentialInNavigator`, error);
+      throw new Error(error);
     }
   },
 
   async logoutUser() {
     try {
       await Auth.signOut();
-      return Promise.resolve(true);
+      return true;
     } catch (error) {
-      printLog(`Error signing out = ${error}`);
-      return error;
+      printLog(`Error signing out = ${error.message}`);
+      throw new Error(error);
     }
   },
 
   async resendConfirmationCode({ commit, state }) {
     const userData = getters.getUserData(state);
-    console.log("resendConfirmationCode username=" + userData.username);
+    printLog("resendConfirmationCode username = " + userData.username);
     try {
       await Auth.resendSignUp(userData.username);
-      console.log("code resent successfully");
-      return Promise.resolve(true);
-    } catch (err) {
-      console.log("error resending code: ", err);
+      printLog("code resent successfully");
+      return true;
+    } catch (error) {
+      printLog("error resending code: ", error);
+      throw new Error(error);
     }
   },
 };
@@ -400,29 +372,28 @@ const _queryServer = async (path, payload = {}) => {
   printLog("************ QUERYING SERVER ***************");
   printLog("**** URL" + path);
   printLog("**** PARAMS", payload);
-  return webAuthnServer({
-    mode: "cors",
-    url: path,
-    method: "POST",
-    data: payload,
-    config: {
-      headers: {
-        "Content-Type": "application/json",
+  try {
+    const response = await webAuthnServer({
+      mode: "cors",
+      url: path,
+      method: "POST",
+      data: payload,
+      config: {
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    },
-  })
-    .then((response) => {
-      printLog("**** RESPONSE.DATA", response.data);
-      if (response.data.status === "OK") {
-        return Promise.resolve(response.data.data);
-      } else {
-        return Promise.reject(response.data.message);
-      }
-    })
-    .catch((e) => {
-      printLog("**** ERROR.DATA", e);
-      return Promise.reject(e);
     });
+    printLog("**** RESPONSE.DATA", response.data);
+    if (response.data.status === "OK") {
+      return response.data.data;
+    } else {
+      return response.data.message;
+    }
+  } catch (error) {
+    printLog("**** ERROR.DATA", error);
+    throw new Error(error);
+  }
 };
 
 function _removeEmpty(obj) {
@@ -455,9 +426,7 @@ const base64UrlEncode = (arrayBuffer) => {
  * @param {String} base64url
  */
 const base64UrlDecode = (base64url) => {
-  // printLog("Base 64 url ##1 " + base64url);
   let input = base64url.replace(/-/g, "+").replace(/_/g, "/");
-  // printLog("Base 64 url ##2 " + input);
   let diff = input.length % 4;
   if (!diff) {
     while (diff) {
@@ -466,9 +435,7 @@ const base64UrlDecode = (base64url) => {
     }
   }
   let matob = atob(input);
-  // printLog("Base 64 url ##3 matob = " + matob);
   const val = Uint8Array.from(matob, (c) => c.charCodeAt(0));
-  // printLog("Before return = " + val);
   return val;
 };
 
@@ -481,8 +448,7 @@ function printLog(name, object) {
   if (isJSON(object)) {
     console.log(name + " --- " + JSON.stringify(object, null, 2));
   } else {
-    console.log(name);
-    console.log(object);
+    console.log(name, object);
   }
 }
 

@@ -89,13 +89,7 @@
 import { mapActions } from "vuex";
 
 import WebSocketClient from "src/store/utils/WebSocketClient";
-import * as WebAuthnUtils from "src/store/utils/WebAuthnUtils";
-const PF_AUTH_AVAIL = WebAuthnUtils.isPlatformAuthenticatorAvailable();
 let wssClient = null;
-
-const setProgressMsg = (message) => {
-  console.log(message);
-};
 
 export default {
   name: "signup",
@@ -103,14 +97,6 @@ export default {
 
   data() {
     return {
-      formData: {
-        companyName: "Test",
-        fullName: "Steve william",
-        title: "Test title",
-        email: "williamsteve216@gmail.com",
-        typeUser: 1,
-        username: "",
-      },
       step: 1,
       credentialOptions: null,
       params: null,
@@ -138,11 +124,11 @@ export default {
         setProgressMsg(`Waiting for credentialOptions`);
 
         // Send message to ask credentialOptions
-        if (wssClient && wssClient.isWebSocketOpenned()) {
+        if (wssClient) {
           console.log(`Send message to ask credentialOptions`);
           wssClient.sendMessage({
             to: this.params.connectionId,
-            message: { listener: "getCredentialOptions", data: {} },
+            message: { nextAction: "getCredentialOptions", data: {} },
           });
         }
       };
@@ -152,34 +138,57 @@ export default {
         wssClient = null;
       };
 
-      const onReceiveCredentialOptions = (credentialOptions) => {
+      const onReceiveCredentialOptions = async (credentialOptions) => {
         setProgressMsg(
           `Credential options available : ${JSON.stringify(credentialOptions)}`
         );
-        this.credentialOptions = credentialOptions
+        this.credentialOptions = credentialOptions;
 
-        // Call authenticator using credential options
-        this.$q.loading.show({
-          message: "Public keys generation ...",
-        });
-        this.callAuthenticator(this.credentialOptions)
-          .then((userData) => {
+        try {
+          // Generate public key with available credential options
+          this.$q.loading.show({
+            message: "Public keys generation ...",
+          });
+          const attestation = await this.callAuthenticator(
+            this.credentialOptions
+          );
+          this.$q.loading.hide();
+
+          // Send back info to desktop view
+          this.$q.loading.show({
+            message: "Sending back public keys to caller",
+          });
+          if (wssClient) {
+            wssClient.sendMessage({
+              to: this.params.connectionId,
+              message: {
+                nextAction: "onAttestationAvailable",
+                attestation: { ...attestation },
+              },
+            });
             this.$q.loading.hide();
             this.$q.notify({
-              message: `Account created for ${userData.username}. You can Login`,
+              message: `Public key generated for user ${userData.username}. Thank you`,
               type: "positive",
               position: "top",
             });
-            this.step = 4;
-          })
-          .catch((err) => {
-            this.$q.notify({
-              message: err,
-              type: "negative",
-              position: "top",
-            });
-            this.$q.loading.hide();
+            // Do the correct action here
+            console.error(
+              `William stp corrige this.step=3 avec la bonne action a faire`
+            );
+            this.step = 3;
+          } else {
+            throw new Error("Websocket client is null");
+          }
+        } catch (error) {
+          this.$q.loading.hide();
+          this.$q.notify({
+            message: error.message,
+            type: "negative",
+            position: "top",
           });
+          throw new Error(error);
+        }
       };
 
       event.preventDefault();
@@ -189,24 +198,27 @@ export default {
         // Show message
         setProgressMsg("Openning websocket connection...");
 
-        const client = new WebSocketClient(
+        wssClient = new WebSocketClient(
           onOpenCallback,
           onConnectionIdCallback,
           onCloseCallback,
           () => {}, // onGetCredentialOptions
-          onReceiveCredentialOptions
+          onReceiveCredentialOptions,
+          () => {} // onAttestationAvailable
         );
-
-        // Set state value
-        wssClient = client;
       } else {
         console.log("WssClient already is already in state");
       }
     },
   },
+
   mounted() {
     this.params = this.$route.query;
   },
+};
+
+const setProgressMsg = (message) => {
+  console.log(message);
 };
 </script>
 
