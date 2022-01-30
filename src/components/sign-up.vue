@@ -257,12 +257,17 @@ export default {
       "sendAttestationResult",
     ]),
 
+    setProgressMsg(message) {
+      console.log(message);
+      this.$q.loading.show({
+        message: message,
+      });
+    },
+
     async submitSignupForm() {
       if (this.formData.typeUser == 2) {
         try {
-          this.$q.loading.show({
-            message: "Submitting sign up form ...",
-          });
+          this.setProgressMsg("Submitting sign up form ...");
           const codeDeliveryDetails = await this.onSubmitSignUpForm(
             this.formData
           );
@@ -292,19 +297,15 @@ export default {
     async submitValidationCode() {
       try {
         // Check if validation code is ok
-        this.$q.loading.show({
-          message: "Checking validation code ...",
-        });
+        this.setProgressMsg("Checking validation code ...");
         const message = await this.onSubmitValidationCode(this.code);
         console.log(`onSubmitValidationCode result = ${message}`);
 
         // Get attestation options
-        this.$q.loading.show({
-          message: "Getting credential options ...",
-        });
+        this.setProgressMsg("Getting credential options ...");
         const credentialOptions = await this.getCredentialOptions();
         this.credentialOptions = credentialOptions;
-        console.log(`onSubmitValida tionCode result = ${message}`);
+        console.log(`onSubmitValidationCode result = ${message}`);
 
         // Show messages
         this.$q.loading.hide();
@@ -328,18 +329,15 @@ export default {
 
     async generatePublicKey() {
       try {
-        this.$q.loading.show({
-          message: "Public keys generation ...",
-        });
+        this.setProgressMsg("Getting credential options ...");
 
         // Generate public key
         const attestation = await this.callAuthenticator(
           this.credentialOptions
         );
-        this.$q.loading.show({
-          message:
-            "Public keys generated. Sending attestation to authentication server ...",
-        });
+        this.setProgressMsg(
+          "Public keys generated. Sending attestation to authentication server ..."
+        );
         // Send attestation result to authentication server
         const userData = await this.sendAttestationResult(attestation);
 
@@ -398,11 +396,11 @@ export default {
       };
 
       const onOpenCallback = () => {
-        setProgressMsg("Websocket connection openned...");
+        this.setProgressMsg("Websocket connection openned...");
       };
 
       const onConnectionIdCallback = (connectionId) => {
-        setProgressMsg(`Connection id received : ${connectionId}`);
+        this.setProgressMsg(`Connection id received : ${connectionId}`);
         // Get site URL
         const url = getAssertionUrl(
           connectionId,
@@ -413,7 +411,7 @@ export default {
       };
 
       const onCloseCallback = () => {
-        tsetProgressMsg(`Websocket connection closed...`);
+        this.setProgressMsg(`Websocket connection closed...`);
         this.$q.loading.hide();
         wssClient = null;
         this.assertionUrl = null;
@@ -423,7 +421,7 @@ export default {
         console.log(`wssClient = ${wssClient}`);
         // Send back credentialOptions
         if (wssClient) {
-          setProgressMsg(`Sending credential options to phone...`);
+          this.setProgressMsg(`Sending credential options to phone...`);
           wssClient.sendMessage({
             to: to,
             message: {
@@ -439,8 +437,8 @@ export default {
 
       const onAttestationAvailable = async (attestation) => {
         try {
-          setProgressMsg(`Attestation generated on phone is available ...`);
-          setProgressMsg("Sending attestation to authentication server ...");
+          this.setProgressMsg(`Attestation generated on phone is available ...`);
+          this.setProgressMsg("Sending attestation to authentication server ...");
           this.$q.loading.show({
             message: "Sending attestation to authentication server ...",
           });
@@ -466,7 +464,7 @@ export default {
 
       if (!wssClient) {
         // Show message
-        setProgressMsg("Openning websocket connection...");
+        this.setProgressMsg("Openning websocket connection...");
         const client = new WebSocketClient(
           onOpenCallback,
           onConnectionIdCallback,
@@ -487,13 +485,6 @@ export default {
   mounted() {
     this.formData.typeUser = Number(this.typeUser);
   },
-
-  // setProgressMsg(message) {
-  //   console.log(message);
-  //   this.$q.loading.show({
-  //     message: message,
-  //   });
-  // },
 };
 
 const setProgressMsg = (message) => {

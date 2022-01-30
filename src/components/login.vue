@@ -12,15 +12,16 @@
         </div>
         <q-form @submit="login()" class="q-col-gutter-lg q-pb-sm">
           <div class="form-control">
-            <div>Enter Your Email Address</div>
+            <div>Enter your email address</div>
             <div class="q-pt-sm">
               <q-input
                 dense
-                placeholder="John Doe@gmail.com"
+                placeholder="johndoe@mycompany.com"
                 v-model="formData.email"
                 color="grey-3"
                 bg-color="white"
                 outlined
+                autofocus
               />
             </div>
           </div>
