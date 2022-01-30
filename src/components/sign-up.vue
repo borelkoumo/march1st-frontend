@@ -254,6 +254,7 @@ export default {
       "onSubmitValidationCode",
       "getCredentialOptions",
       "callAuthenticator",
+      "sendAttestationResult",
     ]),
 
     async submitSignupForm() {
