@@ -8,3 +8,11 @@
     font-weight: bold;
     font-size: 18px;
 }*/
+@media (max-width: 599px){
+    .section-pt{
+        padding-top: 25px;
+    }
+    .content-box{
+        width: 100%;
+    }
+}
