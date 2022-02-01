@@ -314,7 +314,17 @@ export default {
           type: "positive",
           position: "top",
         });
-        this.step = 3;
+        //this.step = 3;
+        //check the navigator
+        const isNavigatorSupport = typeof(PublicKeyCredential) == "undefined" ? false : true;
+        if(isNavigatorSupport){
+          //on lance une fois le processus
+          this.generatePublicKey();
+        }
+        else{
+          //on ouvre le QR-code ici
+          this.signUpWithPhone();
+        }
       } catch (error) {
         this.$q.loading.hide();
         this.$q.notify({
@@ -347,7 +357,9 @@ export default {
           type: "positive",
           position: "top",
         });
-        this.step = 4;
+        // Open login form
+        //this.step = 4;
+        this.$router.push('/auth/login');
       } catch (error) {
         this.$q.loading.hide();
         this.$q.notify({
@@ -452,7 +464,9 @@ export default {
             type: "positive",
             position: "top",
           });
-          this.step = 4;
+          //this.step = 4;
+          //on ouvre le login
+          this.$router.push('/auth/login');
         } catch (error) {
           this.$q.loading.hide();
           this.$q.notify({

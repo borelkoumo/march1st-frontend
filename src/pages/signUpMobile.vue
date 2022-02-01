@@ -182,10 +182,11 @@ export default {
             console.error(
               `William stp corrige this.step=3 avec la bonne action a faire`
             );
-            this.step = 3;
+            this.step = 2;
             setTimeout(() => {
               window.close();
             }, 5000);
+            this.$router.push("/auth/login");
           } else {
             this.$q.loading.hide();
             throw new Error("Websocket client is null");
