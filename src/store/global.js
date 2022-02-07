@@ -344,6 +344,7 @@ const actions = {
           name: newUser.fullName,
           userId: newUser.id, //state.userId
         };
+        console.log(`User logged: ${loggedUser2} `);
         commit("setUserData", loggedUser2);
         localStorage.setItem("user", JSON.stringify(loggedUser2));
         return "User is logged in";

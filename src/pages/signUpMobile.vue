@@ -52,7 +52,7 @@
               <q-btn
                 outlined
                 flat
-                label="Generate public key"
+                label="Continue"
                 class="bg-secondary col text-white"
                 no-caps
                 type="submit"
