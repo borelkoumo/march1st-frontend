@@ -1,5 +1,4 @@
 <template>
-  
   <div class="section pt-box pb-box">
     <div class="header-section" style="padding-bottom: 40px">
       <div class="first-title">BOARD</div>
@@ -23,10 +22,8 @@
             <img src="https://cdn.quasar.dev/img/avatar.png" />
           </q-avatar>
           <div class="q-pl-md text-white">
-            <div style="font-family: 'good-time'; font-size: 22px">
-              THOMAS EDISEON
-            </div>
-            <div style="font-size: 18px; font-family: 'nunito'">Rank : 1</div>
+            <div style="" class="leader-title">THOMAS EDISEON</div>
+            <div class="leader-title-2" style="">Rank : 1</div>
           </div>
         </q-toolbar>
         <q-separator color="grey-1" class="q-mt-md" />
@@ -119,26 +116,22 @@
               <q-btn
                 label="all time"
                 flat
-                class="text-white"
-                style="
-                  background-color: #333333;
-                  min-width: 170px;
-                  font-size: 16px;
-                "
+                class="text-white btn-all-time"
+                style=""
               />
               <q-space />
               <q-btn
                 label="Last 90 days"
                 flat
-                class=""
-                style="font-size: 16px; color: black"
+                class="btn-leader-option"
+                style=""
               />
               <q-space />
               <q-btn
                 label="Last 30 days"
                 flat
-                class=""
-                style="font-size: 16px; color: black"
+                class="btn-leader-option"
+                style=""
               />
             </q-toolbar>
           </q-card-section>
@@ -327,3 +320,70 @@ export default {
   },
 };
 </script>
+<style scoped>
+.box-leader {
+  display: grid;
+  grid-template-columns: 2fr 4fr;
+}
+.leader-title {
+  font-family: "good-time";
+  font-size: 22px;
+}
+.leader-title-2 {
+  font-size: 18px;
+  font-family: "nunito";
+}
+.btn-all-time {
+  background-color: #333333;
+  min-width: 170px;
+  font-size: 16px;
+}
+.btn-leader-option {
+  font-size: 16px;
+  color: black;
+}
+@media (max-width: 599px) {
+  .box-leader {
+    grid-template-columns: 1fr;
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .box-leader .q-card {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .box-leader .q-card__section--vert {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+  .box-leader .q-gutter-sm > * {
+    margin-left: 0px;
+  }
+  .btn-leader .q-btn {
+    font-size: 11px;
+  }
+  .q-toolbar.btn-leader {
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+  .leader-title {
+    font-size: 18px;
+  }
+  .leader-title-2 {
+    font-size: 12px;
+  }
+  .btn-all-time {
+    min-width: 100px;
+    font-size: 12px;
+  }
+  .btn-leader-option {
+    font-size: 16px;
+    min-width: 80px;
+  }
+}
+</style>

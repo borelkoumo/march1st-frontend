@@ -229,6 +229,7 @@ const actions = {
     Auth.configure({
       authenticationFlowType: "CUSTOM_AUTH",
     });
+    
     try {
       const user = await Auth.signIn(payload.email);
       printLog("SignIn result. User=", user);
@@ -334,15 +335,16 @@ const actions = {
         );
         printLog("User is logged in. loggedUser=", loggedUser);
         // User is logged in
-        let newUser = { //problème ici
-          email:user.email,
-          name:user.fullName,
-          userId:2222 //state.userId
+        const newUser = Auth.currentAuthenticatedUser()
+        let loggedUser2 = { //problème ici
+          email:newUser.email,
+          name:newUser.fullName,
+          userId:newUser.id //state.userId
         }
-        commit('setUserData',newUser);
-        localStorage.setItem('user',JSON.stringify(newUser));
-        //return "User is logged in";
-        return newUser.userId
+        commit('setUserData',loggedUser2);
+        localStorage.setItem('user',JSON.stringify(loggedUser2));
+        return "User is logged in";
+        //return newUser.userId
       } else {
         printLog(`Unable to retrieve credential response`, rawAttestation);
         return Promise.reject(`Unable to retrieve credential response`);

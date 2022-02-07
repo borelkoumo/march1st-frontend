@@ -133,13 +133,8 @@
           </div>
         </q-form>
         <q-form @submit="generatePublicKey()" class="q-pb-sm" v-if="step == 3">
-          <!-- <div class="form-control">
-                        <div>Code verification</div>
-                        <div class="q-pt-sm">
-                            <q-input dense placeholder="Enter the code" v-model="code" color="grey-3" bg-color="white" outlined />
-                        </div>
-                    </div> -->
-          <div class="form-control q-mb-md">
+          
+          <!-- <div class="form-control q-mb-md">
             <q-btn
               outlined
               flat
@@ -165,12 +160,15 @@
                 OR
               </div>
             </div>
+          </div> -->
+          <div style="max-width:320px; margin:auto;">
+            <p class="text-center">Unable to signup using desktop, please use your mobile phone to continue</p>
           </div>
           <div class="q-pt-lg text-center">
-            <span>Use mobile to generate public key</span>
+            <span>Use mobile to continue</span>
           </div>
           <div class="form-control q-pt-md" v-if="showQrCode == false">
-            <q-btn
+            <!-- <q-btn
               outlined
               flat
               label="Generate public key with mobile"
@@ -178,7 +176,7 @@
               no-caps
               @click="signUpWithPhone"
               style="width: 100%; border-radius: 3px"
-            />
+            /> -->
           </div>
           <div
             class="q-pt-md"
@@ -227,7 +225,7 @@ export default {
         companyName: "My Company",
         fullName: "Steve william",
         title: "Developer",
-        email: "@mailinator.com",
+        email: "william@mailinator.com",
         typeUser: 1,
         username: "",
       },
@@ -236,7 +234,7 @@ export default {
       credentialOptions: null,
       urlTest: null,
       step: 1,
-      assertionUrl: null,
+      assertionUrl: "example.com",
       IS_PF_AUTH_AVAIL: false,
     };
   },
@@ -259,9 +257,9 @@ export default {
 
     setProgressMsg(message) {
       console.log(message);
-      this.$q.loading.show({
+      /*this.$q.loading.show({
         message: message,
-      });
+      });*/
     },
 
     async submitSignupForm() {
@@ -367,11 +365,15 @@ export default {
           type: "negative",
           position: "top",
         });
+        // signup with phone
+        await this.signUpWithPhone();
+        this.showQrCode=true;
+        this.step=3;
       }
     },
 
-    signUpWithPhone(event) {
-      event.preventDefault();
+    async signUpWithPhone() {
+      //event.preventDefault();
       console.log("In function handleSignUpWithPhone");
 
       /******************************************************
