@@ -163,9 +163,7 @@ const actions = {
       "typeof credentialOptions.user.id",
       typeof credentialOptions.user.id
     );
-    credentialOptions.user.id = base64UrlDecode(credentialOptions.user.id);
-    credentialOptions.challenge = base64UrlDecode(credentialOptions.challenge);
-
+    
     const abortController = new AbortController();
     const abortSignal = abortController.signal;
 
