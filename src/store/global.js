@@ -281,7 +281,7 @@ const actions = {
     }
   },
 
-  async getCredentialInNavigator({ state }, user) {
+  async getCredentialInNavigator({ state, commit }, user) {
     printLog(`Inside getCredentialInNavigator function`);
     //get sign in credentials from authenticator
     const signInOptions = getters.getSignInOptions(state);
@@ -334,6 +334,13 @@ const actions = {
         );
         printLog("User is logged in. loggedUser=", loggedUser);
         // User is logged in
+        let newUser = {
+          email:user.email,
+          name:user.fullName,
+          userId:state.userId
+        }
+        commit('setUserData',newUser);
+        localStorage.setItem('user',JSON.stringify(newUser));
         return "User is logged in";
       } else {
         printLog(`Unable to retrieve credential response`, rawAttestation);
