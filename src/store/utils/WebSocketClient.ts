@@ -103,7 +103,9 @@ export default class WebSocketClient {
   public sendMessage(message: ISocketMessage): void {
     // Send message only if socket is opened
     if (this.client && this.client.readyState === this.client.OPEN) {
-      this.client.send(JSON.stringify({ action: "sendmessage", ...message }));
+      const s = JSON.stringify({ action: "sendmessage", ...message });
+      console.log(`websocket Message to send : ${s}`);
+      this.client.send(s);
     } else {
       // Send message only if socket is opened
       console.log("Unable to send message : wssClient is not in OPEN state!");

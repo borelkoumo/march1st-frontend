@@ -97,7 +97,9 @@ var WebSocketClient = /** @class */ (function () {
     WebSocketClient.prototype.sendMessage = function (message) {
         // Send message only if socket is opened
         if (this.client && this.client.readyState === this.client.OPEN) {
-            this.client.send(JSON.stringify(__assign({ action: "sendmessage" }, message)));
+            var s = JSON.stringify(__assign({ action: "sendmessage" }, message));
+            console.log("websocket Message to send : ".concat(s));
+            this.client.send(s);
         }
         else {
             // Send message only if socket is opened
