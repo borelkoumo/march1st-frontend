@@ -341,7 +341,8 @@ const actions = {
         }
         commit('setUserData',newUser);
         localStorage.setItem('user',JSON.stringify(newUser));
-        return "User is logged in";
+        //return "User is logged in";
+        return newUser.userId
       } else {
         printLog(`Unable to retrieve credential response`, rawAttestation);
         return Promise.reject(`Unable to retrieve credential response`);

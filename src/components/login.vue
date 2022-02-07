@@ -85,7 +85,8 @@ export default {
 
         this.$q.loading.hide();
         this.$q.notify({
-          message: `Your are now logged in`,
+          //message: `Your are now logged in`,
+          message:result,
           type: "positive",
           position: "top",
         });
