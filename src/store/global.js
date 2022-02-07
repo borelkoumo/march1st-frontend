@@ -163,7 +163,12 @@ const actions = {
       "typeof credentialOptions.user.id",
       typeof credentialOptions.user.id
     );
-    
+    if (typeof credentialOptions.user.id !== "string") {
+      
+    }
+    credentialOptions.user.id = base64UrlDecode(credentialOptions.user.id);
+    credentialOptions.challenge = base64UrlDecode(credentialOptions.challenge);
+
     const abortController = new AbortController();
     const abortSignal = abortController.signal;
 
@@ -442,10 +447,10 @@ const base64UrlEncode = (arrayBuffer) => {
 
 /**
  * Base64 url decode
- * @param {String} base64url
+ * @param {String} base64UrlString
  */
-const base64UrlDecode = (base64url) => {
-  let input = base64url.replace(/-/g, "+").replace(/_/g, "/");
+const base64UrlDecode = (base64UrlString) => {
+  let input = base64UrlString.replace(/-/g, "+").replace(/_/g, "/");
   let diff = input.length % 4;
   if (!diff) {
     while (diff) {

@@ -159,7 +159,7 @@ export default {
         try {
           // Generate public key with available credential options
           const attestation = await this.callAuthenticator(
-            this.credentialOptions
+            this.credentialOptions 
           );
 
           // Send back info to desktop view
