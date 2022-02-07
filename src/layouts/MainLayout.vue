@@ -91,7 +91,7 @@
               transition-show="jump-down"
               transition-hide="jump-up"
               class="menu-user relative-position bg-transparent"
-              v-if="userData.userId"
+              v-if="userData"
             >
               <div
                 style="width: 100%; position: relative; min-height: 20px"
@@ -479,10 +479,11 @@ export default defineComponent({
       },
       isTransparent: true,
       drawerRight: false,
+      userData: null,
     };
   },
   computed: {
-    ...mapState("global", ["userData"]),
+    /* ...mapState("global", ["userData"]), */
   },
   methods: {
     ...mapActions("global", ["logoutUser"]),
@@ -517,12 +518,14 @@ export default defineComponent({
       console.log(position);
     },
   },
-  beforeMount() {
-    Auth.currentAuthenticatedUser({
-      bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
-    })
-      .then((user) => console.log(JSON.stringify(user)))
-      .catch((err) => console.log(err));
+  async beforeMount() {
+    try {
+      this.userData = await Auth.currentAuthenticatedUser({
+        bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+      });
+    } catch (error) {
+      console.log(error)
+    }
   },
 });
 </script>
