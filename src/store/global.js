@@ -147,25 +147,16 @@ const actions = {
     }
   },
 
-  async callAuthenticator({ state }, credentialOptions) {
+  async callAuthenticator({ state }, credOptions) {
     if (!window.PublicKeyCredential) {
       return Promise.reject(
         `WebAuthn not supported in this navigator. See https://caniuse.com/?search=webauthn`
       );
     }
 
-    printLog(`credentialOptions in callAuthenticator`, credentialOptions);
-    console.log(
-      `JSON.stringify(this.credentialOptions)`,
-      JSON.stringify(credentialOptions)
-    );
-    console.log(
-      "typeof credentialOptions.user.id",
-      typeof credentialOptions.user.id
-    );
-    if (typeof credentialOptions.user.id !== "string") {
-      
-    }
+    // deep copy object
+    const credentialOptions = JSON.parse(JSON.stringify(credOptions));
+
     credentialOptions.user.id = base64UrlDecode(credentialOptions.user.id);
     credentialOptions.challenge = base64UrlDecode(credentialOptions.challenge);
 

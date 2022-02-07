@@ -1,17 +1,3 @@
-const o = {
-  "sessionId": "44a2a1d7-dba7-4aa1-8761-c5e9fc6fcf4d",
-  "requestOrigin": "front",
-  "rawId": "AYQ7Myx9PhuOtQDVPzLai1TcCvHsbpMNju3Fw5HT0p7wn7RCaDqjtU4yavMfsd9V3RXHBPuL6B6ncw7mDNU-wBc",
-  "id": "AYQ7Myx9PhuOtQDVPzLai1TcCvHsbpMNju3Fw5HT0p7wn7RCaDqjtU4yavMfsd9V3RXHBPuL6B6ncw7mDNU-wBc",
-  "response": {
-      "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiaGt2ampOS2ZCX2l5Si1HTEFERUJfdnlrZTJIR3FTY25pLXVIRFlrNUFiRllwT2oyOFhEelJTOUZLNHdLS3c2MTNzUFdvUl95YVI0V0FNOXhMQVA4dVEiLCJvcmlnaW4iOiJodHRwczpcL1wvbWFyY2gxc3QuY29tIiwiYW5kcm9pZFBhY2thZ2VOYW1lIjoiY29tLmFuZHJvaWQuY2hyb21lIn0",
-      "attestationObject": "o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YVjFklZeJ5e0KNoy69SOtrFz9KQJEK4JCvmj2bNi8j0wsD5FAAAAAAAAAAAAAAAAAAAAAAAAAAAAQQGEOzMsfT4bjrUA1T8y2otU3Arx7G6TDY7txcOR09Ke8J-0Qmg6o7VOMmrzH7HfVd0VxwT7i-gep3MO5gzVPsAXpQECAyYgASFYIF7Jra_Nezb4kCQeFKba6Uwm6qX_186HwENXefkw8sfeIlggxpYX0gwWWVNYCQLpeIn0b97cPhAwvVFz3VOtWTui57o",
-      "transports": []
-  },
-  "type": "public-key",
-  "extensions": {}
-}
-
 const cognitoConfig = {
   Auth: {
     // REQUIRED only for Federated Authentication - Amazon Cognito Identity Pool ID
