@@ -337,7 +337,7 @@ const actions = {
         let newUser = {
           email:user.email,
           name:user.fullName,
-          userId:state.userId
+          userId:2222
         }
         commit('setUserData',newUser);
         localStorage.setItem('user',JSON.stringify(newUser));

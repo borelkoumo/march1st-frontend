@@ -76,6 +76,7 @@
           </q-btn-dropdown>
           <q-separator vertical inset color="white" v-if="isTransparent" />
           <q-separator vertical inset color="primary" v-else />
+          {{userData}}
           <q-btn flat class="">
             <q-avatar size="22px" class="gt-xs">
               <img src="vectors/login-white.svg" v-if="isTransparent" />
