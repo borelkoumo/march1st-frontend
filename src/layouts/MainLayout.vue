@@ -461,6 +461,9 @@
 </template>
 
 <script>
+// Amplify libraries
+import { Auth } from "@aws-amplify/auth";
+
 import menuItem from "src/components/menu-item.vue";
 import { defineComponent } from "vue";
 import { mapActions, mapState } from "vuex";
