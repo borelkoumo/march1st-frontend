@@ -133,7 +133,6 @@
           </div>
         </q-form>
         <q-form @submit="generatePublicKey()" class="q-pb-sm" v-if="step == 3">
-          
           <!-- <div class="form-control q-mb-md">
             <q-btn
               outlined
@@ -161,8 +160,11 @@
               </div>
             </div>
           </div> -->
-          <div style="max-width:320px; margin:auto;">
-            <p class="text-center">Unable to signup using desktop, please use your mobile phone to continue</p>
+          <div style="max-width: 320px; margin: auto">
+            <p class="text-center">
+              Unable to signup using desktop, please use your mobile phone to
+              continue
+            </p>
           </div>
           <div class="q-pt-lg text-center">
             <span>Use mobile to continue</span>
@@ -314,12 +316,12 @@ export default {
         });
         //this.step = 3;
         //check the navigator
-        const isNavigatorSupport = typeof(PublicKeyCredential) == "undefined" ? false : true;
-        if(isNavigatorSupport){
+        const isNavigatorSupport =
+          typeof PublicKeyCredential == "undefined" ? false : true;
+        if (isNavigatorSupport) {
           //on lance une fois le processus
           this.generatePublicKey();
-        }
-        else{
+        } else {
           //on ouvre le QR-code ici
           this.signUpWithPhone();
         }
@@ -339,6 +341,10 @@ export default {
       try {
         this.setProgressMsg("Getting credential options ...");
 
+        console.log(
+          `JSON.stringify(this.credentialOptions)`,
+          JSON.stringify(this.credentialOptions)
+        );
         // Generate public key
         const attestation = await this.callAuthenticator(
           this.credentialOptions
@@ -357,7 +363,7 @@ export default {
         });
         // Open login form
         //this.step = 4;
-        this.$router.push('/auth/login');
+        this.$router.push("/auth/login");
       } catch (error) {
         this.$q.loading.hide();
         this.$q.notify({
@@ -367,8 +373,8 @@ export default {
         });
         // signup with phone
         await this.signUpWithPhone();
-        this.showQrCode=true;
-        this.step=3;
+        this.showQrCode = true;
+        this.step = 3;
       }
     },
 
@@ -435,25 +441,29 @@ export default {
       const onGetCredentialOptions = (to) => {
         console.log(`wssClient = ${wssClient}`);
         // Send back credentialOptions
-        if (wssClient) {
-          this.setProgressMsg(`Sending credential options to phone...`);
-          wssClient.sendMessage({
-            to: to,
-            message: {
-              nextAction: "receiveCredentialOptions",
-              credentialOptions: this.credentialOptions,
-            },
-          });
-        } else {
-          this.$q.loading.hide();
-          throw new Error("websocket client is null or is not openned");
-        }
+        // if (wssClient) {
+        this.setProgressMsg(`Sending credential options to phone...`);
+        wssClient.sendMessage({
+          to: to,
+          message: {
+            nextAction: "receiveCredentialOptions",
+            credentialOptions: this.credentialOptions,
+          },
+        });
+        // } else {
+        //   this.$q.loading.hide();
+        //   throw new Error("websocket client is null or is not openned");
+        // }
       };
 
       const onAttestationAvailable = async (attestation) => {
         try {
-          this.setProgressMsg(`Attestation generated on phone is available ...`);
-          this.setProgressMsg("Sending attestation to authentication server ...");
+          this.setProgressMsg(
+            `Attestation generated on phone is available ...`
+          );
+          this.setProgressMsg(
+            "Sending attestation to authentication server ..."
+          );
           this.$q.loading.show({
             message: "Sending attestation to authentication server ...",
           });
@@ -468,7 +478,7 @@ export default {
           });
           //this.step = 4;
           //on ouvre le login
-          this.$router.push('/auth/login');
+          this.$router.push("/auth/login");
         } catch (error) {
           this.$q.loading.hide();
           this.$q.notify({

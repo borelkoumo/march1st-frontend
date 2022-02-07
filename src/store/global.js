@@ -155,6 +155,14 @@ const actions = {
     }
 
     printLog(`credentialOptions in callAuthenticator`, credentialOptions);
+    console.log(
+      `JSON.stringify(this.credentialOptions)`,
+      JSON.stringify(credentialOptions)
+    );
+    console.log(
+      "typeof credentialOptions.user.id",
+      typeof credentialOptions.user.id
+    );
     credentialOptions.user.id = base64UrlDecode(credentialOptions.user.id);
     credentialOptions.challenge = base64UrlDecode(credentialOptions.challenge);
 
@@ -229,7 +237,7 @@ const actions = {
     Auth.configure({
       authenticationFlowType: "CUSTOM_AUTH",
     });
-    
+
     try {
       const user = await Auth.signIn(payload.email);
       printLog("SignIn result. User=", user);
@@ -335,14 +343,15 @@ const actions = {
         );
         printLog("User is logged in. loggedUser=", loggedUser);
         // User is logged in
-        const newUser = Auth.currentAuthenticatedUser()
-        let loggedUser2 = { //problème ici
-          email:newUser.email,
-          name:newUser.fullName,
-          userId:newUser.id //state.userId
-        }
-        commit('setUserData',loggedUser2);
-        localStorage.setItem('user',JSON.stringify(loggedUser2));
+        const newUser = Auth.currentAuthenticatedUser();
+        let loggedUser2 = {
+          //problème ici
+          email: newUser.email,
+          name: newUser.fullName,
+          userId: newUser.id, //state.userId
+        };
+        commit("setUserData", loggedUser2);
+        localStorage.setItem("user", JSON.stringify(loggedUser2));
         return "User is logged in";
         //return newUser.userId
       } else {
