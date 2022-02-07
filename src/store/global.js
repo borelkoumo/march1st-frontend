@@ -334,10 +334,10 @@ const actions = {
         );
         printLog("User is logged in. loggedUser=", loggedUser);
         // User is logged in
-        let newUser = {
+        let newUser = { //problème ici
           email:user.email,
           name:user.fullName,
-          userId:2222
+          userId:2222 //state.userId
         }
         commit('setUserData',newUser);
         localStorage.setItem('user',JSON.stringify(newUser));
