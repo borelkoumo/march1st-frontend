@@ -341,10 +341,6 @@ export default {
       try {
         this.setProgressMsg("Getting credential options ...");
 
-        console.log(
-          `JSON.stringify(this.credentialOptions)`,
-          JSON.stringify(this.credentialOptions)
-        );
         // Generate public key
         const attestation = await this.callAuthenticator(
           this.credentialOptions
