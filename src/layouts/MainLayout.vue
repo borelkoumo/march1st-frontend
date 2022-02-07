@@ -33,7 +33,7 @@
           <menu-item :name="'RESEARCHERS'" class="q-mx-md" />
         </div>
         <q-space />
-        <div class="flex no-wrap  btn-header-action">
+        <div class="flex no-wrap btn-header-action">
           <q-btn-dropdown
             class="btn-dropdown bg-none q-pl-sm q-mr-xs"
             dense
@@ -76,6 +76,7 @@
           </q-btn-dropdown>
           <q-separator vertical inset color="white" v-if="isTransparent" />
           <q-separator vertical inset color="primary" v-else />
+
           <q-btn flat class="">
             <q-avatar size="22px" class="gt-xs">
               <img src="vectors/login-white.svg" v-if="isTransparent" />
@@ -513,6 +514,13 @@ export default defineComponent({
       console.log(position);
     },
   },
+  beforeMount() {
+    Auth.currentAuthenticatedUser({
+      bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+    })
+      .then((user) => console.log(JSON.stringify(user)))
+      .catch((err) => console.log(err));
+  },
 });
 </script>
 <style>
@@ -599,7 +607,8 @@ export default defineComponent({
   .img-logo .q-img {
     width: 100px;
   }
-  .btn-header-action .q-btn-dropdown, .btn-header-action .q-btn  {
+  .btn-header-action .q-btn-dropdown,
+  .btn-header-action .q-btn {
     font-size: 12px;
   }
   .quick-links {

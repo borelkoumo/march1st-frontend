@@ -337,7 +337,7 @@ const actions = {
         );
         printLog("User is logged in. loggedUser=", loggedUser);
         // User is logged in
-        const newUser = Auth.currentAuthenticatedUser();
+        const newUser = await Auth.currentAuthenticatedUser();
         let loggedUser2 = {
           //problème ici
           email: newUser.email,
