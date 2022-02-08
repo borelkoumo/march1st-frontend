@@ -275,12 +275,13 @@ export default {
           this.$q.loading.show({
             message: "Sending attestation to authentication server ...",
           });
-          console.log(attestation);
+          let obj = Object.fromEntries(attestation);
+          console.log(obj);
           /** Change this part */
           // Send attestation result to authentication server
           let payload = {
             user: this.cognitoUser,
-            customChallengeAnswer: attestation,
+            customChallengeAnswer: obj,
           };
           console.log("je suis ici");
           console.log(`La valeur du payload: ${payload.customChallengeAnswer}`);
