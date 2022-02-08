@@ -95,7 +95,6 @@ export default {
       step: 1,
       showQrCode: false,
       sizeQRCODE: 200,
-      challengeParam: {},
       assertionUrl: "http://example.com",
       cognitoUser: null,
       customChallengeAnswer: {},
@@ -131,8 +130,10 @@ export default {
         this.$q.loading.show({
           message: `Sign in authentication challenge available ...`,
         });
-        this.signInOptions = this.getSignInOptions(this.cognitoUser.challengeParam);
-        await this.signIn(this.signInOptions);
+        const signInOptions = this.getSignInOptions(
+          this.cognitoUser.challengeParam
+        );
+        await this.signIn(signInOptions);
         this.$router.push("/");
       } catch (error) {
         this.$q.loading.hide();
@@ -149,12 +150,12 @@ export default {
       }
     },
 
-    async signIn() {
+    async signIn(signInOptions) {
       try {
         this.setProgressMsg("Getting credentials ...");
         // Get credential from credential API
         this.customChallengeAnswer = await this.getCredentialInNavigator(
-          this.signInOptions
+          signInOptions
         );
         this.setProgressMsg(
           "We have Challenge. Sending attestation to authentication server ..."
@@ -183,8 +184,9 @@ export default {
       }
     },
 
-    getSignInOptions(challengeParam) {
-      // Here generate options to call custom challenge
+    getSignInOptions(params) {
+      // Copy challenge param
+      const challengeParam = JSON.parse(JSON.stringify(params));
       // Extract challenge params
       const challenge = base64UrlDecode(challengeParam.challenge);
       const timeout = challengeParam.timeout;

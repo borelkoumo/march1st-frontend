@@ -313,7 +313,6 @@ const actions = {
         customChallengeAnswer
       );
       printLog("User is logged in. loggedUser=", loggedUser);
-
       return "User is logged in";
     } catch (error) {
       printLog(`Error in sendChallengeResult`, error);
