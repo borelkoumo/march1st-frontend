@@ -89,7 +89,7 @@ export default {
   data() {
     return {
       formData: {
-        email: null,
+        email: "william46@mailinator.com",
       },
       step: 1,
       showQrCode: false,
@@ -282,7 +282,7 @@ export default {
             user: this.cognitoUser,
             customChallengeAnswer: customChallengeAnswer,
           };
-          console.log(`La valeur du payload: ${payload}`);
+          console.log(`La valeur du payload: ${JSON.stringify(payload.customChallengeAnswer)}`);
           const loggedUser = await this.sendChallengeResult(payload);
           //go to the home page
           this.$router.push("/");

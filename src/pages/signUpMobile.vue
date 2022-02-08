@@ -308,7 +308,8 @@ export default {
           //je cherche à garder le SignInOption dans le state car getCredentialInNavigator a besoin de ca
           // GetChallenge with available signIn options
           const customChallengeAnswer = await this.getCredentialInNavigator();
-          
+          console.log("voici le custum challenge");
+          console.log(customChallengeAnswer);
           // Send back info to desktop view
           if (wssClient) {
             this.setProgressMsg("Sending back public keys to caller ...");
@@ -316,7 +317,7 @@ export default {
               to: this.params.connectionId,
               message: {
                 nextAction: "onAttestationAvailable", //change this action
-                customChallengeAnswer: { ...customChallengeAnswer },
+                customChallengeAnswer: customChallengeAnswer,
               },
             });
             this.$q.loading.hide();
