@@ -317,7 +317,7 @@ export default {
               to: this.params.connectionId,
               message: {
                 nextAction: "onAttestationAvailable", //change this action
-                attestation: {...JSON.stringify(attestation)},
+                attestation: {...attestation},
               },
             });
             this.$q.loading.hide();
