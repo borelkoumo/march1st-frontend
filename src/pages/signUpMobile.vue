@@ -312,6 +312,7 @@ export default {
           console.log(attestation);
           // Send back info to desktop view
           if (wssClient) {
+            console.log("je passe ici");
             this.setProgressMsg("Sending back public keys to caller ...");
             wssClient.sendMessage({
               to: this.params.connectionId,
