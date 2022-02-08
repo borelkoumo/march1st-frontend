@@ -292,8 +292,9 @@ const actions = {
     if (!payload) {
       return `Sign in options unavailable. Exit`;
     }
-    const signInOptions = JSON.parse(JSON.stringify(payload));
-    printLog("signInOptions are : ", signInOptions);
+    //const signInOptions = JSON.parse(JSON.stringify(payload));
+    const signInOptions = payload;
+    printLog("copy of signInOptions are : ", signInOptions);
 
     try {
       const rawAttestation = await navigator.credentials.get({
