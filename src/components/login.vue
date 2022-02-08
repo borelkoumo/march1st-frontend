@@ -80,7 +80,7 @@
 
 <script>
 import QrcodeVue from "qrcode.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import WebSocketClient from "src/store/utils/WebSocketClient";
 let wssClient = null;
 export default {
@@ -104,6 +104,11 @@ export default {
     assertionUrl: function (val) {
       this.showQrCode = true;
     },
+  },
+  computed:{
+    ...mapState('global',[
+      'signInOptions'
+    ])
   },
   methods: {
     ...mapActions("global", [
@@ -161,7 +166,7 @@ export default {
       try {
         this.setProgressMsg("Getting credential ...");
         // Get credential from credential API
-        this.customChallengeAnswer = await this.getCredentialInNavigator();
+        this.customChallengeAnswer = await this.getCredentialInNavigator(this.signInOptions);
         this.setProgressMsg(
           "We have Challenge. Sending attestation to authentication server ..."
         );
@@ -259,7 +264,7 @@ export default {
           to: to,
           message: {
             nextAction: "receiveCredentialOptions", //change this action
-            credentialOptions: this.cognitoUser,
+            credentialOptions: this.signInOptions, //change credentialOptions
           },
         });
       };
@@ -275,13 +280,12 @@ export default {
           this.$q.loading.show({
             message: "Sending attestation to authentication server ...",
           });
-          let obj = Object.fromEntries(attestation);
-          console.log(obj);
+          console.log(attestation);
           /** Change this part */
           // Send attestation result to authentication server
           let payload = {
             user: this.cognitoUser,
-            customChallengeAnswer: obj,
+            customChallengeAnswer: attestation,
           };
           console.log("je suis ici");
           console.log(`La valeur du payload: ${payload.customChallengeAnswer}`);

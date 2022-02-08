@@ -284,10 +284,11 @@ const actions = {
     }
   },
 
-  async getCredentialInNavigator({ state, commit }) { //param user moved
+  async getCredentialInNavigator({ state, commit },payload) { //param user moved
     printLog(`Inside getCredentialInNavigator function`);
     //get sign in credentials from authenticator
-    const signInOptions = getters.getSignInOptions(state);
+    //const signInOptions = getters.getSignInOptions(state);
+    const signInOptions = payload;
     if (!signInOptions) {
       return `Sign in options unavailable. Exit`;
     }

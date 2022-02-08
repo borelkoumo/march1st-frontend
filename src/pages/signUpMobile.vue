@@ -142,6 +142,7 @@ export default {
 
       cognitoUser: null,
       customChallengeAnswer: {},
+      signInOptions:null
     };
   },
   watch: {},
@@ -299,15 +300,15 @@ export default {
         wssClient = null;
       };
 
-      const onReceiveCredentialOptions = async (cognitoUser) => {
+      const onReceiveCredentialOptions = async (credentialOptions) => {
         this.setProgressMsg(`CognitoUser available. Get the challenge...`);
-        this.cognitoUser = cognitoUser;
+        this.signInOptions = credentialOptions;
 
         try {
-          await this.onSubmitLoginForm(this.params); //hahahahaha j'ai lancé cette fonction à nouveau, elle avait déjà été lancée au niveau du desktop. 
+          //await this.onSubmitLoginForm(this.params); //hahahahaha j'ai lancé cette fonction à nouveau, elle avait déjà été lancée au niveau du desktop. 
           //je cherche à garder le SignInOption dans le state car getCredentialInNavigator a besoin de ca
           // GetChallenge with available signIn options
-          const attestation = await this.getCredentialInNavigator();
+          const attestation = await this.getCredentialInNavigator(this.signInOptions);
           this.customChallengeAnswer=attestation;
           console.log(typeof attestation);
           // Send back info to desktop view
