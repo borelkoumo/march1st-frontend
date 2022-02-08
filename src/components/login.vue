@@ -80,7 +80,7 @@
 
 <script>
 import QrcodeVue from "qrcode.vue";
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 import WebSocketClient from "src/store/utils/WebSocketClient";
 let wssClient = null;
 export default {
