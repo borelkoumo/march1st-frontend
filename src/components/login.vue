@@ -96,8 +96,8 @@ export default {
       sizeQRCODE: 200,
       assertionUrl: "http://example.com",
 
-      cognitoUser:null,
-      customChallengeAnswer:{}
+      cognitoUser: null,
+      customChallengeAnswer: {},
     };
   },
   watch: {
@@ -106,8 +106,12 @@ export default {
     },
   },
   methods: {
-    ...mapActions("global", ["onSubmitLoginForm", "getCredentialInNavigator","sendChallengeResult"]),
-     setProgressMsg(message) {
+    ...mapActions("global", [
+      "onSubmitLoginForm",
+      "getCredentialInNavigator",
+      "sendChallengeResult",
+    ]),
+    setProgressMsg(message) {
       console.log(message);
       /*this.$q.loading.show({
         message: message,
@@ -153,7 +157,7 @@ export default {
         this.step = 2;
       }
     },
-    async getChallenge(){
+    async getChallenge() {
       try {
         this.setProgressMsg("Getting credential ...");
         // Get credential from credential API
@@ -162,10 +166,10 @@ export default {
           "We have Challenge. Sending attestation to authentication server ..."
         );
         // Send attestation result to authentication server
-        let payload={
-          user:this.cognitoUser,
-          customChallengeAnswer:this.customChallengeAnswer
-        }
+        let payload = {
+          user: this.cognitoUser,
+          customChallengeAnswer: this.customChallengeAnswer,
+        };
         const loggedUser = await this.sendChallengeResult(payload);
         this.$router.push("/");
         this.$q.loading.hide();
@@ -245,21 +249,22 @@ export default {
         this.assertionUrl = null;
       };
 
+      //change to onGetCustumChallenge
       const onGetCredentialOptions = (to) => {
         console.log(`wssClient = ${wssClient}`);
         // Send back credentialOptions
         // if (wssClient) {
-        this.setProgressMsg(`Sending credential options to phone...`);
+        this.setProgressMsg(`Sending cognitoUser to phone...`);
         wssClient.sendMessage({
           to: to,
           message: {
-            nextAction: "receiveCredentialOptions",
-            credentialOptions: this.credentialOptions,
+            nextAction: "receiveCredentialOptions", //change this action
+            credentialOptions: this.cognitoUser,
           },
         });
       };
 
-      const onAttestationAvailable = async (attestation) => {
+      const onAttestationAvailable = async (customChallengeAnswer) => {
         try {
           this.setProgressMsg(
             `Attestation generated on phone is available ...`
@@ -273,15 +278,20 @@ export default {
 
           /** Change this part */
           // Send attestation result to authentication server
-          const userData = await this.sendAttestationResult(attestation);
+          let payload = {
+            user: this.cognitoUser,
+            customChallengeAnswer: customChallengeAnswer,
+          };
+          const loggedUser = await this.sendChallengeResult(payload);
+          //go to the home page
+          this.$router.push("/");
           this.$q.loading.hide();
           this.$q.notify({
-            message: `Account created for user ${userData.email}. You can now sign in`,
+            //message: `Your are now logged in`,
+            message: loggedUser,
             type: "positive",
             position: "top",
           });
-          //go to the home page
-          this.$router.push("/");
         } catch (error) {
           this.$q.loading.hide();
           this.$q.notify({

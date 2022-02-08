@@ -139,6 +139,9 @@ export default {
       step: 1,
       credentialOptions: null,
       params: null,
+
+      cognitoUser: null,
+      customChallengeAnswer: {},
     };
   },
   watch: {},
@@ -149,7 +152,7 @@ export default {
       "callAuthenticator",
 
       "onSubmitLoginForm",
-      "getCredentialInNavigator"
+      "getCredentialInNavigator",
     ]),
 
     setProgressMsg(message) {
@@ -261,6 +264,106 @@ export default {
         console.log("WssClient already is already in state");
       }
     },
+    getChallenge(event) {
+      event.preventDefault();
+      console.log("In function getChallenge");
+
+      /******************************************************
+       * WebSocket events callbacks
+       *******************************************************/
+      const onOpenCallback = () => {
+        this.setProgressMsg("Websocket connection openned...");
+      };
+
+      const onConnectionIdCallback = (connectionId) => {
+        console.log(`My Connection ID : ${connectionId}`);
+
+        // Send message to ask cognitoUser
+        if (wssClient) {
+          this.setProgressMsg(
+            `Connection established. Waiting for cognitoUser...`
+          );
+          wssClient.sendMessage({
+            to: this.params.connectionId,
+            message: { nextAction: "getCredentialOptions", data: {} },
+          });
+        } else {
+          this.$q.loading.hide();
+          throw new Error("websocket client is null or is not openned");
+        }
+      };
+
+      const onCloseCallback = () => {
+        this.setProgressMsg(`Websocket connection closed !`);
+        this.$q.loading.hide();
+        wssClient = null;
+      };
+
+      const onReceiveCredentialOptions = async (cognitoUser) => {
+        this.setProgressMsg(`CognitoUser available. Get the challenge...`);
+        this.cognitoUser = cognitoUser;
+
+        try {
+          await this.onSubmitLoginForm(this.params); //hahahahaha j'ai lancé cette fonction à nouveau, elle avait déjà été lancée au niveau du desktop. 
+          //je cherche à garder le SignInOption dans le state car getCredentialInNavigator a besoin de ca
+          // GetChallenge with available signIn options
+          const customChallengeAnswer = await this.getCredentialInNavigator();
+          
+          // Send back info to desktop view
+          if (wssClient) {
+            this.setProgressMsg("Sending back public keys to caller ...");
+            wssClient.sendMessage({
+              to: this.params.connectionId,
+              message: {
+                nextAction: "onAttestationAvailable", //change this action
+                challenge: { ...customChallengeAnswer },
+              },
+            });
+            this.$q.loading.hide();
+            this.$q.notify({
+              message: `CustomChallenge Available ${customChallengeAnswer}. Thank you`,
+              type: "positive",
+              position: "top",
+            });
+            // Do the correct action here
+            console.error(
+              `William stp corrige this.step=3 avec la bonne action a faire`
+            );
+            this.step = 2;
+            setTimeout(() => {
+              window.close();
+            }, 5000);
+            this.$router.push("/");
+          } else {
+            this.$q.loading.hide();
+            throw new Error("Websocket client is null");
+          }
+        } catch (error) {
+          this.$q.loading.hide();
+          this.$q.notify({
+            message: error.message,
+            type: "negative",
+            position: "top",
+          });
+          throw new Error(error);
+        }
+      };
+
+      if (!wssClient) {
+        // Show message
+        this.setProgressMsg("Openning websocket connection...");
+        wssClient = new WebSocketClient(
+          onOpenCallback,
+          onConnectionIdCallback,
+          onCloseCallback,
+          () => {}, // onGetCredentialOptions
+          onReceiveCredentialOptions,
+          () => {} // onAttestationAvailable
+        );
+      } else {
+        console.log("WssClient already is already in state");
+      }
+    },
     async login(event) {
       event.preventDefault();
       this.$q.loading.show({
@@ -286,34 +389,36 @@ export default {
 
         /** ici tout est ok il faut renvoyer les infos au desktop */
         // Send back info to desktop view
-          if (wssClient) {
-            this.setProgressMsg("Sending back customChallengeAnswer to caller ...");
-            wssClient.sendMessage({
-              to: this.params.connectionId,
-              message: {
-                nextAction: "onAttestationAvailable",
-                attestation: { ...attestation },
-              },
-            });
-            this.$q.loading.hide();
-            this.$q.notify({
-              message: `Public key generated for user ${this.params.email}. Thank you`,
-              type: "positive",
-              position: "top",
-            });
-            // Do the correct action here
-            console.error(
-              `William stp corrige this.step=3 avec la bonne action a faire`
-            );
-            this.step = 2;
-            setTimeout(() => {
-              window.close();
-            }, 5000);
-            this.$router.push("/auth/login");
-          } else {
-            this.$q.loading.hide();
-            throw new Error("Websocket client is null");
-          }
+        if (wssClient) {
+          this.setProgressMsg(
+            "Sending back customChallengeAnswer to caller ..."
+          );
+          wssClient.sendMessage({
+            to: this.params.connectionId,
+            message: {
+              nextAction: "onAttestationAvailable",
+              attestation: { ...attestation },
+            },
+          });
+          this.$q.loading.hide();
+          this.$q.notify({
+            message: `Public key generated for user ${this.params.email}. Thank you`,
+            type: "positive",
+            position: "top",
+          });
+          // Do the correct action here
+          console.error(
+            `William stp corrige this.step=3 avec la bonne action a faire`
+          );
+          this.step = 2;
+          setTimeout(() => {
+            window.close();
+          }, 5000);
+          this.$router.push("/auth/login");
+        } else {
+          this.$q.loading.hide();
+          throw new Error("Websocket client is null");
+        }
         this.$router.push("/");
       } catch (error) {
         this.$q.loading.hide();
