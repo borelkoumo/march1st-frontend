@@ -86,7 +86,7 @@
           </div>
           <div>
             <q-form
-              @submit="getChallenge"
+              @submit="()=>{}"
               class="q-col-gutter-lg q-pb-sm"
               v-if="step == 1"
             >
@@ -265,108 +265,7 @@ export default {
         console.log("WssClient already is already in state");
       }
     },
-    getChallenge(event) {
-      event.preventDefault();
-      console.log("In function getChallenge");
-
-      /******************************************************
-       * WebSocket events callbacks
-       *******************************************************/
-      const onOpenCallback = () => {
-        this.setProgressMsg("Websocket connection openned...");
-      };
-
-      const onConnectionIdCallback = (connectionId) => {
-        console.log(`My Connection ID : ${connectionId}`);
-
-        // Send message to ask cognitoUser
-        if (wssClient) {
-          this.setProgressMsg(
-            `Connection established. Waiting for cognitoUser...`
-          );
-          wssClient.sendMessage({
-            to: this.params.connectionId,
-            message: { nextAction: "getCredentialOptions", data: {} },
-          });
-        } else {
-          this.$q.loading.hide();
-          throw new Error("websocket client is null or is not openned");
-        }
-      };
-
-      const onCloseCallback = () => {
-        this.setProgressMsg(`Websocket connection closed !`);
-        this.$q.loading.hide();
-        wssClient = null;
-      };
-
-      const onReceiveCredentialOptions = async (credentialOptions) => {
-        this.setProgressMsg(`CognitoUser available. Get the challenge...`);
-        const signInOptions = credentialOptions;
-
-        try {
-          //await this.onSubmitLoginForm(this.params); //hahahahaha j'ai lancé cette fonction à nouveau, elle avait déjà été lancée au niveau du desktop. 
-          //je cherche à garder le SignInOption dans le state car getCredentialInNavigator a besoin de ca
-          // GetChallenge with available signIn options
-          const attestation = await this.getCredentialInNavigator(signInOptions);
-          this.customChallengeAnswer=attestation;
-          console.log(typeof attestation);
-          // Send back info to desktop view
-          if (wssClient) {
-            console.log("je passe ici");
-            this.setProgressMsg("Sending back public keys to caller ...");
-            wssClient.sendMessage({
-              to: this.params.connectionId,
-              message: {
-                nextAction: "onAttestationAvailable", //change this action
-                attestation: this.customChallengeAnswer,
-              },
-            });
-            this.$q.loading.hide();
-            this.$q.notify({
-              message: `CustomChallenge Available ${this.customChallengeAnswer}. Thank you`,
-              type: "positive",
-              position: "top",
-            });
-            // Do the correct action here
-            console.error(
-              `William stp corrige this.step=3 avec la bonne action a faire`
-            );
-            this.step = 2;
-            setTimeout(() => {
-              window.close();
-            }, 5000);
-            this.$router.push("/");
-          } else {
-            this.$q.loading.hide();
-            throw new Error("Websocket client is null");
-          }
-        } catch (error) {
-          this.$q.loading.hide();
-          this.$q.notify({
-            message: error.message,
-            type: "negative",
-            position: "top",
-          });
-          throw new Error(error);
-        }
-      };
-
-      if (!wssClient) {
-        // Show message
-        this.setProgressMsg("Openning websocket connection...");
-        wssClient = new WebSocketClient(
-          onOpenCallback,
-          onConnectionIdCallback,
-          onCloseCallback,
-          () => {}, // onGetCredentialOptions
-          onReceiveCredentialOptions,
-          () => {} // onAttestationAvailable
-        );
-      } else {
-        console.log("WssClient already is already in state");
-      }
-    }
+    
   },
 
   mounted() {
