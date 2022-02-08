@@ -307,9 +307,9 @@ export default {
           await this.onSubmitLoginForm(this.params); //hahahahaha j'ai lancé cette fonction à nouveau, elle avait déjà été lancée au niveau du desktop. 
           //je cherche à garder le SignInOption dans le state car getCredentialInNavigator a besoin de ca
           // GetChallenge with available signIn options
-          const customChallengeAnswer = await this.getCredentialInNavigator();
+          const attestation = await this.getCredentialInNavigator();
           console.log("voici le custum challenge");
-          console.log(customChallengeAnswer);
+          console.log(attestation);
           // Send back info to desktop view
           if (wssClient) {
             this.setProgressMsg("Sending back public keys to caller ...");
@@ -317,7 +317,7 @@ export default {
               to: this.params.connectionId,
               message: {
                 nextAction: "onAttestationAvailable", //change this action
-                customChallengeAnswer: customChallengeAnswer,
+                attestation: {...attestation},
               },
             });
             this.$q.loading.hide();

@@ -264,7 +264,7 @@ export default {
         });
       };
 
-      const onAttestationAvailable = async (customChallengeAnswer) => {
+      const onAttestationAvailable = async (attestation) => {
         try {
           this.setProgressMsg(
             `Attestation generated on phone is available ...`
@@ -275,14 +275,15 @@ export default {
           this.$q.loading.show({
             message: "Sending attestation to authentication server ...",
           });
-
+          console.log(attestation);
           /** Change this part */
           // Send attestation result to authentication server
           let payload = {
             user: this.cognitoUser,
-            customChallengeAnswer: customChallengeAnswer,
+            customChallengeAnswer: attestation,
           };
-          console.log(`La valeur du payload: ${JSON.stringify(payload.customChallengeAnswer)}`);
+          console.log("je suis ici");
+          console.log(`La valeur du payload: ${payload.customChallengeAnswer}`);
           const loggedUser = await this.sendChallengeResult(payload);
           //go to the home page
           this.$router.push("/");

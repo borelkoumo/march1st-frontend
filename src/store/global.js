@@ -328,7 +328,7 @@ const actions = {
           userHandle: userHandle,
         };
         printLog("customChallengeAnswer", customChallengeAnswer);
-        return customChallengeAnswer;
+        return JSON.stringify(customChallengeAnswer);
         // to send the answer of the custom challenge
         /* customChallengeAnswer = JSON.stringify(customChallengeAnswer);
         const loggedUser = await Auth.sendCustomChallengeAnswer(
@@ -354,7 +354,7 @@ const actions = {
       let customChallengeAnswer = payload.customChallengeAnswer;
       let user=payload.user;
 
-      customChallengeAnswer = JSON.stringify(customChallengeAnswer);
+      /* customChallengeAnswer = JSON.stringify(customChallengeAnswer); */
       const loggedUser = await Auth.sendCustomChallengeAnswer(
         user,
         customChallengeAnswer
