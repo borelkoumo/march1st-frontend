@@ -290,7 +290,7 @@ const actions = {
           userHandle: userHandle,
         };
         printLog("customChallengeAnswer", customChallengeAnswer);
-        return JSON.stringify(customChallengeAnswer);
+        return customChallengeAnswer;
       } else {
         printLog(`Unable to retrieve credential response`, rawAttestation);
         return Promise.reject(`Unable to retrieve credential response`);
@@ -304,7 +304,7 @@ const actions = {
   async sendChallengeResult({ state }, payload) {
     try {
       // to send the answer of the custom challenge
-      let customChallengeAnswer = payload.customChallengeAnswer;
+      let customChallengeAnswer = JSON.stringify(payload.customChallengeAnswer);
       let user = payload.user;
 
       /* customChallengeAnswer = JSON.stringify(customChallengeAnswer); */
@@ -313,7 +313,7 @@ const actions = {
         customChallengeAnswer
       );
       printLog("User is logged in. loggedUser=", loggedUser);
-      return "User is logged in";
+      return loggedUser;
     } catch (error) {
       printLog(`Error in sendChallengeResult`, error);
       throw new Error(error);

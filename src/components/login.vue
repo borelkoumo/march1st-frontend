@@ -80,8 +80,8 @@
 
 <script>
 import QrcodeVue from "qrcode.vue";
-import { mapActions, mapGetters, mapState } from "vuex";
-import { getSignInOptions } from "../store/utils/base64";
+import { mapActions, mapState } from "vuex";
+import { getSignInOptions, printLog } from "../store/utils/base64";
 import WebSocketClient from "src/store/utils/WebSocketClient";
 let wssClient = null;
 export default {
@@ -167,6 +167,7 @@ export default {
           customChallengeAnswer: this.customChallengeAnswer,
         };
         const loggedUser = await this.sendChallengeResult(payload);
+        printLog(`Logged user`, loggedUser);
         return loggedUser;
       } catch (error) {
         throw new Error(error);
@@ -237,7 +238,7 @@ export default {
             to: to,
             message: {
               nextAction: "receiveSignInOptions",
-              signInOptions: this.cognitoUser.challengeParam
+              signInOptions: this.cognitoUser.challengeParam,
             },
           });
         } else {
@@ -256,15 +257,15 @@ export default {
           this.$q.loading.show({
             message: "Sending attestation to authentication server ...",
           });
-          console.log(attestation);
+          printLog(`Attestation`, attestation);
           /** Change this part */
           // Send attestation result to authentication server
           let payload = {
             user: this.cognitoUser,
             customChallengeAnswer: attestation,
           };
-          console.log("je suis ici");
-          console.log(`La valeur du payload: ${payload.customChallengeAnswer}`);
+          printLog("je suis ici");
+          printLog(`La valeur du payload: ${payload.customChallengeAnswer}`);
           const loggedUser = await this.sendChallengeResult(payload);
           //go to the home page
           this.$router.push("/");
