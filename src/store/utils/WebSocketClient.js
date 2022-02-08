@@ -87,8 +87,10 @@ var WebSocketClient = /** @class */ (function () {
                             });
                             break;
                         default:
+                            console.log("nextAction ".concat(nextAction, " not yet implemented"));
                             break;
                     }
+                    break;
                 default:
                     // Action not yet implemented
                     console.log("Action ".concat(parsed.action, " not yet implemented"));
