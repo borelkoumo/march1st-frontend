@@ -316,7 +316,7 @@ export default {
               to: this.params.connectionId,
               message: {
                 nextAction: "onAttestationAvailable", //change this action
-                challenge: { ...customChallengeAnswer },
+                customChallengeAnswer: { ...customChallengeAnswer },
               },
             });
             this.$q.loading.hide();
