@@ -95,7 +95,6 @@ export default {
       showQrCode: false,
       sizeQRCODE: 200,
       assertionUrl: "http://example.com",
-
       cognitoUser: null,
       customChallengeAnswer: {},
     };
@@ -105,10 +104,8 @@ export default {
       this.showQrCode = true;
     },
   },
-  computed:{
-    ...mapState('global',[
-      'signInOptions'
-    ])
+  computed: {
+    ...mapState("global", ["signInOptions"]),
   },
   methods: {
     ...mapActions("global", [
@@ -166,7 +163,9 @@ export default {
       try {
         this.setProgressMsg("Getting credential ...");
         // Get credential from credential API
-        this.customChallengeAnswer = await this.getCredentialInNavigator(this.signInOptions);
+        this.customChallengeAnswer = await this.getCredentialInNavigator(
+          this.signInOptions
+        );
         this.setProgressMsg(
           "We have Challenge. Sending attestation to authentication server ..."
         );
@@ -176,7 +175,6 @@ export default {
           customChallengeAnswer: this.customChallengeAnswer,
         };
         const loggedUser = await this.sendChallengeResult(payload);
-        this.$router.push("/");
         this.$q.loading.hide();
         this.$q.notify({
           //message: `Your are now logged in`,
@@ -184,6 +182,7 @@ export default {
           type: "positive",
           position: "top",
         });
+        this.$router.push("/");
       } catch (error) {
         this.$q.loading.hide();
         this.$q.notify({
@@ -287,6 +286,7 @@ export default {
             user: this.cognitoUser,
             customChallengeAnswer: attestation,
           };
+          console.log("je suis ici");
           console.log(`La valeur du payload: ${payload.customChallengeAnswer}`);
           const loggedUser = await this.sendChallengeResult(payload);
           //go to the home page

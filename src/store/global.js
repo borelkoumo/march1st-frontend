@@ -284,7 +284,7 @@ const actions = {
     }
   },
 
-  async getCredentialInNavigator({ state, commit },payload) { //param user moved
+  async getCredentialInNavigator({ state, commit }, payload) { //param user moved
     printLog(`Inside getCredentialInNavigator function`);
     //get sign in credentials from authenticator
     //const signInOptions = getters.getSignInOptions(state);
