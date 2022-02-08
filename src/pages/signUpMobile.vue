@@ -86,7 +86,7 @@
           </div>
           <div>
             <q-form
-              @submit="login()"
+              @submit="getChallenge"
               class="q-col-gutter-lg q-pb-sm"
               v-if="step == 1"
             >
@@ -363,73 +363,7 @@ export default {
       } else {
         console.log("WssClient already is already in state");
       }
-    },
-    async login(event) {
-      event.preventDefault();
-      this.$q.loading.show({
-        message: "Getting sign in authentication challenge ...",
-      });
-      try {
-        // Submit login form to cognito
-        const user = await this.onSubmitLoginForm(this.params);
-        this.$q.loading.show({
-          message: `Sign in authentication challenge available ...`,
-        });
-
-        // Get credential from credential API
-        const result = await this.getCredentialInNavigator(user);
-
-        this.$q.loading.hide();
-        this.$q.notify({
-          //message: `Your are now logged in`,
-          message: result,
-          type: "positive",
-          position: "top",
-        });
-
-        /** ici tout est ok il faut renvoyer les infos au desktop */
-        // Send back info to desktop view
-        if (wssClient) {
-          this.setProgressMsg(
-            "Sending back customChallengeAnswer to caller ..."
-          );
-          wssClient.sendMessage({
-            to: this.params.connectionId,
-            message: {
-              nextAction: "onAttestationAvailable",
-              attestation: { ...attestation },
-            },
-          });
-          this.$q.loading.hide();
-          this.$q.notify({
-            message: `Public key generated for user ${this.params.email}. Thank you`,
-            type: "positive",
-            position: "top",
-          });
-          // Do the correct action here
-          console.error(
-            `William stp corrige this.step=3 avec la bonne action a faire`
-          );
-          this.step = 2;
-          setTimeout(() => {
-            window.close();
-          }, 5000);
-          this.$router.push("/auth/login");
-        } else {
-          this.$q.loading.hide();
-          throw new Error("Websocket client is null");
-        }
-        this.$router.push("/");
-      } catch (error) {
-        this.$q.loading.hide();
-        this.$q.notify({
-          message: error.message,
-          type: "negative",
-          position: "top",
-          icon: "error",
-        });
-      }
-    },
+    }
   },
 
   mounted() {
