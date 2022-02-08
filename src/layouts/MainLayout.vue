@@ -108,7 +108,7 @@
                   </q-item-section>
                   <q-item-section>
                     <q-item-label class="text-bold text-primary"
-                      >Nom d'utilisateur</q-item-label
+                      >{{userData.fullName}}</q-item-label
                     >
                     <q-item-label caption lines="1"
                       >Lorem ipsum dolor sit amet</q-item-label
@@ -152,6 +152,7 @@
                   label="Sign out"
                   no-caps
                   icon="logout"
+                  @click="logout()"
                 />
               </div>
             </q-menu>
