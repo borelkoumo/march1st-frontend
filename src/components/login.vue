@@ -254,7 +254,7 @@ export default {
         this.assertionUrl = null;
       };
 
-      //change to onGetCustumChallenge
+      //change to onGetCustomChallenge
       const onGetCredentialOptions = (to) => {
         console.log(`wssClient = ${wssClient}`);
         // Send back credentialOptions
