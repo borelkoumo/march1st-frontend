@@ -287,7 +287,6 @@ export default {
             user: this.cognitoUser,
             customChallengeAnswer: attestation,
           };
-          console.log("je suis ici");
           console.log(`La valeur du payload: ${payload.customChallengeAnswer}`);
           const loggedUser = await this.sendChallengeResult(payload);
           //go to the home page
