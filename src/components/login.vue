@@ -81,6 +81,7 @@
 <script>
 import QrcodeVue from "qrcode.vue";
 import { mapActions, mapGetters, mapState } from "vuex";
+import { base64UrlDecode, printLog } from "../store/utils/base64";
 import WebSocketClient from "src/store/utils/WebSocketClient";
 let wssClient = null;
 export default {
@@ -94,6 +95,7 @@ export default {
       step: 1,
       showQrCode: false,
       sizeQRCODE: 200,
+      challengeParam: {},
       assertionUrl: "http://example.com",
       cognitoUser: null,
       customChallengeAnswer: {},
@@ -129,22 +131,9 @@ export default {
         this.$q.loading.show({
           message: `Sign in authentication challenge available ...`,
         });
-        // Get challenge from credential API
-        /*this.customChallengeAnswer = await this.getCredentialInNavigator();
-        let payload={
-          user:this.cognitoUser,
-          customChallengeAnswer:this.customChallengeAnswer
-        }
-        const result = await this.sendChallengeResult(payload);
-        this.$q.loading.hide();
-        this.$q.notify({
-          //message: `Your are now logged in`,
-          message: result,
-          type: "positive",
-          position: "top",
-        });*/
-        await this.getChallenge();
-        //this.$router.push("/");
+        this.signInOptions = this.getSignInOptions(this.cognitoUser.challengeParam);
+        await this.signIn(this.signInOptions);
+        this.$router.push("/");
       } catch (error) {
         this.$q.loading.hide();
         this.$q.notify({
@@ -159,9 +148,10 @@ export default {
         this.step = 2;
       }
     },
-    async getChallenge() {
+
+    async signIn() {
       try {
-        this.setProgressMsg("Getting credential ...");
+        this.setProgressMsg("Getting credentials ...");
         // Get credential from credential API
         this.customChallengeAnswer = await this.getCredentialInNavigator(
           this.signInOptions
@@ -182,7 +172,6 @@ export default {
           type: "positive",
           position: "top",
         });
-        this.$router.push("/");
       } catch (error) {
         this.$q.loading.hide();
         this.$q.notify({
@@ -191,11 +180,42 @@ export default {
           position: "top",
           icon: "error",
         });
-        // signin with phone
-        await this.signInWithPhone();
-        this.showQrCode = true;
-        this.step = 2;
       }
+    },
+
+    getSignInOptions(challengeParam) {
+      // Here generate options to call custom challenge
+      // Extract challenge params
+      const challenge = base64UrlDecode(challengeParam.challenge);
+      const timeout = challengeParam.timeout;
+      const rpId = challengeParam.rpId;
+      // Allowed credentials is an Array
+      const allowCredentials = JSON.parse(challengeParam.allowCredentials);
+      printLog("allowCredentials=", allowCredentials);
+
+      //Base64url decoding of id in allowCredentials
+      if (allowCredentials instanceof Array) {
+        for (let cred of allowCredentials) {
+          if ("id" in cred) {
+            cred.id = base64UrlDecode(cred.id);
+          }
+        }
+      }
+      // allowCredentials.id = base64UrlDecode(allowCredentials.id);
+      const userVerification = challengeParam.userVerification;
+      const extensions = JSON.parse(challengeParam.extensions);
+      const sessionId = challengeParam.sessionId;
+      // Call navigator.credential.create
+      var signInOptions = {
+        challenge: challenge, //challenge was generated and sent from CreateAuthChallenge lambda trigger
+        rpId: rpId,
+        allowCredentials: allowCredentials,
+        timeout: timeout,
+        userVerification: userVerification,
+        extensions: extensions,
+      };
+      printLog("signInOptions", signInOptions);
+      printLog(`End in 'onSubmitLoginForm'`);
     },
     async signInWithPhone() {
       //event.preventDefault();

@@ -1,4 +1,5 @@
 import { webAuthnServer } from "../boot/axios";
+import { base64UrlEncode, base64UrlDecode, printLog } from "./utils/base64";
 
 // Amplify libraries
 import { Auth } from "@aws-amplify/auth";
@@ -9,8 +10,6 @@ const state = {
   cognitoUser: {},
   userId: "",
   sessionId: "",
-  credentialOptions: {},
-  signInOptions: {},
   locale: { label: "English (United States)", value: "en-US" },
 };
 
@@ -27,9 +26,6 @@ const getters = {
   getSessionId(state) {
     return state.sessionId;
   },
-  getSignInOptions(state) {
-    return state.signInOptions;
-  },
 };
 
 const mutations = {
@@ -44,9 +40,6 @@ const mutations = {
   },
   setSessionId(state, sessionId) {
     state.sessionId = sessionId;
-  },
-  setSignInOptions(state, signInOptions) {
-    state.signInOptions = signInOptions;
   },
 };
 
@@ -233,50 +226,13 @@ const actions = {
     });
 
     try {
-      const user = await Auth.signIn(payload.email);
-      printLog("SignIn result. User=", user);
-      if (user.challengeName === "CUSTOM_CHALLENGE") {
-        // Here generate options to call custom challenge
-        // Extract challenge params
-        const challenge = base64UrlDecode(user.challengeParam.challenge);
-        const timeout = user.challengeParam.timeout;
-        const rpId = user.challengeParam.rpId;
-        // Allowed credentials is an Array
-        const allowCredentials = JSON.parse(
-          user.challengeParam.allowCredentials
-        );
-        printLog("allowCredentials=", allowCredentials);
-
-        //Base64url decoding of id in allowCredentials
-        if (allowCredentials instanceof Array) {
-          for (let cred of allowCredentials) {
-            if ("id" in cred) {
-              cred.id = base64UrlDecode(cred.id);
-            }
-          }
-        }
-        // allowCredentials.id = base64UrlDecode(allowCredentials.id);
-        const userVerification = user.challengeParam.userVerification;
-        const extensions = JSON.parse(user.challengeParam.extensions);
-        const sessionId = user.challengeParam.sessionId;
-        // Call navigator.credential.create
-        var signInOptions = {
-          challenge: challenge, //challenge was generated and sent from CreateAuthChallenge lambda trigger
-          rpId: rpId,
-          allowCredentials: allowCredentials,
-          timeout: timeout,
-          userVerification: userVerification,
-          extensions: extensions,
-        };
-        printLog("signInOptions", signInOptions);
-        commit("setSignInOptions", signInOptions);
-        commit("setCognitoUser", user);
-        commit("setSessionId", sessionId);
-        printLog(`End in 'onSubmitLoginForm'`);
-        return user;
+      const cognitoUser = await Auth.signIn(payload.email);
+      printLog("SignIn result. User=", cognitoUser);
+      if (cognitoUser.challengeName === "CUSTOM_CHALLENGE") {
+        return cognitoUser;
       } else {
-        printLog(`Unknown challenge name ${user.challengeName}`);
-        return Promise.reject(`Unknown challenge name ${user.challengeName}`);
+        printLog(`Unknown challenge name ${cognitoUser.challengeName}`);
+        throw new Error(`Unknown challenge name ${cognitoUser.challengeName}`);
       }
     } catch (error) {
       printLog(`Unable to sign in`, error);
@@ -284,22 +240,25 @@ const actions = {
     }
   },
 
-  async getCredentialInNavigator({ state, commit }, payload) { //param user moved
+  async getCredentialInNavigator({ state, commit }, signInOptions) {
+    //param user moved
     printLog(`Inside getCredentialInNavigator function`);
-    //get sign in credentials from authenticator
-    //const signInOptions = getters.getSignInOptions(state);
-    
-    if (!payload) {
+    if (!signInOptions) {
       return `Sign in options unavailable. Exit`;
     }
-    //const signInOptions = JSON.parse(JSON.stringify(payload));
-    const signInOptions = payload;
-    printLog("copy of signInOptions are : ", signInOptions);
+    printLog(
+      "signInOptions before navigator.credentials.get are : ",
+      signInOptions
+    );
 
     try {
       const rawAttestation = await navigator.credentials.get({
         publicKey: signInOptions,
       });
+      printLog(
+        "signInOptions after navigator.credentials.get are : ",
+        signInOptions
+      );
       printLog("rawAttestation=", rawAttestation);
 
       /**
@@ -332,15 +291,6 @@ const actions = {
         };
         printLog("customChallengeAnswer", customChallengeAnswer);
         return JSON.stringify(customChallengeAnswer);
-        // to send the answer of the custom challenge
-        /* customChallengeAnswer = JSON.stringify(customChallengeAnswer);
-        const loggedUser = await Auth.sendCustomChallengeAnswer(
-          user,
-          customChallengeAnswer
-        );
-        printLog("User is logged in. loggedUser=", loggedUser);
-        
-        return "User is logged in"; */
       } else {
         printLog(`Unable to retrieve credential response`, rawAttestation);
         return Promise.reject(`Unable to retrieve credential response`);
@@ -355,7 +305,7 @@ const actions = {
     try {
       // to send the answer of the custom challenge
       let customChallengeAnswer = payload.customChallengeAnswer;
-      let user=payload.user;
+      let user = payload.user;
 
       /* customChallengeAnswer = JSON.stringify(customChallengeAnswer); */
       const loggedUser = await Auth.sendCustomChallengeAnswer(
@@ -363,7 +313,7 @@ const actions = {
         customChallengeAnswer
       );
       printLog("User is logged in. loggedUser=", loggedUser);
-      
+
       return "User is logged in";
     } catch (error) {
       printLog(`Error in sendChallengeResult`, error);
@@ -432,56 +382,6 @@ function _removeEmpty(obj) {
       _removeEmpty(obj[key]);
     }
   }
-}
-
-/**
- * Base64 url encodes an array buffer
- * @param {ArrayBuffer} arrayBuffer
- */
-const base64UrlEncode = (arrayBuffer) => {
-  if (!arrayBuffer || arrayBuffer.length == 0) {
-    return undefined;
-  }
-
-  return btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer)))
-    .replace(/=/g, "")
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_");
-};
-
-/**
- * Base64 url decode
- * @param {String} base64UrlString
- */
-const base64UrlDecode = (base64UrlString) => {
-  let input = base64UrlString.replace(/-/g, "+").replace(/_/g, "/");
-  let diff = input.length % 4;
-  if (!diff) {
-    while (diff) {
-      input += "=";
-      diff--;
-    }
-  }
-  let matob = atob(input);
-  const val = Uint8Array.from(matob, (c) => c.charCodeAt(0));
-  return val;
-};
-
-/**
- * Logs a object to console
- * @param {string} name object name
- * @param {string} object object
- */
-function printLog(name, object) {
-  if (isJSON(object)) {
-    console.log(name + " --- " + JSON.stringify(object, null, 2));
-  } else {
-    console.log(name, object);
-  }
-}
-
-function isJSON(obj) {
-  return obj !== undefined && obj !== null && obj.constructor == Object;
 }
 
 export default {
