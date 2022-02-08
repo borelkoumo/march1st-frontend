@@ -301,7 +301,7 @@ const actions = {
     }
   },
 
-  async sendChallengeResult({ state }, payload) {
+  async sendChallengeResult({ commit, state }, payload) {
     try {
       // to send the answer of the custom challenge
       let customChallengeAnswer = JSON.stringify(payload.customChallengeAnswer);
@@ -313,6 +313,7 @@ const actions = {
         customChallengeAnswer
       );
       printLog("User is logged in. loggedUser=", loggedUser);
+      commit('setUserData',loggedUser);
       return loggedUser;
     } catch (error) {
       printLog(`Error in sendChallengeResult`, error);
@@ -320,9 +321,10 @@ const actions = {
     }
   },
 
-  async logoutUser() {
+  async logoutUser({commit}) {
     try {
       await Auth.signOut();
+      commit('setUserData',{});
       return true;
     } catch (error) {
       printLog(`Error signing out = ${error.message}`);

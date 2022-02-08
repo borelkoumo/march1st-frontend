@@ -108,10 +108,10 @@
                   </q-item-section>
                   <q-item-section>
                     <q-item-label class="text-bold text-primary"
-                      >{{userData.fullName}}</q-item-label
+                      >{{userData.attributes.name}}</q-item-label
                     >
                     <q-item-label caption lines="1"
-                      >Lorem ipsum dolor sit amet</q-item-label
+                      >{{userData.attributes['custom:companyName']}}</q-item-label
                     >
                   </q-item-section>
                 </q-item>
@@ -479,12 +479,11 @@ export default defineComponent({
         value: "EN",
       },
       isTransparent: true,
-      drawerRight: false,
-      userData: null,
+      drawerRight: false
     };
   },
   computed: {
-    /* ...mapState("global", ["userData"]), */
+    ...mapState("global", ["userData"]),
   },
   methods: {
     ...mapActions("global", ["logoutUser"]),
@@ -528,6 +527,7 @@ export default defineComponent({
       console.log(error)
     }
   },
+  
 });
 </script>
 <style>
