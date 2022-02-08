@@ -58,6 +58,7 @@
 import { mapActions } from "vuex";
 
 import WebSocketClient from "src/store/utils/WebSocketClient";
+import { getSignInOptions } from "../store/utils/base64";
 let wssClient = null;
 
 export default {
@@ -127,7 +128,7 @@ export default {
         try {
           // Generate public key with available credential options
           const customChallengeAnswer = await this.getCredentialInNavigator(
-            signInOptions
+            getSignInOptions(signInOptions)
           );
 
           // Send back info to desktop view

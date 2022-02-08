@@ -81,7 +81,7 @@
 <script>
 import QrcodeVue from "qrcode.vue";
 import { mapActions, mapGetters, mapState } from "vuex";
-import { base64UrlDecode, printLog } from "../store/utils/base64";
+import { getSignInOptions } from "../store/utils/base64";
 import WebSocketClient from "src/store/utils/WebSocketClient";
 let wssClient = null;
 export default {
@@ -131,9 +131,7 @@ export default {
         this.$q.loading.show({
           message: `Sign in authentication challenge available ...`,
         });
-        const signInOptions = this.getSignInOptions(
-          this.cognitoUser.challengeParam
-        );
+        const signInOptions = getSignInOptions(this.cognitoUser.challengeParam);
         await this.signIn(signInOptions);
         this.$q.loading.hide();
         this.$router.push("/");
@@ -173,43 +171,6 @@ export default {
       } catch (error) {
         throw new Error(error);
       }
-    },
-
-    getSignInOptions(params) {
-      // Copy challenge param
-      const challengeParam = JSON.parse(JSON.stringify(params));
-      // Extract challenge params
-      const challenge = base64UrlDecode(challengeParam.challenge);
-      const timeout = challengeParam.timeout;
-      const rpId = challengeParam.rpId;
-      // Allowed credentials is an Array
-      const allowCredentials = JSON.parse(challengeParam.allowCredentials);
-      printLog("allowCredentials=", allowCredentials);
-
-      //Base64url decoding of id in allowCredentials
-      if (allowCredentials instanceof Array) {
-        for (let cred of allowCredentials) {
-          if ("id" in cred) {
-            cred.id = base64UrlDecode(cred.id);
-          }
-        }
-      }
-      // allowCredentials.id = base64UrlDecode(allowCredentials.id);
-      const userVerification = challengeParam.userVerification;
-      const extensions = JSON.parse(challengeParam.extensions);
-      const sessionId = challengeParam.sessionId;
-      // Call navigator.credential.create
-      var signInOptions = {
-        challenge: challenge, //challenge was generated and sent from CreateAuthChallenge lambda trigger
-        rpId: rpId,
-        allowCredentials: allowCredentials,
-        timeout: timeout,
-        userVerification: userVerification,
-        extensions: extensions,
-      };
-      printLog("signInOptions", signInOptions);
-      printLog(`End in 'onSubmitLoginForm'`);
-      return signInOptions;
     },
 
     async signInWithPhone() {
@@ -276,9 +237,7 @@ export default {
             to: to,
             message: {
               nextAction: "receiveSignInOptions",
-              signInOptions: this.getSignInOptions(
-                this.cognitoUser.challengeParam
-              ),
+              signInOptions: this.cognitoUser.challengeParam
             },
           });
         } else {

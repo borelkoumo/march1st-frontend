@@ -48,4 +48,39 @@ function isJSON(obj) {
   return obj !== undefined && obj !== null && obj.constructor == Object;
 }
 
-export { base64UrlEncode, base64UrlDecode, printLog };
+function getSignInOptions(params) {
+  // Copy challenge param
+  const challengeParam = JSON.parse(JSON.stringify(params));
+  // Extract challenge params
+  const challenge = base64UrlDecode(challengeParam.challenge);
+  const timeout = challengeParam.timeout;
+  const rpId = challengeParam.rpId;
+  // Allowed credentials is an Array
+  const allowCredentials = JSON.parse(challengeParam.allowCredentials);
+  printLog("allowCredentials=", allowCredentials);
+
+  //Base64url decoding of id in allowCredentials
+  if (allowCredentials instanceof Array) {
+    for (let cred of allowCredentials) {
+      if ("id" in cred) {
+        cred.id = base64UrlDecode(cred.id);
+      }
+    }
+  }
+  const userVerification = challengeParam.userVerification;
+  const extensions = JSON.parse(challengeParam.extensions);
+  const sessionId = challengeParam.sessionId;
+  // Create options object
+  var signInOptions = {
+    challenge: challenge, //challenge was generated and sent from CreateAuthChallenge lambda trigger
+    rpId: rpId,
+    allowCredentials: allowCredentials,
+    timeout: timeout,
+    userVerification: userVerification,
+    extensions: extensions,
+  };
+  printLog("signInOptions", signInOptions);
+  return signInOptions;
+}
+
+export { base64UrlEncode, base64UrlDecode, printLog, getSignInOptions };
