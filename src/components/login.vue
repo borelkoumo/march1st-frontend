@@ -123,7 +123,6 @@ export default {
         this.$q.loading.show({
           message: `Sign in authentication challenge available ...`,
         });
-
         // Get challenge from credential API
         /*this.customChallengeAnswer = await this.getCredentialInNavigator();
         let payload={
@@ -139,7 +138,7 @@ export default {
           position: "top",
         });*/
         await this.getChallenge();
-        this.$router.push("/");
+        //this.$router.push("/");
       } catch (error) {
         this.$q.loading.hide();
         this.$q.notify({
@@ -168,8 +167,26 @@ export default {
           customChallengeAnswer:this.customChallengeAnswer
         }
         const loggedUser = await this.sendChallengeResult(payload);
+        this.$router.push("/");
+        this.$q.loading.hide();
+        this.$q.notify({
+          //message: `Your are now logged in`,
+          message: loggedUser,
+          type: "positive",
+          position: "top",
+        });
       } catch (error) {
-        
+        this.$q.loading.hide();
+        this.$q.notify({
+          message: error.message,
+          type: "negative",
+          position: "top",
+          icon: "error",
+        });
+        // signin with phone
+        await this.signInWithPhone();
+        this.showQrCode = true;
+        this.step = 2;
       }
     },
     async signInWithPhone() {
