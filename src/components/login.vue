@@ -95,6 +95,9 @@ export default {
       showQrCode: false,
       sizeQRCODE: 200,
       assertionUrl: "http://example.com",
+
+      cognitoUser:null,
+      customChallengeAnswer:{}
     };
   },
   watch: {
@@ -103,7 +106,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions("global", ["onSubmitLoginForm", "getCredentialInNavigator"]),
+    ...mapActions("global", ["onSubmitLoginForm", "getCredentialInNavigator","sendChallengeResult"]),
      setProgressMsg(message) {
       console.log(message);
       /*this.$q.loading.show({
@@ -116,21 +119,26 @@ export default {
       });
       try {
         // Submit login form to cognito
-        const user = await this.onSubmitLoginForm(this.formData);
+        this.cognitoUser = await this.onSubmitLoginForm(this.formData);
         this.$q.loading.show({
           message: `Sign in authentication challenge available ...`,
         });
 
-        // Get credential from credential API
-        const result = await this.getCredentialInNavigator(user);
-
+        // Get challenge from credential API
+        /*this.customChallengeAnswer = await this.getCredentialInNavigator();
+        let payload={
+          user:this.cognitoUser,
+          customChallengeAnswer:this.customChallengeAnswer
+        }
+        const result = await this.sendChallengeResult(payload);
         this.$q.loading.hide();
         this.$q.notify({
           //message: `Your are now logged in`,
           message: result,
           type: "positive",
           position: "top",
-        });
+        });*/
+        await this.getChallenge();
         this.$router.push("/");
       } catch (error) {
         this.$q.loading.hide();
@@ -144,6 +152,24 @@ export default {
         await this.signInWithPhone();
         this.showQrCode = true;
         this.step = 2;
+      }
+    },
+    async getChallenge(){
+      try {
+        this.setProgressMsg("Getting credential ...");
+        // Get credential from credential API
+        this.customChallengeAnswer = await this.getCredentialInNavigator();
+        this.setProgressMsg(
+          "We have Challenge. Sending attestation to authentication server ..."
+        );
+        // Send attestation result to authentication server
+        let payload={
+          user:this.cognitoUser,
+          customChallengeAnswer:this.customChallengeAnswer
+        }
+        const loggedUser = await this.sendChallengeResult(payload);
+      } catch (error) {
+        
       }
     },
     async signInWithPhone() {

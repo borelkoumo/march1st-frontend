@@ -284,7 +284,7 @@ const actions = {
     }
   },
 
-  async getCredentialInNavigator({ state, commit }, user) {
+  async getCredentialInNavigator({ state, commit }) { //param user moved
     printLog(`Inside getCredentialInNavigator function`);
     //get sign in credentials from authenticator
     const signInOptions = getters.getSignInOptions(state);
@@ -328,33 +328,42 @@ const actions = {
           userHandle: userHandle,
         };
         printLog("customChallengeAnswer", customChallengeAnswer);
-
+        return customChallengeAnswer;
         // to send the answer of the custom challenge
-        customChallengeAnswer = JSON.stringify(customChallengeAnswer);
+        /* customChallengeAnswer = JSON.stringify(customChallengeAnswer);
         const loggedUser = await Auth.sendCustomChallengeAnswer(
           user,
           customChallengeAnswer
         );
         printLog("User is logged in. loggedUser=", loggedUser);
-        // User is logged in
-        const newUser = await Auth.currentAuthenticatedUser();
-        let loggedUser2 = {
-          //problème ici
-          email: newUser.email,
-          name: newUser.fullName,
-          userId: newUser.id, //state.userId
-        };
-        console.log(`User logged: ${loggedUser2} `);
-        commit("setUserData", loggedUser2);
-        localStorage.setItem("user", JSON.stringify(loggedUser2));
-        return "User is logged in";
-        //return newUser.userId
+        
+        return "User is logged in"; */
       } else {
         printLog(`Unable to retrieve credential response`, rawAttestation);
         return Promise.reject(`Unable to retrieve credential response`);
       }
     } catch (error) {
       printLog(`Error in getCredentialInNavigator`, error);
+      throw new Error(error);
+    }
+  },
+
+  async sendChallengeResult({ state }, payload) {
+    try {
+      // to send the answer of the custom challenge
+      let customChallengeAnswer = payload.customChallengeAnswer;
+      let user=payload.user;
+
+      customChallengeAnswer = JSON.stringify(customChallengeAnswer);
+      const loggedUser = await Auth.sendCustomChallengeAnswer(
+        user,
+        customChallengeAnswer
+      );
+      printLog("User is logged in. loggedUser=", loggedUser);
+      
+      return "User is logged in";
+    } catch (error) {
+      printLog(`Error in sendChallengeResult`, error);
       throw new Error(error);
     }
   },
