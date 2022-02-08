@@ -282,6 +282,7 @@ export default {
             user: this.cognitoUser,
             customChallengeAnswer: customChallengeAnswer,
           };
+          console.log(`La valeur du payload: ${payload}`);
           const loggedUser = await this.sendChallengeResult(payload);
           //go to the home page
           this.$router.push("/");
