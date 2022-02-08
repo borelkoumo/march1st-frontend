@@ -14,7 +14,7 @@ exports.__esModule = true;
 // import React from "react";
 var websocket_1 = require("websocket");
 var WebSocketClient = /** @class */ (function () {
-    function WebSocketClient(onOpenCallback, onConnectionIdCallback, onCloseCallback, onGetCredentialOptions, onReceiveCredentialOptions, onAttestationAvailable) {
+    function WebSocketClient(onOpenCallback, onConnectionIdCallback, onCloseCallback, onGetCredentialOptions, onReceiveCredentialOptions, onSignUpAttestationAvailable, onGetSignInOptions, onReceiveSignInOptions, onSignInAttestationAvailable) {
         var _this = this;
         this.CONNECTION_KEY = process.env.CONNECTION_KEY_IN_LOCAL_STORAGE || "";
         this.WEBSOCKET_URL = process.env.WEBSOCKET_URL || "";
@@ -55,25 +55,40 @@ var WebSocketClient = /** @class */ (function () {
                     console.log("To : " + parsed.data.to);
                     console.log("Message : " + JSON.stringify(parsed.data.message));
                     var nextAction = parsed.data.message.nextAction;
-                    if (nextAction === "getCredentialOptions") {
-                        onGetCredentialOptions(parsed.data.from);
+                    switch (nextAction) {
+                        case "getCredentialOptions":
+                            onGetCredentialOptions(parsed.data.from);
+                            break;
+                        case "receiveCredentialOptions":
+                            onReceiveCredentialOptions(parsed.data.message.credentialOptions)
+                                .then(function () { })["catch"](function (error) {
+                                throw new Error(error);
+                            });
+                            break;
+                        case "signUpAttestationAvailable":
+                            onSignUpAttestationAvailable(parsed.data.message.attestation)
+                                .then(function () { })["catch"](function (error) {
+                                throw new Error(error);
+                            });
+                            break;
+                        case "getSignInOptions":
+                            onGetSignInOptions(parsed.data.from);
+                            break;
+                        case "receiveSignInOptions":
+                            onReceiveSignInOptions(parsed.data.message.signInOptions)
+                                .then(function () { })["catch"](function (error) {
+                                throw new Error(error);
+                            });
+                            break;
+                        case "signInAttestationAvailable":
+                            onSignInAttestationAvailable(parsed.data.message.attestation)
+                                .then(function () { })["catch"](function (error) {
+                                throw new Error(error);
+                            });
+                            break;
+                        default:
+                            break;
                     }
-                    else if (nextAction === "receiveCredentialOptions") {
-                        onReceiveCredentialOptions(parsed.data.message.credentialOptions)
-                            .then(function () { })["catch"](function (error) {
-                            throw new Error(error);
-                        });
-                    }
-                    else if (nextAction === "onAttestationAvailable") {
-                        onAttestationAvailable(parsed.data.message.attestation)
-                            .then(function () { })["catch"](function (error) {
-                            throw new Error(error);
-                        });
-                    }
-                    else {
-                        throw new Error("nextAction not defined : ".concat(nextAction));
-                    }
-                    break;
                 default:
                     // Action not yet implemented
                     console.log("Action ".concat(parsed.action, " not yet implemented"));

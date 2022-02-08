@@ -194,7 +194,7 @@ export default {
         username: "",
       },
       showQrCode: false,
-      sizeQRCODE:200,
+      sizeQRCODE: 200,
       code: null,
       credentialOptions: null,
       urlTest: null,
@@ -355,7 +355,6 @@ export default {
             connectionId,
             email,
             fullName,
-            typeAuth:"signup"
           };
           console.log(params);
 
@@ -401,22 +400,22 @@ export default {
       const onGetCredentialOptions = (to) => {
         console.log(`wssClient = ${wssClient}`);
         // Send back credentialOptions
-        // if (wssClient) {
-        this.setProgressMsg(`Sending credential options to phone...`);
-        wssClient.sendMessage({
-          to: to,
-          message: {
-            nextAction: "receiveCredentialOptions",
-            credentialOptions: this.credentialOptions,
-          },
-        });
-        // } else {
-        //   this.$q.loading.hide();
-        //   throw new Error("websocket client is null or is not openned");
-        // }
+        if (wssClient) {
+          this.setProgressMsg(`Sending credential options to phone...`);
+          wssClient.sendMessage({
+            to: to,
+            message: {
+              nextAction: "receiveCredentialOptions",
+              credentialOptions: this.credentialOptions,
+            },
+          });
+        } else {
+          this.$q.loading.hide();
+          throw new Error("websocket client is null or is not openned");
+        }
       };
 
-      const onAttestationAvailable = async (attestation) => {
+      const onSignUpAttestationAvailable = async (attestation) => {
         try {
           this.setProgressMsg(
             `Attestation generated on phone is available ...`
@@ -456,9 +455,18 @@ export default {
           onOpenCallback,
           onConnectionIdCallback,
           onCloseCallback,
+          /**
+           *  Callbacks pour le signUp
+           * */
           onGetCredentialOptions,
           () => {}, // onReceiveCredentialOptions
-          onAttestationAvailable
+          onSignUpAttestationAvailable,
+          /**
+           *  Callbacks pour le signIn
+           * */
+          () => {}, // onGetSignInOptions
+          () => {}, // onReceiveSignInOptions
+          () => {} // onSignInAttestationAvailable
         );
 
         // Set state value

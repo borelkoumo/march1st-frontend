@@ -10,9 +10,14 @@ export default class WebSocketClient {
     onOpenCallback: () => void,
     onConnectionIdCallback: (connectionId: string) => void,
     onCloseCallback: () => void,
+
     onGetCredentialOptions: (to: string) => void,
     onReceiveCredentialOptions: (credentialOptions: string) => Promise<void>,
-    onAttestationAvailable: (attestation: string) => Promise<void>
+    onSignUpAttestationAvailable: (attestation: string) => Promise<void>,
+
+    onGetSignInOptions: (to: string) => void,
+    onReceiveSignInOptions: (signInOptions: string) => Promise<void>,
+    onSignInAttestationAvailable: (attestation: string) => Promise<void>
   ) {
     console.log("Creating new wssClient");
     const client = new W3CWebSocket(this.WEBSOCKET_URL);
@@ -56,24 +61,45 @@ export default class WebSocketClient {
           console.log("To : " + parsed.data.to);
           console.log("Message : " + JSON.stringify(parsed.data.message));
           const nextAction = parsed.data.message.nextAction;
-          if (nextAction === "getCredentialOptions") {
-            onGetCredentialOptions(parsed.data.from);
-          } else if (nextAction === "receiveCredentialOptions") {
-            onReceiveCredentialOptions(parsed.data.message.credentialOptions)
-              .then(() => {})
-              .catch((error) => {
-                throw new Error(error);
-              });
-          } else if (nextAction === "onAttestationAvailable") {
-            onAttestationAvailable(parsed.data.message.attestation)
-              .then(() => {})
-              .catch((error) => {
-                throw new Error(error);
-              });
-          } else {
-            throw new Error(`nextAction not defined : ${nextAction}`);
+          switch (nextAction) {
+            case "getCredentialOptions":
+              onGetCredentialOptions(parsed.data.from);
+              break;
+            case "receiveCredentialOptions":
+              onReceiveCredentialOptions(parsed.data.message.credentialOptions)
+                .then(() => {})
+                .catch((error) => {
+                  throw new Error(error);
+                });
+              break;
+            case "signUpAttestationAvailable":
+              onSignUpAttestationAvailable(parsed.data.message.attestation)
+                .then(() => {})
+                .catch((error) => {
+                  throw new Error(error);
+                });
+              break;
+            case "getSignInOptions":
+              onGetSignInOptions(parsed.data.from);
+              break;
+            case "receiveSignInOptions":
+              onReceiveSignInOptions(parsed.data.message.signInOptions)
+                .then(() => {})
+                .catch((error) => {
+                  throw new Error(error);
+                });
+              break;
+            case "signInAttestationAvailable":
+              onSignInAttestationAvailable(parsed.data.message.attestation)
+                .then(() => {})
+                .catch((error) => {
+                  throw new Error(error);
+                });
+              break;
+
+            default:
+              break;
           }
-          break;
 
         default:
           // Action not yet implemented

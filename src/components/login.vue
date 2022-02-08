@@ -56,7 +56,7 @@
             style="text-align: center; margin: auto"
             v-if="showQrCode"
           >
-            <qrcode-vue :value="assertionUrl" :size="sizeQRCODE"></qrcode-vue>
+            <qrcode-vue :value="attestationUrl" :size="sizeQRCODE"></qrcode-vue>
           </div>
         </q-form>
         <div class="q-pt-xs">
@@ -95,13 +95,13 @@ export default {
       step: 1,
       showQrCode: false,
       sizeQRCODE: 200,
-      assertionUrl: "http://example.com",
+      attestationUrl: "http://example.com",
       cognitoUser: null,
       customChallengeAnswer: {},
     };
   },
   watch: {
-    assertionUrl: function (val) {
+    attestationUrl: function (val) {
       this.showQrCode = true;
     },
   },
@@ -218,15 +218,16 @@ export default {
       };
       printLog("signInOptions", signInOptions);
       printLog(`End in 'onSubmitLoginForm'`);
+      return signInOptions;
     },
+
     async signInWithPhone() {
-      //event.preventDefault();
       console.log("In function handleSignInWithPhone");
 
       /******************************************************
        * WebSocket events callbacks
        *******************************************************/
-      const getAssertionUrl = (connectionId, email) => {
+      const getAttestationUrl = (connectionId, email) => {
         // Verify if this env var exists
         if (process.env.MOBILE_URL) {
           const mobileUrl = new URL(process.env.MOBILE_URL);
@@ -236,7 +237,6 @@ export default {
           const params = {
             connectionId,
             email,
-            typeAuth: "signin",
           };
           console.log(params);
 
@@ -244,13 +244,13 @@ export default {
           const queryString = new URLSearchParams(params);
 
           // create Assertion URL
-          const assertionUrl = new URL(
-            `/getassertion?${queryString}`,
+          const attestationUrl = new URL(
+            `/getattestation?${queryString}`,
             mobileUrl
           );
-          console.log("Assertion URL = " + assertionUrl);
+          console.log("Attestation URL = " + attestationUrl);
 
-          return assertionUrl.toString();
+          return attestationUrl.toString();
         } else {
           throw new Error("process.env.MOBILE_URL is null");
         }
@@ -263,8 +263,8 @@ export default {
       const onConnectionIdCallback = (connectionId) => {
         this.setProgressMsg(`Connection id received : ${connectionId}`);
         // Get site URL
-        const url = getAssertionUrl(connectionId, this.formData.email);
-        this.assertionUrl = url;
+        const url = getAttestationUrl(connectionId, this.formData.email);
+        this.attestationUrl = url;
         this.$q.loading.hide();
       };
 
@@ -272,25 +272,30 @@ export default {
         this.setProgressMsg(`Websocket connection closed...`);
         this.$q.loading.hide();
         wssClient = null;
-        this.assertionUrl = null;
+        this.attestationUrl = null;
       };
 
       //change to onGetCustomChallenge
-      const onGetCredentialOptions = (to) => {
+      const onGetSignInOptions = (to) => {
         console.log(`wssClient = ${wssClient}`);
-        // Send back credentialOptions
-        // if (wssClient) {
-        this.setProgressMsg(`Sending cognitoUser to phone...`);
-        wssClient.sendMessage({
-          to: to,
-          message: {
-            nextAction: "receiveCredentialOptions", //change this action
-            credentialOptions: this.signInOptions, //change credentialOptions
-          },
-        });
+        // Send back Sign In Options
+        if (wssClient) {
+          this.setProgressMsg(`Sending challenge parameters to phone ...`);
+          wssClient.sendMessage({
+            to: to,
+            message: {
+              nextAction: "receiveSignInOptions",
+              signInOptions: this.getSignInOptions(
+                this.cognitoUser.challengeParam
+              ),
+            },
+          });
+        } else {
+          throw new Error("Websocket client is null");
+        }
       };
 
-      const onAttestationAvailable = async (attestation) => {
+      const onSignInAttestationAvailable = async (attestation) => {
         try {
           this.setProgressMsg(
             `Attestation generated on phone is available ...`
@@ -337,9 +342,18 @@ export default {
           onOpenCallback,
           onConnectionIdCallback,
           onCloseCallback,
-          onGetCredentialOptions,
+          /**
+           *  Callbacks pour le signUp
+           * */
+          () => {}, // onGetCredentialOptions
           () => {}, // onReceiveCredentialOptions
-          onAttestationAvailable
+          () => {}, // onAttestationAvailable
+          /**
+           *  Callbacks pour le signIn
+           * */
+          onGetSignInOptions,
+          () => {}, // onReceiveSignInOptions
+          onSignInAttestationAvailable
         );
 
         // Set state value

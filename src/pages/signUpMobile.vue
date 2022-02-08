@@ -8,10 +8,10 @@
         bordered
         style="min-width: 320px; border-radius: 3px"
       >
-        <q-card-section v-if="params.typeAuth === 'signup'">
+        <q-card-section>
           <div class="title-header q-pb-md q-pt-md">
             <p class="text-center" style="font-size: 18px">
-              Sign up With Mobile
+              Sign up with Mobile
             </p>
           </div>
           <div>
@@ -78,47 +78,6 @@
             </q-toolbar>
           </div>
         </q-card-section>
-        <q-card-section v-if="params.typeAuth === 'signin'">
-          <div class="title-header q-pb-md q-pt-md">
-            <p class="text-center" style="font-size: 18px">
-              Sign in With Mobile
-            </p>
-          </div>
-          <div>
-            <q-form
-              @submit="getChallenge"
-              class="q-col-gutter-lg q-pb-sm"
-              v-if="step == 1"
-            >
-              <div class="form-control">
-                <div>Your email address</div>
-                <div class="q-pt-sm">
-                  <q-input
-                    dense
-                    disable
-                    placeholder="johndoe@mycompany.com"
-                    v-model="params.email"
-                    color="grey-3"
-                    bg-color="white"
-                    outlined
-                    autofocus
-                  />
-                </div>
-              </div>
-              <div class="form-control">
-                <q-btn
-                  flat
-                  outlined
-                  label="Continue"
-                  class="bg-secondary col text-white"
-                  no-caps
-                  type="submit"
-                  style="width: 100%; border-radius: 3px"
-                />
-              </div>
-            </q-form>
-          </div>
-        </q-card-section>
       </q-card>
     </div>
   </q-page>
@@ -139,10 +98,9 @@ export default {
       step: 1,
       credentialOptions: null,
       params: null,
-
       cognitoUser: null,
       customChallengeAnswer: {},
-      signInOptions:null
+      signInOptions: null,
     };
   },
   watch: {},
@@ -151,9 +109,6 @@ export default {
       "onSubmitSignUpForm",
       "onSubmitValidationCode",
       "callAuthenticator",
-
-      "onSubmitLoginForm",
-      "getCredentialInNavigator",
     ]),
 
     setProgressMsg(message) {
@@ -178,17 +133,16 @@ export default {
         console.log(`My Connection ID : ${connectionId}`);
 
         // Send message to ask credentialOptions
+        this.setProgressMsg(
+          `Connection established. Waiting for credentialOptions...`
+        );
         if (wssClient) {
-          this.setProgressMsg(
-            `Connection established. Waiting for credentialOptions...`
-          );
           wssClient.sendMessage({
             to: this.params.connectionId,
             message: { nextAction: "getCredentialOptions", data: {} },
           });
         } else {
-          this.$q.loading.hide();
-          throw new Error("websocket client is null or is not openned");
+          throw new Error("Websocket client is null");
         }
       };
 
@@ -216,7 +170,7 @@ export default {
             wssClient.sendMessage({
               to: this.params.connectionId,
               message: {
-                nextAction: "onAttestationAvailable",
+                nextAction: "signUpAttestationAvailable",
                 attestation: { ...attestation },
               },
             });
@@ -250,123 +204,26 @@ export default {
         }
       };
 
-      if (!wssClient) {
-        // Show message
-        this.setProgressMsg("Openning websocket connection...");
-        wssClient = new WebSocketClient(
-          onOpenCallback,
-          onConnectionIdCallback,
-          onCloseCallback,
-          () => {}, // onGetCredentialOptions
-          onReceiveCredentialOptions,
-          () => {} // onAttestationAvailable
-        );
-      } else {
-        console.log("WssClient already is already in state");
-      }
+      // Show message
+      this.setProgressMsg("Openning websocket connection...");
+      wssClient = new WebSocketClient(
+        onOpenCallback,
+        onConnectionIdCallback,
+        onCloseCallback,
+        /**
+         *  Callbacks pour le signUp
+         * */
+        () => {}, // onGetCredentialOptions
+        onReceiveCredentialOptions,
+        () => {}, // onSignUpAttestationAvailable
+        /**
+         *  Callbacks pour le signIn
+         * */
+        () => {}, // onGetChallengeParams
+        () => {}, // onReceiveChallengeParams
+        () => {} // onSignInAttestationAvailable
+      );
     },
-    getChallenge(event) {
-      event.preventDefault();
-      console.log("In function getChallenge");
-
-      /******************************************************
-       * WebSocket events callbacks
-       *******************************************************/
-      const onOpenCallback = () => {
-        this.setProgressMsg("Websocket connection openned...");
-      };
-
-      const onConnectionIdCallback = (connectionId) => {
-        console.log(`My Connection ID : ${connectionId}`);
-
-        // Send message to ask cognitoUser
-        if (wssClient) {
-          this.setProgressMsg(
-            `Connection established. Waiting for cognitoUser...`
-          );
-          wssClient.sendMessage({
-            to: this.params.connectionId,
-            message: { nextAction: "getCredentialOptions", data: {} },
-          });
-        } else {
-          this.$q.loading.hide();
-          throw new Error("websocket client is null or is not openned");
-        }
-      };
-
-      const onCloseCallback = () => {
-        this.setProgressMsg(`Websocket connection closed !`);
-        this.$q.loading.hide();
-        wssClient = null;
-      };
-
-      const onReceiveCredentialOptions = async (credentialOptions) => {
-        this.setProgressMsg(`CognitoUser available. Get the challenge...`);
-        const signInOptions = credentialOptions;
-
-        try {
-          //await this.onSubmitLoginForm(this.params); //hahahahaha j'ai lancé cette fonction à nouveau, elle avait déjà été lancée au niveau du desktop. 
-          //je cherche à garder le SignInOption dans le state car getCredentialInNavigator a besoin de ca
-          // GetChallenge with available signIn options
-          const attestation = await this.getCredentialInNavigator(signInOptions);
-          this.customChallengeAnswer=attestation;
-          console.log(typeof attestation);
-          // Send back info to desktop view
-          if (wssClient) {
-            console.log("je passe ici");
-            this.setProgressMsg("Sending back public keys to caller ...");
-            wssClient.sendMessage({
-              to: this.params.connectionId,
-              message: {
-                nextAction: "onAttestationAvailable", //change this action
-                attestation: this.customChallengeAnswer,
-              },
-            });
-            this.$q.loading.hide();
-            this.$q.notify({
-              message: `CustomChallenge Available ${this.customChallengeAnswer}. Thank you`,
-              type: "positive",
-              position: "top",
-            });
-            // Do the correct action here
-            console.error(
-              `William stp corrige this.step=3 avec la bonne action a faire`
-            );
-            this.step = 2;
-            setTimeout(() => {
-              window.close();
-            }, 5000);
-            this.$router.push("/");
-          } else {
-            this.$q.loading.hide();
-            throw new Error("Websocket client is null");
-          }
-        } catch (error) {
-          this.$q.loading.hide();
-          this.$q.notify({
-            message: error.message,
-            type: "negative",
-            position: "top",
-          });
-          throw new Error(error);
-        }
-      };
-
-      if (!wssClient) {
-        // Show message
-        this.setProgressMsg("Openning websocket connection...");
-        wssClient = new WebSocketClient(
-          onOpenCallback,
-          onConnectionIdCallback,
-          onCloseCallback,
-          () => {}, // onGetCredentialOptions
-          onReceiveCredentialOptions,
-          () => {} // onAttestationAvailable
-        );
-      } else {
-        console.log("WssClient already is already in state");
-      }
-    }
   },
 
   mounted() {
