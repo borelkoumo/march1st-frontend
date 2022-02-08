@@ -302,13 +302,13 @@ export default {
 
       const onReceiveCredentialOptions = async (credentialOptions) => {
         this.setProgressMsg(`CognitoUser available. Get the challenge...`);
-        this.signInOptions = credentialOptions;
+        const signInOptions = credentialOptions;
 
         try {
           //await this.onSubmitLoginForm(this.params); //hahahahaha j'ai lancé cette fonction à nouveau, elle avait déjà été lancée au niveau du desktop. 
           //je cherche à garder le SignInOption dans le state car getCredentialInNavigator a besoin de ca
           // GetChallenge with available signIn options
-          const attestation = await this.getCredentialInNavigator(this.signInOptions);
+          const attestation = await this.getCredentialInNavigator(signInOptions);
           this.customChallengeAnswer=attestation;
           console.log(typeof attestation);
           // Send back info to desktop view
