@@ -133,33 +133,6 @@
           </div>
         </q-form>
         <q-form @submit="generatePublicKey()" class="q-pb-sm" v-if="step == 3">
-          <!-- <div class="form-control q-mb-md">
-            <q-btn
-              outlined
-              flat
-              label="Generate public key with desktop"
-              class="bg-secondary col text-white"
-              no-caps
-              type="submit"
-              style="width: 100%; border-radius: 3px"
-            />
-          </div>
-          <div
-            class="q-mt-lg form-control divider relative-position"
-            style="border-bottom: 1px solid #163053"
-          >
-            <div
-              class="absolute"
-              style="width: 100%; top: -10px; text-align: center"
-            >
-              <div
-                class="text-primary text-bold q-pl-sm q-pr-sm bg-container"
-                style="max-width: max-content; margin: auto"
-              >
-                OR
-              </div>
-            </div>
-          </div> -->
           <div style="max-width: 320px; margin: auto">
             <p class="text-center">
               Unable to signup using desktop, please use your mobile phone to
@@ -169,23 +142,12 @@
           <div class="q-pt-lg text-center">
             <span>Use mobile to continue</span>
           </div>
-          <div class="form-control q-pt-md" v-if="showQrCode == false">
-            <!-- <q-btn
-              outlined
-              flat
-              label="Generate public key with mobile"
-              class="bg-secondary col text-white"
-              no-caps
-              @click="signUpWithPhone"
-              style="width: 100%; border-radius: 3px"
-            /> -->
-          </div>
           <div
             class="q-pt-md"
             style="text-align: center; margin: auto"
             v-if="showQrCode"
           >
-            <qrcode-vue :value="assertionUrl"></qrcode-vue>
+            <qrcode-vue :value="assertionUrl" :size="sizeQRCODE"></qrcode-vue>
           </div>
         </q-form>
         <div class="" v-if="step == 4">
@@ -232,6 +194,7 @@ export default {
         username: "",
       },
       showQrCode: false,
+      sizeQRCODE:200,
       code: null,
       credentialOptions: null,
       urlTest: null,
@@ -392,6 +355,7 @@ export default {
             connectionId,
             email,
             fullName,
+            typeAuth:"signup"
           };
           console.log(params);
 
