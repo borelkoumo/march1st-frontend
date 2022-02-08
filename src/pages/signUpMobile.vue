@@ -308,8 +308,7 @@ export default {
           //je cherche à garder le SignInOption dans le state car getCredentialInNavigator a besoin de ca
           // GetChallenge with available signIn options
           const attestation = await this.getCredentialInNavigator();
-          console.log("voici le custum challenge");
-          console.log(attestation);
+          console.log(typeof attestation);
           // Send back info to desktop view
           if (wssClient) {
             console.log("je passe ici");
@@ -318,7 +317,7 @@ export default {
               to: this.params.connectionId,
               message: {
                 nextAction: "onAttestationAvailable", //change this action
-                attestation: {...attestation},
+                attestation: {...JSON.stringify(attestation)},
               },
             });
             this.$q.loading.hide();
