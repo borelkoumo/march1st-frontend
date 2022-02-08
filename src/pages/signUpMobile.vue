@@ -219,8 +219,8 @@ export default {
         /**
          *  Callbacks pour le signIn
          * */
-        () => {}, // onGetChallengeParams
-        () => {}, // onReceiveChallengeParams
+        () => {}, // onGetSignInOptions
+        () => {}, // onReceiveSignInOptions
         () => {} // onSignInAttestationAvailable
       );
     },

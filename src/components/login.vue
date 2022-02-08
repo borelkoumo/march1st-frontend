@@ -120,6 +120,7 @@ export default {
         message: message,
       });*/
     },
+
     async login() {
       this.$q.loading.show({
         message: "Getting sign in authentication challenge ...",
@@ -134,6 +135,7 @@ export default {
           this.cognitoUser.challengeParam
         );
         await this.signIn(signInOptions);
+        this.$q.loading.hide();
         this.$router.push("/");
       } catch (error) {
         this.$q.loading.hide();
@@ -143,6 +145,7 @@ export default {
           position: "top",
           icon: "error",
         });
+        console.log("Ici");
         // signin with phone
         await this.signInWithPhone();
         this.showQrCode = true;
@@ -166,21 +169,9 @@ export default {
           customChallengeAnswer: this.customChallengeAnswer,
         };
         const loggedUser = await this.sendChallengeResult(payload);
-        this.$q.loading.hide();
-        this.$q.notify({
-          //message: `Your are now logged in`,
-          message: loggedUser,
-          type: "positive",
-          position: "top",
-        });
+        return loggedUser;
       } catch (error) {
-        this.$q.loading.hide();
-        this.$q.notify({
-          message: error.message,
-          type: "negative",
-          position: "top",
-          icon: "error",
-        });
+        throw new Error(error);
       }
     },
 

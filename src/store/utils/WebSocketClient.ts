@@ -98,6 +98,7 @@ export default class WebSocketClient {
               break;
 
             default:
+              console.log(`nextAction ${nextAction} not yet implemented`);
               break;
           }
 

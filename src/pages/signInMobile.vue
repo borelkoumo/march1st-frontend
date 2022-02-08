@@ -124,7 +124,50 @@ export default {
           `SignIn options available. Getting attestation ...`
         );
         console.log(signInOptions);
-        return true;
+        try {
+          // Generate public key with available credential options
+          const customChallengeAnswer = await this.getCredentialInNavigator(
+            signInOptions
+          );
+
+          // Send back info to desktop view
+          if (wssClient) {
+            this.setProgressMsg("Sending back attestation to caller ...");
+            wssClient.sendMessage({
+              to: this.params.connectionId,
+              message: {
+                nextAction: "signInAttestationAvailable",
+                attestation: { ...customChallengeAnswer },
+              },
+            });
+            this.$q.loading.hide();
+            this.$q.notify({
+              message: `Attestation generated for user ${this.params.email}. Thank you`,
+              type: "positive",
+              position: "top",
+            });
+            // Do the correct action here
+            console.error(
+              `William stp corrige this.step=3 avec la bonne action a faire`
+            );
+            this.step = 2;
+            setTimeout(() => {
+              window.close();
+            }, 5000);
+            this.$router.push("/");
+          } else {
+            this.$q.loading.hide();
+            throw new Error("Websocket client is null");
+          }
+        } catch (error) {
+          this.$q.loading.hide();
+          this.$q.notify({
+            message: error.message,
+            type: "negative",
+            position: "top",
+          });
+          throw new Error(error);
+        }
       };
       // Show message
       this.setProgressMsg("Openning websocket connection...");
