@@ -288,10 +288,11 @@ const actions = {
     printLog(`Inside getCredentialInNavigator function`);
     //get sign in credentials from authenticator
     //const signInOptions = getters.getSignInOptions(state);
-    const signInOptions = payload;
-    if (!signInOptions) {
+    
+    if (!payload) {
       return `Sign in options unavailable. Exit`;
     }
+    const signInOptions = JSON.parse(JSON.stringify(payload));
     printLog("signInOptions are : ", signInOptions);
 
     try {
