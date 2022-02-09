@@ -271,8 +271,8 @@ export default {
           this.$router.push("/");
           this.$q.loading.hide();
           this.$q.notify({
-            //message: `Your are now logged in`,
-            message: loggedUser,
+            message: `Your are now logged in`,
+            //message: loggedUser,
             type: "positive",
             position: "top",
           });
