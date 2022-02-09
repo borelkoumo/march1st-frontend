@@ -26,10 +26,10 @@
         </div>
         <q-space />
         <div class="gt-xs">
-          <menu-item :name="'INTRODUCTION'" class="q-mx-md" />
+          <menu-item :name="'INTRODUCTION'" class="q-mx-md" href="#introduction" type="a"/>
           <menu-item :name="'SOLUTIONS'" class="q-mx-md" />
-          <menu-item :name="'CUSTOMERS'" class="q-mx-md" />
-          <menu-item :name="'PROGRAMS'" class="q-mx-md" />
+          <menu-item :name="'CUSTOMERS'" class="q-mx-md" href="#customers" type="a"/>
+          <menu-item :name="'PROGRAMS'" class="q-mx-md" href="#programs" type="a"/>
           <menu-item :name="'RESEARCHERS'" class="q-mx-md" />
         </div>
         <q-space />
@@ -520,6 +520,9 @@ export default defineComponent({
 });
 </script>
 <style>
+html {
+  scroll-behavior: smooth;
+}
 .img-logo .q-img {
   width: 150px;
 }

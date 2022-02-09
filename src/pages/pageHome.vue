@@ -1,6 +1,6 @@
 <template>
   <q-page class="">
-    <div class="section banner-header bg-primary" style="position: relative">
+    <div class="section banner-header bg-primary" style="position: relative" id="introduction">
       <div class="absolute-banner">
         <div class="text-banner flex flex-center">
           <div class="text-center">
@@ -21,9 +21,9 @@
       </div>
       <q-img src="static-banner.png" height="680px" />
     </div>
-    <section-first />
+    <section-first id="programs"/>
     <section-second />
-    <section-third />
+    <section-third id="customers"/>
     <section-four />
     <section-five />
     <section-six />
