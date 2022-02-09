@@ -44,15 +44,15 @@ const mutations = {
 };
 
 const actions = {
-  async onDefineUser({commit}){
+  async onDefineUser({ commit }) {
     try {
       let userData = await Auth.currentAuthenticatedUser({
         bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
       });
       console.log(userData);
-      commit('setUserData',userData);
+      commit("setUserData", userData);
     } catch (error) {
-      commit('setUserData',null);
+      commit("setUserData", null);
     }
   },
   async onSubmitSignUpForm({ commit }, userData) {
@@ -99,7 +99,7 @@ const actions = {
     }
   },
 
-  async onSubmitValidationCode({ commit, state }, code) {
+  async onSubmitValidationCode({ state }, code) {
     printLog(`Code = ${code}`);
     /**
      * User confirm signUp in cognito user pool
@@ -199,9 +199,7 @@ const actions = {
       }
 
       printLog(
-        `Public key with key ID ${attestation.id} generated for user ${
-          getters.getUserData(state).email
-        }`
+        `Public key with key ID ${attestation.id} generated for user ${credentialOptions.user.name}`
       );
       return attestation;
     } catch (error) {
@@ -324,7 +322,7 @@ const actions = {
         customChallengeAnswer
       );
       printLog("User is logged in. loggedUser=", loggedUser);
-      commit('setUserData',loggedUser);
+      commit("setUserData", loggedUser);
       return loggedUser;
     } catch (error) {
       printLog(`Error in sendChallengeResult`, error);
@@ -332,10 +330,10 @@ const actions = {
     }
   },
 
-  async logoutUser({commit}) {
+  async logoutUser({ commit }) {
     try {
       await Auth.signOut();
-      commit('setUserData',null);
+      commit("setUserData", null);
       return true;
     } catch (error) {
       printLog(`Error signing out = ${error.message}`);
