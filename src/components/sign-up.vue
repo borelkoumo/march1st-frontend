@@ -177,7 +177,7 @@ import QrcodeVue from "qrcode.vue";
 import { mapActions } from "vuex";
 
 import WebSocketClient from "src/store/utils/WebSocketClient";
-import { isPlatformAuthenticatorAvailable } from "src/store/utils/WebauthnUtils";
+import { isPlatformAuthenticatorAvailable } from "src/store/utils/WebAuthnUtils";
 let wssClient = null;
 
 export default {
@@ -188,7 +188,7 @@ export default {
     return {
       formData: {
         companyName: "My Company",
-        fullName: "Steve william",
+        fullName: "Steve William",
         title: "Developer",
         email: "william@mailinator.com",
         typeUser: 1,
