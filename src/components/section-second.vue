@@ -117,8 +117,8 @@ export default {
 </script>
 <style scoped>
 .content-box .text-content {
-  font-size: 15px;
-  max-width: 100%;
+  font-size: 22px;
+  max-width: 1024px;
   text-align: center;
   padding-bottom: 20px;
   margin: auto;

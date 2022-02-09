@@ -47,18 +47,10 @@
     <div class="pb-box wrap-tabs">
       <q-tab-panels v-model="tabtype" animated>
         <q-tab-panel name="public">
-          <div class="text-h6">Mails</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
-        </q-tab-panel>
-        <q-tab-panel name="scope">
-          <div class="text-h6">Alarms</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
-        </q-tab-panel>
-        <q-tab-panel name="time">
           <div class="header-section pb-box pt-box">
-            <div class="first-title">TIME</div>
+            <div class="first-title">PUBLIC VS PRIVATE</div>
             <div class="second-title relative-position">
-              TIME
+              PUBLIC VS PRIVATE
               <div
                 class="tiret-wrap relative-position"
                 style="margin: auto; width: 40px"
@@ -122,9 +114,209 @@
             </div>
           </div>
         </q-tab-panel>
+        <q-tab-panel name="scope">
+          <div class="header-section pb-box pt-box">
+            <div class="first-title">SCOPE</div>
+            <div class="second-title relative-position">
+              SCOPE
+              <div
+                class="tiret-wrap relative-position"
+                style="margin: auto; width: 40px"
+              >
+                <div
+                  class="tiret relative-position"
+                  style="margin-left: -21px; margin-top: -11px; width: 40px"
+                ></div>
+              </div>
+            </div>
+          </div>
+          <div class="content-panel">
+            <div class="flex gt-xs" style="margin-top: -95px">
+              <q-img src="vectors/frame.svg" width="400px" />
+            </div>
+            <div class="content-box relative-position">
+              <q-img
+                src="images/load-1.png"
+                width="520px"
+                style=""
+                class="gt-xs"
+              />
+              <div class="content-box-item" style="">
+                <div class="item-flex flex-center">
+                  <div class="first-elt">
+                    <q-img src="vectors/Continuous.svg" width="135px" />
+                  </div>
+                  <div class="second-elt">
+                    <div class="title">CONTINUOS</div>
+                    <div caption class="content">
+                      Continuos programs are recommanded for all customers, esp.
+                      for high value targets and dynamic/agile environnements.
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class=""
+                  style="
+                    height: 1px;
+                    border-bottom: 0px;
+                    border-style: dashed;
+                    border-color: #a3c8d4;
+                  "
+                ></div>
+                <div class="box-vs absolute text-secondary text-bold" style="">
+                  VS.
+                </div>
+                <div class="item-flex flex-center">
+                  <div class="first-elt">
+                    <q-img src="vectors/Continuous.svg" width="135px" />
+                  </div>
+                  <div class="second-elt">
+                    <div class="title">PROJECT BASED</div>
+                    <div caption class="content">
+                      Project based programs are limited to an agreed duration,
+                      similar to a traditional penetration test.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </q-tab-panel>
+        <q-tab-panel name="time">
+          <div class="header-section pb-box pt-box">
+            <div class="first-title">TIME</div>
+            <div class="second-title relative-position">
+              TIME
+              <div
+                class="tiret-wrap relative-position"
+                style="margin: auto; width: 40px"
+              >
+                <div
+                  class="tiret relative-position"
+                  style="margin-left: -21px; margin-top: -11px; width: 40px"
+                ></div>
+              </div>
+            </div>
+          </div>
+          <div class="content-panel">
+            <div class="flex gt-xs" style="margin-top: -95px">
+              <q-img src="vectors/frame.svg" width="400px" />
+            </div>
+            <div class="content-box relative-position">
+              <q-img
+                src="images/load-1.png"
+                width="520px"
+                style=""
+                class="gt-xs"
+              />
+              <div class="content-box-item" style="">
+                <div class="item-flex flex-center">
+                  <div class="first-elt">
+                    <q-img src="vectors/Continuous.svg" width="135px" />
+                  </div>
+                  <div class="second-elt">
+                    <div class="title">CONTINUOS</div>
+                    <div caption class="content">
+                      Continuos programs are recommanded for all customers, esp.
+                      for high value targets and dynamic/agile environnements.
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class=""
+                  style="
+                    height: 1px;
+                    border-bottom: 0px;
+                    border-style: dashed;
+                    border-color: #a3c8d4;
+                  "
+                ></div>
+                <div class="box-vs absolute text-secondary text-bold" style="">
+                  VS.
+                </div>
+                <div class="item-flex flex-center">
+                  <div class="first-elt">
+                    <q-img src="vectors/Project Based.svg" width="135px" />
+                  </div>
+                  <div class="second-elt">
+                    <div class="title">PROJECT BASED</div>
+                    <div caption class="content">
+                      Project based programs are limited to an agreed duration,
+                      similar to a traditional penetration test.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </q-tab-panel>
         <q-tab-panel name="budget">
-          <div class="text-h6">Movies</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          <div class="header-section pb-box pt-box">
+            <div class="first-title">BUDGET</div>
+            <div class="second-title relative-position">
+              BUDGET
+              <div
+                class="tiret-wrap relative-position"
+                style="margin: auto; width: 40px"
+              >
+                <div
+                  class="tiret relative-position"
+                  style="margin-left: -21px; margin-top: -11px; width: 40px"
+                ></div>
+              </div>
+            </div>
+          </div>
+          <div class="content-panel">
+            <div class="flex gt-xs" style="margin-top: -95px">
+              <q-img src="vectors/frame.svg" width="400px" />
+            </div>
+            <div class="content-box relative-position">
+              <q-img
+                src="images/load-1.png"
+                width="520px"
+                style=""
+                class="gt-xs"
+              />
+              <div class="content-box-item" style="">
+                <div class="item-flex flex-center">
+                  <div class="first-elt">
+                    <q-img src="vectors/Continuous.svg" width="135px" />
+                  </div>
+                  <div class="second-elt">
+                    <div class="title">CONTINUOS</div>
+                    <div caption class="content">
+                      Continuos programs are recommanded for all customers, esp.
+                      for high value targets and dynamic/agile environnements.
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class=""
+                  style="
+                    height: 1px;
+                    border-bottom: 0px;
+                    border-style: dashed;
+                    border-color: #a3c8d4;
+                  "
+                ></div>
+                <div class="box-vs absolute text-secondary text-bold" style="">
+                  VS.
+                </div>
+                <div class="item-flex flex-center">
+                  <div class="first-elt">
+                    <q-img src="vectors/Continuous.svg" width="135px" />
+                  </div>
+                  <div class="second-elt">
+                    <div class="title">PROJECT BASED</div>
+                    <div caption class="content">
+                      Project based programs are limited to an agreed duration,
+                      similar to a traditional penetration test.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </q-tab-panel>
       </q-tab-panels>
     </div>
