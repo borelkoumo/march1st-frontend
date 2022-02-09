@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex flex-center bg-container q-mt-lg" v-if="$route.name == 'login'">
     <div>
-      <login/>
+      <sign-in/>
     </div>
   </q-page>
   <q-page class="flex flex-center bg-container q-mt-lg" v-else>
@@ -14,7 +14,7 @@
 <script>
 import { mapActions } from "vuex";
 import { useMeta } from "quasar";
-import login from 'src/components/login.vue';
+import SignIn from 'src/components/sign-in.vue';
 import SignUp from 'src/components/sign-up.vue';
 
 //import WebSocketClient from 'src/utils/WebSocketClient.ts';
@@ -45,7 +45,7 @@ const metaData = {
   },
 };
 export default {
-  components: { login, SignUp },
+  components: { SignIn, SignUp },
   name: "pageAuth",
   setup() {
     useMeta(metaData), (metaData.title = "Login");

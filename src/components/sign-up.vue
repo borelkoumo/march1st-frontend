@@ -20,7 +20,7 @@
           </p>
         </div>
         <q-form
-          @submit="submitSignupForm()"
+          @submit="submitSignUpForm()"
           class="q-col-gutter-sm q-pb-sm"
           v-if="step == 1"
         >
@@ -177,6 +177,7 @@ import QrcodeVue from "qrcode.vue";
 import { mapActions } from "vuex";
 
 import WebSocketClient from "src/store/utils/WebSocketClient";
+import { isPlatformAuthenticatorAvailable } from "src/store/utils/WebauthnUtils";
 let wssClient = null;
 
 export default {
@@ -227,7 +228,7 @@ export default {
       });*/
     },
 
-    async submitSignupForm() {
+    async submitSignUpForm() {
       if (this.formData.typeUser == 2) {
         try {
           this.setProgressMsg("Submitting sign up form ...");
@@ -277,16 +278,12 @@ export default {
           type: "positive",
           position: "top",
         });
-        //this.step = 3;
         //check the navigator
-        const isNavigatorSupport =
-          typeof PublicKeyCredential == "undefined" ? false : true;
-        if (isNavigatorSupport) {
-          //on lance une fois le processus
-          this.generatePublicKey();
+        if(!isPlatformAuthenticatorAvailable() && !this.$q.platform.is.mobile) {
+          await this.signUpWithPhone();
         } else {
-          //on ouvre le QR-code ici
-          this.signUpWithPhone();
+          //on lance une fois le processus
+          await this.generatePublicKey();
         }
       } catch (error) {
         this.$q.loading.hide();

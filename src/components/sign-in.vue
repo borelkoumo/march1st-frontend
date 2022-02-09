@@ -11,7 +11,7 @@
           <p class="text-center" style="font-size: 18px">Welcome Back!</p>
         </div>
         <q-form
-          @submit="login()"
+          @submit="submitLoginForm()"
           class="q-col-gutter-lg q-pb-sm"
           v-if="step == 1"
         >
@@ -80,9 +80,12 @@
 
 <script>
 import QrcodeVue from "qrcode.vue";
+
 import { mapActions, mapState } from "vuex";
 import { getSignInOptions, printLog } from "../store/utils/base64";
 import WebSocketClient from "src/store/utils/WebSocketClient";
+import { isPlatformAuthenticatorAvailable } from "src/store/utils/WebAuthnUtils";
+
 let wssClient = null;
 export default {
   name: "login",
@@ -121,20 +124,14 @@ export default {
       });*/
     },
 
-    async login() {
+    async submitLoginForm() {
       this.$q.loading.show({
         message: "Getting sign in authentication challenge ...",
       });
       try {
         // Submit login form to cognito
         this.cognitoUser = await this.onSubmitLoginForm(this.formData);
-        this.$q.loading.show({
-          message: `Sign in authentication challenge available ...`,
-        });
-        const signInOptions = getSignInOptions(this.cognitoUser.challengeParam);
-        await this.signIn(signInOptions);
-        this.$q.loading.hide();
-        this.$router.push("/");
+        await this.signIn();
       } catch (error) {
         this.$q.loading.hide();
         this.$q.notify({
@@ -143,24 +140,55 @@ export default {
           position: "top",
           icon: "error",
         });
-        console.log("Ici");
-        // signin with phone
-        await this.signInWithPhone();
-        this.showQrCode = true;
-        this.step = 2;
       }
     },
 
-    async signIn(signInOptions) {
+    async signIn() {
+      this.$q.loading.show({
+        message: "Getting sign in authentication challenge ...",
+      });
       try {
-        this.setProgressMsg("Getting credentials ...");
+        const signInOptions = getSignInOptions(this.cognitoUser.challengeParam);
+        await this.onSignIn(signInOptions);
+        /**
+         * If we are on desktop, show QR Code
+         */
+        if (
+          !isPlatformAuthenticatorAvailable() &&
+          !this.$q.platform.is.mobile
+        ) {
+          printLog("begin sign In With Phone");
+          this.$q.loading.show({
+            message: "Signing in with phone ...",
+          });
+          // signin with phone
+          await this.signInWithPhone();
+          this.showQrCode = true;
+          this.step = 2;
+        } else {
+          printLog("You can't use QR code because you are on mobile device");
+        }
+        this.$router.push("/");
+      } catch (error) {
+        this.$q.notify({
+          message: error.message,
+          type: "negative",
+          position: "top",
+          icon: "error",
+        });
+      } finally {
+        this.$q.loading.hide();
+      }
+    },
+
+    async onSignIn(signInOptions) {
+      try {
+        this.setProgressMsg("Getting credentials in browser ...");
         // Get credential from credential API
         this.customChallengeAnswer = await this.getCredentialInNavigator(
           signInOptions
         );
-        this.setProgressMsg(
-          "We have Challenge. Sending attestation to authentication server ..."
-        );
+        this.setProgressMsg("Sending attestation to authentication server ...");
         // Send attestation result to authentication server
         let payload = {
           user: this.cognitoUser,

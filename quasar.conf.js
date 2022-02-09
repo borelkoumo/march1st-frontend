@@ -67,10 +67,18 @@ module.exports = configure(function (ctx) {
         VUE_APP_RP_RPID: "march1st.com",
         VUE_APP_RP_BACKEND: "https://backend.march1st.com/rpbackend",
 
+        // Cognito config for clients
         VUE_APP_COGNITO_USER_POOL_ID: "us-east-1_wV3vHeG4Q",
         VUE_APP_COGNITO_USER_POOL_CLIENT_ID: "4dh0qhhgjbpl8bhqra0delp84a",
         VUE_APP_COGNITO_IDENTITY_POOL_ID:
-          "us-east-1:8cceb6e1-e074-413b-a474-480967b85b40",
+        "us-east-1:8cceb6e1-e074-413b-a474-480967b85b40",
+        
+        // Cognito config for hackers
+        VUE_APP_COGNITO_HACKER_USER_POOL_ID: "us-east-1_XwT84ecxr",
+        VUE_APP_COGNITO_HACKER_USER_POOL_CLIENT_ID: "55jojfmd5ieip3gujfn7vaos5v",
+        VUE_APP_COGNITO_HACKER_IDENTITY_POOL_ID:
+          "us-east-1:7e07cfde-ad43-4e24-8f7c-0dc249998d3f",
+
         VUE_APP_COGNITO_REGION: "us-east-1",
 
         //Websocket Params
