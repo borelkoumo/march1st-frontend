@@ -44,6 +44,17 @@ const mutations = {
 };
 
 const actions = {
+  async onDefineUser({commit}){
+    try {
+      let userData = await Auth.currentAuthenticatedUser({
+        bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+      });
+      console.log(userData);
+      commit('setUserData',userData);
+    } catch (error) {
+      commit('setUserData',null);
+    }
+  },
   async onSubmitSignUpForm({ commit }, userData) {
     printLog("UserData", userData);
 

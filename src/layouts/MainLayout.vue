@@ -486,7 +486,7 @@ export default defineComponent({
     ...mapState("global", ["userData"]),
   },
   methods: {
-    ...mapActions("global", ["logoutUser"]),
+    ...mapActions("global", ["logoutUser","onDefineUser"]),
     async logout() {
       try {
         await this.logoutUser();
@@ -511,13 +511,11 @@ export default defineComponent({
     },
   },
   async beforeMount() {
-    /* try {
-      this.userData = await Auth.currentAuthenticatedUser({
-        bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
-      });
+    try {
+      await this.onDefineUser();
     } catch (error) {
       console.log(error);
-    } */
+    }
   },
 });
 </script>
