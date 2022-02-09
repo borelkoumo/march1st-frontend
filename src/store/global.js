@@ -324,7 +324,7 @@ const actions = {
   async logoutUser({commit}) {
     try {
       await Auth.signOut();
-      commit('setUserData',{});
+      commit('setUserData',null);
       return true;
     } catch (error) {
       printLog(`Error signing out = ${error.message}`);

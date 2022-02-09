@@ -107,12 +107,12 @@
                     </q-avatar>
                   </q-item-section>
                   <q-item-section>
-                    <q-item-label class="text-bold text-primary"
-                      >{{userData.attributes.name}}</q-item-label
-                    >
-                    <q-item-label caption lines="1"
-                      >{{userData.attributes['custom:companyName']}}</q-item-label
-                    >
+                    <q-item-label class="text-bold text-primary">{{
+                      userData.attributes.name
+                    }}</q-item-label>
+                    <q-item-label caption lines="1">{{
+                      userData.attributes["custom:companyName"]
+                    }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator color="info" />
@@ -479,7 +479,7 @@ export default defineComponent({
         value: "EN",
       },
       isTransparent: true,
-      drawerRight: false
+      drawerRight: false,
     };
   },
   computed: {
@@ -487,24 +487,16 @@ export default defineComponent({
   },
   methods: {
     ...mapActions("global", ["logoutUser"]),
-    logout() {
-      this.logoutUser()
-        .then((r) => {
-          this.$q.notify({
-            message: `User logged out`,
-            type: "positive",
-            position: "top",
-          });
-          this.$router.push("/auth/login");
-        })
-        .catch((err) => {
-          this.$q.notify({
-            message: err.toString(),
-            type: "negative",
-            position: "top",
-            icon: "error",
-          });
+    async logout() {
+      try {
+        await this.logoutUser();
+        this.$q.notify({
+          message: `User logged out`,
+          type: "positive",
+          position: "top",
         });
+        this.$router.push("/auth/login"); 
+      } catch (error) {}
     },
     goHome() {
       this.$router.push("/");
@@ -519,15 +511,14 @@ export default defineComponent({
     },
   },
   async beforeMount() {
-    try {
+    /* try {
       this.userData = await Auth.currentAuthenticatedUser({
         bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
       });
     } catch (error) {
-      console.log(error)
-    }
+      console.log(error);
+    } */
   },
-  
 });
 </script>
 <style>
