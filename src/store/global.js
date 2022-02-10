@@ -1,15 +1,21 @@
 import { webAuthnServer } from "../boot/axios";
-import { base64UrlEncode, base64UrlDecode, printLog } from "./utils/base64";
+import {
+  base64UrlEncode,
+  base64UrlDecode,
+  printLog,
+  formatFullName,
+  getAuthConfig,
+} from "./utils/base64";
 
 // Amplify libraries
 import { Auth } from "@aws-amplify/auth";
-import { cognitoConfig } from "../../cognitoConfig";
-Auth.configure(cognitoConfig);
+
 const state = {
   userData: {},
   cognitoUser: {},
   userId: "",
   sessionId: "",
+  typeUser: "",
   locale: { label: "English (United States)", value: "en-US" },
 };
 
@@ -26,6 +32,18 @@ const getters = {
   getSessionId(state) {
     return state.sessionId;
   },
+  getTypeUser(state) {
+    if (!state.typeUser) {
+      const s = localStorage.getItem("typeUser");
+      if (!s) {
+        return "client";
+      } else {
+        return s;
+      }
+    } else {
+      return state.typeUser;
+    }
+  },
 };
 
 const mutations = {
@@ -41,10 +59,21 @@ const mutations = {
   setSessionId(state, sessionId) {
     state.sessionId = sessionId;
   },
+  setTypeUser(state, typeUser) {
+    state.typUser = ["client", "hacker"].includes(typeUser)
+      ? typeUser
+      : "client";
+    localStorage.setItem("typeUser", typeUser);
+    Auth.configure(getAuthConfig());
+  },
 };
 
 const actions = {
   async onDefineUser({ commit }) {
+    // Configure user pool options (userPool ID, identityPoolId, etc)
+    let typeUser = localStorage.getItem("typeUser");
+    commit("setTypeUser", typeUser);
+
     try {
       let userData = await Auth.currentAuthenticatedUser({
         bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
@@ -55,25 +84,18 @@ const actions = {
       commit("setUserData", null);
     }
   },
-  async onSubmitSignUpForm({ commit }, userData) {
-    printLog("UserData", userData);
 
-    if (!window.PublicKeyCredential) {
-      return Promise.reject(
-        `WebAuthn not supported in this navigator. See https://caniuse.com/?search=webauthn`
-      );
-    }
-    /**
-     * User initiate account creation to my-app.com
-     * "Here is my fullName and email"
-     *  POST /authn/signup/init
-     */
+  async onSubmitSignUpForm({ commit, state }, userData) {
+    // Configure user pool options (userPool ID, identityPoolId, etc)
+    commit("setTypeUser", "client");
+
+    printLog("UserData", userData);
     const userAttr = {
-      name: userData.fullName,
-      email: userData.email,
+      name: formatFullName(userData.fullName),
+      email: userData.email.trim(),
       locale: state.locale.value,
-      "custom:companyName": userData.companyName,
-      "custom:title": userData.title,
+      "custom:companyName": userData.companyName.trim(),
+      "custom:title": userData.title.trim(),
       "custom:userId": "",
       "custom:joinedOn": new Date().toISOString().substring(0, 10),
     };
@@ -99,14 +121,48 @@ const actions = {
     }
   },
 
+  async onSubmitSignUpFormHacker({ commit }, userData) {
+    // Configure user pool options (userPool ID, identityPoolId, etc)
+    commit("setTypeUser", "hacker");
+
+    printLog("UserData-Hacker", userData);
+    const userAttr = {
+      email: userData.email.trim(),
+      preferred_username: userData.username.trim(),
+      locale: state.locale.value,
+      "custom:userId": "",
+      "custom:joinedOn": new Date().toISOString().substring(0, 10),
+    };
+    try {
+      const cognitoUser = await Auth.signUp({
+        username: userData.username.trim(),
+        password: "fakePassword@12345",
+        attributes: userAttr,
+      });
+      printLog("Auth.signUp Hacker SUCCESSFULL");
+      printLog("Cognito user", cognitoUser);
+
+      // Set userData with payload
+      commit("setUserData", userData);
+
+      // Set also cognitoUser
+      commit("setCognitoUser", cognitoUser);
+      return cognitoUser.codeDeliveryDetails;
+    } catch (error) {
+      printLog("Error in Auth.signUp", error);
+      throw new Error(error);
+    }
+  },
+
   async onSubmitValidationCode({ state }, code) {
     printLog(`Code = ${code}`);
     /**
      * User confirm signUp in cognito user pool
      */
     const userData = getters.getUserData(state);
+    printLog(`Auth.Auth`, Auth.Auth);
     try {
-      const status = await Auth.confirmSignUp(userData.email, code);
+      const status = await Auth.confirmSignUp(userData.username, code);
       // User is confirmed.
       printLog(`Auth.confirmSignUp status = ${status}`);
       return "Cognito account created.";
@@ -123,6 +179,7 @@ const actions = {
     const params = {
       username: userData.email,
       displayName: userData.fullName,
+      typeUser: getters.getTypeUser(state),
     };
     try {
       const result = await _queryServer(url, params);
@@ -152,12 +209,6 @@ const actions = {
   },
 
   async callAuthenticator({ state }, credOptions) {
-    if (!window.PublicKeyCredential) {
-      return Promise.reject(
-        `WebAuthn not supported in this navigator. See https://caniuse.com/?search=webauthn`
-      );
-    }
-
     // deep copy object
     const credentialOptions = JSON.parse(JSON.stringify(credOptions));
 
@@ -213,6 +264,7 @@ const actions = {
     const params = {
       sessionId: getters.getSessionId(state),
       requestOrigin: "front",
+      typeUser: getters.getTypeUser(state),
       ...attestation,
     };
     try {

@@ -11,7 +11,7 @@
           <p
             class="text-center"
             style="font-size: 18px"
-            v-if="formData.typeUser == 1"
+            v-if="typeUser == 'hacker'"
           >
             Sign up for hacker
           </p>
@@ -24,7 +24,7 @@
           class="q-col-gutter-sm q-pb-sm"
           v-if="step == 1"
         >
-          <div class="form-control" v-if="formData.typeUser == 2">
+          <div class="form-control" v-if="typeUser == 'client'">
             <div>Company Name</div>
             <div class="q-pt-sm">
               <q-input
@@ -37,7 +37,7 @@
               />
             </div>
           </div>
-          <div class="form-control" v-if="formData.typeUser == 2">
+          <div class="form-control" v-if="typeUser == 'client'">
             <div>Full Name</div>
             <div class="q-pt-sm">
               <q-input
@@ -50,7 +50,7 @@
               />
             </div>
           </div>
-          <div class="form-control" v-if="formData.typeUser == 2">
+          <div class="form-control" v-if="typeUser == 'client'">
             <div>Title</div>
             <div class="q-pt-sm">
               <q-input
@@ -63,7 +63,7 @@
               />
             </div>
           </div>
-          <div class="form-control" v-if="formData.typeUser == 1">
+          <div class="form-control" v-if="typeUser == 'hacker'">
             <div>Username/Pseudonym</div>
             <div class="q-pt-sm">
               <q-input
@@ -190,7 +190,7 @@ let wssClient = null;
 
 export default {
   name: "login",
-  props: ["typeUser"],
+  props: ["typeUser"], // hacker; client
   components: { QrcodeVue },
   data() {
     return {
@@ -199,7 +199,6 @@ export default {
         fullName: "Steve William",
         title: "Developer",
         email: "borelkoumo@mailinator.com",
-        typeUser: 1,
         username: "",
       },
       showQrCode: false,
@@ -213,9 +212,9 @@ export default {
     };
   },
   watch: {
-    typeUser: function (val) {
-      this.formData.typeUser = Number.parseInt(val, 10);
-    },
+    // typeUser: function (val) {
+    //   this.typeUser = Number.parseInt(val, 10);
+    // },
     assertionUrl: function (val) {
       // Hide spinner
       this.showSpinner = false;
@@ -229,6 +228,7 @@ export default {
   methods: {
     ...mapActions("global", [
       "onSubmitSignUpForm",
+      "onSubmitSignUpFormHacker",
       "onSubmitValidationCode",
       "getCredentialOptions",
       "callAuthenticator",
@@ -267,7 +267,7 @@ export default {
     },
 
     async submitSignUpForm() {
-      if (this.formData.typeUser == 2) {
+      if (this.typeUser == "client") {
         try {
           this.setLoadingMsg("Submitting sign up form ...");
           const codeDeliveryDetails = await this.onSubmitSignUpForm(
@@ -281,10 +281,23 @@ export default {
         } catch (error) {
           this.notifyNegative(error.message);
         }
+      } else if (this.typeUser == "hacker") {
+        try {
+          this.setLoadingMsg("Submitting sign up form ...");
+          const codeDeliveryDetails = await this.onSubmitSignUpFormHacker(
+            this.formData
+          );
+          const { AttributeName, Destination } = codeDeliveryDetails;
+          this.notifyPositive(
+            `An ${AttributeName} has been sent to ${Destination}`
+          );
+          this.step = 2;
+        } catch (error) {
+          this.notifyNegative(error.message);
+        }
       } else {
-        throw new Error(
-          `Not yet implemented for this.formData.typeUser = ${this.formData.typeUser}`
-        );
+        this.notifyNegative(`Unknown user type : ${this.typeUser}`);
+        throw new Error(`Unknown user type : ${this.typeUser}`);
       }
     },
 
@@ -471,7 +484,10 @@ export default {
   },
 
   mounted() {
-    this.formData.typeUser = Number(this.typeUser);
+    if (!["client", "hacker"].includes(this.typeUser)) {
+      this.typeUser = 'client';
+    } 
+    localStorage.setItem("typeUser", this.typeUser);
   },
 };
 </script>

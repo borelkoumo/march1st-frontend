@@ -26,10 +26,25 @@
         </div>
         <q-space />
         <div class="gt-xs">
-          <menu-item :name="'INTRODUCTION'" class="q-mx-md" href="#introduction" type="a"/>
+          <menu-item
+            :name="'INTRODUCTION'"
+            class="q-mx-md"
+            href="#introduction"
+            type="a"
+          />
           <menu-item :name="'SOLUTIONS'" class="q-mx-md" />
-          <menu-item :name="'CUSTOMERS'" class="q-mx-md" href="#customers" type="a"/>
-          <menu-item :name="'PROGRAMS'" class="q-mx-md" href="#programs" type="a"/>
+          <menu-item
+            :name="'CUSTOMERS'"
+            class="q-mx-md"
+            href="#customers"
+            type="a"
+          />
+          <menu-item
+            :name="'PROGRAMS'"
+            class="q-mx-md"
+            href="#programs"
+            type="a"
+          />
           <menu-item :name="'RESEARCHERS'" class="q-mx-md" />
         </div>
         <q-space />
@@ -174,7 +189,7 @@
                   clickable
                   v-ripple
                   class="q-pt-xs q-pb-xs"
-                  to="/auth/register/2"
+                  to="/auth/register/client"
                 >
                   <!-- <q-item-section avatar>
                     <q-avatar color="white" text-color="secondary" icon="person_outline" size="55px"/>
@@ -190,7 +205,7 @@
                   clickable
                   v-ripple
                   class="q-pt-xs q-pb-xs"
-                  to="/auth/register/1"
+                  to="/auth/register/hacker"
                 >
                   <!-- <q-item-section avatar>
                     <q-avatar color="white" text-color="secondary" icon="settings" size="55px" />
@@ -462,9 +477,6 @@
 </template>
 
 <script>
-// Amplify libraries
-import { Auth } from "@aws-amplify/auth";
-
 import menuItem from "src/components/menu-item.vue";
 import { defineComponent } from "vue";
 import { mapActions, mapState } from "vuex";
@@ -486,7 +498,7 @@ export default defineComponent({
     ...mapState("global", ["userData"]),
   },
   methods: {
-    ...mapActions("global", ["logoutUser","onDefineUser"]),
+    ...mapActions("global", ["logoutUser", "onDefineUser"]),
     async logout() {
       try {
         await this.logoutUser();
@@ -495,7 +507,7 @@ export default defineComponent({
           type: "positive",
           position: "top",
         });
-        this.$router.push("/auth/login"); 
+        this.$router.push("/auth/login");
       } catch (error) {}
     },
     goHome() {

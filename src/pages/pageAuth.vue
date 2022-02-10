@@ -1,12 +1,15 @@
 <template>
-  <q-page class="flex flex-center bg-container q-mt-lg" v-if="$route.name == 'login'">
+  <q-page
+    class="flex flex-center bg-container q-mt-lg"
+    v-if="$route.name == 'login'"
+  >
     <div>
-      <sign-in/>
+      <sign-in />
     </div>
   </q-page>
   <q-page class="flex flex-center bg-container q-mt-lg" v-else>
     <div>
-      <sign-up :typeUser="type"/>
+      <sign-up :typeUser="type" />
     </div>
   </q-page>
 </template>
@@ -14,11 +17,8 @@
 <script>
 import { mapActions } from "vuex";
 import { useMeta } from "quasar";
-import SignIn from 'src/components/sign-in.vue';
-import SignUp from 'src/components/sign-up.vue';
-
-//import WebSocketClient from 'src/utils/WebSocketClient.ts';
-//const a = window.PublicKeyCredential ? true : false;
+import SignIn from "src/components/sign-in.vue";
+import SignUp from "src/components/sign-up.vue";
 
 const metaData = {
   // sets document title
@@ -52,15 +52,15 @@ export default {
   },
   data() {
     return {
-      value:"https://example.com",
-      IS_PF_AUTH_AVAIL:false,
-      type:1
+      type: "",
     };
   },
   watch: {
-    '$route.params.type':function(val){
-      this.type=val;
-    }
+    "$route.params.type": function (val) {
+      this.type = ["client", "hacker"].includes(this.$route.params.type)
+        ? val
+        : "client";
+    },
   },
   methods: {
     ...mapActions("global", [
@@ -70,16 +70,16 @@ export default {
       "callAuthenticator",
       "getCredentialInNavigator",
     ]),
-    
   },
   mounted() {
-    if(this.$route.params.type){
-      this.type=this.$route.params.type;
+    if (["client", "hacker"].includes(this.$route.params.type)) {
+      this.type = this.$route.params.type;
+    } else {
+      this.type = "client";
     }
+    localStorage.setItem("typeUser", this.type);
   },
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
