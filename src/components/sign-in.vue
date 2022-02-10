@@ -49,7 +49,7 @@
             </p>
           </div>
           <div class="q-pt-lg text-center">
-            <span>Use mobile to continue</span>
+            <span>{{ webSocketMsg }}</span>
           </div>
           <div
             class="q-pt-md"
@@ -93,7 +93,7 @@ export default {
   data() {
     return {
       formData: {
-        email: "william46@mailinator.com",
+        email: "borelkoumo@mailinator.com",
       },
       step: 1,
       showQrCode: false,
@@ -101,11 +101,15 @@ export default {
       attestationUrl: "http://example.com",
       cognitoUser: null,
       customChallengeAnswer: {},
+      webSocketMsg: "Scan QR Code to start process",
     };
   },
   watch: {
     attestationUrl: function (val) {
       this.showQrCode = true;
+    },
+    webSocketMsg: function (val) {
+      this.webSocketMsg = val;
     },
   },
   computed: {
@@ -117,78 +121,81 @@ export default {
       "getCredentialInNavigator",
       "sendChallengeResult",
     ]),
-    setProgressMsg(message) {
-      console.log(message);
-      /*this.$q.loading.show({
+
+    setWebSocketMsg(message) {
+      printLog("WSS", message);
+      this.webSocketMsg = message;
+    },
+
+    setLoadingMsg(message) {
+      printLog(message);
+      this.$q.loading.show({
         message: message,
-      });*/
+      });
+    },
+
+    notifyPositive(message) {
+      this.$q.loading.hide();
+      this.$q.notify({
+        message: message,
+        type: "positive",
+        position: "top",
+      });
+    },
+
+    notifyNegative(message) {
+      this.$q.loading.hide();
+      this.$q.notify({
+        message: message,
+        type: "negative",
+        position: "top",
+        icon: "error",
+      });
     },
 
     async submitLoginForm() {
-      this.$q.loading.show({
-        message: "Getting sign in authentication challenge ...",
-      });
       try {
         // Submit login form to cognito
+        this.setLoadingMsg("Getting authentication challenge ...");
         this.cognitoUser = await this.onSubmitLoginForm(this.formData);
         await this.signIn();
       } catch (error) {
-        this.$q.loading.hide();
-        this.$q.notify({
-          message: error.message,
-          type: "negative",
-          position: "top",
-          icon: "error",
-        });
+        this.notifyNegative(error.message);
       }
     },
 
     async signIn() {
-      this.$q.loading.show({
-        message: "Getting sign in authentication challenge ...",
-      });
       try {
+        this.setLoadingMsg("Getting authentication options ...");
         const signInOptions = getSignInOptions(this.cognitoUser.challengeParam);
-        await this.onSignIn(signInOptions);
+        const loggedUser = await this.callAuthenticator(signInOptions);
+        this.notifyPositive(`Sucessfully logged in`);
+        printLog("Logged user", loggedUser);
+        this.$router.push("/");
+      } catch (error) {
+        this.notifyNegative(error.message);
         /**
          * If we are on desktop, show QR Code
          */
-        if (
-          !isPlatformAuthenticatorAvailable() &&
-          !this.$q.platform.is.mobile
-        ) {
-          printLog("begin sign In With Phone");
-          this.$q.loading.show({
-            message: "Signing in with phone ...",
-          });
-          // signin with phone
-          await this.signInWithPhone();
+        if (!this.$q.platform.is.mobile) {
+          // Sign in with phone
           this.showQrCode = true;
           this.step = 2;
+          await this.signInWithPhone();
         } else {
           printLog("You can't use QR code because you are on mobile device");
         }
-        this.$router.push("/");
-      } catch (error) {
-        this.$q.notify({
-          message: error.message,
-          type: "negative",
-          position: "top",
-          icon: "error",
-        });
-      } finally {
-        this.$q.loading.hide();
       }
     },
 
-    async onSignIn(signInOptions) {
+    async callAuthenticator(signInOptions) {
       try {
-        this.setProgressMsg("Getting credentials in browser ...");
+        this.setLoadingMsg("Getting credentials in browser ...");
         // Get credential from credential API
         this.customChallengeAnswer = await this.getCredentialInNavigator(
           signInOptions
         );
-        this.setProgressMsg("Sending attestation to authentication server ...");
+        this.setLoadingMsg("Sending attestation to authentication server ...");
         // Send attestation result to authentication server
         let payload = {
           user: this.cognitoUser,
@@ -203,7 +210,7 @@ export default {
     },
 
     async signInWithPhone() {
-      console.log("In function handleSignInWithPhone");
+      printLog("In function handleSignInWithPhone");
 
       /******************************************************
        * WebSocket events callbacks
@@ -212,14 +219,12 @@ export default {
         // Verify if this env var exists
         if (process.env.MOBILE_URL) {
           const mobileUrl = new URL(process.env.MOBILE_URL);
-          console.log("siteUrl = ", mobileUrl.origin);
 
           // Create params
           const params = {
             connectionId,
             email,
           };
-          console.log(params);
 
           // Create query string
           const queryString = new URLSearchParams(params);
@@ -229,8 +234,7 @@ export default {
             `/getattestation?${queryString}`,
             mobileUrl
           );
-          console.log("Attestation URL = " + attestationUrl);
-
+          printLog("Attestation URL = ", attestationUrl.toString());
           return attestationUrl.toString();
         } else {
           throw new Error("process.env.MOBILE_URL is null");
@@ -238,30 +242,28 @@ export default {
       };
 
       const onOpenCallback = () => {
-        this.setProgressMsg("Websocket connection openned...");
+        this.setWebSocketMsg("Websocket connection openned...");
       };
 
       const onConnectionIdCallback = (connectionId) => {
-        this.setProgressMsg(`Connection id received : ${connectionId}`);
+        this.setWebSocketMsg(`Connection id received : ${connectionId}`);
         // Get site URL
         const url = getAttestationUrl(connectionId, this.formData.email);
         this.attestationUrl = url;
-        this.$q.loading.hide();
       };
 
       const onCloseCallback = () => {
-        this.setProgressMsg(`Websocket connection closed...`);
-        this.$q.loading.hide();
+        this.setWebSocketMsg(`Websocket connection closed...`);
         wssClient = null;
         this.attestationUrl = null;
       };
 
       //change to onGetCustomChallenge
       const onGetSignInOptions = (to) => {
-        console.log(`wssClient = ${wssClient}`);
+        printLog(`wssClient`, wssClient);
         // Send back Sign In Options
         if (wssClient) {
-          this.setProgressMsg(`Sending challenge parameters to phone ...`);
+          this.setWebSocketMsg(`Sending signin options to phone ...`);
           wssClient.sendMessage({
             to: to,
             message: {
@@ -276,15 +278,15 @@ export default {
 
       const onSignInAttestationAvailable = async (attestation) => {
         try {
-          this.setProgressMsg(
+          this.setWebSocketMsg(
             `Attestation generated on phone is available ...`
           );
-          this.setProgressMsg(
+          this.setWebSocketMsg(
             "Sending attestation to authentication server ..."
           );
-          this.$q.loading.show({
-            message: "Sending attestation to authentication server ...",
-          });
+          this.setLoadingMsg(
+            "Sending attestation to authentication server ..."
+          );
           printLog(`Attestation`, attestation);
           /** Change this part */
           // Send attestation result to authentication server
@@ -292,54 +294,38 @@ export default {
             user: this.cognitoUser,
             customChallengeAnswer: attestation,
           };
-          printLog("je suis ici");
-          printLog(`La valeur du payload: ${payload.customChallengeAnswer}`);
+          printLog(`Custom challenge answer`, payload.customChallengeAnswer);
           const loggedUser = await this.sendChallengeResult(payload);
           //go to the home page
+          this.notifyPositive(`Your are now logged in`);
           this.$router.push("/");
-          this.$q.loading.hide();
-          this.$q.notify({
-            message: `Your are now logged in`,
-            //message: loggedUser,
-            type: "positive",
-            position: "top",
-          });
         } catch (error) {
-          this.$q.loading.hide();
-          this.$q.notify({
-            message: error.message,
-            type: "negative",
-            position: "top",
-          });
+          this.notifyNegative(error.message)
         }
       };
 
-      if (!wssClient) {
-        // Show message
-        this.setProgressMsg("Openning websocket connection...");
-        const client = new WebSocketClient(
-          onOpenCallback,
-          onConnectionIdCallback,
-          onCloseCallback,
-          /**
-           *  Callbacks pour le signUp
-           * */
-          () => {}, // onGetCredentialOptions
-          () => {}, // onReceiveCredentialOptions
-          () => {}, // onAttestationAvailable
-          /**
-           *  Callbacks pour le signIn
-           * */
-          onGetSignInOptions,
-          () => {}, // onReceiveSignInOptions
-          onSignInAttestationAvailable
-        );
+      // Show message
+      this.setWebSocketMsg("Openning websocket connection...");
+      const client = new WebSocketClient(
+        onOpenCallback,
+        onConnectionIdCallback,
+        onCloseCallback,
+        /**
+         *  Callbacks pour le signUp
+         * */
+        () => {}, // onGetCredentialOptions
+        () => {}, // onReceiveCredentialOptions
+        () => {}, // onAttestationAvailable
+        /**
+         *  Callbacks pour le signIn
+         * */
+        onGetSignInOptions,
+        () => {}, // onReceiveSignInOptions
+        onSignInAttestationAvailable
+      );
 
-        // Set state value
-        wssClient = client;
-      } else {
-        console.log("WssClient already is already in state");
-      }
+      // Set state value
+      wssClient = client;
     },
   },
 };
