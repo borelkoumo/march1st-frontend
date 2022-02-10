@@ -29,13 +29,13 @@ const routes = [
     children: [
       {
         path: "login",
-        component: () => import("pages/pageAuth.vue"),
         name: "login",
+        component: () => import("pages/pageAuth.vue"),
       },
       {
         path: "register/:type",
-        component: () => import("pages/pageAuth.vue"),
         name: "register",
+        component: () => import("pages/pageAuth.vue"),
       },
     ],
     meta: {

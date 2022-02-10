@@ -76,7 +76,7 @@
                 label="Create account"
                 class="text-secondary"
                 no-caps
-                to="/auth/register/2"
+                :to="'/auth/register/' + typeUser"
               />
             </div>
           </q-toolbar>
@@ -96,6 +96,7 @@ import WebSocketClient from "src/store/utils/WebSocketClient";
 let wssClient = null;
 export default {
   name: "login",
+  props: ["typeUser"], // hacker or client
   components: { QrcodeVue },
   data() {
     return {
@@ -339,6 +340,10 @@ export default {
       // Set state value
       wssClient = client;
     },
+  },
+
+  beforeMount() {
+    
   },
 };
 </script>

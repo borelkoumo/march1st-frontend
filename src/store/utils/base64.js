@@ -145,6 +145,7 @@ function getAuthConfig() {
 
         // OPTIONAL - Manually set the authentication flow type. Default is 'USER_SRP_AUTH'
         // authenticationFlowType: 'USER_PASSWORD_AUTH',
+        authenticationFlowType: "CUSTOM_AUTH",
 
         // OPTIONAL - Manually set key value pairs that can be passed to Cognito Lambda Triggers
         // clientMetadata: { myCustomKey: 'myCustomValue' },
@@ -204,6 +205,7 @@ function getAuthConfig() {
 
         // OPTIONAL - Manually set the authentication flow type. Default is 'USER_SRP_AUTH'
         // authenticationFlowType: 'USER_PASSWORD_AUTH',
+        authenticationFlowType: "CUSTOM_AUTH",
 
         // OPTIONAL - Manually set key value pairs that can be passed to Cognito Lambda Triggers
         // clientMetadata: { myCustomKey: 'myCustomValue' },

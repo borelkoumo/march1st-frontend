@@ -4,7 +4,7 @@
     v-if="$route.name == 'login'"
   >
     <div>
-      <sign-in />
+      <sign-in :typeUser="type" />
     </div>
   </q-page>
   <q-page class="flex flex-center bg-container q-mt-lg" v-else>
@@ -75,7 +75,13 @@ export default {
     if (["client", "hacker"].includes(this.$route.params.type)) {
       this.type = this.$route.params.type;
     } else {
-      this.type = "client";
+      // verify if we have a valid typeUser in storage
+      if (["client", "hacker"].includes(localStorage.getItem("typeUser"))) {
+        this.type = localStorage.getItem("typeUser");
+      } else {
+        this.type = "client";
+        console.log(`Valeur par defaut set dans mounted ${this.type}`);
+      }
     }
     localStorage.setItem("typeUser", this.type);
   },

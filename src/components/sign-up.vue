@@ -169,7 +169,7 @@
                 label="Sign in"
                 class="text-secondary"
                 no-caps
-                to="/auth/login"
+                to="/auth/login/"
               />
             </div>
           </q-toolbar>
@@ -190,7 +190,7 @@ let wssClient = null;
 
 export default {
   name: "login",
-  props: ["typeUser"], // hacker; client
+  props: ["typeUser"], // hacker or client
   components: { QrcodeVue },
   data() {
     return {
@@ -446,7 +446,7 @@ export default {
           );
           // Send attestation result to authentication server
           const userData = await this.sendAttestationResult(attestation);
-          this.setLoadingMsg(
+          this.notifyPositive(
             `Account created for user ${userData.email}. You can now sign in`
           );
           //on ouvre le login
@@ -483,12 +483,7 @@ export default {
     },
   },
 
-  mounted() {
-    if (!["client", "hacker"].includes(this.typeUser)) {
-      this.typeUser = 'client';
-    } 
-    localStorage.setItem("typeUser", this.typeUser);
-  },
+  mounted() {},
 };
 </script>
 

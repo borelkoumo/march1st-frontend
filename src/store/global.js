@@ -63,7 +63,9 @@ const mutations = {
     state.typUser = ["client", "hacker"].includes(typeUser)
       ? typeUser
       : "client";
-    localStorage.setItem("typeUser", typeUser);
+
+    localStorage.setItem("typeUser", state.typUser);
+    console.log(`Storage modified ${state.typUser}`);
     Auth.configure(getAuthConfig());
   },
 };
@@ -72,13 +74,14 @@ const actions = {
   async onDefineUser({ commit }) {
     // Configure user pool options (userPool ID, identityPoolId, etc)
     let typeUser = localStorage.getItem("typeUser");
+    printLog('ici, typeUser = ', typeUser)
     commit("setTypeUser", typeUser);
 
     try {
       let userData = await Auth.currentAuthenticatedUser({
         bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
       });
-      console.log(userData);
+      printLog(userData);
       commit("setUserData", userData);
     } catch (error) {
       commit("setUserData", null);
@@ -282,9 +285,7 @@ const actions = {
     /**
      * https://docs.amplify.aws/lib/auth/switch-auth/q/platform/js/#customauth-flow
      */
-    Auth.configure({
-      authenticationFlowType: "CUSTOM_AUTH",
-    });
+    // Auth.configure(getAuthConfig());
 
     try {
       const cognitoUser = await Auth.signIn(payload.email);
