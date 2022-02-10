@@ -51,6 +51,14 @@
           <div class="q-pt-lg text-center">
             <span>{{ webSocketMsg }}</span>
           </div>
+
+          <div
+            class="q-pt-md"
+            style="text-align: center; margin: auto"
+            v-if="showSpinner"
+          >
+            <q-spinner color="primary" :size="sizeQRCODE" :thickness="2" />
+          </div>
           <div
             class="q-pt-md"
             style="text-align: center; margin: auto"
@@ -84,7 +92,6 @@ import QrcodeVue from "qrcode.vue";
 import { mapActions, mapState } from "vuex";
 import { getSignInOptions, printLog } from "../store/utils/base64";
 import WebSocketClient from "src/store/utils/WebSocketClient";
-import { isPlatformAuthenticatorAvailable } from "src/store/utils/WebAuthnUtils";
 
 let wssClient = null;
 export default {
@@ -102,10 +109,14 @@ export default {
       cognitoUser: null,
       customChallengeAnswer: {},
       webSocketMsg: "Scan QR Code to start process",
+      showSpinner: false,
     };
   },
   watch: {
     attestationUrl: function (val) {
+      // Hide spinner
+      this.showSpinner = false;
+      // Show QRCode
       this.showQrCode = true;
     },
     webSocketMsg: function (val) {
@@ -179,7 +190,6 @@ export default {
          */
         if (!this.$q.platform.is.mobile) {
           // Sign in with phone
-          this.showQrCode = true;
           this.step = 2;
           await this.signInWithPhone();
         } else {
@@ -300,10 +310,12 @@ export default {
           this.notifyPositive(`Your are now logged in`);
           this.$router.push("/");
         } catch (error) {
-          this.notifyNegative(error.message)
+          this.notifyNegative(error.message);
         }
       };
 
+      // Show spinner
+      this.showSpinner = true;
       // Show message
       this.setWebSocketMsg("Openning websocket connection...");
       const client = new WebSocketClient(

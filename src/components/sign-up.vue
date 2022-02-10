@@ -145,6 +145,13 @@
           <div
             class="q-pt-md"
             style="text-align: center; margin: auto"
+            v-if="showSpinner"
+          >
+            <q-spinner color="primary" :size="sizeQRCODE" :thickness="2" />
+          </div>
+          <div
+            class="q-pt-md"
+            style="text-align: center; margin: auto"
             v-if="showQrCode"
           >
             <qrcode-vue :value="assertionUrl" :size="sizeQRCODE"></qrcode-vue>
@@ -202,6 +209,7 @@ export default {
       step: 1,
       assertionUrl: "example.com",
       webSocketMsg: "Scan QR Code to start process",
+      showSpinner: false,
     };
   },
   watch: {
@@ -209,6 +217,9 @@ export default {
       this.formData.typeUser = Number.parseInt(val, 10);
     },
     assertionUrl: function (val) {
+      // Hide spinner
+      this.showSpinner = false;
+      // Show QR Code
       this.showQrCode = true;
     },
     webSocketMsg: function (val) {
@@ -326,7 +337,6 @@ export default {
       } catch (error) {
         this.notifyNegative(error.message);
         // signup with phone
-        this.showQrCode = true;
         this.step = 3;
         await this.signUpWithPhone();
       }
@@ -433,6 +443,8 @@ export default {
         }
       };
 
+      // Show spinner
+      this.showSpinner = true;
       // Show message
       this.setWebSocketMsg("Openning websocket connection...");
       const client = new WebSocketClient(
