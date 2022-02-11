@@ -1,6 +1,8 @@
 import { Auth } from "@aws-amplify/auth";
 import { printLog, getAuthConfig } from "../../src/store/utils/base64";
-Auth.configure(getAuthConfig());
+const typeUser = localStorage.getItem("typeUser");
+  
+Auth.configure(getAuthConfig(typeUser));
 
 function goToSignUp(next) {
   next("/auth/login");

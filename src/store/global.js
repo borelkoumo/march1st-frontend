@@ -34,7 +34,6 @@ const getters = {
   },
   getTypeUser(state) {
     return state.typeUser;
-    
   },
 };
 
@@ -51,47 +50,54 @@ const mutations = {
   setSessionId(state, sessionId) {
     state.sessionId = sessionId;
   },
-  setTypeUser(state, typeUser) {
-    state.typeUser = ["client", "hacker"].includes(typeUser)
-      ? typeUser
-      : "client";
 
-    localStorage.setItem("typeUser", state.typeUser);
-    console.log(`Storage modified ${state.typeUser}`);
-    Auth.configure(getAuthConfig());
+  setTypeUser(state, typeUser) {
+    state.typeUser = typeUser;
+    localStorage.setItem("typeUser", typeUser);
+    Auth.configure(getAuthConfig(typeUser));
+    printLog(`Storage modified with typeUser ${typeUser}`);
   },
 };
 
 const actions = {
-  setTypeUser({commit,state},typeUser){
-    commit("setTypeUser",typeUser);
-    return getters.getTypeUser(state);
+  async setTypeUser({ commit, state }, typeUser) {
+    printLog(
+      `In actions.setTypeUser state.typeUser = ${state.typeUser}. New value = ${typeUser}`
+    );
+    if (!["client", "hacker"].includes(typeUser)) {
+      throw new Error(`Invalid type user in actions.setTypeUser : ${typeUser}`);
+    }
+    commit("setTypeUser", typeUser);
+    printLog(`Settypeuser executed with typeUser ${typeUser}`);
+    return typeUser;
   },
-  getTypeUser({commit,state}){
-    if (!state.typeUser) {
-      const s = localStorage.getItem("typeUser");
-      if (!s) {
-        commit('setTypeUser',"client")
-        return "client";
-      } else {
-        return s;
-      }
+
+  getTypeUser({ commit, state }) {
+    const s = localStorage.getItem("typeUser");
+    if (s) {
+      return s;
     } else {
-      return state.typeUser;
-    } 
+      if (state.typeUser) {
+        return state.typeUser;
+      } else {
+        commit("setTypeUser", "client");
+        return "client";
+      }
+    }
   },
-  async onDefineUser({ commit , state}) {
-    // Configure user pool options (userPool ID, identityPoolId, etc)
-    let typeUser = getters.getTypeUser(state);
-    printLog('onDefineUser, typeUser = ', typeUser)
-    
+
+  async loadUserData({ commit, state }) {
+    printLog("loadUserData, typeUser = ", state.typeUser);
     try {
       let userData = await Auth.currentAuthenticatedUser({
         bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
       });
-      printLog(userData);
+      printLog(`user data =`, userData);
       commit("setUserData", userData);
     } catch (error) {
+      printLog(
+        `Error in loadUserData. Maybe User is not logged in (Error message = ${error.message})`
+      );
       commit("setUserData", null);
     }
   },

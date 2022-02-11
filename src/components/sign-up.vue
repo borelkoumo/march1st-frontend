@@ -13,10 +13,10 @@
             style="font-size: 18px"
             v-if="typeUser == 'hacker'"
           >
-            Sign up for hacker
+            Sign up for HACKERS
           </p>
           <p class="text-center" style="font-size: 18px" v-else>
-            Sign up for client
+            Sign up for CLIENTS
           </p>
         </div>
         <q-form
@@ -181,7 +181,7 @@
 
 <script>
 import QrcodeVue from "qrcode.vue";
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 
 import WebSocketClient from "src/store/utils/WebSocketClient";
 import { isPlatformAuthenticatorAvailable } from "src/store/utils/WebAuthnUtils";
@@ -208,13 +208,10 @@ export default {
       assertionUrl: "example.com",
       webSocketMsg: "Scan QR Code to start process",
       showSpinner: false,
-      typeUser:""
     };
   },
   watch: {
-     typeUser: function (val) {
-       this.setTypeUser(val);
-     },
+    typeUser: async function (val) {},
     assertionUrl: function (val) {
       // Hide spinner
       this.showSpinner = false;
@@ -225,8 +222,9 @@ export default {
       this.webSocketMsg = val;
     },
   },
-  computed:{
-    ...mapGetters("global",[])
+  computed: {
+    ...mapState("global", ["typeUser"]),
+    ...mapGetters("global", []),
   },
   methods: {
     ...mapActions("global", [
@@ -237,7 +235,7 @@ export default {
       "callAuthenticator",
       "sendAttestationResult",
       "setTypeUser",
-      "getTypeUser"
+      "getTypeUser",
     ]),
 
     setWebSocketMsg(message) {
@@ -487,12 +485,8 @@ export default {
       wssClient = client;
     },
   },
-  beforeMount(){
-    this.typeUser=this.getTypeUser();
-  },
-  mounted() {
-    
-  },
+  async beforeMount() {},
+  async mounted() {},
 };
 </script>
 

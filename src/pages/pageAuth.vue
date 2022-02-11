@@ -4,12 +4,12 @@
     v-if="$route.name == 'login'"
   >
     <div>
-      <sign-in/>
+      <sign-in />
     </div>
   </q-page>
   <q-page class="flex flex-center bg-container q-mt-lg" v-else>
     <div>
-      <sign-up/>
+      <sign-up />
     </div>
   </q-page>
 </template>
@@ -19,6 +19,7 @@ import { mapActions, mapGetters } from "vuex";
 import { useMeta } from "quasar";
 import SignIn from "src/components/sign-in.vue";
 import SignUp from "src/components/sign-up.vue";
+import { printLog } from "src/store/utils/base64";
 
 const metaData = {
   // sets document title
@@ -51,33 +52,13 @@ export default {
     useMeta(metaData), (metaData.title = "Login");
   },
   data() {
-    return {
-      
-    };
+    return {};
   },
   watch: {
-    "$route.params.type": function (val) {
-      console.log("dans Watch de pageAuth : typeUser="+val);
-      this.setTypeUser(val);
-      /*if (["client", "hacker"].includes(val)) {
-        this.type = val;
-      } else {
-        // verify if we have a valid typeUser in storage
-        if (["client", "hacker"].includes(localStorage.getItem("typeUser"))) {
-          this.type = localStorage.getItem("typeUser");
-        } else {
-          this.type = "client";
-          console.log(`Valeur par defaut set dans watch ${this.type}`);
-        }
-      }
-      console.log(`Valeur de this.type set dans watch ${this.type}`);
-      console.log(
-        `Valeur de this.$route.params.type set dans watch ${val}`
-      );  //localStorage.setItem("typeUser", this.type);*/
-    },
+    "$route.params.type": function (val) {},
   },
-  computed:{
-    ...mapGetters("global",[])
+  computed: {
+    ...mapGetters("global", []),
   },
   methods: {
     ...mapActions("global", [
@@ -87,15 +68,15 @@ export default {
       "callAuthenticator",
       "getCredentialInNavigator",
       "setTypeUser",
-      "getTypeUser"
+      "getTypeUser",
     ]),
   },
-  beforeMount(){
-    
-  },
-  mounted() {
-    console.log("mounted with typeUser = "+this.getTypeUser())
-    this.setTypeUser(this.$route.params.type);
+  async beforeMount() {},
+  async mounted() {
+    if (this.$route.params.type) {
+      // If parameter is available, then set new value in state and storage
+      await this.setTypeUser(this.$route.params.type);
+    }
   },
 };
 </script>

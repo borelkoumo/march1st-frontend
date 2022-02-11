@@ -480,6 +480,7 @@
 import menuItem from "src/components/menu-item.vue";
 import { defineComponent } from "vue";
 import { mapActions, mapState, mapGetters } from "vuex";
+import { printLog } from "src/store/utils/base64";
 
 export default defineComponent({
   components: { menuItem },
@@ -496,10 +497,10 @@ export default defineComponent({
   },
   computed: {
     ...mapState("global", ["userData"]),
-    ...mapGetters("global",[])
+    ...mapGetters("global", []),
   },
   methods: {
-    ...mapActions("global", ["logoutUser", "onDefineUser"]),
+    ...mapActions("global", ["logoutUser", "loadUserData"]),
     async logout() {
       try {
         await this.logoutUser();
@@ -520,14 +521,16 @@ export default defineComponent({
       } else {
         this.isTransparent = true;
       }
-      console.log(position);
+      printLog(position);
     },
   },
   async beforeMount() {
     try {
-      await this.onDefineUser();
+      // debugger
+      await this.loadUserData();
+      // debugger
     } catch (error) {
-      console.log(error);
+      printLog(error);
     }
   },
 });

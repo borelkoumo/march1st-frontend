@@ -8,7 +8,9 @@
     >
       <q-card-section>
         <div class="title-header q-pb-md q-pt-md">
-          <p class="text-center" style="font-size: 18px">Welcome Back!</p>
+          <p class="text-center" style="font-size: 18px">
+            Welcome back, {{ formatTypeUser() }} !
+          </p>
         </div>
         <q-form
           @submit="submitLoginForm()"
@@ -76,7 +78,7 @@
                 label="Create account"
                 class="text-secondary"
                 no-caps
-                :to="'/auth/register/'+typeUser"
+                :to="'/auth/register/' + typeUser"
               />
             </div>
           </q-toolbar>
@@ -110,17 +112,13 @@ export default {
       customChallengeAnswer: {},
       webSocketMsg: "Scan QR Code to start process",
       showSpinner: false,
-      typeUser:""
     };
   },
   watch: {
-    typeUser:function(val){
-      this.setTypeUser(val);
-    },
+    typeUser: async function (val) {},
     attestationUrl: function (val) {
-      // Hide spinner
+      // Hide spinner and Show QRCode
       this.showSpinner = false;
-      // Show QRCode
       this.showQrCode = true;
     },
     webSocketMsg: function (val) {
@@ -128,8 +126,8 @@ export default {
     },
   },
   computed: {
-    ...mapState("global", ["signInOptions"]),
-    ...mapGetters("global",[])
+    ...mapState("global", ["typeUser"]),
+    ...mapGetters("global", []),
   },
   methods: {
     ...mapActions("global", [
@@ -137,8 +135,12 @@ export default {
       "getCredentialInNavigator",
       "sendChallengeResult",
       "setTypeUser",
-      "getTypeUser"
+      "getTypeUser",
     ]),
+
+    formatTypeUser() {
+      return this.typeUser.toUpperCase();
+    },
 
     setWebSocketMsg(message) {
       printLog("WSS", message);
@@ -348,10 +350,11 @@ export default {
     },
   },
 
-  beforeMount() {
-    this.typeUser=this.getTypeUser();
-    console.log(`Sign-in, Before mount: typeUser=${this.typeUser}`);
-  },
+  async beforeMount() {},
+
+  async mounted() {},
+
+  unmounted() {},
 };
 </script>
 

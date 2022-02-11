@@ -96,13 +96,13 @@ function formatFullName(string = "") {
   }
 }
 
-function getAuthConfig() {
-  let typeUser = localStorage.getItem("typeUser");
+function getAuthConfig(typeUser) {
+  //let typeUser = localStorage.getItem("typeUser");
   if (!typeUser) {
-    typeUser = "client";
+    throw new Error ('Type user cannot be null. Please provide type user in getAuthConfig()')
   }
   if (typeUser === "client") {
-    printLog(`Using CLIENT user pool`);
+    printLog(`in base64.js getAuthConfig: Using CLIENT user pool`);
     return {
       Auth: {
         // REQUIRED only for Federated Authentication - Amazon Cognito Identity Pool ID
@@ -161,7 +161,7 @@ function getAuthConfig() {
       },
     };
   } else if (typeUser === "hacker") {
-    printLog(`Using HACKER user pool`);
+    printLog(`in base64.js getAuthConfig: Using HACKER user pool`);
     return {
       Auth: {
         // REQUIRED only for Federated Authentication - Amazon Cognito Identity Pool ID
@@ -221,7 +221,7 @@ function getAuthConfig() {
       },
     };
   } else {
-    throw new Error(`Invalid typeUser ${typeUser}`);
+    throw new Error(`in base64.js getAuthConfig: Invalid typeUser ${typeUser}`);
   }
 }
 
