@@ -129,14 +129,15 @@ export default {
   },
   computed: {
     ...mapState("global", ["signInOptions"]),
-    ...mapGetters("global",["getTypeUser"])
+    ...mapGetters("global",[])
   },
   methods: {
     ...mapActions("global", [
       "onSubmitLoginForm",
       "getCredentialInNavigator",
       "sendChallengeResult",
-      "setTypeUser"
+      "setTypeUser",
+      "getTypeUser"
     ]),
 
     setWebSocketMsg(message) {
@@ -348,7 +349,7 @@ export default {
   },
 
   beforeMount() {
-    this.typeUser=this.getTypeUser;
+    this.typeUser=this.getTypeUser();
     console.log(`Sign-in, Before mount: typeUser=${this.typeUser}`);
   },
 };

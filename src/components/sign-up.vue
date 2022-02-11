@@ -226,7 +226,7 @@ export default {
     },
   },
   computed:{
-    ...mapGetters("global",["getTypeUser"])
+    ...mapGetters("global",[])
   },
   methods: {
     ...mapActions("global", [
@@ -236,7 +236,8 @@ export default {
       "getCredentialOptions",
       "callAuthenticator",
       "sendAttestationResult",
-      "setTypeUser"
+      "setTypeUser",
+      "getTypeUser"
     ]),
 
     setWebSocketMsg(message) {
@@ -487,7 +488,7 @@ export default {
     },
   },
   beforeMount(){
-    this.typeUser=this.getTypeUser;
+    this.typeUser=this.getTypeUser();
   },
   mounted() {
     
