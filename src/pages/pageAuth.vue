@@ -12,6 +12,7 @@
       <sign-up :typeUser="type" />
     </div>
   </q-page>
+  <h3>page auth Type = {{ type }}</h3>
 </template>
 
 <script>
@@ -83,6 +84,10 @@ export default {
         console.log(`Valeur par defaut set dans mounted ${this.type}`);
       }
     }
+    console.log(`Valeur de this.type set dans mounted ${this.type}`);
+    console.log(
+      `Valeur de this.$route.params.type set dans mounted ${this.$route.params.type}`
+    );
     localStorage.setItem("typeUser", this.type);
   },
 };

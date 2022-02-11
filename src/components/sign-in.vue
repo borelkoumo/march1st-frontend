@@ -76,7 +76,7 @@
                 label="Create account"
                 class="text-secondary"
                 no-caps
-                :to="'/auth/register/' + typeUser"
+                :to="'/auth/register/' + localStorage.getItem('typeUser')"
               />
             </div>
           </q-toolbar>
@@ -343,7 +343,7 @@ export default {
   },
 
   beforeMount() {
-    
+    console.log(`Sign-in, Before mount: typeUser=${this.typeUser}`);
   },
 };
 </script>
