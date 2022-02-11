@@ -52,12 +52,12 @@ const mutations = {
     state.sessionId = sessionId;
   },
   setTypeUser(state, typeUser) {
-    state.typUser = ["client", "hacker"].includes(typeUser)
+    state.typeUser = ["client", "hacker"].includes(typeUser)
       ? typeUser
       : "client";
 
-    localStorage.setItem("typeUser", state.typUser);
-    console.log(`Storage modified ${state.typUser}`);
+    localStorage.setItem("typeUser", state.typeUser);
+    console.log(`Storage modified ${state.typeUser}`);
     Auth.configure(getAuthConfig());
   },
 };

@@ -77,7 +77,7 @@ export default {
     },
   },
   computed:{
-    ...mapGetters("global",["getTypeUser","getSample"])
+    ...mapGetters("global",[])
   },
   methods: {
     ...mapActions("global", [
@@ -87,13 +87,14 @@ export default {
       "callAuthenticator",
       "getCredentialInNavigator",
       "setTypeUser",
+      "getTypeUser"
     ]),
   },
   beforeMount(){
     
   },
   mounted() {
-    console.log("mounted with typeUser = "+this.getTypeUser)
+    console.log("mounted with typeUser = "+this.getTypeUser())
     this.setTypeUser(this.$route.params.type);
   },
 };
