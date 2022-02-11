@@ -479,7 +479,7 @@
 <script>
 import menuItem from "src/components/menu-item.vue";
 import { defineComponent } from "vue";
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapState, mapGetters } from "vuex";
 
 export default defineComponent({
   components: { menuItem },
@@ -496,6 +496,7 @@ export default defineComponent({
   },
   computed: {
     ...mapState("global", ["userData"]),
+    ...mapGetters("global",[])
   },
   methods: {
     ...mapActions("global", ["logoutUser", "onDefineUser"]),

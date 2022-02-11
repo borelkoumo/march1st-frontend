@@ -4,19 +4,18 @@
     v-if="$route.name == 'login'"
   >
     <div>
-      <sign-in :typeUser="type" />
+      <sign-in/>
     </div>
   </q-page>
   <q-page class="flex flex-center bg-container q-mt-lg" v-else>
     <div>
-      <sign-up :typeUser="type" />
+      <sign-up/>
     </div>
   </q-page>
-  <h3>page auth Type = {{ type }}</h3>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import { useMeta } from "quasar";
 import SignIn from "src/components/sign-in.vue";
 import SignUp from "src/components/sign-up.vue";
@@ -53,15 +52,32 @@ export default {
   },
   data() {
     return {
-      type: "",
+      
     };
   },
   watch: {
     "$route.params.type": function (val) {
-      this.type = ["client", "hacker"].includes(this.$route.params.type)
-        ? val
-        : "client";
+      console.log("dans Watch de pageAuth : typeUser="+val);
+      this.setTypeUser(val);
+      /*if (["client", "hacker"].includes(val)) {
+        this.type = val;
+      } else {
+        // verify if we have a valid typeUser in storage
+        if (["client", "hacker"].includes(localStorage.getItem("typeUser"))) {
+          this.type = localStorage.getItem("typeUser");
+        } else {
+          this.type = "client";
+          console.log(`Valeur par defaut set dans watch ${this.type}`);
+        }
+      }
+      console.log(`Valeur de this.type set dans watch ${this.type}`);
+      console.log(
+        `Valeur de this.$route.params.type set dans watch ${val}`
+      );  //localStorage.setItem("typeUser", this.type);*/
     },
+  },
+  computed:{
+    ...mapGetters("global",["getTypeUser","getSample"])
   },
   methods: {
     ...mapActions("global", [
@@ -70,25 +86,15 @@ export default {
       "onSubmitValidationCode",
       "callAuthenticator",
       "getCredentialInNavigator",
+      "setTypeUser",
     ]),
   },
+  beforeMount(){
+    
+  },
   mounted() {
-    if (["client", "hacker"].includes(this.$route.params.type)) {
-      this.type = this.$route.params.type;
-    } else {
-      // verify if we have a valid typeUser in storage
-      if (["client", "hacker"].includes(localStorage.getItem("typeUser"))) {
-        this.type = localStorage.getItem("typeUser");
-      } else {
-        this.type = "client";
-        console.log(`Valeur par defaut set dans mounted ${this.type}`);
-      }
-    }
-    console.log(`Valeur de this.type set dans mounted ${this.type}`);
-    console.log(
-      `Valeur de this.$route.params.type set dans mounted ${this.$route.params.type}`
-    );
-    localStorage.setItem("typeUser", this.type);
+    console.log("mounted with typeUser = "+this.getTypeUser)
+    this.setTypeUser(this.$route.params.type);
   },
 };
 </script>

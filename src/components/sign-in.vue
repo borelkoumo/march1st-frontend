@@ -76,7 +76,7 @@
                 label="Create account"
                 class="text-secondary"
                 no-caps
-                :to="'/auth/register/' + localStorage.getItem('typeUser')"
+                :to="'/auth/register/'+typeUser"
               />
             </div>
           </q-toolbar>
@@ -89,14 +89,13 @@
 <script>
 import QrcodeVue from "qrcode.vue";
 
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 import { getSignInOptions, printLog } from "../store/utils/base64";
 import WebSocketClient from "src/store/utils/WebSocketClient";
 
 let wssClient = null;
 export default {
   name: "login",
-  props: ["typeUser"], // hacker or client
   components: { QrcodeVue },
   data() {
     return {
@@ -111,9 +110,13 @@ export default {
       customChallengeAnswer: {},
       webSocketMsg: "Scan QR Code to start process",
       showSpinner: false,
+      typeUser:""
     };
   },
   watch: {
+    typeUser:function(val){
+      this.setTypeUser(val);
+    },
     attestationUrl: function (val) {
       // Hide spinner
       this.showSpinner = false;
@@ -126,12 +129,14 @@ export default {
   },
   computed: {
     ...mapState("global", ["signInOptions"]),
+    ...mapGetters("global",["getTypeUser"])
   },
   methods: {
     ...mapActions("global", [
       "onSubmitLoginForm",
       "getCredentialInNavigator",
       "sendChallengeResult",
+      "setTypeUser"
     ]),
 
     setWebSocketMsg(message) {
@@ -343,6 +348,7 @@ export default {
   },
 
   beforeMount() {
+    this.typeUser=this.getTypeUser;
     console.log(`Sign-in, Before mount: typeUser=${this.typeUser}`);
   },
 };

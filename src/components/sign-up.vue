@@ -169,7 +169,7 @@
                 label="Sign in"
                 class="text-secondary"
                 no-caps
-                to="/auth/login/"
+                to="/auth/login"
               />
             </div>
           </q-toolbar>
@@ -181,7 +181,7 @@
 
 <script>
 import QrcodeVue from "qrcode.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 import WebSocketClient from "src/store/utils/WebSocketClient";
 import { isPlatformAuthenticatorAvailable } from "src/store/utils/WebAuthnUtils";
@@ -190,7 +190,6 @@ let wssClient = null;
 
 export default {
   name: "login",
-  props: ["typeUser"], // hacker or client
   components: { QrcodeVue },
   data() {
     return {
@@ -209,12 +208,13 @@ export default {
       assertionUrl: "example.com",
       webSocketMsg: "Scan QR Code to start process",
       showSpinner: false,
+      typeUser:""
     };
   },
   watch: {
-    // typeUser: function (val) {
-    //   this.typeUser = Number.parseInt(val, 10);
-    // },
+     typeUser: function (val) {
+       this.setTypeUser(val);
+     },
     assertionUrl: function (val) {
       // Hide spinner
       this.showSpinner = false;
@@ -225,6 +225,9 @@ export default {
       this.webSocketMsg = val;
     },
   },
+  computed:{
+    ...mapGetters("global",["getTypeUser"])
+  },
   methods: {
     ...mapActions("global", [
       "onSubmitSignUpForm",
@@ -233,6 +236,7 @@ export default {
       "getCredentialOptions",
       "callAuthenticator",
       "sendAttestationResult",
+      "setTypeUser"
     ]),
 
     setWebSocketMsg(message) {
@@ -482,8 +486,12 @@ export default {
       wssClient = client;
     },
   },
-
-  mounted() {},
+  beforeMount(){
+    this.typeUser=this.getTypeUser;
+  },
+  mounted() {
+    
+  },
 };
 </script>
 

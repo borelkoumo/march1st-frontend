@@ -33,16 +33,8 @@ const getters = {
     return state.sessionId;
   },
   getTypeUser(state) {
-    if (!state.typeUser) {
-      const s = localStorage.getItem("typeUser");
-      if (!s) {
-        return "client";
-      } else {
-        return s;
-      }
-    } else {
-      return state.typeUser;
-    }
+    return state.typeUser;
+    
   },
 };
 
@@ -71,12 +63,28 @@ const mutations = {
 };
 
 const actions = {
-  async onDefineUser({ commit }) {
+  setTypeUser({commit,state},typeUser){
+    commit("setTypeUser",typeUser);
+    return getters.getTypeUser(state);
+  },
+  getTypeUser({commit,state}){
+    if (!state.typeUser) {
+      const s = localStorage.getItem("typeUser");
+      if (!s) {
+        commit('setTypeUser',"client")
+        return "client";
+      } else {
+        return s;
+      }
+    } else {
+      return state.typeUser;
+    } 
+  },
+  async onDefineUser({ commit , state}) {
     // Configure user pool options (userPool ID, identityPoolId, etc)
-    let typeUser = localStorage.getItem("typeUser");
-    printLog('ici, typeUser = ', typeUser)
-    commit("setTypeUser", typeUser);
-
+    let typeUser = getters.getTypeUser(state);
+    printLog('onDefineUser, typeUser = ', typeUser)
+    
     try {
       let userData = await Auth.currentAuthenticatedUser({
         bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
