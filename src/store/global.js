@@ -68,26 +68,31 @@ const actions = {
       throw new Error(`Invalid type user in actions.setTypeUser : ${typeUser}`);
     }
     commit("setTypeUser", typeUser);
-    printLog(`Settypeuser executed with typeUser ${typeUser}`);
+    printLog(`setTypeUser executed with typeUser ${typeUser}`);
     return typeUser;
   },
 
   getTypeUser({ commit, state }) {
-    const s = localStorage.getItem("typeUser");
+    let s = getters.getTypeUser(state);
     if (s) {
       return s;
     } else {
-      if (state.typeUser) {
-        return state.typeUser;
+      // typeUser is not in the state.
+      // Get it in localstorage or fix default value
+      if (localStorage.getItem("typeUser")) {
+        s = localStorage.getItem("typeUser");
       } else {
-        commit("setTypeUser", "client");
-        return "client";
+        s = "client";
       }
+      // And put in local storage and state
+      s = actions.setTypeUser({ commit, state }, s);
+      return s;
     }
   },
 
   async loadUserData({ commit, state }) {
-    printLog("loadUserData, typeUser = ", state.typeUser);
+    const typeUser = actions.getTypeUser({ commit, state });
+    printLog("loadUserData, typeUser = ", typeUser);
     try {
       let userData = await Auth.currentAuthenticatedUser({
         bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
@@ -102,27 +107,31 @@ const actions = {
     }
   },
 
-  async onSubmitSignUpForm({ commit, state }, userData) {
+  async onSubmitSignUpForm({ commit, state }, payload) {
+    printLog("onSubmitSignUpForm payload", payload);
     // Configure user pool options (userPool ID, identityPoolId, etc)
     commit("setTypeUser", "client");
 
-    printLog("UserData", userData);
     const userAttr = {
-      name: formatFullName(userData.fullName),
-      email: userData.email.trim(),
+      name: formatFullName(payload.fullName),
+      email: payload.email.trim(),
       locale: state.locale.value,
-      "custom:companyName": userData.companyName.trim(),
-      "custom:title": userData.title.trim(),
+      "custom:companyName": payload.companyName.trim(),
+      "custom:title": payload.title.trim(),
       "custom:userId": "",
       "custom:joinedOn": new Date().toISOString().substring(0, 10),
     };
+
+    const userData = {
+      email: payload.email,
+      username: payload.email,
+      password: "fakePassword@12345",
+      attributes: userAttr,
+    };
+
     try {
-      const cognitoUser = await Auth.signUp({
-        /* email: userData.email, */
-        username: userData.email,
-        password: "fakePassword@12345",
-        attributes: userAttr,
-      });
+      const cognitoUser = await Auth.signUp(userData);
+
       printLog("Auth.signUp SUCCESSFULL");
       printLog("Cognito user", cognitoUser);
 
@@ -138,24 +147,26 @@ const actions = {
     }
   },
 
-  async onSubmitSignUpFormHacker({ commit }, userData) {
+  async onSubmitSignUpFormHacker({ commit }, payload) {
+    printLog("onSubmitSignUpFormHacker payload", payload);
     // Configure user pool options (userPool ID, identityPoolId, etc)
     commit("setTypeUser", "hacker");
 
-    printLog("UserData-Hacker", userData);
     const userAttr = {
-      email: userData.email.trim(),
-      preferred_username: userData.username.trim(),
+      email: payload.email.trim(),
+      preferred_username: payload.username.trim(),
       locale: state.locale.value,
       "custom:userId": "",
       "custom:joinedOn": new Date().toISOString().substring(0, 10),
     };
+
+    const userData = {
+      username: payload.username.trim(),
+      password: "fakePassword@12345",
+      attributes: userAttr,
+    };
     try {
-      const cognitoUser = await Auth.signUp({
-        username: userData.username.trim(),
-        password: "fakePassword@12345",
-        attributes: userAttr,
-      });
+      const cognitoUser = await Auth.signUp(userData);
       printLog("Auth.signUp Hacker SUCCESSFULL");
       printLog("Cognito user", cognitoUser);
 
@@ -177,7 +188,7 @@ const actions = {
      * User confirm signUp in cognito user pool
      */
     const userData = getters.getUserData(state);
-    printLog(`Auth.Auth`, Auth.Auth);
+    printLog(`userData`, userData);
     try {
       const status = await Auth.confirmSignUp(userData.username, code);
       // User is confirmed.
@@ -191,13 +202,29 @@ const actions = {
 
   async getCredentialOptions({ commit, state }) {
     const userData = getters.getUserData(state);
+    const typeUser = getters.getTypeUser(state);
     // Get credential options
     const url = "/attestation/options";
-    const params = {
-      username: userData.email,
-      displayName: userData.fullName,
-      typeUser: getters.getTypeUser(state),
-    };
+    let params = {};
+
+    if (typeUser === "client") {
+      params = {
+        username: userData.email,
+        displayName: userData.attributes.name,
+        typeUser,
+      };
+    } else if (typeUser === "hacker") {
+      params = {
+        username: userData.attributes.email,
+        displayName: userData.username,
+        typeUser,
+      };
+    } else {
+      throw new Error(
+        "Incorrect typeUser in getCredentialOptions : " + typeUser
+      );
+    }
+
     try {
       const result = await _queryServer(url, params);
       printLog(`Response from ${url}`, result);

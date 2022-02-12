@@ -71,13 +71,15 @@ export default {
       "getTypeUser",
     ]),
   },
-  async beforeMount() {},
-  async mounted() {
+  async beforeMount() {
     if (this.$route.params.type) {
       // If parameter is available, then set new value in state and storage
       await this.setTypeUser(this.$route.params.type);
+    } else {
+      console.log(`pageAuth -- beforeMount -- this.typeUser = ${this.typeUser}`);
     }
   },
+  async mounted() {},
 };
 </script>
 

@@ -115,7 +115,9 @@ export default {
     };
   },
   watch: {
-    typeUser: async function (val) {},
+    typeUser: async function (val) {
+      // this.setTypeUser(val);
+    },
     attestationUrl: function (val) {
       // Hide spinner and Show QRCode
       this.showSpinner = false;
@@ -350,7 +352,9 @@ export default {
     },
   },
 
-  async beforeMount() {},
+  async beforeMount() {
+    console.log(`signin -- beforeMount -- this.typeUser = ${this.typeUser}`);
+  },
 
   async mounted() {},
 

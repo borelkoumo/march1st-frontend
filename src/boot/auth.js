@@ -1,6 +1,6 @@
 import { Auth } from "@aws-amplify/auth";
 import { printLog, getAuthConfig } from "../../src/store/utils/base64";
-const typeUser = localStorage.getItem("typeUser");
+const typeUser = localStorage.getItem("typeUser") ? localStorage.getItem("typeUser") : 'client';
   
 Auth.configure(getAuthConfig(typeUser));
 
