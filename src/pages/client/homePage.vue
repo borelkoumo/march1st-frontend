@@ -1,0 +1,147 @@
+<template>
+  <q-page class="bg-home ">
+    <div class="pl-box pr-box container-dashboard">
+      <q-toolbar>
+        <div>Dashboard</div>
+        <q-space />
+      </q-toolbar>
+      <div
+        class=""
+        style="
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr 1fr;
+          grid-gap: 12px;
+        "
+      >
+        <card-element
+          class="card-element"
+          style="border-radius: 5px; background-color: #0377e0"
+        >
+          <template v-slot:header>
+            <div class="title-element text-white">TOTAL PROGRAMS</div>
+            <div class="number-element text-white">$24,000</div>
+          </template>
+          <template v-slot:icon>
+            <q-btn round flat class="bg-white" size="20px">
+              <img src="images/admin/money 1.png" />
+            </q-btn>
+          </template>
+          <template v-slot:footer>
+            <span class="">12% Since last month</span>
+          </template>
+        </card-element>
+        <card-element
+          class="card-element"
+          style="border-radius: 5px; background-color: white"
+        >
+          <template v-slot:header>
+            <div class="title-element" style="color: #66788a">
+              TOTAL SUBMISSIONS
+            </div>
+            <div class="number-element" style="color: #212529">24000</div>
+          </template>
+          <template v-slot:icon>
+            <q-btn
+              round
+              flat
+              class=""
+              size="20px"
+              style="background-color: #ec4c47"
+            >
+              <img src="images/admin/profit-report 1.png" />
+            </q-btn>
+          </template>
+          <template v-slot:footer>
+            <span class="" style="color: #66788a">12% Since last month</span>
+          </template>
+        </card-element>
+        <card-element
+          class="card-element"
+          style="border-radius: 5px; background-color: white;"
+        >
+          <template v-slot:header>
+            <div class="title-element" style="color: #66788a">REWARD PAID</div>
+            <div class="number-element" style="color: #212529">$ 20000</div>
+          </template>
+          <template v-slot:icon>
+            <q-btn
+              round
+              flat
+              class=""
+              size="20px"
+              style="background-color: #1665D8"
+            >
+            </q-btn>
+          </template>
+          <template v-slot:footer>
+            <div class="flex q-pt-md q-pr-lg" style=""><q-linear-progress :value="progress" color="secondary" /></div>
+          </template>
+        </card-element>
+        <card-element
+          class="card-element"
+          style="border-radius: 5px; background-color: white"
+        >
+          <template v-slot:header>
+            <div class="title-element" style="color: #66788a">
+              TOTAL SUBMISSIONS
+            </div>
+            <div class="number-element" style="color: #212529">24000</div>
+          </template>
+          <template v-slot:icon>
+            <q-btn
+              round
+              flat
+              class=""
+              size="20px"
+              style="background-color: #ec4c47"
+            >
+              <img src="images/admin/star 1.png" />
+            </q-btn>
+          </template>
+          <template v-slot:footer>
+            <span class="" style="color: #66788a">12% Since last month</span>
+          </template>
+        </card-element>
+      </div>
+    </div>
+  </q-page>
+</template>
+<script>
+import CardElement from "../../components/card-element.vue";
+export default {
+  components: { CardElement },
+  data() {
+    return {
+      progress: 0.1,
+    };
+  },
+};
+</script>
+<style lang="sass" scoped>
+.container-dashboard
+    width:1172px
+    margin:0px auto
+.bg-home
+    background-color : #eaf5ff
+.pl-box
+    padding-left:70px
+.pr-box
+    padding-right:70px
+.card-element
+    .title-element
+        font-family: "nunito"
+        font-style: normal
+        font-weight: 700
+        font-size: 12px
+        line-height: 16px
+        letter-spacing: 0.996px
+        text-transform: uppercase
+    .number-element
+        font-family: "nunito"
+        font-style: normal
+        font-weight: 600
+        font-size: 24px
+        line-height: 28px
+        letter-spacing: -0.06px
+        padding-top: 8px
+</style>

@@ -42,6 +42,20 @@ const routes = [
       requiresSettings: true,
     },
   },
+  {
+    path: "/dashboard",
+    component: () => import("layouts/DashboardLayout.vue"),
+    children: [
+      {
+        path: "client",
+        name: "client",
+        component: () => import("pages/client/homePage.vue"),
+      },
+    ],
+    meta: {
+      requiresSettings: true,
+    },
+  },
 
   {
     path: "/error",
