@@ -1,9 +1,9 @@
 <template>
   <q-item>
     <q-item-section top avatar>
-      <q-avatar style="background-color:#BDBDBD">
-          <img src="images/admin/Vector.png" alt=""/>
-      </q-avatar>
+      <q-btn style="background-color:#BDBDBD" flat  round size="12px" class="q-mr-sm">
+          <img src="images/admin/Vector.png"/>
+      </q-btn>
     </q-item-section>
     <q-item-section>
       <q-item-label class="title">

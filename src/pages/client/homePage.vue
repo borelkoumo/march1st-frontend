@@ -1,8 +1,8 @@
 <template>
-  <q-page class="bg-home ">
+  <q-page class="bg-home">
     <div class="pl-box pr-box container-dashboard">
-      <q-toolbar>
-        <div>Dashboard</div>
+      <q-toolbar class="" style="padding-top: 20px; padding-bottom: 40px">
+        <div class="title-toolbar">Dashboard</div>
         <q-space />
       </q-toolbar>
       <div
@@ -57,7 +57,7 @@
         </card-element>
         <card-element
           class="card-element"
-          style="border-radius: 5px; background-color: white;"
+          style="border-radius: 5px; background-color: white"
         >
           <template v-slot:header>
             <div class="title-element" style="color: #66788a">REWARD PAID</div>
@@ -69,12 +69,14 @@
               flat
               class=""
               size="20px"
-              style="background-color: #1665D8"
+              style="background-color: #1665d8"
             >
             </q-btn>
           </template>
           <template v-slot:footer>
-            <div class="flex q-pt-md q-pr-lg" style=""><q-linear-progress :value="progress" color="secondary" /></div>
+            <div class="flex q-pt-md q-pr-lg" style="">
+              <q-linear-progress :value="progress" color="secondary" />
+            </div>
           </template>
         </card-element>
         <card-element
@@ -103,13 +105,64 @@
           </template>
         </card-element>
       </div>
+      <div class="q-pt-lg q-pb-lg">
+        <div class="bg-white">
+          <columnChart>
+            <template v-slot:default>
+              <div>Submission Activities</div>
+            </template>
+          </columnChart>
+        </div>
+      </div>
+      <div>
+        <div
+          class=""
+          style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; grid-gap:29px"
+        >
+          <div class="bg-white">
+            <pieChart>
+              <template v-slot:default>
+                <div>Submissions</div>
+              </template>
+            </pieChart>
+          </div>
+          <div class="bg-white">
+            <pieChart>
+              <template v-slot:default>
+                <div>Vulnerability Severity</div>
+              </template>
+            </pieChart>
+          </div>
+          <div class="bg-white">
+            <pieChart>
+              <template v-slot:default>
+                <div>Acceptance Rate</div>
+              </template>
+            </pieChart>
+          </div>
+          <div class="bg-white">
+            <pieChart>
+              <template v-slot:default>
+                <div>Remaining Budget</div>
+              </template>
+            </pieChart>
+          </div>
+        </div>
+      </div>
     </div>
   </q-page>
 </template>
 <script>
+import { defineAsyncComponent } from "vue";
+
 import CardElement from "../../components/card-element.vue";
+
+const columnChart = defineAsyncComponent(() =>
+  import("components/column-chart.vue")
+);
+const pieChart = defineAsyncComponent(() => import("components/pie-chart.vue"));
 export default {
-  components: { CardElement },
+  components: { CardElement, columnChart, pieChart },
   data() {
     return {
       progress: 0.1,
@@ -127,6 +180,14 @@ export default {
     padding-left:70px
 .pr-box
     padding-right:70px
+.title-toolbar
+    font-family: 'nunito'
+    font-style: normal
+    font-weight: bold
+    font-size: 32px
+    line-height: 44px
+    letter-spacing: -0.0555556px
+    color: #163053
 .card-element
     .title-element
         font-family: "nunito"
