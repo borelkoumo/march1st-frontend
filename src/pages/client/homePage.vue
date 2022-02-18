@@ -1,9 +1,25 @@
 <template>
   <q-page class="bg-home">
     <div class="pl-box pr-box container-dashboard">
-      <q-toolbar class="" style="padding-top: 20px; padding-bottom: 40px">
+      <q-toolbar class="q-pr-none q-pl-none" style="padding-top: 20px; padding-bottom: 40px">
         <div class="title-toolbar">Dashboard</div>
         <q-space />
+        <div class="flex q-gutter-md">
+          <select-component
+            :options="programs"
+            :model="program"
+            style="min-width: 220px"
+          >
+            <template v-slot:default> Programs </template>
+          </select-component>
+          <select-component
+            :options="periods"
+            :model="period"
+            style="min-width: 220px"
+          >
+            <template v-slot:default> Filter by period </template>
+          </select-component>
+        </div>
       </q-toolbar>
       <div
         class=""
@@ -117,7 +133,11 @@
       <div>
         <div
           class=""
-          style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; grid-gap:29px"
+          style="
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-gap: 29px;
+          "
         >
           <div class="bg-white">
             <pieChart>
@@ -156,16 +176,21 @@
 import { defineAsyncComponent } from "vue";
 
 import CardElement from "../../components/card-element.vue";
+import SelectComponent from "../../components/select-component.vue";
 
 const columnChart = defineAsyncComponent(() =>
   import("components/column-chart.vue")
 );
 const pieChart = defineAsyncComponent(() => import("components/pie-chart.vue"));
 export default {
-  components: { CardElement, columnChart, pieChart },
+  components: { CardElement, columnChart, pieChart, SelectComponent },
   data() {
     return {
       progress: 0.1,
+      programs: [{ label: "All Programs", value: "1" }],
+      program: { label: "All Programs", value: "1" },
+      periods: [{ label: "All time", value: "1" }],
+      period: { label: "All time", value: "1" },
     };
   },
 };
