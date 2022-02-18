@@ -49,8 +49,15 @@ const routes = [
       {
         path: "client",
         name: "client",
-        component: () => import("pages/client/homePage.vue"),
+        component: () => import("pages/dashboard/homePage.vue"),
       },
+      {
+        path: "submissions",
+        name:"submissions",
+        component: () => import("pages/dashboard/submissionPage.vue"),
+        name: "attestation",
+        props: true,
+      }
     ],
     meta: {
       requiresSettings: true,

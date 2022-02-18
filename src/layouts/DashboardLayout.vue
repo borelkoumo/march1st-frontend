@@ -59,9 +59,16 @@
               src="https://cdn.quasar.dev/img/parallax2.jpg"
             />
           </q-card-section>
-          <q-card-section class="q-pt-xs">
+          <q-card-section class="q-pt-xs" v-if="$route.name == 'client'">
             <div class="q-mt-sm title">Company Name</div>
             <div class="subtitle">Joined 6 months ago</div>
+          </q-card-section>
+          <q-card-section class="q-pt-xs" v-if="$route.name == 'hacker'">
+            <div class="q-mt-sm title">JOHN DOE ROMAN NASER</div>
+            <div class="subtitle">Joined 6 months ago</div>
+            <div class="subtitle">Current Rank: 70</div>
+            <div class="subtitle">Average Rank: 7</div>
+            <div class="subtitle">Average Vulnerability Severity</div>
           </q-card-section>
         </q-card-section>
       </q-card>
@@ -89,7 +96,7 @@
         <q-separator />
 
         <q-tab-panels v-model="tabElement" animated>
-          <q-tab-panel name="task" style="height:600px" >
+          <q-tab-panel name="task" style="height: 600px">
             <q-scroll-area class="fit">
               <q-list separator padding>
                 <list-item
@@ -118,7 +125,7 @@
             </q-scroll-area>
           </q-tab-panel>
 
-          <q-tab-panel name="notification" style="height:600px">
+          <q-tab-panel name="notification" style="height: 600px">
             <q-scroll-area class="fit">
               <q-list separator padding>
                 <list-item
