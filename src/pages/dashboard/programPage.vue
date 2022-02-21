@@ -40,7 +40,8 @@
         />
         <q-btn label="Submissions" flat no-caps icon-right="lock" />
       </q-toolbar>
-      <div class="q-mt-lg">
+      <div class="q-mt-lg q-gutter-md">
+        <program-component :program="null"/>
         <program-component :program="null"/>
       </div>
     </div>
