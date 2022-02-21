@@ -58,10 +58,23 @@ const routes = [
         name: "attestation",
         props: true,
       }
-    ],
-    meta: {
-      requiresSettings: true,
-    },
+    ]
+  },
+  {
+    path: "/main",
+    component: () => import("layouts/SecondLayout.vue"),
+    children: [
+      {
+        path: "submissions",
+        name:"submissions",
+        component: () => import("pages/dashboard/submissionPage.vue"),
+      },
+      {
+        path: "programs",
+        name:"programs",
+        component: () => import("pages/dashboard/programPage.vue"),
+      }
+    ]
   },
 
   {

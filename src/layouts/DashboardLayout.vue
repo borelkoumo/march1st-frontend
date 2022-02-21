@@ -44,13 +44,6 @@
       class="bg-white"
       :width="450"
     >
-      <q-toolbar>
-        <q-space />
-        <div class="q-gutter-sm">
-          <q-btn label="SIGNOUT" class="bg-primary text-white" flat />
-          <q-btn label="PROFILE" class="bg-secondary text-white" flat />
-        </div>
-      </q-toolbar>
       <q-card class="my-card q-pt-lg card-identification" flat>
         <q-card-section horizontal>
           <q-card-section class="col-4 flex flex-center">
@@ -72,6 +65,13 @@
           </q-card-section>
         </q-card-section>
       </q-card>
+      <q-toolbar>
+        <q-space />
+        <div class="q-gutter-sm">
+          <q-btn label="SIGNOUT" class="bg-primary text-white" flat />
+          <q-btn label="PROFILE" class="bg-secondary text-white" flat />
+        </div>
+      </q-toolbar>
       <q-card flat class="card-panel">
         <q-tabs
           v-model="tabElement"
@@ -96,7 +96,7 @@
         <q-separator />
 
         <q-tab-panels v-model="tabElement" animated>
-          <q-tab-panel name="task" style="height: 600px">
+          <q-tab-panel name="task" style="height: calc(100vh - 50px)">
             <q-scroll-area class="fit">
               <q-list separator padding>
                 <list-item
@@ -125,7 +125,7 @@
             </q-scroll-area>
           </q-tab-panel>
 
-          <q-tab-panel name="notification" style="height: 600px">
+          <q-tab-panel name="notification" style="height: calc(100vh - 50px)">
             <q-scroll-area class="fit">
               <q-list separator padding>
                 <list-item
@@ -276,7 +276,9 @@ export default {
 </script>
 
 <style lang="sass">
+
 .card-identification
+  height:120px
   .title
     font-family: 'nunito'
     font-style: normal

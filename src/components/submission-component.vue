@@ -1,5 +1,5 @@
 <template>
-  <q-card class="my-card bg-white q-pa-lg" flat>
+  <q-card class="my-card bg-white q-pt-lg q-pr-lg q-pl-lg q-pb-md" flat>
     <q-card-section class="q-pa-none" style="padding-bottom: 27px">
       <q-toolbar>
         <div class="box-badge">
