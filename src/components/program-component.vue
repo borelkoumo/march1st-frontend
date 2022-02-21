@@ -4,7 +4,7 @@
       <div class="box-image col-2">
         <q-img src="https://cdn.quasar.dev/img/parallax2.jpg" />
       </div>
-      <q-card-section class="q-pl-lg">
+      <q-card-section class="q-pl-lg q-pr-lg">
         <div>
           <q-badge class="q-pt-xs q-pb-xs active-class">Active</q-badge>
           <q-badge class="q-pt-xs q-pb-xs bg-transparent time-program"
@@ -48,7 +48,7 @@
           </div>
         </div>
       </q-card-section>
-      <q-card-section class="col-3 q-pl-none q-pr-none">
+      <q-card-section class="col-3 q-pl-lg q-pr-none">
         <q-list>
           <q-item>
             <q-item-section class="text-bold text-submission"
@@ -76,6 +76,12 @@
               <q-linear-progress :value="progress[2]" class="" color="amber" track-color="white"/>
             </q-item-section>
             <q-item-section class="number">10</q-item-section>
+          </q-item>
+          <q-item>
+            <q-item-section class="text-submission text-bold">22 Low</q-item-section>
+            <q-item-section class="text-submission text-bold">10 Medium</q-item-section>
+            <q-item-section class="text-submission text-bold">28 Heigh</q-item-section>
+            <q-item-section class="text-submission text-bold">25 Severe</q-item-section>
           </q-item>
         </q-list>
       </q-card-section>
