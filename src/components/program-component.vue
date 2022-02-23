@@ -4,7 +4,7 @@
       <div class="box-image col-2">
         <q-img src="https://cdn.quasar.dev/img/parallax2.jpg" />
       </div>
-      <q-card-section class="q-pl-lg q-pr-lg">
+      <q-card-section class="q-pl-lg q-pr-lg col">
         <div>
           <q-badge class="q-pt-xs q-pb-xs active-class">Active</q-badge>
           <q-badge class="q-pt-xs q-pb-xs bg-transparent time-program"
@@ -48,90 +48,35 @@
           </div>
         </div>
       </q-card-section>
-      <q-card-section class="col-3 q-pl-lg q-pr-none">
-        <q-list>
-          <q-item>
-            <q-item-section class="text-bold text-submission"
-              >Total Submissions</q-item-section
-            >
-            <q-item-section class="number text-bold">110</q-item-section>
-          </q-item>
-          <q-item>
-            <q-item-section class="text-submission ">Accepted</q-item-section>
-            <q-item-section>
-              <q-linear-progress :value="progress[0]" class="" color="positive" track-color="white"/>
-            </q-item-section>
-            <q-item-section class="number">80</q-item-section>
-          </q-item>
-          <q-item>
-            <q-item-section class="text-submission ">Rejected</q-item-section>
-            <q-item-section>
-              <q-linear-progress :value="progress[1]" class="" color="negative" track-color="white"/>
-            </q-item-section>
-            <q-item-section class="number">20</q-item-section>
-          </q-item>
-          <q-item>
-            <q-item-section class="text-submission ">Pending</q-item-section>
-            <q-item-section>
-              <q-linear-progress :value="progress[2]" class="" color="amber" track-color="white"/>
-            </q-item-section>
-            <q-item-section class="number">10</q-item-section>
-          </q-item>
-          <q-item>
-            <q-item-section style="color: rgba(0, 0, 0, 0.8); font-size: 13px;" class="text-bold">22 Low</q-item-section>
-            <q-item-section style="color: rgba(0, 0, 0, 0.8); font-size: 13px;" class="text-bold">10 Medium</q-item-section>
-            <q-item-section style="color: rgba(0, 0, 0, 0.8); font-size: 13px;" class="text-bold">28 Heigh</q-item-section>
-            <q-item-section style="color: rgba(0, 0, 0, 0.8); font-size: 13px;" class="text-bold">25 Severe</q-item-section>
-          </q-item>
-        </q-list>
-      </q-card-section>
+      <slot name="level"> </slot>
     </q-card-section>
   </q-card>
 </template>
 <script>
 export default {
+  components: {  },
   props: ["program"],
   data() {
     return {
-      progress: [0.8, 0.2, 0.1],
+      
     };
   },
 };
 </script>
 <style scoped>
-.accepted{
-    color: linear-gradient(90.32deg, #5EEEA8 0%, #4CD291 100%);
-    border-radius: 10px;
+.accepted {
+  color: linear-gradient(90.32deg, #5eeea8 0%, #4cd291 100%);
+  border-radius: 10px;
 }
-.rejected{
-    background: linear-gradient(140.6deg, #FFF6B7 -76.93%, #F6416C 100%);
-border-radius: 5px;
+.rejected {
+  background: linear-gradient(140.6deg, #fff6b7 -76.93%, #f6416c 100%);
+  border-radius: 5px;
 }
-.pending{
-    background: linear-gradient(135deg, #FFE985 -50%, #FA742B 150%);
-border-radius: 10px;
+.pending {
+  background: linear-gradient(135deg, #ffe985 -50%, #fa742b 150%);
+  border-radius: 10px;
+}
 
-}
-.q-item {
-  padding: 0px;
-}
-.text-submission {
-  font-family: 'inter';
-  font-style: normal;
-  font-size: 12.61px;
-  line-height: 32px;
-  letter-spacing: -0.015em;
-  color: #46516d;
-}
-.q-item .number {
-  font-family: "inter";
-  font-style: normal;
-  font-size: 12.61px;
-  line-height: 32px;
-  text-align: right;
-  letter-spacing: -0.015em;
-  color: #46516d;
-}
 .active-class {
   background: #cafac9;
   font-family: "inter";

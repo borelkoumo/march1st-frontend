@@ -73,6 +73,21 @@ const routes = [
         path: "programs",
         name:"programs",
         component: () => import("pages/dashboard/programPage.vue"),
+      },
+      {
+        path: "program-detail",
+        name:"program-detail",
+        component: () => import("pages/dashboard/program-detail.vue"),
+      },
+      {
+        path: "my-programs",
+        name:"my-programs",
+        component: () => import("pages/dashboard/myprogramPage.vue"),
+      },
+      {
+        path: "all-programs",
+        name:"all-programs",
+        component: () => import("pages/dashboard/allprogramPage.vue"),
       }
     ]
   },

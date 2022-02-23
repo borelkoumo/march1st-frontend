@@ -1,14 +1,14 @@
 <template>
   <q-page class="bg-home">
     <div class="main-content">
-      <q-toolbar class="bg-none flex q-gutter-sm" style="padding-top: 40px">
+      <q-toolbar class="bg-none flex q-gutter-sm q-pl-none q-pr-none" style="padding-top: 40px">
         <q-input
           dense
           bg-color="white"
           filled
           v-model="search"
           input-class="text-right"
-          class="q-ml-md"
+          class=""
           style="min-width: 400px"
         >
           <template v-slot:prepend> Search </template>
@@ -40,22 +40,35 @@
         />
         <q-btn label="Submissions" flat no-caps icon-right="lock" />
       </q-toolbar>
-      <div class="q-mt-lg q-gutter-md">
-        <program-component :program="null"/>
-        <program-component :program="null"/>
+      <div class="q-mt-lg q-gutter-md q-pb-lg">
+        <program-component :program="null">
+          <template v-slot:level>
+            <q-card-section class="col-3 q-pl-lg q-pr-none">
+              <submission-level :progress="progress" />
+            </q-card-section>
+          </template>
+        </program-component>
+        <program-component :program="null">
+          <q-card-section class="col-3 q-pl-lg q-pr-none">
+            <submission-level :progress="progress" />
+          </q-card-section>
+        </program-component>
       </div>
     </div>
   </q-page>
 </template>
 <script>
-import programComponent from '../../components/program-component.vue';
+import ProgramComponent2 from "../../components/program-component-2.vue";
+import programComponent from "../../components/program-component.vue";
+import SubmissionLevel from '../../components/submission-level.vue';
 export default {
-  components: { programComponent },
+  components: { programComponent, ProgramComponent2, SubmissionLevel },
   data() {
     return {
       search: null,
       filters: [{ label: "fgfgfgfg", value: "3" }],
       filter: null,
+      progress: [0.8, 0.2, 0.1],
     };
   },
 };
