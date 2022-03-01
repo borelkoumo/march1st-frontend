@@ -1,5 +1,5 @@
 <template>
-  <q-page class="bg-home">
+  <q-page class="bg-home" v-if="showProgram">
     <div class="main-content">
       <q-toolbar class="bg-none flex q-gutter-sm" style="padding-top: 40px">
         <q-input
@@ -51,12 +51,12 @@
             grid-gap: 15px;
           "
         >
-          <program-component-2 :program="null" ></program-component-2>
-          <program-component-2 :program="null" ></program-component-2>
-          <program-component-2 :program="null" ></program-component-2>
-          <program-component-2 :program="null" ></program-component-2>
-          <program-component-2 :program="null" ></program-component-2>
-          <program-component-2 :program="null" ></program-component-2>
+          <program-component-2 :program="null"></program-component-2>
+          <program-component-2 :program="null"></program-component-2>
+          <program-component-2 :program="null"></program-component-2>
+          <program-component-2 :program="null"></program-component-2>
+          <program-component-2 :program="null"></program-component-2>
+          <program-component-2 :program="null"></program-component-2>
         </div>
       </div>
       <div class="q-mt-lg">
@@ -70,13 +70,30 @@
             grid-gap: 15px;
           "
         >
-          <program-component-2 :program="null" ></program-component-2>
-          <program-component-2 :program="null" ></program-component-2>
-          <program-component-2 :program="null" ></program-component-2>
-          <program-component-2 :program="null" ></program-component-2>
-          <program-component-2 :program="null" ></program-component-2>
-          <program-component-2 :program="null" ></program-component-2>
+          <program-component-2 :program="null"></program-component-2>
+          <program-component-2 :program="null"></program-component-2>
+          <program-component-2 :program="null"></program-component-2>
+          <program-component-2 :program="null"></program-component-2>
+          <program-component-2 :program="null"></program-component-2>
+          <program-component-2 :program="null"></program-component-2>
         </div>
+      </div>
+    </div>
+  </q-page>
+  <q-page v-else class="flex flex-center">
+    <div class="main-content">
+      <q-img src="~assets/empty-program.svg" width="600px"/>
+      <div class="title-1">Not joined any programs</div>
+      <div class="subtitle-1">
+        Currently you have not yet joined any programs
+      </div>
+      <div class="flex flex-center">
+        <q-btn
+          label="Browse Programs"
+          class="title-btn text-white bg-secondary"
+          no-caps
+          flat
+        />
       </div>
     </div>
   </q-page>
@@ -90,14 +107,50 @@ export default {
       search: null,
       filters: [{ label: "fgfgfgfg", value: "3" }],
       filter: null,
+      showProgram: false, //verify if the length of program is > 0
     };
   },
 };
 </script>
 <style scoped>
-.q-toolbar{
-    padding-left:0px;
-    padding-right:0px;
+.title-1 {
+  font-family: "inter";
+  font-style: normal;
+  font-weight: bold;
+  font-size: 32px;
+  line-height: 34px;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 1px;
+  color: #171717;
+  padding-top:50px;
+  padding-bottom: 12px;
+}
+.subtitle-1 {
+  font-family: "inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 34px;
+  align-items: center;
+  text-align: center;
+  color: #767676;
+  padding-bottom: 12px;
+}
+.title-btn {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  align-items: center;
+  text-align: center;
+  color: #ffffff;
+  width: 338px;
+}
+.q-toolbar {
+  padding-left: 0px;
+  padding-right: 0px;
 }
 .bg-home {
   background-color: #eaf5ff;
@@ -107,7 +160,7 @@ export default {
   padding-right: 24px;
 }
 .head-title {
-  font-family: 'inter';
+  font-family: "inter";
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
