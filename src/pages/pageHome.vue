@@ -58,7 +58,8 @@ export default defineComponent({
 
 <style>
 .absolute-banner {
-  background-color: rgba(7, 0, 28, 0.8);
+  /* background-color: rgba(7, 0, 28, 0.8); */
+  background-color: rgba(7, 0, 28, 0.5);
   height: 100%;
   width: 100%;
   position: absolute;

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="section banner-header bg-primary"
+    class="section banner-header"
     style="position: relative"
     id="introduction"
   >
