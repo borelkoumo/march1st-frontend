@@ -1,16 +1,6 @@
 <template>
   <q-card class="my-card bg-white q-pt-lg q-pr-lg q-pl-lg q-pb-md" flat>
-    <q-card-section class="q-pa-none" style="padding-bottom: 27px">
-      <q-toolbar>
-        <div class="box-badge">
-          <span class="title-badge">Submission Rejected</span>
-        </div>
-        <q-space />
-        <div class="title-badge-2"><span>2 day ago, 3:45 pm</span></div>
-      </q-toolbar>
-      <div class="title">Submission title Submission</div>
-      <q-separator color="#E4E4E4" />
-    </q-card-section>
+    <slot name="header"> </slot>
     <q-card-section horizontal>
       <div class="box-image col-5">
         <q-img src="https://cdn.quasar.dev/img/parallax2.jpg" />
@@ -62,7 +52,7 @@ export default {
   padding-bottom: 15px;
 }
 .subtitle-3 {
-  font-family: 'inter';
+  font-family: "inter";
   font-style: normal;
   font-weight: 500;
   font-size: 14px;

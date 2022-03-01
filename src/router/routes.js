@@ -70,6 +70,11 @@ const routes = [
         component: () => import("pages/dashboard/submissionPage.vue"),
       },
       {
+        path: "add-submission",
+        name:"addsubmission",
+        component: () => import("pages/dashboard/addSubmission.vue"),
+      },
+      {
         path: "programs",
         name:"programs",
         component: () => import("pages/dashboard/programPage.vue"),
