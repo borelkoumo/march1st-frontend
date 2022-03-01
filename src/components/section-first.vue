@@ -322,6 +322,7 @@
     </div>
   </div>
 </template>
+
 <script>
 export default {
   data() {
@@ -331,6 +332,7 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 .wrap-tabs {
   padding-right: 0px;
@@ -413,7 +415,7 @@ export default {
     margin-right: auto;
     margin-left: auto;
     right: 0;
-    left:0;
+    left: 0;
     width: max-content;
     background-color: white;
   }
