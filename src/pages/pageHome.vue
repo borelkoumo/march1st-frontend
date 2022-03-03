@@ -1,39 +1,20 @@
 <template>
   <q-page class="">
-    <div class="section banner-header bg-primary" style="position: relative" id="introduction">
-      <div class="absolute-banner">
-        <div class="text-banner flex flex-center">
-          <div class="text-center">
-            <p class="text-banner-1">DO YOU BELIEVE</p>
-            <p class="text-banner-2">YOUR SYSTEMS</p>
-            <p class="text-banner-3">ARE SECURE?</p>
-            <p class="text-banner-4">LETS DO A REALITY CHECK</p>
-          </div>
-        </div>
-      </div>
-      <div class="absolute-scroll">
-        <div class="scroll-btn flex flex-center">
-          <div style="text-align: center">
-            <q-img src="vectors/scrool down.svg" width="30px" />
-            <div class="text-white q-pt-sm q-pb-md">SCROLL</div>
-          </div>
-        </div>
-      </div>
-      <q-img src="static-banner.png" height="680px" />
-    </div>
-    <section-first id="programs"/>
+    <banner-section />
+    <section-first id="programs" />
     <section-second />
-    <section-third id="customers"/>
+    <section-third id="customers" />
     <section-four />
     <section-five />
     <section-six />
     <section-seven />
-    <section-huit/>
+    <section-huit />
     <section-nine />
   </q-page>
 </template>
 
 <script>
+import BannerSection from "src/components/banner/banner-section.vue";
 import sectionFirst from "src/components/section-first.vue";
 import sectionSecond from "src/components/section-second.vue";
 import sectionThird from "src/components/section-third.vue";
@@ -43,12 +24,14 @@ import sectionSix from "src/components/section-six.vue";
 import sectionSeven from "src/components/section-seven.vue";
 import sectionHuit from "src/components/section-huit.vue";
 import sectionNine from "src/components/section-nine.vue";
+
 import { defineComponent } from "vue";
 
 import { drawImage, drawLine } from "./utils/draw.js";
 
 export default defineComponent({
   components: {
+    BannerSection,
     sectionFirst,
     sectionSecond,
     sectionThird,
@@ -61,11 +44,9 @@ export default defineComponent({
   },
   name: "PageIndex",
   data() {
-    return {
-      
-    };
+    return {};
   },
-  
+
   mounted() {
     /* const canvas = document.getElementById("myCanvas");
     const ctx = canvas.getContext("2d");
@@ -74,9 +55,11 @@ export default defineComponent({
   },
 });
 </script>
+
 <style>
 .absolute-banner {
-  background-color: rgba(7, 0, 28, 0.8);
+  /* background-color: rgba(7, 0, 28, 0.8); */
+  background-color: rgba(7, 0, 28, 0.5);
   height: 100%;
   width: 100%;
   position: absolute;
@@ -243,7 +226,6 @@ export default defineComponent({
   color: black;
   background: transparent;
 }
-
 
 ul.march-list li::before {
   content: "\2022";
