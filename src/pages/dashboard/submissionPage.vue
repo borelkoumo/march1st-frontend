@@ -1,24 +1,27 @@
 <template>
   <q-page class="bg-home">
     <div class="main-content">
-      <q-toolbar class="bg-none flex q-gutter-sm" style="padding-top: 40px">
+      <q-toolbar
+        class="bg-none flex q-gutter-sm toolbar-submission"
+        style="padding-top: 40px"
+      >
         <q-select
           bg-color="white"
-          filled
           dense
           :options="programs"
           v-model="program"
           label="Select Program Name"
+          input-class="special-select"
           style="min-width: 400px"
+          borderless
         />
         <q-select
           bg-color="white"
-          filled
           dense
           :options="status"
           v-model="stat"
-          label="Status"
           style="min-width: 200px"
+          borderless
         />
         <q-space />
         <q-btn label="Submissions" flat no-caps icon-right="lock" />
@@ -51,13 +54,35 @@ export default {
     return {
       programs: [{ label: "dfdffdf", value: "1" }],
       program: null,
-      status: [{ label: "fgfgfgfg", value: "3" }],
-      stat: null,
+      status: [
+        { label: "All Type", value: 1 },
+        { label: "New Report Submission", value: 2 },
+        { label: "M1 Returned for clarifications", value: 3 },
+        { label: "Resubmitted with clarifications", value: 4 },
+        { label: "Passed triage", value: 5 },
+        { label: "Client returned for clarification", value: 6 },
+        { label: "Submission Accepted n", value: 7 },
+        { label: "M1 made payment", value: 8 },
+      ],
+      stat: { label: "Any", value: 0 },
     };
   },
 };
 </script>
-<style>
+<style >
+.toolbar-submission .q-field--dense .q-field__label {
+  padding-left: 15px;
+}
+.toolbar-submission .q-field__native {
+  padding-left: 15px;
+}
+.toolbar-submission .special-select {
+  background: #ffffff;
+  border: 1px solid #e4e4e4;
+  box-sizing: border-box;
+  border-radius: 8px;
+}
+
 .submission-component .q-toolbar {
   padding-left: 0;
   padding-right: 0;

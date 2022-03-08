@@ -75,6 +75,11 @@ const routes = [
         component: () => import("pages/dashboard/addSubmission.vue"),
       },
       {
+        path: "submission-detail",
+        name:"submission-detail",
+        component: () => import("pages/dashboard/submission-detail.vue"),
+      },
+      {
         path: "programs",
         name:"programs",
         component: () => import("pages/dashboard/programPage.vue"),
@@ -93,7 +98,12 @@ const routes = [
         path: "all-programs",
         name:"all-programs",
         component: () => import("pages/dashboard/allprogramPage.vue"),
-      }
+      },
+      {
+        path: "tasks",
+        name:"tasks",
+        component: () => import("pages/dashboard/pageTasks.vue"),
+      },
     ]
   },
 

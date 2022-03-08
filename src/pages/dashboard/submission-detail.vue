@@ -1,0 +1,382 @@
+<template>
+  <q-page class="bg-home">
+    <div class="content-page">
+      <div class="main-content">
+        <q-toolbar class="bg-none flex q-gutter-sm" style="padding-top: 40px">
+          <q-space />
+          <q-select
+            dense
+            class="bg-white select-action"
+            color="secondary"
+            input-style="width:300px"
+            outlined
+            no-caps
+            v-model="action"
+            :options="actions"
+          />
+        </q-toolbar>
+        <div class="q-mt-lg q-mb-lg submission-elt">
+          <submission-component :submission="null" class="submission-component">
+            <template v-slot:header>
+              <q-card-section class="q-pa-none" style="padding-bottom: 27px">
+                <q-toolbar>
+                  <div class="box-badge">
+                    <span class="title-badge">Submission Rejected</span>
+                  </div>
+                  <q-space />
+                  <div class="title-badge-2">
+                    <span>2 day ago, 3:45 pm</span>
+                  </div>
+                </q-toolbar>
+                <div class="title">Submission title Submission</div>
+                <q-separator color="#E4E4E4" />
+              </q-card-section>
+            </template>
+          </submission-component>
+        </div>
+        <div class="submission-target">
+          <q-card class="my-card" flat>
+            <q-card-section>
+              <div class="submission-title">Submission Target</div>
+              <div class="submission-link">
+                www.Nemoenimipsam.com/123345/ggjn
+              </div>
+            </q-card-section>
+            <q-separator />
+            <q-card-section>
+              <div class="submission-title">Submission Text</div>
+              <div class="submission-content">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+                nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+                sunt in culpa qui officia deserunt mollit anim id est laborum.
+              </div>
+            </q-card-section>
+          </q-card>
+        </div>
+        <div class="submission-attachment q-pt-md flex q-gutter-md">
+          <div class="q-pa-sm bg-white" style="border-radius: 10px;">
+            <q-card class="card-attachment flex" flat>
+              <div>
+                <q-img src="~assets/file-pdf.svg" width="50px" />
+              </div>
+              <div class="q-pl-md q-pr-md flex flex-center" style="">
+                <div>
+                  <div class="attachment-name">abc.pdf</div>
+                  <div class="attachment-size">2.2mb</div>
+                </div>
+              </div>
+            </q-card>
+          </div>
+          <div class="q-pa-sm bg-white" style="border-radius: 10px;">
+            <q-card class="card-attachment flex" flat>
+              <div>
+                <q-img src="~assets/file-pdf.svg" width="50px" />
+              </div>
+              <div class="q-pl-md q-pr-md flex flex-center" style="">
+                <div>
+                  <div class="attachment-name">abc.pdf</div>
+                  <div class="attachment-size">2.2mb</div>
+                </div>
+              </div>
+            </q-card>
+          </div>
+        </div>
+        <div class="">
+          <div class="submission-title q-pb-sm">Submission Severity Level</div>
+          <div class="submission-form">
+            <q-select
+              :options="levels"
+              v-model="level"
+              label="Select Severity Level"
+              borderless
+              class="q-pl-sm q-pr-sm"
+            />
+          </div>
+        </div>
+        <div class="submission-form q-pt-md">
+          <q-input
+            type="textarea"
+            v-model="message"
+            borderless
+            class="q-mb-md"
+            placeholder="Leave your comment"
+            input-class="submission-message"
+            input-style="background: #fbfbfb;
+  border: 1px solid #f3f3f3; padding-left:10px; width:100%; border-radius:12px;"
+          />
+          <q-btn
+            label="Register"
+            flat
+            no-caps
+            class="bg-secondary text-white"
+            style="width:160px"
+          />
+        </div>
+      </div>
+      <div class="right-content bg-white">
+        <q-card class="card-timeline q-pt-sm q-pb-sm q-pl-md q-pr-md" flat>
+          <q-timeline color="secondary">
+            <q-timeline-entry tag="div" heading class="title-timeline">
+              Status timeline
+            </q-timeline-entry>
+            <q-timeline-entry tag="div">
+              <div class="subtitle-timeline">4 June 2021 5:00pm</div>
+              <div class="content-timeline">
+                Waiting for hacker clarifications
+              </div>
+            </q-timeline-entry>
+
+            <q-timeline-entry tag="div">
+              <div class="subtitle-timeline">5 June 2021 5:00pm</div>
+              <div class="content-timeline">M1 Returned for clarifications</div>
+            </q-timeline-entry>
+
+            <q-timeline-entry tag="div">
+              <div class="subtitle-timeline">4 June 2021 5:00pm</div>
+              <div class="content-timeline">New Report Submission</div>
+            </q-timeline-entry>
+          </q-timeline>
+        </q-card>
+      </div>
+    </div>
+  </q-page>
+</template>
+<script>
+import SubmissionComponent from "../../components/submission-component.vue";
+
+export default {
+  components: { SubmissionComponent },
+  data() {
+    return {
+      levels: [
+        { label: "Low", value: "0" },
+        { label: "Medium", value: "1" },
+        { label: "Severe", value: "2" },
+        { label: "High", value: "3" },
+      ],
+      level: null,
+      actions: [
+        { label: "Return For Clarification", value: 1 },
+        { label: "Reject", value: 2 },
+        { label: "Accept", value: 3 },
+        { label: "Send to Client", value: 4 },
+      ],
+      action: { label: "Actions", value: 0 },
+      message: null,
+    };
+  },
+};
+</script>
+<style scoped>
+.select-action {
+  border: 1px solid #5887ff;
+  box-sizing: border-box;
+  border-radius: 8px;
+  min-width: 300px;
+}
+.subtitle-timeline {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 25px;
+  letter-spacing: -0.015em;
+  color: #838181;
+}
+.content-timeline {
+  font-family: "inter";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 18px;
+  letter-spacing: -0.015em;
+  color: #46516d;
+}
+.title-timeline {
+  font-family: "inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 22px;
+  letter-spacing: -0.015em;
+  color: #5887ff;
+}
+.card-attachment {
+  width: 200px;
+  padding-left:16px;
+  padding-top:16px;
+  padding-bottom:16px;
+  border-radius: 10px;
+}
+.attachment-name,
+.attachment-size {
+  font-family: "inter";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  letter-spacing: -0.015em;
+  color: #46516d;
+}
+.attachment-size {
+  color: #949090;
+}
+.active-badge {
+  width: 85px;
+  height: 22px;
+  background: rgba(255, 172, 50, 0.1);
+  border-radius: 100px;
+  color: #ffb648;
+}
+
+.title-card {
+  font-family: "inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 22px;
+  letter-spacing: -0.015em;
+  color: #46516d;
+  padding-bottom: 25px;
+}
+.subtitle-card {
+  font-family: "inter";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 25px;
+  letter-spacing: -0.015em;
+  color: #838181;
+}
+.submission-title {
+  font-family: "inter";
+  font-style: normal;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 30px;
+  letter-spacing: -0.02em;
+  color: #46516d;
+  padding-top: 24px;
+  padding-bottom: 12px;
+}
+.submission-link {
+  font-family: "inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 25px;
+  letter-spacing: -0.015em;
+  text-decoration-line: underline;
+  color: #5887ff;
+  cursor: pointer;
+}
+.submission-content {
+  font-family: "inter";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 25px;
+  letter-spacing: -0.015em;
+  color: #838181;
+}
+.submission-form .q-input,
+.submission-form .q-select {
+  background: #fbfbfb;
+  border: 1px solid #f3f3f3;
+  box-sizing: border-box;
+  border-radius: 12px;
+  width: 100%;
+}
+.submission-component .q-toolbar {
+  padding-left: 0;
+  padding-right: 0;
+  min-height: 0;
+}
+.submission-component .title {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 22px;
+  letter-spacing: -0.015em;
+  color: #46516d;
+
+  padding-top: 18px;
+  padding-bottom: 15px;
+}
+.submission-component .title-badge {
+  font-family: "inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 25px;
+  display: flex;
+  align-items: center;
+  letter-spacing: -0.015em;
+  color: #f55b5d;
+}
+.submission-component .title-badge-2 {
+  font-family: "inter";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 25px;
+  display: flex;
+  align-items: center;
+  text-align: right;
+  letter-spacing: -0.015em;
+  color: #838181;
+}
+.submission-component .box-badge {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 0px 16px;
+  width: 169px;
+  height: 26px;
+  background: #f7d5d5;
+  border-radius: 5px;
+}
+.title-submission {
+  font-family: "inter";
+  font-style: normal;
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 34px;
+  display: flex;
+  align-items: center;
+  letter-spacing: 1px;
+  color: #1b2559;
+}
+.header .q-btn {
+  min-width: 164px;
+}
+.header .title-header {
+  font-family: "inter";
+  font-style: normal;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 30px;
+  letter-spacing: -0.02em;
+  color: #46516d;
+}
+.bg-home {
+  background-color: #eaf5ff;
+}
+.main-content {
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+.content-page {
+  display: flex;
+}
+.content-page .right-content {
+  min-width: 322px;
+}
+</style>
