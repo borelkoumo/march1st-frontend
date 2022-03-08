@@ -104,6 +104,16 @@ const routes = [
         name:"tasks",
         component: () => import("pages/dashboard/pageTasks.vue"),
       },
+      {
+        path: "task-item",
+        name:"task-item",
+        component: () => import("pages/dashboard/taskItem.vue"),
+      },
+      {
+        path: "add-client",
+        name:"add-client",
+        component: () => import("pages/dashboard/addClient.vue"),
+      },
     ]
   },
 

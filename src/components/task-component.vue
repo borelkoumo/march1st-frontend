@@ -21,6 +21,11 @@
         </div>
       </div>
     </div>
+    <q-card-section>
+        <slot name="submission">
+            
+        </slot>
+    </q-card-section>
   </q-card>
 </template>
 <script>
