@@ -124,6 +124,16 @@ const routes = [
         name:"manage-client",
         component: () => import("pages/dashboard/manageClient.vue"),
       },
+      {
+        path: "add-user",
+        name:"add-user",
+        component: () => import("pages/dashboard/addUser.vue"),
+      },
+      {
+        path: "payment",
+        name:"payment",
+        component: () => import("pages/dashboard/payment.vue"),
+      },
     ]
   },
 

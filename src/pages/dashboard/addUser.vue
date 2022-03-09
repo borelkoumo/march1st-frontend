@@ -15,18 +15,6 @@
               />
             </div>
           </div>
-          <div class="form-elt col">
-            <div class="subtitle q-pb-sm">Status</div>
-            <div class="">
-              <q-select
-                :options="status"
-                v-model="stat"
-                label="Select Status"
-                borderless
-                class="q-pl-sm q-pr-sm select-input"
-              />
-            </div>
-          </div>
         </div>
         <div class="flex q-gutter-lg q-pb-md">
           <div class="form-elt col">
@@ -54,11 +42,49 @@
             </div>
           </div>
         </div>
+        <div class="flex q-gutter-lg q-pb-md">
+          <div class="form-elt col">
+            <div class="subtitle q-pb-sm">Status</div>
+            <div class="">
+              <q-select
+                :options="locations"
+                v-model="location"
+                label="Select Status"
+                borderless
+                class="q-pl-sm q-pr-sm select-input"
+              />
+            </div>
+          </div>
+          <div class="form-elt col">
+            <div class="subtitle q-pb-sm">Role</div>
+            <div class="">
+              <q-select
+                :options="locations"
+                v-model="location"
+                label="Select Role"
+                borderless
+                class="q-pl-sm q-pr-sm select-input"
+              />
+            </div>
+          </div>
+          <div class="form-elt col">
+            <div class="subtitle q-pb-sm">Privilege</div>
+            <div class="">
+              <q-select
+                :options="locations"
+                v-model="location"
+                label="Select Privilege"
+                borderless
+                class="q-pl-sm q-pr-sm select-input"
+              />
+            </div>
+          </div>
+        </div>
       </q-card>
       <q-card class="card-list q-pa-lg q-pb-lg q-mt-lg" flat>
         <div class="q-pr-md q-pl-md">
           <q-toolbar class="q-pb-md">
-            <div class="subtitle2">Clients</div>
+            <div class="subtitle2">Programs</div>
             <q-space />
             <q-input
               outlined
@@ -78,7 +104,7 @@
               <q-item-section class="flex flex-center" style="max-width: 40px">
                 <q-checkbox v-model="box1" color="secondary" />
               </q-item-section>
-              <q-item-section> Clients </q-item-section>
+              <q-item-section> Program Name </q-item-section>
               <q-item-section class="flex flex-center" style="max-width: 170px">
                 <span
                   >Type <q-icon name="import_export" class="q-pl-lg"
@@ -93,13 +119,23 @@
                 Actions
               </q-item-section>
             </q-item>
-            <q-item class="">
+            <q-item :class="{ 'active-item': box2 == true }">
               <q-item-section class="flex flex-center" style="max-width: 40px">
                 <q-checkbox v-model="box1" color="secondary" />
               </q-item-section>
               <q-item-section>
-                <div class="subtitle3">Client Name</div>
-                <div class="subtitle4">managerHackermail@gmail.com</div>
+                <q-item class="flex flex-center no-padding">
+                  <q-item-section style="max-width: 70px">
+                    <q-img
+                      src="~assets/local/unsplash_aQYgUYwnCsM.png"
+                      width="66px"
+                    />
+                  </q-item-section>
+                  <q-item-section class="subtitle2">
+                    Program Name atur aut odit aut fugit, sed onsequu n tur
+                    magni dolore Nemo sed onsequu
+                  </q-item-section>
+                </q-item>
               </q-item-section>
               <q-item-section
                 class="subtitle5 flex flex-center"
@@ -122,8 +158,18 @@
                 <q-checkbox v-model="box2" color="secondary" />
               </q-item-section>
               <q-item-section>
-                <div class="subtitle3">Client Name</div>
-                <div class="subtitle4">managerHackermail@gmail.com</div>
+                <q-item class="flex flex-center no-padding">
+                  <q-item-section style="max-width: 70px">
+                    <q-img
+                      src="~assets/local/unsplash_WUmb_eBrpjs.png"
+                      width="66px"
+                    />
+                  </q-item-section>
+                  <q-item-section class="subtitle2">
+                    Program Name atur aut odit aut fugit, sed onsequu n tur
+                    magni dolore Nemo sed onsequu
+                  </q-item-section>
+                </q-item>
               </q-item-section>
               <q-item-section
                 class="subtitle5 flex flex-center"
@@ -146,8 +192,18 @@
                 <q-checkbox v-model="box3" color="secondary" />
               </q-item-section>
               <q-item-section>
-                <div class="subtitle3">Client Name</div>
-                <div class="subtitle4">managerHackermail@gmail.com</div>
+                <q-item class="flex flex-center no-padding">
+                  <q-item-section style="max-width: 70px">
+                    <q-img
+                      src="~assets/local/unsplash_aQYgUYwnCsM.png"
+                      width="66px"
+                    />
+                  </q-item-section>
+                  <q-item-section class="subtitle2">
+                    Program Name atur aut odit aut fugit, sed onsequu n tur
+                    magni dolore Nemo sed onsequu
+                  </q-item-section>
+                </q-item>
               </q-item-section>
               <q-item-section
                 class="subtitle5 flex flex-center"
@@ -170,8 +226,18 @@
                 <q-checkbox v-model="box4" color="secondary" />
               </q-item-section>
               <q-item-section>
-                <div class="subtitle3">Client Name</div>
-                <div class="subtitle4">managerHackermail@gmail.com</div>
+                <q-item class="flex flex-center no-padding">
+                  <q-item-section style="max-width: 70px">
+                    <q-img
+                      src="~assets/local/unsplash_WUmb_eBrpjs.png"
+                      width="66px"
+                    />
+                  </q-item-section>
+                  <q-item-section class="subtitle2">
+                    Program Name atur aut odit aut fugit, sed onsequu n tur
+                    magni dolore Nemo sed onsequu
+                  </q-item-section>
+                </q-item>
               </q-item-section>
               <q-item-section
                 class="subtitle5 flex flex-center"
@@ -192,14 +258,21 @@
           </q-list>
         </div>
       </q-card>
-      <div class="flex q-pt-lg q-pb-lg">
+      <div class="flex q-pt-lg q-pb-lg q-gutter-lg">
         <q-space />
+        <q-btn
+          label="Cancel"
+          outline
+          class="text-center text-secondary bg-white"
+          no-caps
+          style="width: 160px"
+        />
         <q-btn
           label="Add Client"
           flat
           class="text-center text-white bg-secondary"
           no-caps
-          style="width:160px"
+          style="width: 160px"
         />
       </div>
     </div>
@@ -232,11 +305,11 @@ export default {
 .card-list .subtitle2 {
   font-family: "inter";
   font-style: normal;
-  font-weight: 600;
-  font-size: 18px;
-  line-height: 22px;
-  letter-spacing: -0.015em;
-  color: #46516d;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 140%;
+  letter-spacing: -0.3px;
+  color: #1b2559;
 }
 .card-list .subtitle3 {
   font-family: "inter";
