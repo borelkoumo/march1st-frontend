@@ -114,6 +114,16 @@ const routes = [
         name:"add-client",
         component: () => import("pages/dashboard/addClient.vue"),
       },
+      {
+        path: "all-clients",
+        name:"all-clients",
+        component: () => import("pages/dashboard/pageClients.vue"),
+      },
+      {
+        path: "manage-client",
+        name:"manage-client",
+        component: () => import("pages/dashboard/manageClient.vue"),
+      },
     ]
   },
 

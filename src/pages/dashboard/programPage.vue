@@ -1,7 +1,10 @@
 <template>
   <q-page class="bg-home">
     <div class="main-content">
-      <q-toolbar class="bg-none flex q-gutter-sm q-pl-none q-pr-none" style="padding-top: 40px">
+      <q-toolbar
+        class="bg-none flex q-gutter-sm q-pl-none q-pr-none"
+        style="padding-top: 40px"
+      >
         <q-input
           dense
           bg-color="white"
@@ -50,7 +53,32 @@
         </program-component>
         <program-component :program="null">
           <q-card-section class="col-3 q-pl-lg q-pr-none">
-            <submission-level :progress="progress" />
+            <submission-level :progress="progress">
+              <template v-slot:bottom>
+                <q-item>
+                  <q-item-section
+                    style="color: rgba(0, 0, 0, 0.8); font-size: 13px"
+                    class="text-bold"
+                    >22 Low</q-item-section
+                  >
+                  <q-item-section
+                    style="color: rgba(0, 0, 0, 0.8); font-size: 13px"
+                    class="text-bold"
+                    >10 Medium</q-item-section
+                  >
+                  <q-item-section
+                    style="color: rgba(0, 0, 0, 0.8); font-size: 13px"
+                    class="text-bold"
+                    >28 Heigh</q-item-section
+                  >
+                  <q-item-section
+                    style="color: rgba(0, 0, 0, 0.8); font-size: 13px"
+                    class="text-bold"
+                    >25 Severe</q-item-section
+                  >
+                </q-item>
+              </template>
+            </submission-level>
           </q-card-section>
         </program-component>
       </div>
@@ -60,7 +88,7 @@
 <script>
 import ProgramComponent2 from "../../components/program-component-2.vue";
 import programComponent from "../../components/program-component.vue";
-import SubmissionLevel from '../../components/submission-level.vue';
+import SubmissionLevel from "../../components/submission-level.vue";
 export default {
   components: { programComponent, ProgramComponent2, SubmissionLevel },
   data() {

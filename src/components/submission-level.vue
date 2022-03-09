@@ -42,28 +42,9 @@
       </q-item-section>
       <q-item-section class="number">10</q-item-section>
     </q-item>
-    <q-item>
-      <q-item-section
-        style="color: rgba(0, 0, 0, 0.8); font-size: 13px"
-        class="text-bold"
-        >22 Low</q-item-section
-      >
-      <q-item-section
-        style="color: rgba(0, 0, 0, 0.8); font-size: 13px"
-        class="text-bold"
-        >10 Medium</q-item-section
-      >
-      <q-item-section
-        style="color: rgba(0, 0, 0, 0.8); font-size: 13px"
-        class="text-bold"
-        >28 Heigh</q-item-section
-      >
-      <q-item-section
-        style="color: rgba(0, 0, 0, 0.8); font-size: 13px"
-        class="text-bold"
-        >25 Severe</q-item-section
-      >
-    </q-item>
+    <slot name="bottom">
+
+    </slot>
   </q-list>
 </template>
 <script>
