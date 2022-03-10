@@ -134,6 +134,11 @@ const routes = [
         name:"payment",
         component: () => import("pages/dashboard/payment.vue"),
       },
+      {
+        path: "payment-type",
+        name:"payment-type",
+        component: () => import("pages/dashboard/payment2.vue"),
+      },
     ]
   },
 
