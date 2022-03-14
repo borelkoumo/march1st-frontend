@@ -139,6 +139,26 @@ const routes = [
         name:"payment-type",
         component: () => import("pages/dashboard/payment2.vue"),
       },
+      {
+        path: "payment-admin",
+        name:"payment-admin",
+        component: () => import("pages/dashboard/payment-admin.vue"),
+      },
+      {
+        path: "my-account",
+        name:"my-account",
+        component: () => import("pages/dashboard/myaccount.vue"),
+      },
+      {
+        path: "notifications",
+        name:"notifications",
+        component: () => import("pages/dashboard/notifications.vue"),
+      },
+      {
+        path: "vulnerability",
+        name:"vulnerability",
+        component: () => import("pages/dashboard/vulnerability.vue"),
+      },
     ]
   },
 
