@@ -1,5 +1,5 @@
 <template>
-  <q-page class="bg-home" v-if="showProgram">
+  <q-page class="bg-home" v-if="myPrograms.length > 0">
     <div class="main-content">
       <q-toolbar class="bg-none flex q-gutter-sm" style="padding-top: 40px">
         <q-input
@@ -32,16 +32,11 @@
           style="min-width: 200px"
         />
         <q-space />
-        <q-btn
-          label="Create Program"
-          no-caps
-          flat
-          class="bg-secondary text-white"
-        />
-        <q-btn label="Most Recent" flat no-caps icon-right="lock" />
+
+        <q-btn label="Most Recent" flat no-caps icon-right="import_export" />
       </q-toolbar>
       <div class="q-mt-lg">
-        <div class="q-pb-sm head-title">Running (5)</div>
+        <div class="q-pb-sm head-title">Running ({{ running.length }})</div>
         <q-separator />
         <div
           class="q-mt-lg q-pb-lg"
@@ -51,16 +46,16 @@
             grid-gap: 15px;
           "
         >
-          <program-component-2 :program="null"></program-component-2>
-          <program-component-2 :program="null"></program-component-2>
-          <program-component-2 :program="null"></program-component-2>
-          <program-component-2 :program="null"></program-component-2>
-          <program-component-2 :program="null"></program-component-2>
-          <program-component-2 :program="null"></program-component-2>
+          <program-component-2
+            :program="program"
+            v-for="program in running"
+            :key="program.title"
+            class="cursor-pointer"
+          />
         </div>
       </div>
       <div class="q-mt-lg">
-        <div class="q-pb-sm head-title">Closed (5)</div>
+        <div class="q-pb-sm head-title">Closed ({{ closed.length }})</div>
         <q-separator />
         <div
           class="q-mt-lg q-pb-lg"
@@ -70,19 +65,19 @@
             grid-gap: 15px;
           "
         >
-          <program-component-2 :program="null"></program-component-2>
-          <program-component-2 :program="null"></program-component-2>
-          <program-component-2 :program="null"></program-component-2>
-          <program-component-2 :program="null"></program-component-2>
-          <program-component-2 :program="null"></program-component-2>
-          <program-component-2 :program="null"></program-component-2>
+          <program-component-2
+            :program="program"
+            v-for="program in closed"
+            :key="program.title"
+            class="cursor-pointer"
+          />
         </div>
       </div>
     </div>
   </q-page>
   <q-page v-else class="flex flex-center">
     <div class="main-content">
-      <q-img src="~assets/empty-program.svg" width="600px"/>
+      <q-img src="~assets/empty-program.svg" width="600px" />
       <div class="title-1">Not joined any programs</div>
       <div class="subtitle-1">
         Currently you have not yet joined any programs
@@ -100,6 +95,8 @@
 </template>
 <script>
 import programComponent2 from "../../components/program-component-2.vue";
+import { mapState, mapGetters } from "vuex";
+
 export default {
   components: { programComponent2 },
   data() {
@@ -107,8 +104,27 @@ export default {
       search: null,
       filters: [{ label: "fgfgfgfg", value: "3" }],
       filter: null,
-      showProgram: false, //verify if the length of program is > 0
+      showProgram: true, //verify if the length of program is > 0
+      programs: [],
+      running: [],
+      closed: [],
     };
+  },
+  computed: {
+    ...mapState("program", ["myPrograms"]),
+    ...mapGetters("program", ["getHackerPrograms"]),
+  },
+  async beforeMount() {
+    this.programs = await this.getHackerPrograms;
+    if (this.programs.length > 0) {
+      this.programs.forEach((p) => {
+        if (p.is_closed == 0) {
+          this.running.push(p);
+        } else {
+          this.running.push(p);
+        }
+      });
+    }
   },
 };
 </script>
@@ -123,7 +139,7 @@ export default {
   text-align: center;
   letter-spacing: 1px;
   color: #171717;
-  padding-top:50px;
+  padding-top: 50px;
   padding-bottom: 12px;
 }
 .subtitle-1 {

@@ -6,9 +6,8 @@
         <q-space />
         <q-btn
           class="bg-white q-mr-lg"
-          outlined
+          outline
           color="secondary"
-          flat
           label="Submit a Report"
           no-caps
         />
@@ -17,9 +16,8 @@
           no-caps
           flat
           label="Edit"
-          v-if="typeuser == 'admin'"
         />
-        <q-btn
+        <!-- <q-btn
           class="bg-positive text-white q-mr-lg"
           no-caps
           flat
@@ -32,11 +30,11 @@
           flat
           label="Publish"
           v-if="typeuser == 'client'"
-        />
+        /> -->
       </q-toolbar>
-      <div class="grid-content q-pt-lg q-pb-lg" v-if="typeuser == 'admin'">
+      <div class="grid-content q-pt-lg q-pb-lg" >
         <div class="">
-          <program-component :program="null" style="border-radius: 16px" />
+          <program-component :program="program" style="border-radius: 16px" />
           <div class="grid-element" style="padding-top: 16px">
             <q-card
               class="my-card"
@@ -59,7 +57,7 @@
                     >Harbour Type</q-item-label
                   >
                   <q-item-label class="title-element q-pt-xs"
-                    >Safe Harbor</q-item-label
+                    >{{program.safe_habour_type}}</q-item-label
                   >
                 </q-item-section>
               </q-item>
@@ -85,7 +83,7 @@
                     >Reward Type</q-item-label
                   >
                   <q-item-label class="title-element q-pt-xs"
-                    >Points</q-item-label
+                    >{{program.reward_type}}</q-item-label
                   >
                 </q-item-section>
               </q-item>
@@ -111,7 +109,7 @@
                     >Program Type</q-item-label
                   >
                   <q-item-label class="title-element q-pt-xs"
-                    >Private</q-item-label
+                    >{{program.type}}</q-item-label
                   >
                 </q-item-section>
               </q-item>
@@ -123,28 +121,28 @@
                 <q-item-section class="first-element">P1</q-item-section>
                 <q-item-section class="second-element">Critical</q-item-section>
                 <q-item-section class="third-element"
-                  >$ 100 - $ 1000 Per vulnerability</q-item-section
+                  >$ {{program.critical.min}} - $ {{program.critical.max}} Per vulnerability</q-item-section
                 >
               </q-item>
               <q-item>
                 <q-item-section class="first-element">P2</q-item-section>
                 <q-item-section class="second-element">Severe</q-item-section>
                 <q-item-section class="third-element"
-                  >$ 1000 - $ 2500 Per vulnerability</q-item-section
+                  >$ {{program.severe.min}} - $ {{program.severe.max}} Per vulnerability</q-item-section
                 >
               </q-item>
               <q-item>
                 <q-item-section class="first-element">P3</q-item-section>
                 <q-item-section class="second-element">Medium</q-item-section>
                 <q-item-section class="third-element"
-                  >$ 2500 - $ 3500 Per vulnerability</q-item-section
+                  >$ {{program.medium.min}} - $ {{program.medium.max}} Per vulnerability</q-item-section
                 >
               </q-item>
               <q-item>
                 <q-item-section class="first-element">P4</q-item-section>
                 <q-item-section class="second-element">Low</q-item-section>
                 <q-item-section class="third-element"
-                  >$ 3500 - $ 5000 Per vulnerability</q-item-section
+                  >$ {{program.low.min}} - $ {{program.low.max}} Per vulnerability</q-item-section
                 >
               </q-item>
             </q-list>
@@ -159,9 +157,7 @@
               </div>
               <q-card class="my-card shadow-3">
                 <q-card-section class="description-content">
-                  Program requirement Nemo enim ipsam voluptatem ipsam ta
-                  voluptatem per natur aut odit aut fugit, sed onsequu n tur
-                  magni dolore Nemo enim Neo
+                  {{program.guidelines}}
                 </q-card-section>
               </q-card>
             </div>
@@ -169,6 +165,7 @@
         </div>
         <div>
           <submission-level
+            :submissions="program.totalSubmissions"
             :progress="progress"
             class="q-pa-md"
             style="border-radius: 16px"
@@ -220,413 +217,18 @@
           </div>
         </div>
       </div>
-      <div v-else class="q-pt-lg">
-        <div>
-          <q-card class="my-card" flat style="border-radius: 16px">
-            <q-card-section horizontal class="q-pa-lg">
-              <div
-                style="
-                  min-width: 200px;
-                  min-height: 200px;
-                  background: #fbfbfb;
-                  border: 1px solid #f3f3f3;
-                  box-sizing: border-box;
-                  border-radius: 12px;
-                "
-                class="col-3 flex flex-center"
-              >
-                <q-img src="~assets/no-image.svg" width="60px" />
-              </div>
-              <div
-                class="flex col"
-                style="padding-left: 32px; align-items: center"
-              >
-                <div style="max-width: 466px">
-                  <div class="title-card" style="">
-                    Program Tiltle Lorem ipsum dolor sit amet, consectetur
-                    adipiscing elit.
-                  </div>
-                  <div class="subtitle-card">
-                    Prgram Description Lorem ipsum dolor sit amet, consectetur
-                    adipiscing elit. Lorem ipsum dolor sit amet, consectetur
-                    adipiscing elit.
-                  </div>
-                </div>
-              </div>
-            </q-card-section>
-          </q-card>
-        </div>
-        <div
-          class="q-pt-lg"
-          style="display: grid; grid-template-columns: 3fr 2fr; grid-gap: 24px"
-        >
-          <div class="bg-white q-pa-lg" style="border-radius: 16px">
-            <q-list>
-              <q-item class="q-pl-none q-pr-none">
-                <q-item-section class="radio-element">
-                  <div class="q-pb-md">Program Type</div>
-                  <q-radio
-                    name="program-type"
-                    v-model="programType"
-                    val="private"
-                    label="Private"
-                    color="secondary"
-                  />
-                  <q-radio
-                    name="program-type"
-                    v-model="programType"
-                    val="public"
-                    label="Public"
-                    color="secondary"
-                  />
-                </q-item-section>
-                <q-item-section class="radio-element">
-                  <div class="q-pb-md">Program Type</div>
-                  <q-radio
-                    name="program-type"
-                    v-model="programType"
-                    val="private"
-                    label="Private"
-                    color="secondary"
-                  />
-                  <q-radio
-                    name="program-type"
-                    v-model="programType"
-                    val="public"
-                    label="Public"
-                    color="secondary"
-                  />
-                </q-item-section>
-                <q-item-section class="radio-element">
-                  <div class="q-pb-md">Program Type</div>
-                  <q-radio
-                    name="program-type"
-                    v-model="programType"
-                    val="private"
-                    label="Private"
-                    color="secondary"
-                  />
-                  <q-radio
-                    name="program-type"
-                    v-model="programType"
-                    val="public"
-                    label="Public"
-                    color="secondary"
-                  />
-                </q-item-section>
-              </q-item>
-            </q-list>
-            <div class="radio-element">
-              <div class="q-pb-xs q-pt-sm">Reward Range</div>
-              <q-toggle
-                v-model="pointOnly"
-                color="secondary"
-                label="Points Only"
-              />
-            </div>
-          </div>
-          <div class="bg-white q-pa-lg" style="border-radius: 16px">
-            <q-list>
-              <q-item class="item-amount items-baseline">
-                <q-item-section class="first-element" style="max-width: 60px"
-                  >P1</q-item-section
-                >
-                <q-item-section class="second-element">Critical</q-item-section>
-                <q-item-section>
-                  <q-input
-                    v-model="critical.min"
-                    borderless
-                    class="q-pl-xs q-pr-xs"
-                  />
-                </q-item-section>
-                <q-item-section>
-                  <q-input
-                    v-model="critical.max"
-                    borderless
-                    class="q-pl-xs q-pr-xs"
-                  />
-                </q-item-section>
-              </q-item>
-              <q-item class="item-amount items-baseline">
-                <q-item-section class="first-element" style="max-width: 60px"
-                  >P1</q-item-section
-                >
-                <q-item-section class="second-element">Servere</q-item-section>
-                <q-item-section>
-                  <q-input
-                    v-model="critical.min"
-                    borderless
-                    class="q-pl-xs q-pr-xs"
-                  />
-                </q-item-section>
-                <q-item-section>
-                  <q-input
-                    v-model="critical.max"
-                    borderless
-                    class="q-pl-xs q-pr-xs"
-                  />
-                </q-item-section>
-              </q-item>
-              <q-item class="item-amount items-baseline">
-                <q-item-section class="first-element" style="max-width: 60px"
-                  >P1</q-item-section
-                >
-                <q-item-section class="second-element">Medium</q-item-section>
-                <q-item-section>
-                  <q-input
-                    v-model="critical.min"
-                    borderless
-                    class="q-pl-xs q-pr-xs"
-                  />
-                </q-item-section>
-                <q-item-section>
-                  <q-input
-                    v-model="critical.max"
-                    borderless
-                    class="q-pl-xs q-pr-xs"
-                  />
-                </q-item-section>
-              </q-item>
-              <q-item class="item-amount items-baseline">
-                <q-item-section class="first-element" style="max-width: 60px"
-                  >P1</q-item-section
-                >
-                <q-item-section class="second-element">Low</q-item-section>
-                <q-item-section>
-                  <q-input
-                    v-model="critical.min"
-                    borderless
-                    class="q-pl-xs q-pr-xs"
-                  />
-                </q-item-section>
-                <q-item-section>
-                  <q-input
-                    v-model="critical.max"
-                    borderless
-                    class="q-pl-xs q-pr-xs"
-                  />
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </div>
-        </div>
-        <div class="q-pt-lg q-pb-lg">
-          <q-card class="my-card card-description" flat>
-            <q-card-section class="title q-pt-lg q-pb-md"
-              >Detailed Description</q-card-section
-            >
-            <q-card-section class="q-pb-sm">
-              <div class="subtitle q-pb-sm">Program Guidelines</div>
-              <div class="">
-                <q-input type="" v-model="model" label="" borderless />
-              </div>
-            </q-card-section>
-            <q-card-section class="q-pb-sm">
-              <div class="subtitle q-pb-sm">Rewards Guidelines</div>
-              <div class="">
-                <q-input type="" v-model="model" label="" borderless />
-              </div>
-            </q-card-section>
-            <q-card-section class="q-pb-sm">
-              <div class="subtitle q-pb-sm">Legal Terms</div>
-              <div class="">
-                <q-input type="" v-model="model" label="" borderless />
-              </div>
-            </q-card-section>
-            <q-card-section class="q-pb-sm">
-              <div class="subtitle q-pb-sm">Program Scope</div>
-              <div class="">
-                <q-input type="" v-model="model" label="" borderless />
-              </div>
-            </q-card-section>
-          </q-card>
-        </div>
-        <div class="card-invite">
-          <q-card class="my-card" flat>
-            <q-toolbar class="toolbar" style="padding-top:40px; padding-bottom:15px;">
-              <div class="title">Invite Hackers</div>
-              <q-space />
-              <q-input dense v-model="search" placeholder="Search" borderless>
-                <template v-slot:append>
-                  <q-icon name="search" />
-                </template>
-              </q-input>
-            </q-toolbar>
-            <q-card-section>
-              <q-list separator>
-                <q-item class="item-header">
-                  <q-item-section style="max-width: 50px"
-                    ><q-checkbox v-model="box1" class="q-mr-sm"
-                  /></q-item-section>
-                  <q-item-section> Username / Email </q-item-section>
-                  <q-item-section class="text-center" style="max-width: 18%">
-                    Rank
-                  </q-item-section>
-                  <q-item-section class="text-center" style="max-width: 18%">
-                    Acceptance Rate
-                  </q-item-section>
-                  <q-item-section class="text-center" style="max-width: 18%">
-                    Severity Level
-                  </q-item-section>
-                  <q-item-section class="text-center" style="max-width: 50px">
-                    Action
-                  </q-item-section>
-                </q-item>
-                <q-item class="item-element">
-                  <q-item-section style="max-width: 50px"
-                    ><q-checkbox v-model="box1" class="q-mr-sm"
-                  /></q-item-section>
-                  <q-item-section>
-                    <q-item-label class="title">Hacker Name</q-item-label>
-                    <q-item-label caption class="subtitle"
-                      >managerHackermail@gmail.com</q-item-label
-                    >
-                  </q-item-section>
-                  <q-item-section
-                    class="text-center flex flex-center"
-                    style="max-width: 18%"
-                  >
-                    <div class="active-badge">67%</div>
-                  </q-item-section>
-                  <q-item-section
-                    class="text-center text-item"
-                    style="max-width: 18%"
-                  >
-                    24
-                  </q-item-section>
-                  <q-item-section
-                    class="text-center text-item"
-                    style="max-width: 18%"
-                  >
-                    P1
-                  </q-item-section>
-                  <q-item-section
-                    class="text-center text-item"
-                    style="max-width: 50px"
-                  >
-                    <q-btn flat icon="more_horiz" />
-                  </q-item-section>
-                </q-item>
-                <q-item class="item-element">
-                  <q-item-section style="max-width: 50px"
-                    ><q-checkbox v-model="box1" class="q-mr-sm"
-                  /></q-item-section>
-                  <q-item-section>
-                    <q-item-label class="title">Hacker Name</q-item-label>
-                    <q-item-label caption class="subtitle"
-                      >managerHackermail@gmail.com</q-item-label
-                    >
-                  </q-item-section>
-                  <q-item-section
-                    class="text-center flex flex-center"
-                    style="max-width: 18%"
-                  >
-                    <div class="active-badge">67%</div>
-                  </q-item-section>
-                  <q-item-section
-                    class="text-center text-item"
-                    style="max-width: 18%"
-                  >
-                    24
-                  </q-item-section>
-                  <q-item-section
-                    class="text-center text-item"
-                    style="max-width: 18%"
-                  >
-                    P1
-                  </q-item-section>
-                  <q-item-section
-                    class="text-center text-item"
-                    style="max-width: 50px"
-                  >
-                    <q-btn flat icon="more_horiz" />
-                  </q-item-section>
-                </q-item>
-                <q-item class="item-element">
-                  <q-item-section style="max-width: 50px"
-                    ><q-checkbox v-model="box1" class="q-mr-sm"
-                  /></q-item-section>
-                  <q-item-section>
-                    <q-item-label class="title">Hacker Name</q-item-label>
-                    <q-item-label caption class="subtitle"
-                      >managerHackermail@gmail.com</q-item-label
-                    >
-                  </q-item-section>
-                  <q-item-section
-                    class="text-center flex flex-center"
-                    style="max-width: 18%"
-                  >
-                    <div class="active-badge">67%</div>
-                  </q-item-section>
-                  <q-item-section
-                    class="text-center text-item"
-                    style="max-width: 18%"
-                  >
-                    24
-                  </q-item-section>
-                  <q-item-section
-                    class="text-center text-item"
-                    style="max-width: 18%"
-                  >
-                    P1
-                  </q-item-section>
-                  <q-item-section
-                    class="text-center text-item"
-                    style="max-width: 50px"
-                  >
-                    <q-btn flat icon="more_horiz" />
-                  </q-item-section>
-                </q-item>
-                <q-item class="item-element">
-                  <q-item-section style="max-width: 50px"
-                    ><q-checkbox v-model="box1" class="q-mr-sm"
-                  /></q-item-section>
-                  <q-item-section>
-                    <q-item-label class="title">Hacker Name</q-item-label>
-                    <q-item-label caption class="subtitle"
-                      >managerHackermail@gmail.com</q-item-label
-                    >
-                  </q-item-section>
-                  <q-item-section
-                    class="text-center flex flex-center"
-                    style="max-width: 18%"
-                  >
-                    <div class="active-badge">67%</div>
-                  </q-item-section>
-                  <q-item-section
-                    class="text-center text-item"
-                    style="max-width: 18%"
-                  >
-                    24
-                  </q-item-section>
-                  <q-item-section
-                    class="text-center text-item"
-                    style="max-width: 18%"
-                  >
-                    P1
-                  </q-item-section>
-                  <q-item-section
-                    class="text-center text-item"
-                    style="max-width: 50px"
-                  >
-                    <q-btn flat icon="more_horiz" />
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </q-card-section>
-          </q-card>
-        </div>
-      </div>
     </div>
   </q-page>
 </template>
 <script>
+import { mapGetters, mapState } from "vuex";
 import programComponent from "../../components/program-component.vue";
 import SubmissionLevel from "../../components/submission-level.vue";
 export default {
   components: { programComponent, SubmissionLevel },
   data() {
     return {
+      program: {},
       progress: [0.8, 0.2, 0.1],
       typeuser: "client",
       programType: "public",
@@ -641,6 +243,21 @@ export default {
       box2: true,
       box3: false,
     };
+  },
+  watch: {
+    "$router.params.id": function (val) {
+      this.program = this.getProgram(this.$route.param.id);
+    },
+  },
+  computed: {
+    ...mapState('dashboard',[
+      'user'
+    ]),
+    ...mapGetters("program", ["getProgram"]),
+  },
+  beforeMount() {
+    this.program = this.getProgram(this.$route.params.id);
+    console.log(this.program);
   },
 };
 </script>
@@ -687,8 +304,8 @@ export default {
 .card-invite {
   border-radius: 16px;
 }
-.q-card{
-  border-radius: 16px;  
+.q-card {
+  border-radius: 16px;
 }
 .card-invite .q-toolbar {
   max-height: 10px;

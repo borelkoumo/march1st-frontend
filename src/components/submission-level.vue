@@ -7,40 +7,40 @@
       <q-item-section class="number text-bold">110</q-item-section>
     </q-item>
     <q-item>
-      <q-item-section class="text-submission">Accepted</q-item-section>
+      <q-item-section class="text-submission">{{submissions[0].label}}</q-item-section>
       <q-item-section>
         <q-linear-progress
-          :value="progress[0]"
+          :value="submissions[0].value"
           class=""
           color="positive"
           track-color="white"
         />
       </q-item-section>
-      <q-item-section class="number">80</q-item-section>
+      <q-item-section class="number">{{submissions[0].value * 100}}</q-item-section>
     </q-item>
     <q-item>
-      <q-item-section class="text-submission">Rejected</q-item-section>
+      <q-item-section class="text-submission">{{submissions[1].label}}</q-item-section>
       <q-item-section>
         <q-linear-progress
-          :value="progress[1]"
+          :value="submissions[1].value"
           class=""
           color="negative"
           track-color="white"
         />
       </q-item-section>
-      <q-item-section class="number">20</q-item-section>
+      <q-item-section class="number">{{submissions[1].value * 100}}</q-item-section>
     </q-item>
     <q-item>
-      <q-item-section class="text-submission">Pending</q-item-section>
+      <q-item-section class="text-submission">{{submissions[2].label}}</q-item-section>
       <q-item-section>
         <q-linear-progress
-          :value="progress[2]"
+          :value="submissions[2].value"
           class=""
           color="amber"
           track-color="white"
         />
       </q-item-section>
-      <q-item-section class="number">10</q-item-section>
+      <q-item-section class="number">{{submissions[2].value * 100}}</q-item-section>
     </q-item>
     <slot name="bottom">
 
@@ -49,7 +49,7 @@
 </template>
 <script>
 export default {
-  props: ["progress"],
+  props: ["progress","submissions"],
 };
 </script>
 <style scoped>

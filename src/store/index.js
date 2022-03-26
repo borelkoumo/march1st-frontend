@@ -2,6 +2,8 @@ import { store } from 'quasar/wrappers'
 import { createStore } from 'vuex'
 
 import global from './global'
+import program from './program'
+import dashboard from './dashboard'
 
 // import example from './module-example'
 
@@ -16,7 +18,9 @@ import global from './global'
 const Store = createStore({
     modules: {
         // example
-        global
+        global,
+        program,
+        dashboard
     },
 
     // enable strict mode (adds overhead!)

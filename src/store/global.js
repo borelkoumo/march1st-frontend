@@ -10,6 +10,8 @@ import {
 // Amplify libraries
 import { Auth } from "@aws-amplify/auth";
 
+
+
 const state = {
   userData: {},
   cognitoUser: {},

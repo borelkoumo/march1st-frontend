@@ -4,13 +4,13 @@
       <div class="flex justify-between">
         <div>
           <q-avatar rounded>
-            <img src="https://cdn.quasar.dev/img/avatar.png" />
+            <img :src="program.picture" />
           </q-avatar>
         </div>
         <div>
           <div class="text-right">
             <q-badge rounded class="q-pl-md q-pr-md access-positive"
-              >Private</q-badge
+              >{{program.type}}</q-badge
             >
           </div>
           <div class="q-pt-md q-pb-sm">
@@ -18,25 +18,24 @@
               <q-avatar size="24px" style="background: rgba(103, 58, 182, 0.5)">
                 <img src="https://cdn.quasar.dev/img/avatar2.jpg" />
               </q-avatar>
-              <div class="q-pl-sm">Safe harbor</div>
+              <div class="q-pl-sm">Safe Harbor</div>
             </q-btn>
           </div>
         </div>
       </div>
     </q-card-section>
     <q-card-section>
-      <div class="title-program">Yoast SEO</div>
+      <div class="title-program">{{program.title}}</div>
       <div class="content-program">
-        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-        dolore.
+        {{program.description}}
       </div>
     </q-card-section>
     <q-separator />
     <q-card-actions align="between" class="q-pt-md q-pb-md q-pr-none q-pl-none">
       <q-btn no-caps flat class="text-action-1"
-        >$ 100 - $ 2000 Per vulnerability</q-btn
+        >$ {{program.min}} - $ {{program.max}} Per vulnerability</q-btn
       >
-      <q-btn no-caps flat class="text-action-2">5 scopes</q-btn>
+      <q-btn no-caps flat class="text-action-2">{{program.scope}} scopes</q-btn>
     </q-card-actions>
     <slot name="button">
       <!-- <q-card-actions align="center" class="q-pt-md q-pb-md">

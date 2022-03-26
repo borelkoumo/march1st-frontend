@@ -47,16 +47,9 @@ const routes = [
     component: () => import("layouts/DashboardLayout.vue"),
     children: [
       {
-        path: "client",
-        name: "client",
+        path: "",
+        name: "dashboard",
         component: () => import("pages/dashboard/homePage.vue"),
-      },
-      {
-        path: "submissions",
-        name:"submissions",
-        component: () => import("pages/dashboard/submissionPage.vue"),
-        name: "attestation",
-        props: true,
       }
     ]
   },
@@ -64,6 +57,11 @@ const routes = [
     path: "/main",
     component: () => import("layouts/SecondLayout.vue"),
     children: [
+      {
+        path: "my-account",
+        name:"my-account",
+        component: () => import("pages/dashboard/myaccount.vue"),
+      },
       {
         path: "submissions",
         name:"submissions",
@@ -79,15 +77,22 @@ const routes = [
         name:"submission-detail",
         component: () => import("pages/dashboard/submission-detail.vue"),
       },
+      
+      {
+        path: "program-detail/:id",
+        name:"program-detail",
+        component: () => import("pages/dashboard/program-detail.vue"),
+        props:true
+      },
+      {
+        path: "add-program",
+        name:"add-program",
+        component: () => import("pages/dashboard/addProgram.vue"),
+      },
       {
         path: "programs",
         name:"programs",
         component: () => import("pages/dashboard/programPage.vue"),
-      },
-      {
-        path: "program-detail",
-        name:"program-detail",
-        component: () => import("pages/dashboard/program-detail.vue"),
       },
       {
         path: "my-programs",
@@ -143,11 +148,6 @@ const routes = [
         path: "payment-admin",
         name:"payment-admin",
         component: () => import("pages/dashboard/payment-admin.vue"),
-      },
-      {
-        path: "my-account",
-        name:"my-account",
-        component: () => import("pages/dashboard/myaccount.vue"),
       },
       {
         path: "notifications",

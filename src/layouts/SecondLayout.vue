@@ -54,19 +54,23 @@
       <q-scroll-area class="fit">
         <q-list class="pt-box menu-item" style="font-family: 'nunito'">
           <div v-for="menu in menus" :key="menu.id">
-            <q-item-label header v-if="menu.hasLabel" class="menu-label">{{
+            <q-item-label header v-if="menu.hasLabel" class="menu-label " >{{
               menu.label
             }}</q-item-label>
             <q-item
               v-for="child in menu.children"
-              :key="child.text"
+              :key="child.name"
               :icon="child.icon"
+              class="q-mr-sm text-white"
+              :class="{'active-menu':child.slug == $route.name}"
+              clickable
+              :to="child.link"
             >
               <q-item-section avatar>
                 <q-icon color="white" :name="child.icon" />
               </q-item-section>
               <q-item-section>
-                {{ child.text }}
+                {{ child.name }}
               </q-item-section>
             </q-item>
             <q-separator
@@ -88,6 +92,8 @@
 <script>
 import { ref } from "vue";
 import ListItem from "../components/list-item.vue";
+
+import {mapGetters, mapState} from 'vuex'
 
 export default {
   name: "MyLayout",
@@ -120,43 +126,32 @@ export default {
         width: "9px",
         opacity: 0.2,
       },
-      menus: [
-        {
-          label: "",
-          hasLabel: false,
-          id: 1,
-          children: [{ icon: "dashboard", text: "Dashboard" }],
-        },
-        {
-          label: "Personnal Menu",
-          hasLabel: true,
-          id: 2,
-          children: [
-            { icon: "people", text: "My Account" },
-            { icon: "shopping_basket", text: "My Tasks" },
-            { icon: "lock_open", text: "My Programs" },
-            { icon: "dashboard", text: "My Submissions" },
-            { icon: "format_size", text: "Payments" },
-          ],
-        },
-        {
-          label: "General Menu",
-          hasLabel: true,
-          id: 2,
-          children: [
-            { icon: "people", text: "Leader Board" },
-            { icon: "shopping_basket", text: "All Programs" },
-          ],
-        },
-      ],
-      
     };
   },
+  data() {
+    return {
+      menus:[]
+    }
+  },
+  computed: {
+    ...mapState('dashboard',[
+      
+    ]),
+    ...mapGetters('dashboard',[
+      'getMenus'
+    ])
+  },
+  beforeMount(){
+    console.log(this.getMenus)
+    this.menus = this.getMenus;
+  }
 };
 </script>
 
 <style lang="sass">
-
+.active-menu
+  border-right:2px solid white
+  color:white
 .close-item
   background: rgba(232, 239, 242, 0.75)
 .active-item

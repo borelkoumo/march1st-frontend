@@ -2,24 +2,22 @@
   <q-card class="my-card bg-white q-pt-lg q-pr-lg q-pl-lg q-pb-md" flat>
     <q-card-section horizontal>
       <div class="box-image col-2">
-        <q-img src="https://cdn.quasar.dev/img/parallax2.jpg" />
+        <q-img :src="program.picture" />
       </div>
       <q-card-section class="q-pl-lg q-pr-lg col">
         <div>
-          <q-badge class="q-pt-xs q-pb-xs active-class">Active</q-badge>
+          <q-badge class="q-pt-xs q-pb-xs active-class">{{program.status2}}</q-badge>
           <q-badge class="q-pt-xs q-pb-xs bg-transparent time-program"
             >Active since 9 days ago</q-badge
           >
         </div>
         <div class="title-program">
-          Program Tiltle Lorem ipsum dolor sit amet, consectetur adipiscing
-          elit.
+          {{program.title}}
         </div>
         <div class="content-title">
-          Prgram Description Lorem ipsum dolor sit amet, consectetur adipiscing
-          elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          {{program.description}}
         </div>
-        <div class="price-program">$ 100 - $ 2000 Per vulnerability</div>
+        <div class="price-program">$ {{program.min}} - $ {{program.max}} Per vulnerability</div>
         <div class="flex no-wrap">
           <div class="q-pr-md">
             <q-btn

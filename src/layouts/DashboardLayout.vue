@@ -11,20 +11,24 @@
       </div>
       <q-scroll-area class="fit">
         <q-list class="pt-box menu-item" style="font-family: 'nunito'">
-          <div v-for="menu in menus" :key="menu.id">
-            <q-item-label header v-if="menu.hasLabel" class="menu-label">{{
+          <div v-for="menu in getMenus" :key="menu.id">
+            <q-item-label header v-if="menu.hasLabel" class="menu-label " >{{
               menu.label
             }}</q-item-label>
             <q-item
               v-for="child in menu.children"
-              :key="child.text"
+              :key="child.name"
               :icon="child.icon"
+              class="q-mr-sm text-white"
+              :class="{'active-menu':child.slug == $route.name}"
+              clickable
+              :to="child.link"
             >
               <q-item-section avatar>
                 <q-icon color="white" :name="child.icon" />
               </q-item-section>
               <q-item-section>
-                {{ child.text }}
+                {{ child.name }}
               </q-item-section>
             </q-item>
             <q-separator
@@ -173,6 +177,8 @@
 import { ref } from "vue";
 import ListItem from "../components/list-item.vue";
 
+import {mapState, mapGetters} from 'vuex'
+
 export default {
   name: "MyLayout",
   components: {
@@ -207,35 +213,7 @@ export default {
         width: "9px",
         opacity: 0.2,
       },
-      menus: [
-        {
-          label: "",
-          hasLabel: false,
-          id: 1,
-          children: [{ icon: "dashboard", text: "Dashboard" }],
-        },
-        {
-          label: "Personnal Menu",
-          hasLabel: true,
-          id: 2,
-          children: [
-            { icon: "people", text: "My Account" },
-            { icon: "shopping_basket", text: "My Tasks" },
-            { icon: "lock_open", text: "My Programs" },
-            { icon: "dashboard", text: "My Submissions" },
-            { icon: "format_size", text: "Payments" },
-          ],
-        },
-        {
-          label: "General Menu",
-          hasLabel: true,
-          id: 2,
-          children: [
-            { icon: "people", text: "Leader Board" },
-            { icon: "shopping_basket", text: "All Programs" },
-          ],
-        },
-      ],
+      
       tasks: [
         {
           title: "Submissions required clarifications",
@@ -272,10 +250,21 @@ export default {
       ],
     };
   },
+  computed: {
+    ...mapState('dashboard',[
+      'menus'
+    ]),
+    ...mapGetters('dashboard',[
+      'getMenus'
+    ])
+  },
 };
 </script>
 
 <style lang="sass">
+.active-menu
+  border-right:1px solid white
+  color:white
 
 .card-identification
   height:120px

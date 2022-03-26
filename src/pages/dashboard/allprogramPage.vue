@@ -32,12 +32,6 @@
           style="min-width: 200px"
         />
         <q-space />
-        <q-btn
-          label="Create Program"
-          no-caps
-          flat
-          class="bg-secondary text-white"
-        />
         <q-btn label="Most Recent" flat no-caps icon-right="lock" />
       </q-toolbar>
       <div class="q-mt-lg">
@@ -49,83 +43,29 @@
             grid-gap: 15px;
           "
         >
-          <program-component-2 :program="null">
-            <template v-slot:button>
+          <program-component-2
+            :program="program"
+            v-for="program in programs"
+            :key="program.id"
+          >
+            <template v-slot:button v-if="user.typeUser=='hacker' && program.type=='Public'">
               <q-card-actions align="center" class="q-pt-md q-pb-md">
                 <q-btn
                   no-caps
                   flat
                   class="text-action-3"
                   style="background: #5887ff; width: 100%"
+                  v-if="!isHackerJoined(program.id)"
+                  @click="onJoinProgram(program.id)"
                   >Join Program</q-btn
                 >
-              </q-card-actions>
-            </template>
-          </program-component-2>
-          <program-component-2 :program="null"></program-component-2>
-          <program-component-2 :program="null">
-            <template v-slot:button>
-              <q-card-actions align="center" class="q-pt-md q-pb-md">
                 <q-btn
                   no-caps
                   flat
                   class="text-action-3"
-                  style="background: #f55b5d; width: 100%"
+                  style="background: #F55B5D; width: 100%"
+                  v-else
                   >Leave Program</q-btn
-                >
-              </q-card-actions>
-            </template>
-          </program-component-2>
-          <program-component-2 :program="null">
-            <template v-slot:button>
-              <q-card-actions align="center" class="q-pt-md q-pb-md">
-                <q-btn
-                  no-caps
-                  flat
-                  class="text-action-3"
-                  style="background: #5887ff; width: 100%"
-                  >Join Program</q-btn
-                >
-              </q-card-actions>
-            </template>
-          </program-component-2>
-          <program-component-2 :program="null">
-            <template v-slot:button>
-              <q-card-actions align="center" class="q-pt-md q-pb-md">
-                <q-btn
-                  no-caps
-                  flat
-                  class="text-action-3"
-                  style="background: #5887ff; width: 100%"
-                  >Join Program</q-btn
-                >
-              </q-card-actions>
-            </template>
-          </program-component-2>
-          <program-component-2 :program="null"></program-component-2>
-          <program-component-2 :program="null">
-            <template v-slot:button>
-              <q-card-actions align="center" class="q-pt-md q-pb-md">
-                <q-btn
-                  no-caps
-                  flat
-                  class="text-action-3"
-                  style="background: #5887ff; width: 100%"
-                  >Join Program</q-btn
-                >
-              </q-card-actions>
-            </template>
-          </program-component-2>
-          <program-component-2 :program="null"></program-component-2>
-          <program-component-2 :program="null">
-            <template v-slot:button>
-              <q-card-actions align="center" class="q-pt-md q-pb-md">
-                <q-btn
-                  no-caps
-                  flat
-                  class="text-action-3"
-                  style="background: #5887ff; width: 100%"
-                  >Join Program</q-btn
                 >
               </q-card-actions>
             </template>
@@ -137,6 +77,7 @@
 </template>
 <script>
 import programComponent2 from "../../components/program-component-2.vue";
+import { mapActions, mapGetters, mapState } from "vuex";
 export default {
   components: { programComponent2 },
   data() {
@@ -144,7 +85,24 @@ export default {
       search: null,
       filters: [{ label: "fgfgfgfg", value: "3" }],
       filter: null,
+      programs: [],
     };
+  },
+  computed: {
+    ...mapGetters("program", ["getPrograms","isHackerJoined"]),
+    ...mapState('dashboard',['user']),
+  },
+  methods: {
+    ...mapActions('program',[
+      'joinProgram'
+    ]),
+    async onJoinProgram(id){
+      await this.joinProgram(id);
+      this.$router.push('/main/my-programs');
+    }
+  },
+  beforeMount() {
+    this.programs = this.getPrograms;
   },
 };
 </script>

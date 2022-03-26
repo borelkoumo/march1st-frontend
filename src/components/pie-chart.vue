@@ -13,28 +13,21 @@
 </template>
 <script>
 export default {
+  props:['value'],
   data: function () {
     return {
-      series: [44, 55, 41],
+      series: [],
       chartOptions: {
-        chart: {
-          type: "donut",
-        },
-        labels: [
-          "Accepted submissions",
-          "Pending for verifications",
-          "Rejected submissions",
-        ],
-        legend: {
-          position: "bottom",
-          horizontalAlign: 'left',
-        },
-        dataLabels: {
-          enabled: false,
-        },
+        
       },
     };
   },
+  beforeMount(){
+    console.log(this.value);
+    let data = JSON.parse(JSON.stringify(this.value));
+    this.series = data.series;
+    this.chartOptions = data.chartOptions;
+  }
 };
 </script>
 <style scoped>

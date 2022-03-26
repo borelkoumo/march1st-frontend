@@ -1,7 +1,10 @@
 <template>
   <q-page class="bg-home">
     <div class="pl-box pr-box container-dashboard">
-      <q-toolbar class="q-pr-none q-pl-none" style="padding-top: 20px; padding-bottom: 40px">
+      <q-toolbar
+        class="q-pr-none q-pl-none"
+        style="padding-top: 20px; padding-bottom: 40px"
+      >
         <div class="title-toolbar">Dashboard</div>
         <q-space />
         <div class="flex q-gutter-md">
@@ -34,8 +37,8 @@
           style="border-radius: 5px; background-color: #0377e0"
         >
           <template v-slot:header>
-            <div class="title-element text-white">TOTAL PROGRAMS</div>
-            <div class="number-element text-white">$24,000</div>
+            <div class="title-element text-white">{{ cards[0].label }}</div>
+            <div class="number-element text-white">{{ cards[0].data }}</div>
           </template>
           <template v-slot:icon>
             <q-btn round flat class="bg-white" size="20px">
@@ -43,7 +46,7 @@
             </q-btn>
           </template>
           <template v-slot:footer>
-            <span class="">12% Since last month</span>
+            <span class="">{{ cards[0].percentage }} {{ cards[0].time }}</span>
           </template>
         </card-element>
         <card-element
@@ -52,9 +55,11 @@
         >
           <template v-slot:header>
             <div class="title-element" style="color: #66788a">
-              TOTAL SUBMISSIONS
+              {{ cards[1].label }}
             </div>
-            <div class="number-element" style="color: #212529">24000</div>
+            <div class="number-element" style="color: #212529">
+              {{ cards[1].data }}
+            </div>
           </template>
           <template v-slot:icon>
             <q-btn
@@ -68,7 +73,9 @@
             </q-btn>
           </template>
           <template v-slot:footer>
-            <span class="" style="color: #66788a">12% Since last month</span>
+            <span class="" style="color: #66788a"
+              >{{ cards[1].percentage }} {{ cards[1].time }}</span
+            >
           </template>
         </card-element>
         <card-element
@@ -76,8 +83,12 @@
           style="border-radius: 5px; background-color: white"
         >
           <template v-slot:header>
-            <div class="title-element" style="color: #66788a">REWARD PAID</div>
-            <div class="number-element" style="color: #212529">$ 20000</div>
+            <div class="title-element" style="color: #66788a">
+              {{ cards[2].label }}
+            </div>
+            <div class="number-element" style="color: #212529">
+              {{ cards[2].data }}
+            </div>
           </template>
           <template v-slot:icon>
             <q-btn
@@ -91,7 +102,7 @@
           </template>
           <template v-slot:footer>
             <div class="flex q-pt-md q-pr-lg" style="">
-              <q-linear-progress :value="progress" color="secondary" />
+              <q-linear-progress :value="cards[2].progress" color="secondary" />
             </div>
           </template>
         </card-element>
@@ -101,9 +112,11 @@
         >
           <template v-slot:header>
             <div class="title-element" style="color: #66788a">
-              TOTAL SUBMISSIONS
+              {{ cards[3].label }}
             </div>
-            <div class="number-element" style="color: #212529">24000</div>
+            <div class="number-element" style="color: #212529">
+              {{ cards[3].data }}
+            </div>
           </template>
           <template v-slot:icon>
             <q-btn
@@ -117,13 +130,15 @@
             </q-btn>
           </template>
           <template v-slot:footer>
-            <span class="" style="color: #66788a">12% Since last month</span>
+            <span class="" style="color: #66788a"
+              >{{ cards[3].percentage }} {{ cards[3].time }}</span
+            >
           </template>
         </card-element>
       </div>
       <div class="q-pt-lg q-pb-lg">
         <div class="bg-white">
-          <columnChart>
+          <columnChart :columns="columnChart">
             <template v-slot:default>
               <div>Submission Activities</div>
             </template>
@@ -132,21 +147,21 @@
       </div>
       <div>
         <div
-          class=""
+          class="q-pb-lg"
           style="
             display: grid;
             grid-template-columns: 1fr 1fr 1fr 1fr;
             grid-gap: 29px;
           "
         >
-          <div class="bg-white">
-            <pieChart>
+          <div class="bg-white" v-for="value in pieData" :key="value.title">
+            <pieChart :value="value">
               <template v-slot:default>
-                <div>Submissions</div>
+                <div>{{ value.title }}</div>
               </template>
             </pieChart>
           </div>
-          <div class="bg-white">
+          <!-- <div class="bg-white">
             <pieChart>
               <template v-slot:default>
                 <div>Vulnerability Severity</div>
@@ -166,10 +181,30 @@
                 <div>Remaining Budget</div>
               </template>
             </pieChart>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
+    <q-dialog v-model="prompt" persistent>
+      <q-card style="min-width: 350px">
+        <q-card-section>
+          <div class="text-h6">Type d'utilisateur</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <q-select
+            v-model="typeuser"
+            :options="options"
+            label="Type d'utilisateur"
+            outlined
+          />
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Save" v-close-popup @click="createUser(typeuser)"/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 <script>
@@ -178,10 +213,13 @@ import { defineAsyncComponent } from "vue";
 import CardElement from "../../components/card-element.vue";
 import SelectComponent from "../../components/select-component.vue";
 
+import { mapActions, mapState } from "vuex";
+
 const columnChart = defineAsyncComponent(() =>
   import("components/column-chart.vue")
 );
 const pieChart = defineAsyncComponent(() => import("components/pie-chart.vue"));
+
 export default {
   components: { CardElement, columnChart, pieChart, SelectComponent },
   data() {
@@ -191,7 +229,21 @@ export default {
       program: { label: "All Programs", value: "1" },
       periods: [{ label: "All time", value: "1" }],
       period: { label: "All time", value: "1" },
+
+      prompt:true,
+      typeuser:{ label: "Client", value: "client" },
+      options: [
+        { label: "Admin", value: "admin" },
+        { label: "Client", value: "client" },
+        { label: "Hacker", value: "hacker" },
+      ],
     };
+  },
+  computed: {
+    ...mapState("dashboard", ["cards", "columnChart", "pieData"]),
+  },
+  methods: {
+    ...mapActions('dashboard',['createUser'])
   },
 };
 </script>

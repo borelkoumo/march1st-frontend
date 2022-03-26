@@ -63,6 +63,19 @@ module.exports = configure(function (ctx) {
       chainWebpack(/* chain */) {
         //
       },
+      /*chainWebpack (chain, { isServer, isClient }) {
+        chain.module.rule('vue')
+          .use('vue-loader')
+          .loader('vue-loader')
+          .tap(options => {
+            options.transpileOptions = {
+              transforms: {
+                dangerousTaggedTemplateString: true
+              }
+            }
+            return options
+          })
+      },*/
       env: {
         VUE_APP_RP_RPID: "march1st.com",
         VUE_APP_RP_BACKEND: "https://backend.march1st.com/rpbackend",
