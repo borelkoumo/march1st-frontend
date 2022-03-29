@@ -24,10 +24,16 @@
           borderless
         />
         <q-space />
-        <q-btn label="Submissions" flat no-caps icon-right="lock" />
+        <q-btn label="Submissions" flat no-caps icon-right="import_export" />
       </q-toolbar>
       <div class="q-mt-lg">
-        <submission-component :submission="null" class="submission-component">
+        <submission-component
+          :program="submission.program"
+          class="submission-component cursor-pointer"
+          v-for="submission in submissions"
+          :key="submission.submission_title"
+          @click.prevent="showDetails(submission)"
+        >
           <template v-slot:header>
             <q-card-section class="q-pa-none" style="padding-bottom: 27px">
               <q-toolbar>
@@ -37,7 +43,7 @@
                 <q-space />
                 <div class="title-badge-2"><span>2 day ago, 3:45 pm</span></div>
               </q-toolbar>
-              <div class="title">Submission title Submission</div>
+              <div class="title">{{ submission.submission_title }}</div>
               <q-separator color="#E4E4E4" />
             </q-card-section>
           </template>
@@ -47,6 +53,7 @@
   </q-page>
 </template>
 <script>
+import { mapGetters, mapState } from "vuex";
 import submissionComponent from "../../components/submission-component.vue";
 export default {
   components: { submissionComponent },
@@ -65,11 +72,33 @@ export default {
         { label: "M1 made payment", value: 8 },
       ],
       stat: { label: "Any", value: 0 },
+
+      submissions: [],
     };
+  },
+  computed: {
+    ...mapState("dashboard", ["user"]),
+    ...mapGetters("submission", ["getMySubmissions"]),
+    ...mapGetters("program", ["getProgram"]),
+  },
+  methods: {
+    async showDetails(submission) {
+      let route = { name: "submission-detail", params: { id: submission.id } };
+      if (this.user.typeUser !== "hacker") this.$router.push(route);
+    },
+  },
+  async beforeMount() {
+    try {
+      this.submissions = await this.getMySubmissions;
+      this.submissions.forEach((submission) => {
+        let program = this.getProgram(submission.program_id);
+        submission.program = program;
+      });
+    } catch (error) {}
   },
 };
 </script>
-<style >
+<style>
 .toolbar-submission .q-field--dense .q-field__label {
   padding-left: 15px;
 }

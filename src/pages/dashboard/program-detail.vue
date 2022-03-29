@@ -10,12 +10,15 @@
           color="secondary"
           label="Submit a Report"
           no-caps
+          v-if="user.typeUser=='hacker'"
+          @click.prevent="showSubmissionForm()"
         />
         <q-btn
           class="bg-secondary text-white"
           no-caps
           flat
           label="Edit"
+          v-if="user.typeUser=='client' && program.user_id == user.id"
         />
         <!-- <q-btn
           class="bg-positive text-white q-mr-lg"
@@ -255,9 +258,14 @@ export default {
     ]),
     ...mapGetters("program", ["getProgram"]),
   },
+  methods: {
+    showSubmissionForm(){
+      let route = {name:'add-submission', params:{id:this.program.id}}
+      this.$router.push(route);
+    }
+  },
   beforeMount() {
     this.program = this.getProgram(this.$route.params.id);
-    console.log(this.program);
   },
 };
 </script>

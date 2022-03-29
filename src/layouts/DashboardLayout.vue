@@ -56,26 +56,24 @@
               src="https://cdn.quasar.dev/img/parallax2.jpg"
             />
           </q-card-section>
-          <q-card-section class="q-pt-xs" v-if="$route.name == 'client'">
-            <div class="q-mt-sm title">Company Name</div>
+          <q-card-section class="q-pt-xs" v-if="user && user.typeUser=='client'">
+            <div class="q-mt-sm title">{{user.company_name}}</div>
             <div class="subtitle">Joined 6 months ago</div>
           </q-card-section>
-          <q-card-section class="q-pt-xs" v-if="$route.name == 'hacker'">
-            <div class="q-mt-sm title">JOHN DOE ROMAN NASER</div>
+          <q-card-section class="q-pt-xs" v-if="user && user.typeUser=='hacker'">
+            <div class="q-mt-sm title">{{user.first_name}} {{user.last_name}}</div>
             <div class="subtitle">Joined 6 months ago</div>
             <div class="subtitle">Current Rank: 70</div>
             <div class="subtitle">Average Rank: 7</div>
             <div class="subtitle">Average Vulnerability Severity</div>
           </q-card-section>
         </q-card-section>
-      </q-card>
-      <q-toolbar>
-        <q-space />
-        <div class="q-gutter-sm">
+        <q-card-actions align="right">
           <q-btn label="SIGNOUT" class="bg-primary text-white" flat />
           <q-btn label="PROFILE" class="bg-secondary text-white" flat />
-        </div>
-      </q-toolbar>
+        </q-card-actions>
+      </q-card>
+      
       <q-card flat class="card-panel">
         <q-tabs
           v-model="tabElement"
@@ -166,7 +164,28 @@
       </q-card>
       <q-scroll-area class="fit"> </q-scroll-area>
     </q-drawer>
+    
+    <!-- inserer le dialog d'user ici -->
+    <q-dialog v-model="prompt" persistent>
+      <q-card style="min-width: 350px">
+        <q-card-section>
+          <div class="text-h6">Type d'utilisateur</div>
+        </q-card-section>
 
+        <q-card-section class="q-pt-none">
+          <q-select
+            v-model="user"
+            :options="users"
+            label="Sélectionnez un utilisateur"
+            outlined
+          />
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Save" v-close-popup @click="onCreateUser()"/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -177,7 +196,7 @@
 import { ref } from "vue";
 import ListItem from "../components/list-item.vue";
 
-import {mapState, mapGetters} from 'vuex'
+import {mapState, mapGetters, mapActions} from 'vuex'
 
 export default {
   name: "MyLayout",
@@ -250,14 +269,46 @@ export default {
       ],
     };
   },
+  data() {
+    return {
+      user:null,
+      users:[],
+      prompt:false,
+      newuser:{}
+    }
+  },
   computed: {
     ...mapState('dashboard',[
       'menus'
     ]),
     ...mapGetters('dashboard',[
-      'getMenus'
+      'getMenus',
+      'getUsers'
     ])
   },
+  methods: {
+    ...mapActions('dashboard',['createUser']),
+    ...mapActions('program',[
+      'getAllPrograms'
+    ]),
+    onCreateUser(){
+      this.createUser(this.user);
+    }
+  },
+  beforeMount(){
+    this.getAllPrograms();
+    this.prompt = true;
+    this.getUsers.forEach(element => {
+      if(element.typeUser=='hacker'){
+        element.label = element.first_name
+      }
+      else if(element.typeUser == 'client'){
+        element.label = element.company_name
+      }
+      element.value = element.id;
+      this.users.push(element);
+    });
+  }
 };
 </script>
 
@@ -267,7 +318,7 @@ export default {
   color:white
 
 .card-identification
-  height:120px
+  height:200px
   .title
     font-family: 'nunito'
     font-style: normal

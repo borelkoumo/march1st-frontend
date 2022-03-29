@@ -6,7 +6,7 @@
       </div>
       <q-card-section class="q-pl-lg q-pr-lg col">
         <div>
-          <q-badge class="q-pt-xs q-pb-xs active-class">{{program.status2}}</q-badge>
+          <q-badge class="q-pt-xs q-pb-xs active-class">{{program.status}}</q-badge>
           <q-badge class="q-pt-xs q-pb-xs bg-transparent time-program"
             >Active since 9 days ago</q-badge
           >

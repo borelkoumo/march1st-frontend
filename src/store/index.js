@@ -4,6 +4,7 @@ import { createStore } from 'vuex'
 import global from './global'
 import program from './program'
 import dashboard from './dashboard'
+import submission from './submission'
 
 // import example from './module-example'
 
@@ -20,6 +21,7 @@ const Store = createStore({
         // example
         global,
         program,
+        submission,
         dashboard
     },
 

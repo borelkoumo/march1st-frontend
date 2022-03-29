@@ -47,6 +47,7 @@
             :program="program"
             v-for="program in programs"
             :key="program.id"
+            @click="showDetails(program)"
           >
             <template v-slot:button v-if="user.typeUser=='hacker' && program.type=='Public'">
               <q-card-actions align="center" class="q-pt-md q-pb-md">
@@ -99,6 +100,10 @@ export default {
     async onJoinProgram(id){
       await this.joinProgram(id);
       this.$router.push('/main/my-programs');
+    },
+    async showDetails(program){
+      let route = {name:'program-detail', params:{id:program.id}}
+      this.$router.push(route);
     }
   },
   beforeMount() {

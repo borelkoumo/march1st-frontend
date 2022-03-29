@@ -3,22 +3,20 @@
     <slot name="header"> </slot>
     <q-card-section horizontal>
       <div class="box-image col-5">
-        <q-img src="https://cdn.quasar.dev/img/parallax2.jpg" />
+        <q-img :src="program.picture"/>
       </div>
       <q-card-section class="q-pl-lg">
         <div class="subtitle">Related Program</div>
         <div class="subtitle-2">
-          Program Tiltle Lorem ipsum dolor sit amet, consectetur adipiscing
-          elit.
+          {{program.title}}
         </div>
         <div class="content-title">
-          Prgram Description Lorem ipsum dolor sit amet, consectetur adipiscing
-          elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          {{program.description}}
         </div>
         <q-toolbar class="subtitle-3">
           <div>Submitted on 22 May 2021 , 3:45 pm</div>
           <q-space />
-          <div>$ 100 - $ 2000 Per vulnerability</div>
+          <div>$ {{program.min}} - $ {{program.max}} Per vulnerability</div>
         </q-toolbar>
       </q-card-section>
     </q-card-section>
@@ -26,7 +24,7 @@
 </template>
 <script>
 export default {
-  props: ["submission"],
+  props: ["program"],
 };
 </script>
 <style scoped>

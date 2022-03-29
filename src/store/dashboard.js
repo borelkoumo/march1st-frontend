@@ -1,5 +1,6 @@
 import { apolloClient } from "./utils/apollo";
 import gql from "graphql-tag";
+import {users} from "./utils/fakedata";
 
 /* import {
     allMenu
@@ -339,6 +340,11 @@ const getters = {
       ];
       return menus;
     }
+  },
+
+  //pour simulation
+  getUsers(){
+    return JSON.parse(JSON.stringify(users));
   }
 };
 
@@ -350,14 +356,7 @@ const mutations = {
 
 const actions = {
   createUser({commit},payload){
-    let user = {
-      id:Math.floor(Math.random() * 300),
-      typeUser:payload.value,
-      name:"user"
-    }
-    user.name = user.name+'-'+user.id;
-    commit('setUser',user);
-    console.log(user);
+    commit('setUser',payload);
   }
   /* async getMenus({commit}){
         try {

@@ -185,26 +185,6 @@
         </div>
       </div>
     </div>
-    <q-dialog v-model="prompt" persistent>
-      <q-card style="min-width: 350px">
-        <q-card-section>
-          <div class="text-h6">Type d'utilisateur</div>
-        </q-card-section>
-
-        <q-card-section class="q-pt-none">
-          <q-select
-            v-model="typeuser"
-            :options="options"
-            label="Type d'utilisateur"
-            outlined
-          />
-        </q-card-section>
-
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Save" v-close-popup @click="createUser(typeuser)"/>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </q-page>
 </template>
 <script>
@@ -230,13 +210,6 @@ export default {
       periods: [{ label: "All time", value: "1" }],
       period: { label: "All time", value: "1" },
 
-      prompt:true,
-      typeuser:{ label: "Client", value: "client" },
-      options: [
-        { label: "Admin", value: "admin" },
-        { label: "Client", value: "client" },
-        { label: "Hacker", value: "hacker" },
-      ],
     };
   },
   computed: {

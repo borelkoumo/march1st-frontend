@@ -181,33 +181,51 @@ const getters = {
   getProgram(state) {
     return (id) => {
       let program = {};
-      state.programs.forEach((p) => {
-        if (p.id == id) program = JSON.parse(JSON.stringify(p));
-      });
+      let allPrograms = localStorage.getItem("programs");
+      if (allPrograms) {
+        allPrograms = JSON.parse(allPrograms);
+        allPrograms.forEach((p) => {
+          if (p.id == id) program = JSON.parse(JSON.stringify(p));
+        });
+      }
       return program;
     };
   },
   getPrograms(state) {
-    return JSON.parse(JSON.stringify(state.programs));
+    let programs = localStorage.getItem("programs");
+    if (programs) {
+      programs = JSON.parse(programs);
+      return programs;
+    } else {
+      return JSON.parse(JSON.stringify(state.programs));
+    }
   },
   getClientPrograms(state) {
     let user = dasboard.state.user;
     let programs = [];
-    state.programs.forEach((program) => {
-      if (program.user_id == user.id) {
-        programs.push(program);
-      }
-    });
+    let allPrograms = localStorage.getItem("programs");
+    if (allPrograms) {
+      allPrograms = JSON.parse(allPrograms);
+      allPrograms.forEach((program) => {
+        if (program.user_id == user.id) {
+          programs.push(program);
+        }
+      });
+    }
     return programs;
   },
   getHackerPrograms(state) {
     let programs = [];
     let user = dasboard.state.user;
-    state.programs.forEach((program) => {
-      program.hackers.forEach((h) => {
-        if (h.id == user.id) programs.push(program);
+    let allPrograms = localStorage.getItem("programs");
+    if (allPrograms) {
+      allPrograms = JSON.parse(allPrograms);
+      allPrograms.forEach((program) => {
+        program.hackers.forEach((h) => {
+          if (h.id == user.id) programs.push(program);
+        });
       });
-    });
+    }
     return programs;
   },
   isPrivateProgram(state) {
@@ -225,6 +243,7 @@ const getters = {
 
     return (program_id) => {
       let program = {};
+
       state.programs.forEach((p) => {
         if (p.id == program_id) program = p;
       });
@@ -238,8 +257,24 @@ const getters = {
 };
 
 const mutations = {
+  setPrograms (state){
+    let programs = localStorage.getItem("programs");
+    if (programs) {
+      programs = JSON.parse(programs);
+      state.programs = programs;
+    }
+  },
   addProgram(state, payload) {
-    state.programs.push(payload);
+    let programs = localStorage.getItem("programs");
+    if (programs) {
+      programs = JSON.parse(programs);
+      programs.push(payload);
+      state.programs = programs;
+      localStorage.setItem("programs", programs);
+    } else {
+      state.programs.push(payload);
+      localStorage.setItem("programs", JSON.stringify(state.programs));
+    }
   },
   addHackerToProgram(state, payload) {
     state.programs.forEach((p) => {
@@ -251,6 +286,9 @@ const mutations = {
 };
 
 const actions = {
+  async getAllPrograms({state,commit}){
+    commit("setPrograms");
+  },
   async saveProgram({ state, commit }, payload) {
     let max =
       payload.critical.max > payload.severe.max

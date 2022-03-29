@@ -63,19 +63,21 @@ const routes = [
         component: () => import("pages/dashboard/myaccount.vue"),
       },
       {
-        path: "submissions",
-        name:"submissions",
+        path: "my-submissions",
+        name:"my-submissions",
         component: () => import("pages/dashboard/submissionPage.vue"),
       },
       {
-        path: "add-submission",
-        name:"addsubmission",
+        path: "add-submission/:id",
+        name:"add-submission",
         component: () => import("pages/dashboard/addSubmission.vue"),
+        props:true
       },
       {
-        path: "submission-detail",
+        path: "submission-detail/:id",
         name:"submission-detail",
         component: () => import("pages/dashboard/submission-detail.vue"),
+        props:true
       },
       
       {

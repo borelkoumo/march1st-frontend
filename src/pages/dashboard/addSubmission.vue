@@ -13,14 +13,15 @@
           />
           <q-btn
             no-caps
-            label="Register"
+            label="Submit"
             class="bg-secondary text-white"
             flat
             style="min-width: 160px"
+            @click.prevent="onAddReport()"
           />
         </q-toolbar>
         <div class="q-mt-lg submission-elt">
-          <submission-component :submission="null"></submission-component>
+          <submission-component :program="program"></submission-component>
         </div>
         <div class="q-mt-lg">
           <q-card class="my-card card-description q-pb-md" flat>
@@ -29,7 +30,7 @@
               <div class="">
                 <q-input
                   type=""
-                  v-model="model"
+                  v-model="formData.submission_title"
                   label="Vulnerablity in User Private Information Leak"
                   borderless
                   class="q-pl-sm q-pr-sm"
@@ -41,7 +42,7 @@
               <div class="">
                 <q-select
                   :options="levels"
-                  v-model="level"
+                  v-model="formData.severety_level"
                   label="Select Severity Level"
                   borderless
                   class="q-pl-sm q-pr-sm"
@@ -53,7 +54,7 @@
               <div class="">
                 <q-input
                   type=""
-                  v-model="model"
+                  v-model="formData.submission_target"
                   label="Enter Target"
                   borderless
                   class="q-pl-sm q-pr-sm"
@@ -65,7 +66,7 @@
               <div class="">
                 <q-input
                   type="textarea"
-                  v-model="content"
+                  v-model="formData.submission_text"
                   label=""
                   borderless
                   class="q-pl-sm q-pr-sm"
@@ -120,6 +121,7 @@
   </q-page>
 </template>
 <script>
+import { mapActions, mapGetters, mapState } from "vuex";
 import submissionComponent from "../../components/submission-component.vue";
 export default {
   components: { submissionComponent },
@@ -129,17 +131,47 @@ export default {
       program: null,
       status: [{ label: "fgfgfgfg", value: "3" }],
       stat: null,
+      formData: {
+        submission_title: "Curabitur non nulla sit amet nisl",
+        severety_level: { label: "Severe", value: "Severe" },
+        submission_target: "http://localhost:8080/main/my-submissions",
+        submission_text:
+          "Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Quisque velit nisi, pretium ut lacinia in, elementum id enim.",
+        program_id: null,
+        hacker_id: null,
+        client_id:null
+      },
       model: null,
       content:
         "Program text Nemo enim ipsam voluptatem ipsam ta Program text Nemo enim ipsam voluptatem ipsam ta Program text Nemo enim ipsam voluptatem ipsam ta",
       levels: [
-        { label: "Low", value: "0" },
-        { label: "Medium", value: "1" },
-        { label: "Severe", value: "2" },
-        { label: "High", value: "3" },
+        { label: "Low", value: "Low" },
+        { label: "Medium", value: "Medium" },
+        { label: "Severe", value: "Severe" },
+        { label: "High", value: "High" },
       ],
       level: null,
     };
+  },
+  computed: {
+    ...mapState("dashboard", ["user"]),
+    ...mapGetters("program", ["getProgram"]),
+  },
+  methods: {
+    ...mapActions("submission", ["addReport"]),
+    async onAddReport() {
+      try {
+        this.formData.program_id = this.program.id;
+        this.formData.hacker_id = this.user.id;
+        this.formData.client_id = this.program.user_id;
+        await this.addReport(this.formData);
+        this.$router.push({ name: "my-submissions" });
+      } catch (error) {}
+    },
+  },
+  beforeMount() {
+    this.program = this.getProgram(this.$route.params.id);
+    console.log(this.program);
   },
 };
 </script>
@@ -209,7 +241,8 @@ export default {
   letter-spacing: -0.02em;
   color: #46516d;
 }
-.card-description .q-input, .card-description .q-select {
+.card-description .q-input,
+.card-description .q-select {
   background: #fbfbfb;
   border: 1px solid #f3f3f3;
   box-sizing: border-box;

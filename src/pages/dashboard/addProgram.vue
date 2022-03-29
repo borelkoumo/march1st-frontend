@@ -473,7 +473,7 @@
 </template>
 <script>
 import submissionComponent from "../../components/submission-component.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   components: { submissionComponent },
   name: "programs",
@@ -527,9 +527,14 @@ export default {
       model: null,
       search: null,
       box1: false,
-      box2: true,
+      box2: false,
       box3: false,
     };
+  },
+  computed: {
+      ...mapGetters('dashboard',[
+          'hackers'
+      ])
   },
   methods: {
     ...mapActions("program", ["saveProgram"]),
