@@ -80,12 +80,12 @@
           </div>
         </div>
         <div class="">
-          <div class="submission-title q-pb-sm">Submission Severity Level</div>
+          <div class="submission-title q-pb-sm">Vulnerability Status</div>
           <div class="submission-form">
             <q-select
-              :options="levels"
-              v-model="level"
-              label="Select Severity Level"
+              :options="status"
+              v-model="submission.submission_status"
+              label="Select Vulnerability Status"
               borderless
               class="q-pl-sm q-pr-sm"
             />
@@ -147,18 +147,20 @@ export default {
   components: { SubmissionComponent },
   data() {
     return {
-      levels: [
-        { label: "Low", value: "0" },
-        { label: "Medium", value: "1" },
-        { label: "Severe", value: "2" },
-        { label: "High", value: "3" },
+      status: [
+        { label: "New report submission", value: "new report submission" },
+        { label: "Returned for clarifications", value: "returned for clarifications" },
+        { label: "Resubmitted with clarifications", value: "resubmitted with clarifications" },
+        { label: "Passed triage", value: "passed triage" },
+        { label: "Client returned for clarification", value: "client returned for clarification" },
+        { label: "Submission accepted", value: "submission accepted" },
+        { label: "Made payment", value: "made payment" }
       ],
-      level: null,
       actions: [
-        { label: "Return For Clarification", value: 1 },
-        { label: "Reject", value: 2 },
-        { label: "Accept", value: 3 },
-        { label: "Send to Client", value: 4 },
+        { label: "Return for clarification", value: "returned for clarifications" },
+        { label: "Reject", value: "submission reject" },
+        { label: "Accept", value: "submission accepted" },
+        { label: "Send to Client", value: "send to client" },
       ],
       action: { label: "Actions", value: 0 },
       message: null,

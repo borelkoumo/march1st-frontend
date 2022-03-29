@@ -2,7 +2,7 @@
   <q-layout view="lHh lpp fff" class="bg-grey-1">
     <q-header>
       <q-toolbar class="bg-white q-pl-lg q-pr-lg">
-      <q-toolbar-title class="title-submission">Submissions</q-toolbar-title>
+      <q-toolbar-title class="title-submission">{{title}}</q-toolbar-title>
       <q-space />
       <q-btn-dropdown
         class="btn-dropdown bg-none q-pl-sm q-mr-xs"
@@ -130,7 +130,13 @@ export default {
   },
   data() {
     return {
-      menus:[]
+      menus:[],
+      title:null
+    }
+  },
+  watch:{
+    "$route.name":function(val){
+      this.defineTitle(val);
     }
   },
   computed: {
@@ -141,9 +147,24 @@ export default {
       'getMenus'
     ])
   },
+  methods: {
+    defineTitle(name){
+      switch(name){
+        case "my-account" : this.title = "My Accout"; break;
+        case "my-submissions" : this.title = "My Submissions"; break;
+        case "add-submission" : this.title = "Submissions: Add Report"; break;
+        case "submission-detail" : this.title = "Submission Details"; break;
+        case "program-detail" : this.title = "Program Details"; break;
+        case "add-program" : this.title = "Add Program"; break;
+        case "programs" : this.title = "My Programs"; break;
+        case "my-programs" : this.title = "My Programs"; break;
+        case "all-programs" : this.title = "All Programs"; break;
+      }
+    }
+  },
   beforeMount(){
-    console.log(this.getMenus)
     this.menus = this.getMenus;
+    this.defineTitle(this.$route.name);
   }
 };
 </script>

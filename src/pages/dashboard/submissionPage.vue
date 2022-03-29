@@ -89,7 +89,9 @@ export default {
   },
   async beforeMount() {
     try {
+      console.log("icic")
       this.submissions = await this.getMySubmissions;
+      console.log(this.submissions);
       this.submissions.forEach((submission) => {
         let program = this.getProgram(submission.program_id);
         submission.program = program;

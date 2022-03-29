@@ -12,16 +12,18 @@ const getters = {
     let user = dasboard.state.user;
     let mySubmissions = [];
     let allSubmissions = localStorage.getItem("submissions");
+
     if (allSubmissions) {
       allSubmissions = JSON.parse(allSubmissions);
+      console.log(allSubmissions);
       if (user.typeUser == "hacker") {
+        console.log(allSubmissions);
         allSubmissions.forEach((submission) => {
           if (submission.hacker_id == user.id) {
             mySubmissions.push(submission);
           }
         });
       } else if (user.typeUser == "client") {
-        let user = dasboard.state.user;
         allSubmissions.forEach((submission) => {
           if (submission.client_id == user.id) {
             mySubmissions.push(submission);
@@ -29,6 +31,7 @@ const getters = {
         });
       }
     }
+    console.log(mySubmissions);
     return JSON.parse(JSON.stringify(mySubmissions));
   },
   getSubmission(state) {
@@ -63,7 +66,7 @@ const mutations = {
       submissions = JSON.parse(submissions);
       submissions.push(payload);
       state.submissions = submissions;
-      localStorage.setItem("submissions", submissions);
+      localStorage.setItem("submissions", JSON.stringify(submissions));
     } else {
       state.submissions.push(payload);
       localStorage.setItem("submissions", JSON.stringify(state.submissions));
@@ -78,6 +81,7 @@ const actions = {
   async addReport({ state, commit }, payload) {
     payload.id = Math.floor(Math.random() * 500);
     payload.severety_level = payload.severety_level.value;
+    payload.status = "New report submission";
     commit("setNewReport", payload);
   },
 };
