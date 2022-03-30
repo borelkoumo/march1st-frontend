@@ -296,6 +296,8 @@ export default {
     }
   },
   beforeMount(){
+    /* localStorage.removeItem('submissions');
+    localStorage.removeItem('programs'); */
     this.getAllPrograms();
     this.prompt = true;
     this.getUsers.forEach(element => {
@@ -304,6 +306,9 @@ export default {
       }
       else if(element.typeUser == 'client'){
         element.label = element.company_name
+      }
+      else if(element.typeUser == 'admin'){
+        element.label = element.username
       }
       element.value = element.id;
       this.users.push(element);

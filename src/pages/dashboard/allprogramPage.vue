@@ -26,13 +26,23 @@
           bg-color="white"
           filled
           dense
+          :options="companies"
+          v-model="company"
+          label="All Companies"
+          style="min-width: 200px"
+          v-if="user.typeUser=='admin'"
+        />
+        <q-select
+          bg-color="white"
+          filled
+          dense
           :options="filters"
           v-model="filter"
           label="Filter"
           style="min-width: 200px"
         />
         <q-space />
-        <q-btn label="Most Recent" flat no-caps icon-right="lock" />
+        <q-btn label="Most Recent" flat no-caps icon-right="import_export" />
       </q-toolbar>
       <div class="q-mt-lg">
         <div
@@ -49,7 +59,7 @@
             :key="program.id"
             @click="showDetails(program)"
           >
-            <template v-slot:button v-if="user.typeUser=='hacker' && program.type=='Public'">
+            <template v-slot:button v-if="user.typeUser=='hacker' && isHackerHasInvitation(program.id)">
               <q-card-actions align="center" class="q-pt-md q-pb-md">
                 <q-btn
                   no-caps
@@ -79,6 +89,7 @@
 <script>
 import programComponent2 from "../../components/program-component-2.vue";
 import { mapActions, mapGetters, mapState } from "vuex";
+let allPrograms = [];
 export default {
   components: { programComponent2 },
   data() {
@@ -87,11 +98,26 @@ export default {
       filters: [{ label: "fgfgfgfg", value: "3" }],
       filter: null,
       programs: [],
+      companies:[],
+      company:null
     };
   },
+  watch:{
+    company:function(val){
+      this.programs = [];
+      allPrograms.forEach((p)=>{
+        if(p.user_id == val.value){
+          this.programs.push(p);
+        }
+      })
+    }
+  },
   computed: {
-    ...mapGetters("program", ["getPrograms","isHackerJoined"]),
+    ...mapGetters("program", ["getPrograms","isHackerJoined", "isHackerHasInvitation"]),
     ...mapState('dashboard',['user']),
+    ...mapGetters('dashboard',[
+      'getAllCompanies'
+    ])
   },
   methods: {
     ...mapActions('program',[
@@ -107,7 +133,10 @@ export default {
     }
   },
   beforeMount() {
-    this.programs = this.getPrograms;
+    allPrograms = this.getPrograms;
+    this.programs = allPrograms;
+    this.companies = this.getAllCompanies;
+    console.log(this.companies);
   },
 };
 </script>

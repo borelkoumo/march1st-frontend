@@ -55,11 +55,14 @@
 <script>
 import { mapGetters, mapState } from "vuex";
 import submissionComponent from "../../components/submission-component.vue";
+
+let allSubmissions = [];
 export default {
+  
   components: { submissionComponent },
   data() {
     return {
-      programs: [{ label: "dfdffdf", value: "1" }],
+      programs: [],
       program: null,
       status: [
         { label: "All Type", value: 1 },
@@ -76,10 +79,20 @@ export default {
       submissions: [],
     };
   },
+  watch:{
+    program:function(val){
+      this.submissions = [];
+      allSubmissions.forEach((s)=>{
+        if(s.program_id == val.value){
+          this.submissions.push(s);
+        }
+      })
+    }
+  },
   computed: {
     ...mapState("dashboard", ["user"]),
     ...mapGetters("submission", ["getMySubmissions"]),
-    ...mapGetters("program", ["getProgram"]),
+    ...mapGetters("program", ["getProgram","getPrograms"]),
   },
   methods: {
     async showDetails(submission) {
@@ -89,13 +102,17 @@ export default {
   },
   async beforeMount() {
     try {
-      console.log("icic")
-      this.submissions = await this.getMySubmissions;
-      console.log(this.submissions);
+      allSubmissions = await this.getMySubmissions;
+      this.submissions = allSubmissions;
       this.submissions.forEach((submission) => {
         let program = this.getProgram(submission.program_id);
         submission.program = program;
       });
+      this.programs = this.getPrograms;
+      this.programs.forEach((p)=>{
+        p.label = p.title,
+        p.value = p.id
+      })
     } catch (error) {}
   },
 };

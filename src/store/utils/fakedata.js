@@ -53,6 +53,17 @@ const users = [
     profile_url: "",
     typeUser: "hacker",
   },
+  {
+    username: "admin",
+    id: 7,
+    first_name: "Admin 1",
+    last_name: "Admin 1",
+    email: "admin1@test.com",
+    phone:"",
+    adress: "Adress 3",
+    profile_url: "",
+    typeUser: "admin",
+  },
 ];
 const programs =[];
 

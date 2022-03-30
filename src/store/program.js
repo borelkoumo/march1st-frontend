@@ -204,6 +204,7 @@ const getters = {
     let user = dasboard.state.user;
     let programs = [];
     let allPrograms = localStorage.getItem("programs");
+    //console.log(allPrograms);
     if (allPrograms) {
       allPrograms = JSON.parse(allPrograms);
       allPrograms.forEach((program) => {
@@ -240,7 +241,6 @@ const getters = {
   isHackerJoined(state) {
     let result = false;
     let user = dasboard.state.user;
-
     return (program_id) => {
       let program = {};
 
@@ -254,10 +254,27 @@ const getters = {
       return result;
     };
   },
+  isHackerHasInvitation(state) {
+    let result = false;
+    let user = dasboard.state.user;
+    return (program_id) => {
+      let programs = localStorage.getItem("programs");
+      if (programs) {
+        programs = JSON.parse(programs);
+        console.log(programs);
+        programs.forEach((program) => {
+          if (program.id == program_id && program.invitations.includes(user.id)){
+            result = true;
+          }
+        });
+      }
+      return result;
+    };
+  },
 };
 
 const mutations = {
-  setPrograms (state){
+  setPrograms(state) {
     let programs = localStorage.getItem("programs");
     if (programs) {
       programs = JSON.parse(programs);
@@ -270,7 +287,7 @@ const mutations = {
       programs = JSON.parse(programs);
       programs.push(payload);
       state.programs = programs;
-      localStorage.setItem("programs", programs);
+      localStorage.setItem("programs", JSON.stringify(programs));
     } else {
       state.programs.push(payload);
       localStorage.setItem("programs", JSON.stringify(state.programs));
@@ -286,7 +303,7 @@ const mutations = {
 };
 
 const actions = {
-  async getAllPrograms({state,commit}){
+  async getAllPrograms({ state, commit }) {
     commit("setPrograms");
   },
   async saveProgram({ state, commit }, payload) {
@@ -320,6 +337,7 @@ const actions = {
       legal_terms: payload.legal_terms,
       scope: payload.scope,
       hackers: [],
+      invitations: payload.invitations,
       critical: { min: payload.critical.min, max: payload.critical.max },
       severe: { min: payload.severe.min, max: payload.severe.max },
       medium: { min: payload.medium.min, max: payload.medium.max },

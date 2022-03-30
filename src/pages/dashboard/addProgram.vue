@@ -312,119 +312,14 @@
                   Action
                 </q-item-section>
               </q-item>
-              <q-item class="item-element">
+              <q-item class="item-element" v-for="hacker in hackers" :key="hacker.id">
                 <q-item-section style="max-width: 50px"
-                  ><q-checkbox v-model="box1" class="q-mr-sm"
-                /></q-item-section>
+                  ><q-checkbox v-model="formData.invitations" class="q-mr-sm"
+                :val="hacker.id"/></q-item-section>
                 <q-item-section>
-                  <q-item-label class="title">Hacker Name</q-item-label>
+                  <q-item-label class="title">{{hacker.full_name}} {{hacker.last_name}}</q-item-label>
                   <q-item-label caption class="subtitle"
-                    >managerHackermail@gmail.com</q-item-label
-                  >
-                </q-item-section>
-                <q-item-section
-                  class="text-center flex flex-center"
-                  style="max-width: 18%"
-                >
-                  <div class="active-badge">67%</div>
-                </q-item-section>
-                <q-item-section
-                  class="text-center text-item"
-                  style="max-width: 18%"
-                >
-                  24
-                </q-item-section>
-                <q-item-section
-                  class="text-center text-item"
-                  style="max-width: 18%"
-                >
-                  P1
-                </q-item-section>
-                <q-item-section
-                  class="text-center text-item"
-                  style="max-width: 50px"
-                >
-                  <q-btn flat icon="more_horiz" />
-                </q-item-section>
-              </q-item>
-              <q-item class="item-element">
-                <q-item-section style="max-width: 50px"
-                  ><q-checkbox v-model="box1" class="q-mr-sm"
-                /></q-item-section>
-                <q-item-section>
-                  <q-item-label class="title">Hacker Name</q-item-label>
-                  <q-item-label caption class="subtitle"
-                    >managerHackermail@gmail.com</q-item-label
-                  >
-                </q-item-section>
-                <q-item-section
-                  class="text-center flex flex-center"
-                  style="max-width: 18%"
-                >
-                  <div class="active-badge">67%</div>
-                </q-item-section>
-                <q-item-section
-                  class="text-center text-item"
-                  style="max-width: 18%"
-                >
-                  24
-                </q-item-section>
-                <q-item-section
-                  class="text-center text-item"
-                  style="max-width: 18%"
-                >
-                  P1
-                </q-item-section>
-                <q-item-section
-                  class="text-center text-item"
-                  style="max-width: 50px"
-                >
-                  <q-btn flat icon="more_horiz" />
-                </q-item-section>
-              </q-item>
-              <q-item class="item-element">
-                <q-item-section style="max-width: 50px"
-                  ><q-checkbox v-model="box1" class="q-mr-sm"
-                /></q-item-section>
-                <q-item-section>
-                  <q-item-label class="title">Hacker Name</q-item-label>
-                  <q-item-label caption class="subtitle"
-                    >managerHackermail@gmail.com</q-item-label
-                  >
-                </q-item-section>
-                <q-item-section
-                  class="text-center flex flex-center"
-                  style="max-width: 18%"
-                >
-                  <div class="active-badge">67%</div>
-                </q-item-section>
-                <q-item-section
-                  class="text-center text-item"
-                  style="max-width: 18%"
-                >
-                  24
-                </q-item-section>
-                <q-item-section
-                  class="text-center text-item"
-                  style="max-width: 18%"
-                >
-                  P1
-                </q-item-section>
-                <q-item-section
-                  class="text-center text-item"
-                  style="max-width: 50px"
-                >
-                  <q-btn flat icon="more_horiz" />
-                </q-item-section>
-              </q-item>
-              <q-item class="item-element">
-                <q-item-section style="max-width: 50px"
-                  ><q-checkbox v-model="box1" class="q-mr-sm"
-                /></q-item-section>
-                <q-item-section>
-                  <q-item-label class="title">Hacker Name</q-item-label>
-                  <q-item-label caption class="subtitle"
-                    >managerHackermail@gmail.com</q-item-label
+                    >{{hacker.email}}</q-item-label
                   >
                 </q-item-section>
                 <q-item-section
@@ -503,6 +398,7 @@ export default {
         is_closed: false,
         status: "Active",
         date_post: "10/04/2021",
+        invitations:[]
       },
 
       programs: [{ label: "dfdffdf", value: "1" }],
@@ -529,11 +425,13 @@ export default {
       box1: false,
       box2: false,
       box3: false,
+
+      hackers:[]
     };
   },
   computed: {
       ...mapGetters('dashboard',[
-          'hackers'
+          'getAllHacker'
       ])
   },
   methods: {
@@ -544,6 +442,9 @@ export default {
       this.$router.push("/main/programs");
     },
   },
+  beforeMount(){
+    this.hackers = this.getAllHacker;
+  }
 };
 </script>
 <style scoped>

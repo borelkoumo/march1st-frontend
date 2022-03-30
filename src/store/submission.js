@@ -15,9 +15,7 @@ const getters = {
 
     if (allSubmissions) {
       allSubmissions = JSON.parse(allSubmissions);
-      console.log(allSubmissions);
       if (user.typeUser == "hacker") {
-        console.log(allSubmissions);
         allSubmissions.forEach((submission) => {
           if (submission.hacker_id == user.id) {
             mySubmissions.push(submission);
@@ -29,6 +27,9 @@ const getters = {
             mySubmissions.push(submission);
           }
         });
+      }
+      else if(user.typeUser == 'admin'){
+        return allSubmissions;
       }
     }
     console.log(mySubmissions);

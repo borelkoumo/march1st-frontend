@@ -191,6 +191,26 @@ const state = {
 };
 
 const getters = {
+  getAllCompanies(){
+    let companies = [];
+    users.forEach((user)=>{
+      if(user.typeUser =='client'){
+        user.label = user.company_name;
+        user.value = user.id;
+        companies.push(JSON.parse(JSON.stringify(user)));
+      }
+    })
+    return companies;
+  },
+  getAllHacker(){
+    let hackers = [];
+    users.forEach((user)=>{
+      if(user.typeUser =='hacker'){
+        hackers.push(JSON.parse(JSON.stringify(user)));
+      }
+    })
+    return hackers;
+  },
   getMenus(state){
     if(state.user.typeUser=="hacker"){
       let menus= [
@@ -304,6 +324,80 @@ const getters = {
               slug: "programs",
               link: "/main/programs",
             },
+            {
+              icon: "dashboard",
+              name: "My Submissions",
+              slug: "my-submissions",
+              link: "/main/my-submissions",
+            },
+            {
+              icon: "format_size",
+              name: "Payments",
+              slug: "payments",
+              link: "/main/payments",
+            },
+          ],
+        },
+        {
+          label: "General Menu",
+          hasLabel: true,
+          id: 3,
+          children: [
+            {
+              icon: "people",
+              name: "Leader Board",
+              slug: "leader-board",
+              link: "/main/leader-board",
+            },
+            {
+              icon: "shopping_basket",
+              name: "All Programs",
+              slug: "all-programs",
+              link: "/main/all-programs",
+            },
+          ],
+        },
+      ];
+      return menus;
+    }
+    else if(state.user.typeUser == 'admin'){
+      let menus= [
+        {
+          label: "",
+          hasLabel: false,
+          id: 1,
+          children: [
+            {
+              icon: "dashboard",
+              name: "Dashboard",
+              slug: "dashboard",
+              link: "/dashboard",
+            },
+          ],
+        },
+        {
+          label: "Personnal Menu",
+          hasLabel: true,
+          id: 2,
+          children: [
+            {
+              icon: "people",
+              name: "My Account",
+              slug: "my-account",
+              link: "/main/my-account",
+            },
+            {
+              icon: "shopping_basket",
+              name: "My Tasks",
+              slug: "my-task",
+              link: "/main/my-task",
+            },
+            /* {
+              icon: "lock_open",
+              name: "My Programs",
+              slug: "programs",
+              link: "/main/programs",
+            }, */
             {
               icon: "dashboard",
               name: "My Submissions",
