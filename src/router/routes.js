@@ -107,8 +107,8 @@ const routes = [
         component: () => import("pages/dashboard/allprogramPage.vue"),
       },
       {
-        path: "tasks",
-        name:"tasks",
+        path: "my-tasks",
+        name:"my-tasks",
         component: () => import("pages/dashboard/pageTasks.vue"),
       },
       {

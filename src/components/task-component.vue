@@ -12,12 +12,12 @@
             <q-badge class="time">2 day ago , 3:45 pm</q-badge>
           </q-toolbar>
           <div class="title">
-            A reminder to update your profile was sent to you
+            {{task.task_title}}
           </div>
           <div class="subtitle">
-            Update your banking information from your Profile
+            {{task.task_description}}
           </div>
-          <div class="link">Submission Update</div>
+          <div class="link">{{task.task_link}}</div>
         </div>
       </div>
     </div>
@@ -29,7 +29,14 @@
   </q-card>
 </template>
 <script>
-export default {};
+export default {
+  props:["task"],
+  data() {
+    return {
+      
+    }
+  },
+};
 </script>
 <style scoped>
 .card-task{

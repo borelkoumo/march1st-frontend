@@ -4,43 +4,43 @@
       <q-item-section class="text-bold text-submission"
         >Total Submissions</q-item-section
       >
-      <q-item-section class="number text-bold">110</q-item-section>
+      <q-item-section class="number text-bold">{{submissions.length}}</q-item-section>
     </q-item>
     <q-item>
-      <q-item-section class="text-submission">{{submissions[0].label}}</q-item-section>
+      <q-item-section class="text-submission">Accepted</q-item-section>
       <q-item-section>
         <q-linear-progress
-          :value="submissions[0].value"
+          :value="accepted"
           class=""
           color="positive"
           track-color="white"
         />
       </q-item-section>
-      <q-item-section class="number">{{submissions[0].value * 100}}</q-item-section>
+      <q-item-section class="number">{{accepted/submissions.length * 100}}</q-item-section>
     </q-item>
     <q-item>
-      <q-item-section class="text-submission">{{submissions[1].label}}</q-item-section>
+      <q-item-section class="text-submission">Rejected</q-item-section>
       <q-item-section>
         <q-linear-progress
-          :value="submissions[1].value"
+          :value="rejected"
           class=""
           color="negative"
           track-color="white"
         />
       </q-item-section>
-      <q-item-section class="number">{{submissions[1].value * 100}}</q-item-section>
+      <q-item-section class="number">{{rejected/submissions.length * 100}}</q-item-section>
     </q-item>
     <q-item>
-      <q-item-section class="text-submission">{{submissions[2].label}}</q-item-section>
+      <q-item-section class="text-submission">Pending</q-item-section>
       <q-item-section>
         <q-linear-progress
-          :value="submissions[2].value"
+          :value="pending"
           class=""
           color="amber"
           track-color="white"
         />
       </q-item-section>
-      <q-item-section class="number">{{submissions[2].value * 100}}</q-item-section>
+      <q-item-section class="number">{{pending/submissions.length * 100}}</q-item-section>
     </q-item>
     <slot name="bottom">
 
@@ -50,6 +50,34 @@
 <script>
 export default {
   props: ["progress","submissions"],
+  data() {
+    return {
+      
+    }
+  },
+  computed: {
+    accepted:function(){
+      let count = 0;
+      this.submissions.forEach(element => {
+        if(element.submission_status ==="Accepted") count++;
+      });
+      return count;
+    },
+    rejected:function(){
+      let count = 0;
+      this.submissions.forEach(element => {
+        if(element.submission_status ==="Rejected") count++;
+      });
+      return count;
+    },
+    pending:function(){
+      let count = 0;
+      this.submissions.forEach(element => {
+        if(element.submission_status ==="Pending") count++;
+      });
+      return count;
+    }
+  },
 };
 </script>
 <style scoped>

@@ -296,7 +296,8 @@ export default {
     }
   },
   beforeMount(){
-    /* localStorage.removeItem('submissions');
+    /* localStorage.removeItem('tasks');
+    localStorage.removeItem('submissions');
     localStorage.removeItem('programs'); */
     this.getAllPrograms();
     this.prompt = true;

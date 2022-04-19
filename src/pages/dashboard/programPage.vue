@@ -55,7 +55,7 @@
           <template v-slot:level>
             <q-card-section class="col-3 q-pl-lg q-pr-none">
               <submission-level
-                :submissions="program.totalSubmissions"
+                :submissions="program.submissions"
                 :progress="progress"
               />
             </q-card-section>

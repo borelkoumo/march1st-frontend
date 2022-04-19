@@ -396,6 +396,7 @@ export default {
         medium: { min: 50, max: 1200 },
         low: { min: 100, max: 1300 },
         is_closed: false,
+        close_at:null,
         status: "Active",
         date_post: "10/04/2021",
         invitations:[]

@@ -139,7 +139,9 @@ export default {
           "Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Quisque velit nisi, pretium ut lacinia in, elementum id enim.",
         program_id: null,
         hacker_id: null,
-        client_id:null
+        client_id:null,
+        etat:null,
+        submission_status:"Pending"
       },
       model: null,
       content:

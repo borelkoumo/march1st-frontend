@@ -168,7 +168,7 @@
         </div>
         <div>
           <submission-level
-            :submissions="program.totalSubmissions"
+            :submissions="program.submissions"
             :progress="progress"
             class="q-pa-md"
             style="border-radius: 16px"
@@ -179,7 +179,8 @@
                 >Recent Submissions</q-card-section
               >
               <q-separator />
-              <q-card-section class="q-pt-none">
+              <div v-for="submission in program.submissions" :key="submission.id">
+                <q-card-section class="q-pt-none" >
                 <div class="recent-time">2 day ago , 3:45 pm</div>
                 <div class="recent-content q-pb-md">
                   Submission Title Nemo enim ipsam voluptatem ipsam ta
@@ -196,26 +197,13 @@
                     font-family: 'inter';
                   "
                 />
+                
               </q-card-section>
-              <q-separator />
-              <q-card-section class="q-pt-none">
-                <div class="recent-time">2 day ago , 3:45 pm</div>
-                <div class="recent-content q-pb-md">
-                  Submission Title Nemo enim ipsam voluptatem ipsam ta
-                  voluptatem per natur aut odit aut fugit,
-                </div>
-                <q-btn
-                  flat
-                  no-caps
-                  label="Waiting for M1 Review"
-                  style="
-                    background: #fff5d9;
-                    color: #ffbb38;
-                    min-width: 175px;
-                    font-family: 'inter';
-                  "
-                />
-              </q-card-section>
+              <q-separator/>
+              </div>
+              
+              
+              
             </q-card>
           </div>
         </div>

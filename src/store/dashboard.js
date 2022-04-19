@@ -241,8 +241,8 @@ const getters = {
             {
               icon: "shopping_basket",
               name: "My Tasks",
-              slug: "my-task",
-              link: "/main/my-task",
+              slug: "my-tasks",
+              link: "/main/my-tasks",
             },
             {
               icon: "lock_open",
@@ -315,8 +315,8 @@ const getters = {
             {
               icon: "shopping_basket",
               name: "My Tasks",
-              slug: "my-task",
-              link: "/main/my-task",
+              slug: "my-tasks",
+              link: "/main/my-tasks",
             },
             {
               icon: "lock_open",
@@ -389,8 +389,8 @@ const getters = {
             {
               icon: "shopping_basket",
               name: "My Tasks",
-              slug: "my-task",
-              link: "/main/my-task",
+              slug: "my-tasks",
+              link: "/main/my-tasks",
             },
             /* {
               icon: "lock_open",

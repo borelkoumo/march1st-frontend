@@ -1,5 +1,7 @@
 import { apolloClient } from "./utils/apollo";
 import dasboard from "./dashboard";
+//import submission from "./submission";
+
 import gql from "graphql-tag";
 
 const state = {
@@ -188,6 +190,16 @@ const getters = {
           if (p.id == id) program = JSON.parse(JSON.stringify(p));
         });
       }
+      //je recherche toutes les submissions de ce program
+      if (program.id) {
+        program.submissions = [];
+        if (localStorage.getItem("submissions")) {
+          let allSubmissions = JSON.parse(localStorage.getItem("submissions"));
+          allSubmissions.forEach((s) => {
+            if (s.program_id === program.id) program.submissions.push(s);
+          });
+        }
+      }
       return program;
     };
   },
@@ -209,6 +221,17 @@ const getters = {
       allPrograms = JSON.parse(allPrograms);
       allPrograms.forEach((program) => {
         if (program.user_id == user.id) {
+          //je recherche toutes les submissions de ce program
+          program.submissions = [];
+          if (localStorage.getItem("submissions")) {
+            let allSubmissions = JSON.parse(
+              localStorage.getItem("submissions")
+            );
+            allSubmissions.forEach((s) => {
+              if (s.program_id === program.id) program.submissions.push(s);
+            });
+          }
+
           programs.push(program);
         }
       });
@@ -263,7 +286,10 @@ const getters = {
         programs = JSON.parse(programs);
         console.log(programs);
         programs.forEach((program) => {
-          if (program.id == program_id && program.invitations.includes(user.id)){
+          if (
+            program.id == program_id &&
+            program.invitations.includes(user.id)
+          ) {
             result = true;
           }
         });
@@ -306,7 +332,7 @@ const actions = {
   async getAllPrograms({ state, commit }) {
     commit("setPrograms");
   },
-  async saveProgram({ state, commit }, payload) {
+  async saveProgram({ state, commit, dispatch }, payload) {
     let max =
       payload.critical.max > payload.severe.max
         ? payload.critical.max
@@ -343,6 +369,7 @@ const actions = {
       medium: { min: payload.medium.min, max: payload.medium.max },
       low: { min: payload.low.min, max: payload.low.max },
       is_closed: payload.is_closed,
+      close_at: null,
       status: "Active",
       date_post: "10/04/2021",
       max: max,
@@ -354,7 +381,19 @@ const actions = {
         { label: "Pending ", value: 0 },
       ],
     };
-
+    program.invitations.forEach((hacker) => {
+      let task = {
+        task_created: user.id,
+        task_received: hacker,
+        task_type: "invitation",
+        status: "",
+        task_link: "Private Invitation",
+        task_title: "You received an invitation to join a bounty program",
+        task_description: program.title,
+        task_date: "",
+      };
+      dispatch("task/addTask", task, { root: true });
+    });
     commit("addProgram", program);
   },
   async joinProgram({ state, commit }, payload) {

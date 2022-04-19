@@ -5,6 +5,7 @@ import global from './global'
 import program from './program'
 import dashboard from './dashboard'
 import submission from './submission'
+import task from './task'
 
 // import example from './module-example'
 
@@ -22,6 +23,7 @@ const Store = createStore({
         global,
         program,
         submission,
+        task,
         dashboard
     },
 

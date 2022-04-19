@@ -1,5 +1,5 @@
 <template>
-  <q-page class="bg-home" v-if="myPrograms.length > 0">
+  <q-page class="bg-home" v-if="programs.length > 0">
     <div class="main-content">
       <q-toolbar class="bg-none flex q-gutter-sm" style="padding-top: 40px">
         <q-input
@@ -88,6 +88,7 @@
           class="title-btn text-white bg-secondary"
           no-caps
           flat
+          to="/main/all-programs"
         />
       </div>
     </div>

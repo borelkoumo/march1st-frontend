@@ -36,7 +36,7 @@
           style=""
         >
           <span style="color: #767676">Invitations</span>
-          <span class="text-secondary q-pl-xs">111</span>
+          <span class="text-secondary q-pl-xs">{{invitations.length}}</span>
         </q-btn>
         <q-space />
         <q-btn
@@ -49,17 +49,7 @@
         />
       </q-toolbar>
       <div class="q-mt-lg q-gutter-lg q-pb-lg">
-        <task-component>
-          <template v-slot:image>
-            <q-img src="~assets/local/unsplash_feXpdV001o4.png" width="130px" />
-          </template>
-        </task-component>
-        <task-component>
-          <template v-slot:image>
-            <q-img src="~assets/local/unsplash_wrkNQmhmdvY.png" width="130px" />
-          </template>
-        </task-component>
-        <task-component>
+        <task-component v-for="task in allTasks" :key="task.id" :task="task">
           <template v-slot:image>
             <q-img src="~assets/local/unsplash_feXpdV001o4.png" width="130px" />
           </template>
@@ -70,14 +60,34 @@
 </template>
 <script>
 import TaskComponent from "../../components/task-component.vue";
+import {mapActions, mapState, mapGetters} from 'vuex';
 
 export default {
   components: {
     TaskComponent,
   },
   data() {
-    return {};
+    return {
+      allTasks:[]
+    };
   },
+  computed:{
+    ...mapGetters('task',[
+      'getMyTasks'
+    ]),
+    invitations(){
+      let data=[];
+      this.getMyTasks.forEach(element => {
+        if(element.task_type=="invitation"){
+          data.push(element);
+        }
+      });
+      return data;
+    }
+  },
+  beforeMount(){
+    this.allTasks = this.getMyTasks;
+  }
 };
 </script>
 <style scoped>
