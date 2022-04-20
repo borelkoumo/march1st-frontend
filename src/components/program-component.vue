@@ -2,17 +2,18 @@
   <q-card class="my-card bg-white q-pt-lg q-pr-lg q-pl-lg q-pb-md" flat>
     <q-card-section horizontal>
       <div class="box-image col-2">
-        <q-img :src="program.picture" />
+        <q-img :src="program.program_picture_url" />
       </div>
       <q-card-section class="q-pl-lg q-pr-lg col">
         <div>
-          <q-badge class="q-pt-xs q-pb-xs active-class">{{program.status}}</q-badge>
+          <q-badge class="q-pt-xs q-pb-xs negative-class" v-if="program.is_closed">Close</q-badge>
+          <q-badge class="q-pt-xs q-pb-xs active-class" v-else>Active</q-badge>
           <q-badge class="q-pt-xs q-pb-xs bg-transparent time-program"
             >Active since 9 days ago</q-badge
           >
         </div>
         <div class="title-program">
-          {{program.title}}
+          {{program.program_title}}
         </div>
         <div class="content-title">
           {{program.description}}
@@ -86,6 +87,20 @@ export default {
   letter-spacing: -0.015em;
 
   color: #47b881;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+.negative-class {
+  background: #fac9c9;
+  font-family: "inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 25px;
+  align-items: center;
+  letter-spacing: -0.015em;
+
+  color: #fb0606;
   padding-left: 16px;
   padding-right: 16px;
 }

@@ -26,7 +26,7 @@ const users = [
     first_name: "Hacker 1",
     last_name: "Hacker 1",
     email: "Hacker1@test.com",
-    phone:"",
+    phone: "",
     adress: "Adress 1",
     profile_url: "",
     typeUser: "hacker",
@@ -37,7 +37,7 @@ const users = [
     first_name: "Hacker 2",
     last_name: "Hacker 2",
     email: "Hacker2@test.com",
-    phone:"",
+    phone: "",
     adress: "Adress 2",
     profile_url: "",
     typeUser: "hacker",
@@ -48,7 +48,7 @@ const users = [
     first_name: "Hacker 3",
     last_name: "Hacker 3",
     email: "Hacker3@test.com",
-    phone:"",
+    phone: "",
     adress: "Adress 3",
     profile_url: "",
     typeUser: "hacker",
@@ -59,15 +59,53 @@ const users = [
     first_name: "Admin 1",
     last_name: "Admin 1",
     email: "admin1@test.com",
-    phone:"",
+    phone: "",
     adress: "Adress 3",
     profile_url: "",
     typeUser: "admin",
   },
 ];
-const programs =[];
+const managers =[
+  {
+    id:1,
+    name:"Manager 1",
+    email:"manager1@email.com",
+    designation:"Product manager",
+    privilege:null
+  },
+  {
+    id:2,
+    name:"Manager 2",
+    email:"manager2@email.com",
+    designation:"Delivery manager",
+    privilege:null
+  },
+  {
+    id:3,
+    name:"Manager 3",
+    email:"manager3@email.com",
+    designation:"Technical manager",
+    privilege:null
+  }
+];
+const programs = [
+  {
+    program_title:"Le titre du program",
+    program_type:"private",
+    safe_harbour_type:"full",
+    reward_type:"points",
+    reward_range:"",
+    program_guidelines_1:"",
+    program_guidelines_2:"",
+    program_scope:5,
+    legal_terms:"",
+    program_picture_url:"",
+    is_closed:true,
+    closed_at:"",
+    client_id:1,
+    hackers:[],
+    managers:[]
+  }
+];
 
-export {
-    users,
-    programs
-}
+export { users, programs,managers };

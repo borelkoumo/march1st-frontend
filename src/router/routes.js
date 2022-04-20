@@ -92,6 +92,12 @@ const routes = [
         component: () => import("pages/dashboard/addProgram.vue"),
       },
       {
+        path: "edit-program/:id",
+        name:"edit-program",
+        component: () => import("pages/dashboard/editProgram.vue"),
+        props:true
+      },
+      {
         path: "programs",
         name:"programs",
         component: () => import("pages/dashboard/programPage.vue"),

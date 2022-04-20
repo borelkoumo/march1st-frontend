@@ -18,6 +18,7 @@
           no-caps
           flat
           label="Edit"
+          :to="'/main/edit-program/'+program.id"
           v-if="user.typeUser=='client' && program.user_id == user.id"
         />
         <!-- <q-btn
@@ -60,7 +61,7 @@
                     >Harbour Type</q-item-label
                   >
                   <q-item-label class="title-element q-pt-xs"
-                    >{{program.safe_habour_type}}</q-item-label
+                    >{{program.safe_harbour_type}}</q-item-label
                   >
                 </q-item-section>
               </q-item>
@@ -112,7 +113,7 @@
                     >Program Type</q-item-label
                   >
                   <q-item-label class="title-element q-pt-xs"
-                    >{{program.type}}</q-item-label
+                    >{{program.program_type}}</q-item-label
                   >
                 </q-item-section>
               </q-item>
@@ -160,7 +161,7 @@
               </div>
               <q-card class="my-card shadow-3">
                 <q-card-section class="description-content">
-                  {{program.guidelines}}
+                  {{program.program_guidelines_1}}
                 </q-card-section>
               </q-card>
             </div>
@@ -254,6 +255,7 @@ export default {
   },
   beforeMount() {
     this.program = this.getProgram(this.$route.params.id);
+    console.log(this.program);
   },
 };
 </script>

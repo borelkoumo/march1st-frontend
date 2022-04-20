@@ -5,7 +5,7 @@
         class="bg-none flex q-gutter-sm header"
         style="padding-top: 40px"
       >
-        <q-toolbar-title class="title-header">Add A Program</q-toolbar-title>
+        <q-toolbar-title class="title-header">Edit A Program</q-toolbar-title>
         <q-space />
         <!-- <q-btn
           no-caps
@@ -90,14 +90,14 @@
                 <q-radio
                   name="program-type"
                   v-model="formData.type"
-                  val="private"
+                  val="Private"
                   label="Private"
                   color="secondary"
                 />
                 <q-radio
                   name="program-type"
                   v-model="formData.type"
-                  val="public"
+                  val="Public"
                   label="Public"
                   color="secondary"
                 />
@@ -311,7 +311,7 @@
               </q-item>
               <q-item
                 class="item-element"
-                v-for="(manager,i) in managers"
+                v-for="(manager, i) in managers"
                 :key="manager.id"
               >
                 <q-item-section style="max-width: 50px"
@@ -334,8 +334,9 @@
                   class="text-center text-item"
                   style="max-width: 400px"
                 >
-                  <q-select
-                  v-if="formData.managers[i]"
+                {{formData.managers}}
+                  <!-- <q-select
+                    v-if="formData.managers[i]"
                     bg-color="white"
                     borderless
                     dense
@@ -344,7 +345,7 @@
                     label="Select privilege"
                     multiple
                     v-close-popup
-                  />
+                  /> -->
                 </q-item-section>
               </q-item>
             </q-list>
@@ -445,7 +446,7 @@
             no-caps
             flat
             class="bg-secondary text-white"
-            @click="onSaveProgram()"
+            @click="onEditProgram()"
           />
         </q-card-actions>
       </q-card>
@@ -460,6 +461,7 @@ export default {
   name: "programs",
   data() {
     return {
+        
       formData: {
         id: null,
         user_id: 1,
@@ -488,9 +490,9 @@ export default {
         date_post: "10/04/2021",
         invitations: [],
       },
-      privileges:[
-        {label:"Can Edit",value:1},
-        {label:"Can view",value:2},
+      privileges: [
+        { label: "Can Edit", value: 1 },
+        { label: "Can view", value: 2 },
       ],
       programs: [{ label: "dfdffdf", value: "1" }],
       program: null,
@@ -504,19 +506,14 @@ export default {
         { label: "High", value: "3" },
       ],
       level: null,
-
-      programType: "public",
-      pointOnly: true,
+      
       critical: {
         min: null,
         max: null,
       },
       model: null,
       search: null,
-      box1: false,
-      box2: false,
-      box3: false,
-
+      
       hackers: [],
       managers: [],
 
@@ -546,18 +543,53 @@ export default {
   },
   computed: {
     ...mapGetters("dashboard", ["getAllHacker", "getManagers"]),
+    ...mapGetters("program", ["getProgram"]),
   },
   methods: {
-    ...mapActions("program", ["saveProgram"]),
-    onSaveProgram() {
-      this.formData.id = Math.floor(Math.random() * 300);
-      this.saveProgram(this.formData);
+    ...mapActions("program", ["editProgram"]),
+    onEditProgram() {
+      this.editProgram(this.formData);
       this.$router.push("/main/programs");
     },
   },
   beforeMount() {
     this.hackers = this.getAllHacker;
     this.managers = this.getManagers;
+
+    this.program_id = this.$route.params.id;
+    this.program = this.getProgram(this.program_id);
+    if (!this.program) this.program = {};
+    else {
+        console.log(this.programs.managers);
+      this.formData = {
+        id: this.program.id,
+        user_id: this.program.user_id,
+        client_id: this.program.client_id,
+        picture: this.program.program_picture_url,
+        title: this.program.program_title,
+        description: this.program.program_description,
+        type: this.program.program_type,
+        safe_habour_type: this.program.safe_habour_type,
+        reward_type: this.program.reward_type,
+        reward_range: this.program.reward_range,
+        guidelines: this.program.program_guidelines_1,
+        legal_terms: this.program.legal_terms,
+        scope: this.program.scope,
+        is_closed: this.program.is_closed,
+        close_at: this.program.close_at,
+        date_post: this.program.date_post,
+
+        hackers: this.programs.hackers,
+        managers: this.programs.managers,
+
+        critical: this.program.critical,
+        severe: this.program.severe,
+        medium: this.program.medium,
+        low: this.program.low,
+
+        invitations: [],
+      };
+    }
   },
 };
 </script>

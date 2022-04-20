@@ -113,10 +113,10 @@ export default {
   },
   computed: {
     ...mapState("program", ["myPrograms"]),
-    ...mapGetters("program", ["getHackerPrograms"]),
+    ...mapGetters("program", ["getMyPrograms"]),
   },
   async beforeMount() {
-    this.programs = await this.getHackerPrograms;
+    this.programs = await this.getMyPrograms;
     if (this.programs.length > 0) {
       this.programs.forEach((p) => {
         if (p.is_closed == 0) {

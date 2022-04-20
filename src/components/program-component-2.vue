@@ -4,13 +4,13 @@
       <div class="flex justify-between">
         <div>
           <q-avatar rounded>
-            <img :src="program.picture" />
+            <img :src="program.program_picture_url" />
           </q-avatar>
         </div>
         <div>
           <div class="text-right">
             <q-badge rounded class="q-pl-md q-pr-md access-positive"
-              >{{program.type}}</q-badge
+              >{{program.program_type}}</q-badge
             >
           </div>
           <div class="q-pt-md q-pb-sm">
@@ -18,16 +18,16 @@
               <q-avatar size="24px" style="background: rgba(103, 58, 182, 0.5)">
                 <img src="https://cdn.quasar.dev/img/avatar2.jpg" />
               </q-avatar>
-              <div class="q-pl-sm">Safe Harbor</div>
+              <div class="q-pl-sm">{{program.safe_harbour_type}}</div>
             </q-btn>
           </div>
         </div>
       </div>
     </q-card-section>
     <q-card-section>
-      <div class="title-program">{{program.title}}</div>
+      <div class="title-program">{{program.program_title}}</div>
       <div class="content-program">
-        {{program.description}}
+        {{program.program_description}}
       </div>
     </q-card-section>
     <q-separator />

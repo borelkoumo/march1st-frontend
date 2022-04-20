@@ -296,9 +296,10 @@ export default {
     }
   },
   beforeMount(){
-    /* localStorage.removeItem('tasks');
+    localStorage.removeItem('tasks');
     localStorage.removeItem('submissions');
-    localStorage.removeItem('programs'); */
+    localStorage.removeItem('programs');
+    
     this.getAllPrograms();
     this.prompt = true;
     this.getUsers.forEach(element => {

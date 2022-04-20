@@ -45,6 +45,7 @@
         <q-btn label="Most Recent" flat no-caps icon-right="import_export" />
       </q-toolbar>
       <div class="q-mt-lg">
+        <!-- @click="showDetails(program)" -->
         <div
           class="q-mt-lg q-pb-lg"
           style="
@@ -57,16 +58,15 @@
             :program="program"
             v-for="program in programs"
             :key="program.id"
-            @click="showDetails(program)"
           >
-            <template v-slot:button v-if="user.typeUser=='hacker' && isHackerHasInvitation(program.id)">
+            <template v-slot:button v-if="user.typeUser=='hacker'">
               <q-card-actions align="center" class="q-pt-md q-pb-md">
                 <q-btn
                   no-caps
                   flat
                   class="text-action-3"
                   style="background: #5887ff; width: 100%"
-                  v-if="!isHackerJoined(program.id)"
+                  v-if="program.can_join"
                   @click="onJoinProgram(program.id)"
                   >Join Program</q-btn
                 >
@@ -75,7 +75,8 @@
                   flat
                   class="text-action-3"
                   style="background: #F55B5D; width: 100%"
-                  v-else
+                  v-if="program.has_join"
+                  @click="onLeaveProgram(program.id)"
                   >Leave Program</q-btn
                 >
               </q-card-actions>
@@ -113,7 +114,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters("program", ["getPrograms","isHackerJoined", "isHackerHasInvitation"]),
+    ...mapGetters("program", ["getAllPrograms","isHackerJoined", "isHackerHasInvitation"]),
     ...mapState('dashboard',['user']),
     ...mapGetters('dashboard',[
       'getAllCompanies'
@@ -121,10 +122,15 @@ export default {
   },
   methods: {
     ...mapActions('program',[
-      'joinProgram'
+      'joinProgram',
+      'leaveProgram'
     ]),
     async onJoinProgram(id){
       await this.joinProgram(id);
+      this.$router.push('/main/my-programs');
+    },
+    async onLeaveProgram(id){
+      await this.leaveProgram(id);
       this.$router.push('/main/my-programs');
     },
     async showDetails(program){
@@ -133,7 +139,8 @@ export default {
     }
   },
   beforeMount() {
-    allPrograms = this.getPrograms;
+    allPrograms = this.getAllPrograms;
+    
     this.programs = allPrograms;
     this.companies = this.getAllCompanies;
     console.log(this.companies);

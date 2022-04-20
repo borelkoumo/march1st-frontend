@@ -1,6 +1,7 @@
 import { apolloClient } from "./utils/apollo";
 import gql from "graphql-tag";
 import {users} from "./utils/fakedata";
+import {managers} from "./utils/fakedata"
 
 /* import {
     allMenu
@@ -439,6 +440,10 @@ const getters = {
   //pour simulation
   getUsers(){
     return JSON.parse(JSON.stringify(users));
+  },
+  getManagers(){
+    console.log(managers);
+    return JSON.parse(JSON.stringify(managers));
   }
 };
 

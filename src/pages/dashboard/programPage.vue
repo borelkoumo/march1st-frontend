@@ -1,5 +1,5 @@
 <template>
-  <q-page class="bg-home" v-if="programs.length > 0">
+  <q-page class="bg-home" v-if="getMyPrograms.length > 0">
     <div class="main-content">
       <q-toolbar
         class="bg-none flex q-gutter-sm q-pl-none q-pr-none"
@@ -25,15 +25,36 @@
             />
           </template>
         </q-input>
+
         <q-select
           bg-color="white"
           filled
           dense
           :options="filters"
           v-model="filter"
-          label="Filter"
+          label="Filters"
+          multiple
+          emit-value
+          map-options
           style="min-width: 200px"
-        />
+        >
+          <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
+            <q-item v-bind="itemProps">
+              <q-item-section side>
+                <q-checkbox
+                  :model-value="selected"
+                  @update:model-value="toggleOption(opt)"
+                />
+              </q-item-section>
+              <q-item-section>
+                <div class="flex no-wrap">
+                  <q-item-label v-html="opt.label" />
+                  <span class="q-pl-md">{{ getLength(opt.value) }}</span>
+                </div>
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
         <q-space />
         <q-btn
           label="Create Program"
@@ -47,7 +68,7 @@
       <div class="q-mt-lg q-gutter-md q-pb-lg">
         <program-component
           :program="program"
-          v-for="program in programs"
+          v-for="program in filterPrograms"
           :key="program.id"
           class="cursor-pointer"
           @click.stop="goto(program.id)"
@@ -88,29 +109,120 @@ import ProgramComponent2 from "../../components/program-component-2.vue";
 import programComponent from "../../components/program-component.vue";
 import SubmissionLevel from "../../components/submission-level.vue";
 
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 export default {
   components: { programComponent, ProgramComponent2, SubmissionLevel },
   data() {
     return {
       search: null,
-      filters: [{ label: "fgfgfgfg", value: "3" }],
+      filters: [
+        { label: "Public", value: "1" },
+        { label: "Private", value: "2" },
+        { label: "Points Only", value: "3" },
+        { label: "Reward", value: "4" },
+      ],
       filter: null,
       progress: [0.8, 0.2, 0.1],
-      programs: [],
+      filterPrograms: [],
     };
   },
+  watch: {
+    filter: function (val) {
+      //this.filterPrograms=this.programs;
+      //console.log(Object.keys(val));
+      let data = [];
+      Object.keys(val).forEach((key) => {
+        data.push(val[key]);
+      });
+      if (data.includes(1)) {
+        this.filterPrograms = this.getPublicPrograms;
+        if (data.includes(2))
+        this.filterPrograms = this.filterPrograms.concat(
+          this.getPrivatePrograms
+        );
+      }
+      else{
+        if (data.includes(2))
+        this.filterPrograms = this.getPrivatePrograms;
+      }
+      
+      if (data.includes(3)) {
+        this.filterPrograms = this.filterPrograms.filter(
+          (program) => program.reward_type == "points"
+        );
+        if (data.includes(4))
+          this.filterPrograms = this.filterPrograms.concat(
+            this.filterPrograms.filter(
+              (program) => program.reward_type == "cash"
+            )
+          );
+      }
+      else{
+        if (data.includes(4))
+          this.filterPrograms = this.filterPrograms.filter(
+          (program) => program.reward_type == "cash"
+        );
+      }
+
+      /* Object.keys(val).forEach((key) => {
+        if (val[key] == 1) {
+          this.filterPrograms = this.filterPrograms.filter(
+            (program) => program.program_type == "public"
+          );
+        } else if (val[key] == 2) {
+          this.filterPrograms = this.filterPrograms.filter(
+            (program) => program.program_type == "private"
+          );
+        } else if (val[key] == 3) {
+          this.filterPrograms = this.filterPrograms.filter(
+            (program) => program.reward_type == "points"
+          );
+        } else {
+          this.filterPrograms = this.filterPrograms.filter(
+            (program) => program.reward_type == "cash"
+          );
+        }
+      }); */
+    },
+  },
   computed: {
-    ...mapGetters("program", ["getMyPrograms", "getClientPrograms"]),
+    ...mapState("program", ["programs"]),
+    ...mapGetters("program", [
+      "getClientPrograms",
+      "getPublicPrograms",
+      "getPrivatePrograms",
+      "getRewardPrograms",
+      "getPointOnlyPrograms",
+      "getMyPrograms"
+    ]),
   },
   methods: {
+    getLength(element) {
+      let val = 0;
+      switch (element) {
+        case "1":
+          val = this.getPublicPrograms.length;
+          break;
+        case "2":
+          val = this.getPrivatePrograms.length;
+          break;
+        case "3":
+          val = this.getPointOnlyPrograms.length;
+          break;
+        case "4":
+          val = this.getRewardPrograms.length;
+          break;
+      }
+      return val;
+    },
     goto(id) {
-      let route = {name:'program-detail', params:{id:id}}
+      let route = { name: "program-detail", params: { id: id } };
       this.$router.push(route);
     },
   },
   beforeMount() {
-    this.programs = this.getClientPrograms;
+    //this.programs = this.getClientPrograms;
+    this.filterPrograms = this.getMyPrograms;
   },
   async mounted() {
     //console.log(this.getClientPrograms);
