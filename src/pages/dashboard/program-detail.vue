@@ -10,7 +10,7 @@
           color="secondary"
           label="Submit a Report"
           no-caps
-          v-if="user.typeUser=='hacker'"
+          v-if="user.typeUser=='hacker' && getHasJoin(program.id)"
           @click.prevent="showSubmissionForm()"
         />
         <q-btn
@@ -245,7 +245,7 @@ export default {
     ...mapState('dashboard',[
       'user'
     ]),
-    ...mapGetters("program", ["getProgram"]),
+    ...mapGetters("program", ["getProgram", 'getHasJoin']),
   },
   methods: {
     showSubmissionForm(){

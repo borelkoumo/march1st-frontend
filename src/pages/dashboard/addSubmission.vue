@@ -127,10 +127,7 @@ export default {
   components: { submissionComponent },
   data() {
     return {
-      programs: [{ label: "dfdffdf", value: "1" }],
       program: null,
-      status: [{ label: "fgfgfgfg", value: "3" }],
-      stat: null,
       formData: {
         submission_title: "Curabitur non nulla sit amet nisl",
         severety_level: { label: "Severe", value: "Severe" },
@@ -143,9 +140,6 @@ export default {
         etat:null,
         submission_status:"Pending"
       },
-      model: null,
-      content:
-        "Program text Nemo enim ipsam voluptatem ipsam ta Program text Nemo enim ipsam voluptatem ipsam ta Program text Nemo enim ipsam voluptatem ipsam ta",
       levels: [
         { label: "Low", value: "Low" },
         { label: "Medium", value: "Medium" },

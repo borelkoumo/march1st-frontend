@@ -25,36 +25,76 @@
             />
           </template>
         </q-input>
-
-        <q-select
-          bg-color="white"
-          filled
-          dense
-          :options="filters"
-          v-model="filter"
+        <q-btn-dropdown
+          class="bg-white text-dark"
+          flat
           label="Filters"
-          multiple
-          emit-value
-          map-options
           style="min-width: 200px"
         >
-          <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
-            <q-item v-bind="itemProps">
+          <q-list dense>
+            <q-item clickable v-close-popup @click="onFilterClick(0)">
               <q-item-section side>
-                <q-checkbox
-                  :model-value="selected"
-                  @update:model-value="toggleOption(opt)"
-                />
+                <q-checkbox v-model="isAllFilters" color="secondary" />
               </q-item-section>
               <q-item-section>
-                <div class="flex no-wrap">
-                  <q-item-label v-html="opt.label" />
-                  <span class="q-pl-md">{{ getLength(opt.value) }}</span>
-                </div>
+                <q-item-label>All</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                {{ totalProgram }}
               </q-item-section>
             </q-item>
-          </template>
-        </q-select>
+            <q-separator />
+            <q-item clickable v-close-popup @click="checkPublic = !checkPublic">
+              <q-item-section side>
+                <q-checkbox v-model="checkPublic" color="secondary" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Public</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                {{ getPublicPrograms.length }}
+              </q-item-section>
+            </q-item>
+            <q-item
+              clickable
+              v-close-popup
+              @click="checkPrivate = !checkPrivate"
+            >
+              <q-item-section side>
+                <q-checkbox v-model="checkPrivate" color="secondary" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Private</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                {{ getPrivatePrograms.length }}
+              </q-item-section>
+            </q-item>
+            <q-separator />
+            <q-item clickable v-close-popup @click="checkPoint = !checkPoint">
+              <q-item-section side>
+                <q-checkbox v-model="checkPoint" color="secondary" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Points Only</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                {{ getPublicPrograms.length }}
+              </q-item-section>
+            </q-item>
+            <q-item clickable v-close-popup @click="checkCash = !checkCash">
+              <q-item-section side>
+                <q-checkbox v-model="checkCash" color="secondary" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Cash Only</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                {{ getCashPrograms.length }}
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
         <q-space />
         <q-btn
           label="Create Program"
@@ -115,74 +155,88 @@ export default {
   data() {
     return {
       search: null,
-      filters: [
-        { label: "Public", value: "1" },
-        { label: "Private", value: "2" },
-        { label: "Points Only", value: "3" },
-        { label: "Reward", value: "4" },
-      ],
-      filter: null,
+
       progress: [0.8, 0.2, 0.1],
       filterPrograms: [],
+
+      filters: ["1", "2", "3", "4"],
+      checkPublic: true,
+      checkPrivate: true,
+      checkPoint: true,
+      checkCash: true,
+      isAllFilters: true,
     };
   },
   watch: {
-    filter: function (val) {
-      //this.filterPrograms=this.programs;
-      //console.log(Object.keys(val));
-      let data = [];
-      Object.keys(val).forEach((key) => {
-        data.push(val[key]);
-      });
-      if (data.includes(1)) {
-        this.filterPrograms = this.getPublicPrograms;
-        if (data.includes(2))
-        this.filterPrograms = this.filterPrograms.concat(
-          this.getPrivatePrograms
-        );
+    isAllFilters: function (val) {
+      if (val) {
+        this.checkPublic = true;
+        this.checkPrivate = true;
+        this.checkPoint = true;
+        this.checkCash = true;
+        this.filterPrograms=this.getMyPrograms;
+      } 
+      this.checkAllFilters();
+    },
+    checkPublic: function (val) {
+      this.checkAllFilters();
+      if(val){
+        this.filterPrograms = this.getMyPrograms.filter(program => program.program_type=='public');
+        if(this.checkPrivate) this.filterPrograms = this.getMyPrograms;
       }
       else{
-        if (data.includes(2))
-        this.filterPrograms = this.getPrivatePrograms;
+        if(this.checkPrivate) this.filterPrograms = this.getPrivatePrograms;
+        else this.filterPrograms =[];
       }
-      
-      if (data.includes(3)) {
-        this.filterPrograms = this.filterPrograms.filter(
-          (program) => program.reward_type == "points"
-        );
-        if (data.includes(4))
-          this.filterPrograms = this.filterPrograms.concat(
-            this.filterPrograms.filter(
-              (program) => program.reward_type == "cash"
-            )
-          );
+      if(!(this.checkPoint && this.checkCash)){
+        if(this.checkPoint) this.filterPrograms = this.filterPrograms.filter(program => program.reward_type=="points")
+        if(this.checkCash) this.filterPrograms = this.filterPrograms.filter(program => program.reward_type=="cash")
+      }
+    },
+    checkPrivate: function (val) {
+      this.checkAllFilters();
+      if(val){
+        this.filterPrograms = this.getMyPrograms.filter(program => program.program_type=='private');
+        if(this.checkPublic) this.filterPrograms = this.getMyPrograms;
       }
       else{
-        if (data.includes(4))
-          this.filterPrograms = this.filterPrograms.filter(
-          (program) => program.reward_type == "cash"
-        );
+        if(this.checkPublic) this.filterPrograms = this.getPublicPrograms;
+        else this.filterPrograms =[];
       }
-
-      /* Object.keys(val).forEach((key) => {
-        if (val[key] == 1) {
-          this.filterPrograms = this.filterPrograms.filter(
-            (program) => program.program_type == "public"
-          );
-        } else if (val[key] == 2) {
-          this.filterPrograms = this.filterPrograms.filter(
-            (program) => program.program_type == "private"
-          );
-        } else if (val[key] == 3) {
-          this.filterPrograms = this.filterPrograms.filter(
-            (program) => program.reward_type == "points"
-          );
-        } else {
-          this.filterPrograms = this.filterPrograms.filter(
-            (program) => program.reward_type == "cash"
-          );
-        }
-      }); */
+      if(!(this.checkPoint && this.checkCash)){
+        if(this.checkPoint) this.filterPrograms = this.filterPrograms.filter(program => program.reward_type=="points")
+        if(this.checkCash) this.filterPrograms = this.filterPrograms.filter(program => program.reward_type=="cash")
+      }
+    },
+    checkPoint: function (val) {
+      this.checkAllFilters();
+      if(val){
+        this.filterPrograms = this.getMyPrograms.filter(program => program.reward_type=='points');
+        if(this.checkCash) this.filterPrograms = this.getMyPrograms;
+      }
+      else{
+        if(this.checkCash) this.filterPrograms = this.getCashPrograms;
+        else this.filterPrograms =[];
+      }
+      if(!(this.checkPublic && this.checkPrivate)){
+        if(this.checkPublic) this.filterPrograms = this.filterPrograms.filter(program => program.program_type=="public")
+        if(this.checkPrivate) this.filterPrograms = this.filterPrograms.filter(program => program.program_type=="private")
+      }
+    },
+    checkCash: function (val) {
+      this.checkAllFilters();
+      if(val){
+        this.filterPrograms = this.getMyPrograms.filter(program => program.reward_type=='cash');
+        if(this.checkPoint) this.filterPrograms = this.getMyPrograms;
+      }
+      else{
+        if(this.checkPoint) this.filterPrograms = this.getPointOnlyPrograms;
+        else this.filterPrograms =[];
+      }
+      if(!(this.checkPublic && this.checkPrivate)){
+        if(this.checkPublic) this.filterPrograms = this.filterPrograms.filter(program => program.program_type=="public")
+        if(this.checkPrivate) this.filterPrograms = this.filterPrograms.filter(program => program.program_type=="private")
+      }
     },
   },
   computed: {
@@ -191,33 +245,25 @@ export default {
       "getClientPrograms",
       "getPublicPrograms",
       "getPrivatePrograms",
-      "getRewardPrograms",
+      "getCashPrograms",
       "getPointOnlyPrograms",
-      "getMyPrograms"
+      "getMyPrograms",
     ]),
+    totalProgram: function () {
+      return this.getPublicPrograms.length + this.getPrivatePrograms.length;
+    },
   },
   methods: {
-    getLength(element) {
-      let val = 0;
-      switch (element) {
-        case "1":
-          val = this.getPublicPrograms.length;
-          break;
-        case "2":
-          val = this.getPrivatePrograms.length;
-          break;
-        case "3":
-          val = this.getPointOnlyPrograms.length;
-          break;
-        case "4":
-          val = this.getRewardPrograms.length;
-          break;
-      }
-      return val;
-    },
     goto(id) {
       let route = { name: "program-detail", params: { id: id } };
       this.$router.push(route);
+    },
+    checkAllFilters() {
+      this.isAllFilters =
+        this.checkPublic &&
+        this.checkPrivate &&
+        this.checkPoint &&
+        this.checkCash;
     },
   },
   beforeMount() {

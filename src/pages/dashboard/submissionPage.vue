@@ -38,7 +38,7 @@
             <q-card-section class="q-pa-none" style="padding-bottom: 27px">
               <q-toolbar>
                 <div class="box-badge">
-                  <span class="title-badge">Submission Rejected</span>
+                  <span class="title-badge">{{getStatusSubmission(submission.submissionStatus_id)}}</span>
                 </div>
                 <q-space />
                 <div class="title-badge-2"><span>2 day ago, 3:45 pm</span></div>
@@ -91,8 +91,8 @@ export default {
   },
   computed: {
     ...mapState("dashboard", ["user"]),
-    ...mapGetters("submission", ["getMySubmissions"]),
-    ...mapGetters("program", ["getProgram","getPrograms"]),
+    ...mapGetters("submission", ["getMySubmissions","getStatusSubmission"]),
+    ...mapGetters("program", ["getProgram","getMyPrograms"]),
   },
   methods: {
     async showDetails(submission) {
@@ -108,9 +108,9 @@ export default {
         let program = this.getProgram(submission.program_id);
         submission.program = program;
       });
-      this.programs = this.getPrograms;
+      this.programs = this.getMyPrograms;
       this.programs.forEach((p)=>{
-        p.label = p.title,
+        p.label = p.program_title,
         p.value = p.id
       })
     } catch (error) {}
@@ -176,7 +176,7 @@ export default {
   flex-direction: row;
   align-items: flex-start;
   padding: 0px 16px;
-  width: 169px;
+  min-width: 169px;
   height: 26px;
   background: #f7d5d5;
   border-radius: 5px;

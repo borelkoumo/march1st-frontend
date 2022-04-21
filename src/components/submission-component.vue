@@ -2,16 +2,16 @@
   <q-card class="my-card bg-white q-pt-lg q-pr-lg q-pl-lg q-pb-md" flat>
     <slot name="header"> </slot>
     <q-card-section horizontal>
-      <div class="box-image col-5">
-        <q-img :src="program.picture"/>
+      <div class="box-image col-3">
+        <q-img :src="program.program_picture_url"/>
       </div>
       <q-card-section class="q-pl-lg">
         <div class="subtitle">Related Program</div>
         <div class="subtitle-2">
-          {{program.title}}
+          {{program.program_title}}
         </div>
         <div class="content-title">
-          {{program.description}}
+          {{program.program_description}}
         </div>
         <q-toolbar class="subtitle-3">
           <div>Submitted on 22 May 2021 , 3:45 pm</div>

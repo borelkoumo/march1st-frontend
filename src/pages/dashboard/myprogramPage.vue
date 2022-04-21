@@ -22,15 +22,92 @@
             />
           </template>
         </q-input>
-        <q-select
-          bg-color="white"
-          filled
-          dense
-          :options="filters"
-          v-model="filter"
-          label="Filter"
+        <q-btn-dropdown
+          class="bg-white text-dark"
+          flat
+          label="Filters"
           style="min-width: 200px"
-        />
+        >
+          <q-list dense>
+            <q-item clickable v-close-popup @click="onFilterClick(0)">
+              <q-item-section side>
+                <q-checkbox v-model="isAllFilters" color="secondary" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>All</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                {{ totalProgram }}
+              </q-item-section>
+            </q-item>
+            <q-separator />
+            <q-item clickable v-close-popup @click="checkPublic = !checkPublic">
+              <q-item-section side>
+                <q-checkbox v-model="checkPublic" color="secondary" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Public</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                {{
+                  getPublicPrograms.filter((program) =>
+                    program.hackers.includes(this.user.id)
+                  ).length
+                }}
+              </q-item-section>
+            </q-item>
+            <q-item
+              clickable
+              v-close-popup
+              @click="checkPrivate = !checkPrivate"
+            >
+              <q-item-section side>
+                <q-checkbox v-model="checkPrivate" color="secondary" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Private</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                {{
+                  getPrivatePrograms.filter((program) =>
+                    program.hackers.includes(this.user.id)
+                  ).length
+                }}
+              </q-item-section>
+            </q-item>
+            <q-separator />
+            <q-item clickable v-close-popup @click="checkPoint = !checkPoint">
+              <q-item-section side>
+                <q-checkbox v-model="checkPoint" color="secondary" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Points Only</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                {{
+                  getPublicPrograms.filter((program) =>
+                    program.hackers.includes(this.user.id)
+                  ).length
+                }}
+              </q-item-section>
+            </q-item>
+            <q-item clickable v-close-popup @click="checkCash = !checkCash">
+              <q-item-section side>
+                <q-checkbox v-model="checkCash" color="secondary" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Cash Only</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                {{
+                  getCashPrograms.filter((program) =>
+                    program.hackers.includes(this.user.id)
+                  ).length
+                }}
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
         <q-space />
 
         <q-btn label="Most Recent" flat no-caps icon-right="import_export" />
@@ -51,6 +128,7 @@
             v-for="program in running"
             :key="program.title"
             class="cursor-pointer"
+            @click="goto(program.id)"
           />
         </div>
       </div>
@@ -103,29 +181,172 @@ export default {
   data() {
     return {
       search: null,
-      filters: [{ label: "fgfgfgfg", value: "3" }],
-      filter: null,
+
       showProgram: true, //verify if the length of program is > 0
       programs: [],
-      running: [],
-      closed: [],
+      checkPublic: true,
+      checkPrivate: true,
+      checkPoint: true,
+      checkCash: true,
+      isAllFilters: true,
+      filterPrograms: [],
     };
   },
+  watch: {
+    isAllFilters: function (val) {
+      if (val) {
+        this.checkPublic = true;
+        this.checkPrivate = true;
+        this.checkPoint = true;
+        this.checkCash = true;
+        this.filterPrograms = this.programs;
+      }
+      this.checkAllFilters();
+    },
+    checkPublic: function (val) {
+      this.checkAllFilters();
+      if (val) {
+        this.filterPrograms = this.programs.filter(
+          (program) => program.program_type == "public"
+        );
+        if (this.checkPrivate) this.filterPrograms = this.programs;
+      } else {
+        if (this.checkPrivate)
+          this.filterPrograms = this.getPrivatePrograms.filter((program) =>
+            program.hackers.includes(this.user.id)
+          );
+        else this.filterPrograms = [];
+      }
+      if (!(this.checkPoint && this.checkCash)) {
+        if (this.checkPoint)
+          this.filterPrograms = this.filterPrograms.filter(
+            (program) => program.reward_type == "points"
+          );
+        if (this.checkCash)
+          this.filterPrograms = this.filterPrograms.filter(
+            (program) => program.reward_type == "cash"
+          );
+      }
+    },
+    checkPrivate: function (val) {
+      this.checkAllFilters();
+      if (val) {
+        this.filterPrograms = this.programs.filter(
+          (program) => program.program_type == "private"
+        );
+        if (this.checkPublic) this.filterPrograms = this.programs;
+      } else {
+        if (this.checkPublic)
+          this.filterPrograms = this.getPublicPrograms.filter((program) =>
+            program.hackers.includes(this.user.id)
+          );
+        else this.filterPrograms = [];
+      }
+      if (!(this.checkPoint && this.checkCash)) {
+        if (this.checkPoint)
+          this.filterPrograms = this.filterPrograms.filter(
+            (program) => program.reward_type == "points"
+          );
+        if (this.checkCash)
+          this.filterPrograms = this.filterPrograms.filter(
+            (program) => program.reward_type == "cash"
+          );
+      }
+    },
+    checkPoint: function (val) {
+      this.checkAllFilters();
+      if (val) {
+        this.filterPrograms = this.programs.filter(
+          (program) => program.reward_type == "points"
+        );
+        if (this.checkCash) this.filterPrograms = this.programs;
+      } else {
+        if (this.checkCash)
+          this.filterPrograms = this.getCashPrograms.filter((program) =>
+            program.hackers.includes(this.user.id)
+          );
+        else this.filterPrograms = [];
+      }
+      if (!(this.checkPublic && this.checkPrivate)) {
+        if (this.checkPublic)
+          this.filterPrograms = this.filterPrograms.filter(
+            (program) => program.program_type == "public"
+          );
+        if (this.checkPrivate)
+          this.filterPrograms = this.filterPrograms.filter(
+            (program) => program.program_type == "private"
+          );
+      }
+    },
+    checkCash: function (val) {
+      this.checkAllFilters();
+      if (val) {
+        this.filterPrograms = this.programs.filter(
+          (program) => program.reward_type == "cash"
+        );
+        if (this.checkPoint) this.filterPrograms = this.programs;
+      } else {
+        if (this.checkPoint)
+          this.filterPrograms = this.getPointOnlyPrograms.filter((program) =>
+            program.hackers.includes(this.user.id)
+          );
+        else this.filterPrograms = [];
+      }
+      if (!(this.checkPublic && this.checkPrivate)) {
+        if (this.checkPublic)
+          this.filterPrograms = this.filterPrograms.filter(
+            (program) => program.program_type == "public"
+          );
+        if (this.checkPrivate)
+          this.filterPrograms = this.filterPrograms.filter(
+            (program) => program.program_type == "private"
+          );
+      }
+    },
+  },
   computed: {
+    ...mapState("dashboard", ["user"]),
     ...mapState("program", ["myPrograms"]),
-    ...mapGetters("program", ["getMyPrograms"]),
+    ...mapGetters("program", [
+      "getClientPrograms",
+      "getPublicPrograms",
+      "getPrivatePrograms",
+      "getCashPrograms",
+      "getPointOnlyPrograms",
+      "getMyPrograms",
+    ]),
+    totalProgram: function () {
+      return (
+        this.getPublicPrograms.filter(
+          (program) => program.program_type == "private"
+        ).length +
+        this.getPrivatePrograms.filter(
+          (program) => program.program_type == "private"
+        ).length
+      );
+    },
+    running: function () {
+      return this.filterPrograms.filter((program) => program.is_closed == 0);
+    },
+    closed: function () {
+      return this.filterPrograms.filter((program) => program.is_closed == 1);
+    },
+  },
+  methods: {
+    checkAllFilters() {
+      this.isAllFilters =
+        this.checkPublic &&
+        this.checkPrivate &&
+        this.checkPoint &&
+        this.checkCash;
+    },
+    goto(id){
+      this.$router.push('/main/program-detail/' +id)
+    }
   },
   async beforeMount() {
     this.programs = await this.getMyPrograms;
-    if (this.programs.length > 0) {
-      this.programs.forEach((p) => {
-        if (p.is_closed == 0) {
-          this.running.push(p);
-        } else {
-          this.running.push(p);
-        }
-      });
-    }
+    this.filterPrograms = this.programs;
   },
 };
 </script>

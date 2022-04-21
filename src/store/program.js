@@ -9,6 +9,15 @@ const state = {
 };
 
 const getters = {
+  getHasJoin(state) {
+    return (id) => {
+      let hasJoin = false;
+      let user = dasboard.state.user;
+      let p = state.programs.filter((program) => program.id == id);
+      if (p[0].hackers.includes(user.id)) return true;
+      else return false;
+    };
+  },
   getPublicPrograms(state) {
     return state.programs.filter((program) => program.program_type == "public");
   },
@@ -17,9 +26,8 @@ const getters = {
       (program) => program.program_type == "private"
     );
   },
-  getRewardPrograms(state) {
-    //return state.programs.filter(program => program.program_type=="public");
-    return [];
+  getCashPrograms(state) {
+    return state.programs.filter((program) => program.reward_type == "cash");
   },
   getPointOnlyPrograms(state) {
     return state.programs.filter((program) => program.reward_type == "points");
@@ -36,9 +44,9 @@ const getters = {
     if (user.typeUser == "client") {
       return state.programs.filter((program) => program.client_id == user.id);
     } else if (user.typeUser == "hacker") {
-      console.log(user);
-      let a= state.programs.filter((program) => program.hackers.includes(user.id));
-      console.log(a);
+      let a = state.programs.filter((program) =>
+        program.hackers.includes(user.id)
+      );
       return a;
     }
   },
@@ -202,17 +210,16 @@ const mutations = {
     });
   },
   removeHackerToProgram(state, payload) {
-    let index=0;
+    let index = 0;
     state.programs.forEach((p) => {
       if (p.id == payload.program_id) {
-        p.hackers.forEach((h)=>{
-          if(h!=payload.hacker.id){
+        p.hackers.forEach((h) => {
+          if (h != payload.hacker.id) {
             index++;
+          } else {
+            p.hackers.splice(index, 1);
           }
-          else{
-            p.hackers.splice(index,1);
-          }
-        })
+        });
       }
     });
   },
@@ -260,7 +267,7 @@ const actions = {
       hackers: [],
       managers: payload.managers,
       submissions: [],
-      invitations:payload.invitations,
+      invitations: payload.invitations,
 
       critical: { min: payload.critical.min, max: payload.critical.max },
       severe: { min: payload.severe.min, max: payload.severe.max },
