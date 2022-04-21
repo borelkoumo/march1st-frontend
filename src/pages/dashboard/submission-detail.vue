@@ -117,21 +117,11 @@
             <q-timeline-entry tag="div" heading class="title-timeline">
               Status timeline
             </q-timeline-entry>
-            <q-timeline-entry tag="div">
+            <q-timeline-entry tag="div" v-for="timeline in getAllStatus(submission.id)" :key="timeline.id">
               <div class="subtitle-timeline">4 June 2021 5:00pm</div>
               <div class="content-timeline">
-                Waiting for hacker clarifications
+                {{timeline.label}}
               </div>
-            </q-timeline-entry>
-
-            <q-timeline-entry tag="div">
-              <div class="subtitle-timeline">5 June 2021 5:00pm</div>
-              <div class="content-timeline">M1 Returned for clarifications</div>
-            </q-timeline-entry>
-
-            <q-timeline-entry tag="div">
-              <div class="subtitle-timeline">4 June 2021 5:00pm</div>
-              <div class="content-timeline">New Report Submission</div>
             </q-timeline-entry>
           </q-timeline>
         </q-card>
@@ -169,7 +159,8 @@ export default {
   },
   computed: {
     ...mapGetters('submission',[
-      'getSubmission'
+      'getSubmission',
+      'getAllStatus'
     ]),
     ...mapGetters('program',[
       'getProgram'

@@ -34,7 +34,7 @@ const getters = {
       return submission;
     };
   },
-  getStatusSubmission() {
+  getStatusSubmission(state) {
     return (id) => {
       let val = "";
       let status = "";
@@ -42,7 +42,7 @@ const getters = {
         console.log(s);
         if (s.id == id) val = s;
       });
-      switch (val.status) {
+      /* switch (val.status) {
         case "new_report":
           status = "New Report Submission";
           break;
@@ -67,9 +67,14 @@ const getters = {
         default:
           status = "Rejected Submission";
           break;
-      }
-      return status;
+      } */
+      return val.label;
     };
+  },
+  getAllStatus(state){
+    return (id) =>{
+      return state.submissionStatus.filter(status => status.submission_id==id);
+    }
   },
   getSubmissions(state) {
     let allSubmissions = localStorage.getItem("submissions");
@@ -98,6 +103,7 @@ const actions = {
     payload.submissionStatus_id = Math.floor(Math.random() * 500);
     let statusSumission = {
       status: "new_report",
+      label:"New Report Submission",
       submission_id: payload.id,
       id: payload.submissionStatus_id,
     };
