@@ -151,7 +151,7 @@ export default {
   },
   computed: {
     ...mapState("dashboard", ["user"]),
-    ...mapGetters("program", ["getProgram"]),
+    ...mapGetters("program", ["getProgram","getSubmissionsProgram"]),
   },
   methods: {
     ...mapActions("submission", ["addReport"]),

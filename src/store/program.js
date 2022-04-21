@@ -1,6 +1,6 @@
 import { apolloClient } from "./utils/apollo";
 import dasboard from "./dashboard";
-//import submission from "./submission";
+import submission from "./submission";
 
 import gql from "graphql-tag";
 
@@ -34,8 +34,17 @@ const getters = {
   },
   getProgram(state) {
     return (id) => {
+      let allSubmissions = submission.state.submissions;
+      let submissions = [];
       let program = state.programs.filter((program) => program.id == id);
-      if (program[0]) return program[0];
+      if (program[0]){
+        let p= JSON.parse(JSON.stringify(program[0]));
+        submissions = allSubmissions.filter(
+          (submission) => submission.program_id == id
+        );
+        p.submissions=JSON.parse(JSON.stringify(submissions));
+        return p;
+      } 
       return {};
     };
   },
@@ -94,6 +103,17 @@ const getters = {
     } else {
     }
     return programs;
+  },
+
+  getSubmissionsProgram(state) {
+    return (id) => {
+      let allSubmissions = submission.state.submissions;
+      let submissions = [];
+      submissions = allSubmissions.filter(
+        (submission) => submission.program_id == id
+      );
+      return JSON.parse(JSON.stringify(submissions));
+    };
   },
   getPrograms(state) {
     let programs = localStorage.getItem("programs");

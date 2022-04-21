@@ -314,6 +314,7 @@ export default {
       "getCashPrograms",
       "getPointOnlyPrograms",
       "getMyPrograms",
+      'getSubmissionsProgram'
     ]),
     totalProgram: function () {
       return (

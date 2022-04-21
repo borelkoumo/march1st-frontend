@@ -245,7 +245,7 @@ export default {
     ...mapState('dashboard',[
       'user'
     ]),
-    ...mapGetters("program", ["getProgram", 'getHasJoin']),
+    ...mapGetters("program", ["getProgram", 'getHasJoin','getSubmissionsProgram']),
   },
   methods: {
     showSubmissionForm(){

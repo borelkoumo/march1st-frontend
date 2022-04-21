@@ -116,7 +116,7 @@
           <template v-slot:level>
             <q-card-section class="col-3 q-pl-lg q-pr-none">
               <submission-level
-                :submissions="program.submissions"
+                :submissions="getSubmissionsProgram(program.id)"
                 :progress="progress"
               />
             </q-card-section>
@@ -248,6 +248,7 @@ export default {
       "getCashPrograms",
       "getPointOnlyPrograms",
       "getMyPrograms",
+      'getSubmissionsProgram'
     ]),
     totalProgram: function () {
       return this.getPublicPrograms.length + this.getPrivatePrograms.length;
