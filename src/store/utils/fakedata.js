@@ -54,15 +54,43 @@ const users = [
     typeUser: "hacker",
   },
   {
-    username: "admin",
+    username: "Manager1",
     id: 7,
-    first_name: "Admin 1",
-    last_name: "Admin 1",
-    email: "admin1@test.com",
+    first_name: "Manager1",
+    last_name: "",
+    email: "manager1@test.com",
     phone: "",
     adress: "Adress 3",
     profile_url: "",
     typeUser: "admin",
+    designation:"Product manager",
+    privilege:null
+  },
+  {
+    username: "Manager2",
+    id: 8,
+    first_name: "Manager2",
+    last_name: "",
+    email: "manager2@test.com",
+    phone: "",
+    adress: "Adress 4",
+    profile_url: "",
+    typeUser: "admin",
+    designation:"Product manager",
+    privilege:null
+  },
+  {
+    username: "Manager3",
+    id: 9,
+    first_name: "Manager3",
+    last_name: "",
+    email: "manager3@test.com",
+    phone: "",
+    adress: "Adress 5",
+    profile_url: "",
+    typeUser: "admin",
+    designation:"Product manager",
+    privilege:null
   },
 ];
 const managers =[

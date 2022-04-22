@@ -3,6 +3,9 @@ import dasboard from "./dashboard";
 import gql from "graphql-tag";
 import program from "./program";
 
+//const programs =program.state.programs;
+//const user = dasboard.state.user;
+
 const state = {
   submissions: [],
   submissionStatus: [],
@@ -10,7 +13,9 @@ const state = {
 
 const getters = {
   getMySubmissions(state) {
+    let programs =program.state.programs;
     let user = dasboard.state.user;
+    console.log(user);
     let mySubmissions = [];
     if (user.typeUser == "hacker") {
       mySubmissions = state.submissions.filter(
@@ -20,8 +25,21 @@ const getters = {
       mySubmissions = state.submissions.filter(
         (submission) => submission.client_id == user.id
       );
+      let submissionTriaged= mySubmissions.map((submission)=>{
+        let allStatus = state.submissions.filter(s => s.submission_id==submission.id && s.status=="triaged")
+        if(allStatus.length>0) return submission;
+      })
+      mySubmissions=submissionTriaged;
     } else if (user.typeUser == "admin") {
-      return (mySubmissions = state.submissions);
+      const myPrograms = programs.map((program) => {
+        if (program.managersId.includes(user.id)) return program;
+      });
+      myPrograms.forEach((program) => {
+        mySubmissions = mySubmissions.concat(
+          state.submissions.filter((s) => s.program_id == program.id)
+        );
+      });
+      //return (mySubmissions = state.submissions);
     }
     return JSON.parse(JSON.stringify(mySubmissions));
   },
@@ -37,7 +55,6 @@ const getters = {
   getStatusSubmission(state) {
     return (id) => {
       let val = "";
-      let status = "";
       state.submissionStatus.forEach((s) => {
         console.log(s);
         if (s.id == id) val = s;
@@ -68,13 +85,24 @@ const getters = {
           status = "Rejected Submission";
           break;
       } */
-      return val.label;
+      return val.status_text;
     };
   },
-  getAllStatus(state){
-    return (id) =>{
-      return state.submissionStatus.filter(status => status.submission_id==id);
-    }
+  getAllStatus(state) {
+    return (id) => {
+      return state.submissionStatus.filter(
+        (status) => status.submission_id == id
+      );
+    };
+  },
+  getSubmissionsProgram(state) {
+    return (id) => {
+      let submissions = [];
+      submissions = state.submissions.filter(
+        (submission) => submission.program_id == id
+      );
+      return JSON.parse(JSON.stringify(submissions));
+    };
   },
   getSubmissions(state) {
     let allSubmissions = localStorage.getItem("submissions");
@@ -100,12 +128,15 @@ const actions = {
   async addReport({ state, commit }, payload) {
     payload.id = Math.floor(Math.random() * 500);
     payload.severety_level = payload.severety_level.value;
+    payload.vulnerability_status="in_review"
     payload.submissionStatus_id = Math.floor(Math.random() * 500);
     let statusSumission = {
-      status: "new_report",
-      label:"New Report Submission",
+      status: "new",
+      status_text: "New Report Submission",
       submission_id: payload.id,
       id: payload.submissionStatus_id,
+      status_raison: "",
+      created_at: "",
     };
     commit("addStatus", statusSumission);
     commit("setNewReport", payload);

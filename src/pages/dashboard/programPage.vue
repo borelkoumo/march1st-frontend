@@ -250,6 +250,9 @@ export default {
       "getMyPrograms",
       'getSubmissionsProgram'
     ]),
+    ...mapGetters('submission',[
+      'getSubmissionsProgram'
+    ]),
     totalProgram: function () {
       return this.getPublicPrograms.length + this.getPrivatePrograms.length;
     },

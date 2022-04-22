@@ -26,7 +26,7 @@
         <q-space />
         <q-btn label="Submissions" flat no-caps icon-right="import_export" />
       </q-toolbar>
-      <div class="q-mt-lg">
+      <div class="q-mt-lg" v-if="submissions.length>0">
         <submission-component
           :program="submission.program"
           class="submission-component cursor-pointer"
@@ -80,14 +80,14 @@ export default {
     };
   },
   watch:{
-    program:function(val){
+    /* program:function(val){
       this.submissions = [];
       allSubmissions.forEach((s)=>{
         if(s.program_id == val.value){
           this.submissions.push(s);
         }
       })
-    }
+    } */
   },
   computed: {
     ...mapState("dashboard", ["user"]),
@@ -103,6 +103,7 @@ export default {
   async beforeMount() {
     try {
       allSubmissions = await this.getMySubmissions;
+      console.log(allSubmissions);
       this.submissions = allSubmissions;
       this.submissions.forEach((submission) => {
         let program = this.getProgram(submission.program_id);

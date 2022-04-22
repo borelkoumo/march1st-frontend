@@ -1,7 +1,7 @@
 import { apolloClient } from "./utils/apollo";
 import gql from "graphql-tag";
 import {users} from "./utils/fakedata";
-import {managers} from "./utils/fakedata"
+//import {managers} from "./utils/fakedata"
 
 /* import {
     allMenu
@@ -393,12 +393,12 @@ const getters = {
               slug: "my-tasks",
               link: "/main/my-tasks",
             },
-            /* {
+            {
               icon: "lock_open",
               name: "My Programs",
               slug: "programs",
               link: "/main/programs",
-            }, */
+            },
             {
               icon: "dashboard",
               name: "My Submissions",
@@ -442,7 +442,8 @@ const getters = {
     return JSON.parse(JSON.stringify(users));
   },
   getManagers(){
-    console.log(managers);
+    //console.log(managers);
+    let managers = users.filter(user => user.typeUser=='admin');
     return JSON.parse(JSON.stringify(managers));
   }
 };

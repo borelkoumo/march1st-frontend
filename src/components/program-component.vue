@@ -1,49 +1,55 @@
 <template>
   <q-card class="my-card bg-white q-pt-lg q-pr-lg q-pl-lg q-pb-md" flat>
     <q-card-section horizontal>
-      <div class="box-image col-2">
-        <q-img :src="program.program_picture_url" />
+      <div class="box-image" style="width: 200px; height: 200px">
+        <q-img :src="program.program_picture_url" style="max-width: 200px" />
       </div>
       <q-card-section class="q-pl-lg q-pr-lg col">
         <div>
-          <q-badge class="q-pt-xs q-pb-xs negative-class" v-if="program.is_closed">Close</q-badge>
+          <q-badge
+            class="q-pt-xs q-pb-xs negative-class"
+            v-if="program.is_closed"
+            >Close</q-badge
+          >
           <q-badge class="q-pt-xs q-pb-xs active-class" v-else>Active</q-badge>
           <q-badge class="q-pt-xs q-pb-xs bg-transparent time-program"
             >Active since 9 days ago</q-badge
           >
         </div>
         <div class="title-program">
-          {{program.program_title}}
+          {{ program.program_title }}
         </div>
         <div class="content-title">
-          {{program.description}}
+          {{ program.description }}
         </div>
-        <div class="price-program">$ {{program.min}} - $ {{program.max}} Per vulnerability</div>
+        <div class="price-program">
+          $ {{ program.min }} - $ {{ program.max }} Per vulnerability
+        </div>
         <div class="flex no-wrap">
-          <div class="q-pr-md">
+          <div
+            class="q-pr-md no-wrap flex flex-center"
+            style="padding-left: 12px"
+          >
             <q-btn
-              label="M"
-              round
-              flat
-              class="text-white"
-              style="z-index: 99; background: #26bfbf; border: 1px solid white"
-              size="12px"
-            />
-            <q-btn
-              label="D"
               round
               flat
               class="text-white"
               style="
-                background: #ee8e12;
-                margin-left: -12px;
+                z-index: 99;
                 border: 1px solid white;
+                margin-left: -12px;
+                width: 20px;
+                height: 20px;
               "
               size="12px"
+              v-for="(manager, i) in program.managers"
+              :key="manager.id"
+              :label="getFirstCharacter(manager.first_name)"
+              :style="'background-color:' + colors[i]"
             />
           </div>
           <div class="title-program">
-            2 Managers (Franck Lambpard, Roberto Carlors)
+            {{ getManagersText }}
           </div>
         </div>
       </q-card-section>
@@ -53,12 +59,37 @@
 </template>
 <script>
 export default {
-  components: {  },
+  components: {},
   props: ["program"],
   data() {
     return {
-      
+      colors: ["#26bfbf", "#ee8e12", "#26bfbf"],
     };
+  },
+  computed: {
+    getManagersText: function () {
+      let managers = this.program.managers;
+      let text1 = "";
+      let text2 = "";
+      if (managers.length <= 1) {
+        text1 = managers.length + " Manager (";
+      } else {
+        text1 = managers.length + " Managers (";
+      }
+      managers.forEach((element) => {
+        if (text2 == "") text2 = element.first_name;
+        else text2 = text2 + " , " + element.first_name;
+      });
+      text2 = text2 + ")";
+      text1 = text1 + text2;
+      return text1;
+    },
+    getFirstCharacter: function () {
+      return (manager) => {
+        console.log(manager);
+        return manager.charAt(0).toUpperCase();
+      };
+    },
   },
 };
 </script>

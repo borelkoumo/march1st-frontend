@@ -2,33 +2,55 @@
   <q-page class="bg-home">
     <div class="content-page">
       <div class="main-content">
-        <q-toolbar class="bg-none flex q-gutter-sm" style="padding-top: 40px">
+        <q-toolbar class="bg-none flex q-pr-none" style="padding-top: 40px">
           <q-space />
-          <q-select
-            dense
-            class="bg-white select-action"
-            color="secondary"
-            input-style="width:300px"
-            outlined
-            no-caps
-            v-model="action"
-            :options="actions"
-          />
+          <q-btn-dropdown color="secondary" class="bg-white" no-caps label="Actions" outline>
+            <q-list>
+              <q-item clickable v-close-popup @click="onActionClick(1)">
+                <q-item-section>
+                  <q-item-label>Returned for clarifications</q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable v-close-popup @click="onActionClick(2)">
+                <q-item-section>
+                  <q-item-label>Reject</q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable v-close-popup @click="onActionClick(3)">
+                <q-item-section>
+                  <q-item-label>Accept</q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable v-close-popup @click="onActionClick(4)">
+                <q-item-section>
+                  <q-item-label>Send to Client</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
         </q-toolbar>
         <div class="q-mt-lg q-mb-lg submission-elt">
-          <submission-component :program="submission.program" class="submission-component">
+          <submission-component
+            :program="submission.program"
+            class="submission-component"
+          >
             <template v-slot:header>
               <q-card-section class="q-pa-none" style="padding-bottom: 27px">
                 <q-toolbar>
                   <div class="box-badge">
-                    <span class="title-badge">Severity Level : {{submission.severety_level}}</span>
+                    <span class="title-badge"
+                      >Severity Level : {{ submission.severety_level }}</span
+                    >
                   </div>
                   <q-space />
                   <div class="title-badge-2">
                     <span>2 day ago, 3:45 pm</span>
                   </div>
                 </q-toolbar>
-                <div class="title">{{submission.submission_title}}</div>
+                <div class="title">{{ submission.submission_title }}</div>
                 <q-separator color="#E4E4E4" />
               </q-card-section>
             </template>
@@ -39,20 +61,20 @@
             <q-card-section>
               <div class="submission-title">Submission Target</div>
               <div class="submission-link">
-                {{submission.submission_target}}
+                {{ submission.submission_target }}
               </div>
             </q-card-section>
             <q-separator />
             <q-card-section>
               <div class="submission-title">Submission Text</div>
               <div class="submission-content">
-                {{submission.submission_text}}
+                {{ submission.submission_text }}
               </div>
             </q-card-section>
           </q-card>
         </div>
         <div class="submission-attachment q-pt-md flex q-gutter-md">
-          <div class="q-pa-sm bg-white" style="border-radius: 10px;">
+          <div class="q-pa-sm bg-white" style="border-radius: 10px">
             <q-card class="card-attachment flex" flat>
               <div>
                 <q-img src="~assets/file-pdf.svg" width="50px" />
@@ -65,7 +87,7 @@
               </div>
             </q-card>
           </div>
-          <div class="q-pa-sm bg-white" style="border-radius: 10px;">
+          <div class="q-pa-sm bg-white" style="border-radius: 10px">
             <q-card class="card-attachment flex" flat>
               <div>
                 <q-img src="~assets/file-pdf.svg" width="50px" />
@@ -107,7 +129,7 @@
             flat
             no-caps
             class="bg-secondary text-white"
-            style="width:160px"
+            style="width: 160px"
           />
         </div>
       </div>
@@ -117,10 +139,14 @@
             <q-timeline-entry tag="div" heading class="title-timeline">
               Status timeline
             </q-timeline-entry>
-            <q-timeline-entry tag="div" v-for="timeline in getAllStatus(submission.id)" :key="timeline.id">
+            <q-timeline-entry
+              tag="div"
+              v-for="timeline in getAllStatus(submission.id)"
+              :key="timeline.id"
+            >
               <div class="subtitle-timeline">4 June 2021 5:00pm</div>
               <div class="content-timeline">
-                {{timeline.label}}
+                {{ timeline.status_text }}
               </div>
             </q-timeline-entry>
           </q-timeline>
@@ -130,7 +156,7 @@
   </q-page>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 import SubmissionComponent from "../../components/submission-component.vue";
 
 export default {
@@ -138,38 +164,39 @@ export default {
   data() {
     return {
       status: [
-        { label: "New report submission", value: "new report submission" },
-        { label: "Returned for clarifications", value: "returned for clarifications" },
-        { label: "Resubmitted with clarifications", value: "resubmitted with clarifications" },
-        { label: "Passed triage", value: "passed triage" },
-        { label: "Client returned for clarification", value: "client returned for clarification" },
-        { label: "Submission accepted", value: "submission accepted" },
-        { label: "Made payment", value: "made payment" }
+        { label: "In Review", value: "in_review" },
+        {
+          label: "Returned for clarifications",
+          value: "returned_for_clarifications",
+        },
+        { label: "Send for client review", value: "send_for_client_review" },
+        { label: "Rejected", value: "rejected" },
       ],
       actions: [
-        { label: "Return for clarification", value: "returned for clarifications" },
+        {
+          label: "Return for clarification",
+          value: "returned for clarifications",
+        },
         { label: "Reject", value: "submission reject" },
         { label: "Accept", value: "submission accepted" },
         { label: "Send to Client", value: "send to client" },
       ],
       action: { label: "Actions", value: 0 },
       message: null,
-      submission:null
+      submission: null,
     };
   },
   computed: {
-    ...mapGetters('submission',[
-      'getSubmission',
-      'getAllStatus'
-    ]),
-    ...mapGetters('program',[
-      'getProgram'
-    ])
+    ...mapGetters("submission", ["getSubmission", "getAllStatus"]),
+    ...mapGetters("program", ["getProgram"]),
   },
-  async beforeMount(){
+  methods: {
+    
+  },
+  async beforeMount() {
     this.submission = this.getSubmission(this.$route.params.id);
     this.submission.program = this.getProgram(this.submission.program_id);
-  }
+  },
 };
 </script>
 <style scoped>
@@ -208,9 +235,9 @@ export default {
 }
 .card-attachment {
   width: 200px;
-  padding-left:16px;
-  padding-top:16px;
-  padding-bottom:16px;
+  padding-left: 16px;
+  padding-top: 16px;
+  padding-bottom: 16px;
   border-radius: 10px;
 }
 .attachment-name,
@@ -318,7 +345,7 @@ export default {
   display: flex;
   align-items: center;
   letter-spacing: -0.015em;
-  color: #47B881;
+  color: #47b881;
 }
 .submission-component .title-badge-2 {
   font-family: "inter";
@@ -337,7 +364,7 @@ export default {
   flex-direction: row;
   align-items: flex-start;
   padding: 0px 16px;
-  
+
   height: 26px;
   /*background: #f7d5d5;*/
   background: rgba(71, 184, 129, 0.2);

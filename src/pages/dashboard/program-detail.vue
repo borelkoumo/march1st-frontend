@@ -245,7 +245,8 @@ export default {
     ...mapState('dashboard',[
       'user'
     ]),
-    ...mapGetters("program", ["getProgram", 'getHasJoin','getSubmissionsProgram']),
+    ...mapGetters("program", ["getProgram", 'getHasJoin']),
+    ...mapGetters("submission", ['getSubmissionsProgram']),
   },
   methods: {
     showSubmissionForm(){
@@ -255,6 +256,7 @@ export default {
   },
   beforeMount() {
     this.program = this.getProgram(this.$route.params.id);
+    this.program.submissions = this.getSubmissionsProgram(this.$route.params.id)
     console.log(this.program);
   },
 };
