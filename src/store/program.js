@@ -219,6 +219,18 @@ const mutations = {
       state.programs = programs;
     }
   },
+  setEditProgram(state,payload){
+    let programs=[];
+    state.programs.forEach((p)=>{
+      if(p.id==payload.id){
+        programs.push(payload);
+      }
+      else{
+        programs.push(p)
+      }
+    })
+    state.programs = programs;
+  },
   addProgram(state, payload) {
     state.programs.push(payload);
   },
@@ -267,15 +279,15 @@ const actions = {
     let user = dasboard.state.user;
     let program = {
       id: payload.id,
-      program_title: payload.title,
-      program_description: payload.description,
-      program_type: payload.type,
-      safe_harbour_type: payload.safe_habour_type,
+      program_title: payload.program_title,
+      program_description: payload.program_description,
+      program_type: payload.program_type,
+      safe_harbour_type: payload.safe_harbour_type,
       reward_type: payload.reward_type,
       reward_range: payload.reward_range,
-      program_guidelines_1: payload.guidelines,
-      program_guidelines_2: payload.guidelines,
-      program_scope: payload.scope,
+      program_guidelines_1: payload.program_guidelines_1,
+      program_guidelines_2: payload.program_guidelines_2,
+      program_scope: payload.program_scope,
       legal_terms: payload.legal_terms,
       program_picture_url: "programs/image17.png",
       is_closed: false,
@@ -330,7 +342,27 @@ const actions = {
     };
     commit("removeHackerToProgram", param);
   },
-  async editProgram({ state, commit }, payload) {},
+  async editProgram({ state, commit }, payload) {
+    console.log(payload)
+    let max =
+      payload.critical.max > payload.severe.max
+        ? payload.critical.max
+        : payload.severe.max;
+    max = max > payload.medium.max ? max : payload.medium.max;
+    max = max > payload.low.max ? max : payload.low.max;
+
+    let min =
+      payload.critical.min > payload.severe.min
+        ? payload.critical.min
+        : payload.severe.min;
+    min = min > payload.medium.min ? min : payload.medium.min;
+    min = min > payload.low.min ? min : payload.low.min;
+    payload.managersId=payload.managers.map(function(m) {return m.id});
+    
+    payload.min=min;
+    payload.max=max;
+    commit('setEditProgram',payload);
+  },
 };
 
 export default {

@@ -49,7 +49,7 @@
                 <div class="">
                   <q-input
                     type=""
-                    v-model="formData.title"
+                    v-model="formData.program_title"
                     label="Enter Title"
                     borderless
                     class="q-pl-sm q-pr-sm"
@@ -61,7 +61,7 @@
                 <div class="">
                   <q-input
                     type="textarea"
-                    v-model="formData.description"
+                    v-model="formData.program_description"
                     label="Enter description"
                     borderless
                     class="q-pl-sm q-pr-sm"
@@ -89,14 +89,14 @@
                 <div class="q-pb-md">Program Type</div>
                 <q-radio
                   name="program-type"
-                  v-model="formData.type"
+                  v-model="formData.program_type"
                   val="private"
                   label="Private"
                   color="secondary"
                 />
                 <q-radio
                   name="program-type"
-                  v-model="formData.type"
+                  v-model="formData.program_type"
                   val="public"
                   label="Public"
                   color="secondary"
@@ -106,14 +106,14 @@
                 <div class="q-pb-md">Safe Harbour Type</div>
                 <q-radio
                   name="program-type"
-                  v-model="formData.safe_habour_type"
+                  v-model="formData.safe_harbour_type"
                   val="full"
                   label="Full Safe Harbor"
                   color="secondary"
                 />
                 <q-radio
                   name="program-type"
-                  v-model="formData.safe_habour_type"
+                  v-model="formData.safe_harbour_type"
                   val="partial"
                   label="Partial Safe Harbor"
                   color="secondary"
@@ -242,7 +242,7 @@
             <div class="">
               <q-input
                 type=""
-                v-model="formData.guidelines"
+                v-model="formData.program_guidelines_1"
                 label=""
                 borderless
               />
@@ -253,7 +253,7 @@
             <div class="">
               <q-input
                 type=""
-                v-model="formData.guidelines"
+                v-model="formData.program_guidelines_2"
                 label=""
                 borderless
               />
@@ -273,7 +273,7 @@
           <q-card-section class="q-pb-sm">
             <div class="subtitle q-pb-sm">Program Scope</div>
             <div class="">
-              <q-input type="" v-model="formData.scope" label="" borderless />
+              <q-input type="" v-model="formData.program_scope" label="" borderless />
             </div>
           </q-card-section>
         </q-card>
@@ -464,18 +464,20 @@ export default {
         id: null,
         user_id: 1,
         picture: "https://cdn.quasar.dev/img/parallax2.jpg",
-        title: "Lorem ipsum dolor sit amet,",
-        description:
+        program_title: "Lorem ipsum dolor sit amet,",
+        program_description:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rutrum congue leo eget malesuada. Cras ultricies ligula sed magna dictum porta.",
-        type: "public",
-        safe_habour_type: "full",
+        program_type: "public",
+        safe_harbour_type: "full",
         reward_type: "points",
         reward_range: false,
-        guidelines:
+        program_guidelines_1:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rutrum congue leo eget malesuada.",
+          program_guidelines_2:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rutrum congue leo eget malesuada.",
         legal_terms:
           "Vivamus suscipit tortor eget felis porttitor volutpat. Curabitur aliquet quam id dui posuere blandit.",
-        scope: 4,
+        program_scope: 4,
         hackers: [],
         managers: [],
         critical: { min: 150, max: 1400 },

@@ -101,20 +101,12 @@
             </q-card>
           </div>
         </div>
-        <div class="">
-          <div class="submission-title q-pb-sm">Vulnerability Status</div>
-          <div class="submission-form">
-            <q-select
-              :options="status"
-              v-model="submission.submission_status"
-              label="Select Vulnerability Status"
-              borderless
-              class="q-pl-sm q-pr-sm"
-            />
-          </div>
-        </div>
+        
         <div class="submission-form q-pt-md">
-          <q-input
+          <div class="submission-title q-pb-sm">Leave your comment </div>
+          <q-editor v-model="message" min-height="8rem" style="background: #fbfbfb;
+  border: 1px solid #f3f3f3; padding-left:10px; width:100%; border-radius:12px;" class="q-mb-md" placeholder="" />
+          <!-- <q-input
             type="textarea"
             v-model="message"
             borderless
@@ -123,7 +115,7 @@
             input-class="submission-message"
             input-style="background: #fbfbfb;
   border: 1px solid #f3f3f3; padding-left:10px; width:100%; border-radius:12px;"
-          />
+          /> -->
           <q-btn
             label="Register"
             flat
@@ -156,7 +148,7 @@
   </q-page>
 </template>
 <script>
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import SubmissionComponent from "../../components/submission-component.vue";
 
 export default {
@@ -191,7 +183,12 @@ export default {
     ...mapGetters("program", ["getProgram"]),
   },
   methods: {
-    
+    ...mapActions('submission',[
+      'changeStatus'
+    ]),
+    onSendAction(){
+      
+    }
   },
   async beforeMount() {
     this.submission = this.getSubmission(this.$route.params.id);

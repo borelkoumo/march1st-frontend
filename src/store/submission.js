@@ -122,14 +122,22 @@ const mutations = {
   addStatus(state, payload) {
     state.submissionStatus.push(payload);
   },
+  updateSubmission(state, payload){
+    state.submissions.forEach((submission)=>{
+      if(submission.id==payload.id){
+        submission.submissionStatus_id = payload.submissionStatus_id,
+        submission.comments.push(payload.message);
+      }
+    })
+  }
 };
 
 const actions = {
   async addReport({ state, commit }, payload) {
     payload.id = Math.floor(Math.random() * 500);
     payload.severety_level = payload.severety_level.value;
-    payload.vulnerability_status="in_review"
     payload.submissionStatus_id = Math.floor(Math.random() * 500);
+    payload.comments=[];
     let statusSumission = {
       status: "new",
       status_text: "New Report Submission",
@@ -141,6 +149,19 @@ const actions = {
     commit("addStatus", statusSumission);
     commit("setNewReport", payload);
   },
+  async changeStatus({state, commit},payload){
+    payload.submissionStatus_id = Math.floor(Math.random() * 500);
+    let statusSumission = {
+      status: payload.status,
+      status_text: payload.status_text,
+      submission_id: payload.id,
+      id: payload.submissionStatus_id,
+      status_raison: "",
+      created_at: "",
+    };
+    commit("addStatus", statusSumission);
+    commit('updateSubmission',payload);
+  }
 };
 
 export default {

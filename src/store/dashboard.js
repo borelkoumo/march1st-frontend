@@ -1,6 +1,6 @@
 import { apolloClient } from "./utils/apollo";
 import gql from "graphql-tag";
-import {users} from "./utils/fakedata";
+import { users } from "./utils/fakedata";
 //import {managers} from "./utils/fakedata"
 
 /* import {
@@ -9,9 +9,9 @@ import {users} from "./utils/fakedata";
 
 const state = {
   // pour la simulation
-  user:{
-    name:"",
-    typeUser:'client',
+  user: {
+    name: "",
+    typeUser: "client",
   },
   cards: [
     {
@@ -147,74 +147,74 @@ const state = {
       },
     },
     {
-        title: "Submissions",
-        series: [44, 55, 41],
-        chartOptions: {
-          chart: {
-            type: "donut",
-          },
-          labels: [
-            "Accepted submissions",
-            "Pending for verifications",
-            "Rejected submissions",
-          ],
-          legend: {
-            position: "bottom",
-            horizontalAlign: "left",
-          },
-          dataLabels: {
-            enabled: false,
-          },
+      title: "Submissions",
+      series: [44, 55, 41],
+      chartOptions: {
+        chart: {
+          type: "donut",
+        },
+        labels: [
+          "Accepted submissions",
+          "Pending for verifications",
+          "Rejected submissions",
+        ],
+        legend: {
+          position: "bottom",
+          horizontalAlign: "left",
+        },
+        dataLabels: {
+          enabled: false,
         },
       },
-      {
-        title: "Submissions",
-        series: [44, 55, 41],
-        chartOptions: {
-          chart: {
-            type: "donut",
-          },
-          labels: [
-            "Accepted submissions",
-            "Pending for verifications",
-            "Rejected submissions",
-          ],
-          legend: {
-            position: "bottom",
-            horizontalAlign: "left",
-          },
-          dataLabels: {
-            enabled: false,
-          },
+    },
+    {
+      title: "Submissions",
+      series: [44, 55, 41],
+      chartOptions: {
+        chart: {
+          type: "donut",
+        },
+        labels: [
+          "Accepted submissions",
+          "Pending for verifications",
+          "Rejected submissions",
+        ],
+        legend: {
+          position: "bottom",
+          horizontalAlign: "left",
+        },
+        dataLabels: {
+          enabled: false,
         },
       },
+    },
   ],
 };
 
 const getters = {
-  getAllCompanies(){
+  getAllCompanies() {
     let companies = [];
-    users.forEach((user)=>{
-      if(user.typeUser =='client'){
+    users.forEach((user) => {
+      if (user.typeUser == "client") {
         user.label = user.company_name;
         user.value = user.id;
         companies.push(JSON.parse(JSON.stringify(user)));
       }
-    })
+    });
     return companies;
   },
-  getAllHacker(){
+  getAllHacker() {
     let hackers = [];
-    users.forEach((user)=>{
-      if(user.typeUser =='hacker'){
+    users.forEach((user) => {
+      if (user.typeUser == "hacker") {
         hackers.push(JSON.parse(JSON.stringify(user)));
       }
-    })
+    });
     return hackers;
   },
-  getMenus(state){
-    if(state.user.typeUser=="hacker"){
-      let menus= [
+  getMenus(state) {
+    if (state.user.typeUser == "hacker") {
+      let menus = [
         {
           label: "",
           hasLabel: false,
@@ -286,9 +286,81 @@ const getters = {
         },
       ];
       return menus;
-    }
-    else if(state.user.typeUser=="client"){
-      let menus= [
+    } else if (state.user.typeUser == "client") {
+      let menus = [
+        {
+          label: "",
+          hasLabel: false,
+          id: 1,
+          children: [
+            {
+              icon: "dashboard",
+              name: "Dashboard",
+              slug: "dashboard",
+              link: "/dashboard",
+            },
+          ],
+        },
+        {
+          label: "Personnal Menu",
+          hasLabel: true,
+          id: 2,
+          children: [
+            {
+              icon: "people",
+              name: "My Account",
+              slug: "my-account",
+              link: "/main/my-account",
+            },
+            {
+              icon: "shopping_basket",
+              name: "My Tasks",
+              slug: "my-tasks",
+              link: "/main/my-tasks",
+            },
+            {
+              icon: "lock_open",
+              name: "My Programs",
+              slug: "programs",
+              link: "/main/programs",
+            },
+            {
+              icon: "dashboard",
+              name: "My Submissions",
+              slug: "my-submissions",
+              link: "/main/my-submissions",
+            },
+            {
+              icon: "format_size",
+              name: "Payments",
+              slug: "payments",
+              link: "/main/payments",
+            },
+          ],
+        },
+        {
+          label: "General Menu",
+          hasLabel: true,
+          id: 3,
+          children: [
+            {
+              icon: "people",
+              name: "Leader Board",
+              slug: "leader-board",
+              link: "/main/leader-board",
+            },
+            {
+              icon: "shopping_basket",
+              name: "All Programs",
+              slug: "all-programs",
+              link: "/main/all-programs",
+            },
+          ],
+        },
+      ];
+      return menus;
+    } else if (state.user.typeUser == "admin") {
+      let menus = [
         {
           label: "",
           hasLabel: false,
@@ -361,103 +433,36 @@ const getters = {
       ];
       return menus;
     }
-    else if(state.user.typeUser == 'admin'){
-      let menus= [
-        {
-          label: "",
-          hasLabel: false,
-          id: 1,
-          children: [
-            {
-              icon: "dashboard",
-              name: "Dashboard",
-              slug: "dashboard",
-              link: "/dashboard",
-            },
-          ],
-        },
-        {
-          label: "Personnal Menu",
-          hasLabel: true,
-          id: 2,
-          children: [
-            {
-              icon: "people",
-              name: "My Account",
-              slug: "my-account",
-              link: "/main/my-account",
-            },
-            {
-              icon: "shopping_basket",
-              name: "My Tasks",
-              slug: "my-tasks",
-              link: "/main/my-tasks",
-            },
-            {
-              icon: "lock_open",
-              name: "My Programs",
-              slug: "programs",
-              link: "/main/programs",
-            },
-            {
-              icon: "dashboard",
-              name: "My Submissions",
-              slug: "my-submissions",
-              link: "/main/my-submissions",
-            },
-            {
-              icon: "format_size",
-              name: "Payments",
-              slug: "payments",
-              link: "/main/payments",
-            },
-          ],
-        },
-        {
-          label: "General Menu",
-          hasLabel: true,
-          id: 3,
-          children: [
-            {
-              icon: "people",
-              name: "Leader Board",
-              slug: "leader-board",
-              link: "/main/leader-board",
-            },
-            {
-              icon: "shopping_basket",
-              name: "All Programs",
-              slug: "all-programs",
-              link: "/main/all-programs",
-            },
-          ],
-        },
-      ];
-      return menus;
-    }
+  },
+  getUser(state) {
+    return (id) => {
+      let user = users.filter((u) => u.id == id);
+      if (user.length > 0) return user[0];
+      return {}
+    };
   },
 
   //pour simulation
-  getUsers(){
+  getUsers() {
     return JSON.parse(JSON.stringify(users));
   },
-  getManagers(){
+  getManagers() {
     //console.log(managers);
-    let managers = users.filter(user => user.typeUser=='admin');
+    let managers = users.filter((user) => user.typeUser == "admin");
     return JSON.parse(JSON.stringify(managers));
-  }
+  },
 };
 
 const mutations = {
-  setUser(state,payload){
+  setUser(state, payload) {
     state.user = payload;
-  }
+  },
 };
 
 const actions = {
-  createUser({commit},payload){
-    commit('setUser',payload);
-  }
+  createUser({ commit }, payload) {
+    commit("setUser", payload);
+  },
   /* async getMenus({commit}){
         try {
             const result = await apolloClient.query(allMenu);

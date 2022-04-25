@@ -49,7 +49,7 @@
                 <div class="">
                   <q-input
                     type=""
-                    v-model="formData.title"
+                    v-model="formData.program_title"
                     label="Enter Title"
                     borderless
                     class="q-pl-sm q-pr-sm"
@@ -61,7 +61,7 @@
                 <div class="">
                   <q-input
                     type="textarea"
-                    v-model="formData.description"
+                    v-model="formData.program_description"
                     label="Enter description"
                     borderless
                     class="q-pl-sm q-pr-sm"
@@ -89,15 +89,15 @@
                 <div class="q-pb-md">Program Type</div>
                 <q-radio
                   name="program-type"
-                  v-model="formData.type"
-                  val="Private"
+                  v-model="formData.program_type"
+                  val="private"
                   label="Private"
                   color="secondary"
                 />
                 <q-radio
                   name="program-type"
-                  v-model="formData.type"
-                  val="Public"
+                  v-model="formData.program_type"
+                  val="public"
                   label="Public"
                   color="secondary"
                 />
@@ -106,14 +106,14 @@
                 <div class="q-pb-md">Safe Harbour Type</div>
                 <q-radio
                   name="program-type"
-                  v-model="formData.safe_habour_type"
+                  v-model="formData.safe_harbour_type"
                   val="full"
                   label="Full Safe Harbor"
                   color="secondary"
                 />
                 <q-radio
                   name="program-type"
-                  v-model="formData.safe_habour_type"
+                  v-model="formData.safe_harbour_type"
                   val="partial"
                   label="Partial Safe Harbor"
                   color="secondary"
@@ -242,7 +242,7 @@
             <div class="">
               <q-input
                 type=""
-                v-model="formData.guidelines"
+                v-model="formData.program_guidelines_1"
                 label=""
                 borderless
               />
@@ -253,7 +253,7 @@
             <div class="">
               <q-input
                 type=""
-                v-model="formData.guidelines"
+                v-model="formData.program_guidelines_2"
                 label=""
                 borderless
               />
@@ -273,170 +273,25 @@
           <q-card-section class="q-pb-sm">
             <div class="subtitle q-pb-sm">Program Scope</div>
             <div class="">
-              <q-input type="" v-model="formData.scope" label="" borderless />
+              <q-input type="" v-model="formData.program_scope" label="" borderless />
             </div>
           </q-card-section>
         </q-card>
       </div>
       <div class="card-invite">
-        <q-card class="my-card" flat>
-          <q-toolbar
-            class="toolbar"
-            style="padding-top: 40px; padding-bottom: 15px"
-          >
-            <div class="title">Assign Managers</div>
-            <q-space />
-            <q-input dense v-model="search" placeholder="Search" borderless>
-              <template v-slot:append>
-                <q-icon name="search" />
-              </template>
-            </q-input>
-          </q-toolbar>
-          <q-card-section>
-            <q-list separator>
-              <q-item class="item-header">
-                <q-item-section style="max-width: 50px"
-                  ><q-checkbox
-                    v-model="allManagers"
-                    class="q-mr-sm"
-                    color="secondary"
-                /></q-item-section>
-                <q-item-section> Username </q-item-section>
-                <q-item-section class="text-center">
-                  Designation
-                </q-item-section>
-                <q-item-section class="text-center" style="max-width: 400px">
-                  Privileges
-                </q-item-section>
-              </q-item>
-              <q-item
-                class="item-element"
-                v-for="(manager, i) in managers"
-                :key="manager.id"
-              >
-                <q-item-section style="max-width: 50px"
-                  ><q-checkbox
-                    v-model="formData.managers"
-                    class="q-mr-sm"
-                    :val="manager"
-                    color="secondary"
-                /></q-item-section>
-                <q-item-section>
-                  <q-item-label class="title">{{ manager.name }}</q-item-label>
-                  <q-item-label caption class="subtitle">{{
-                    manager.email
-                  }}</q-item-label>
-                </q-item-section>
-                <q-item-section class="text-center title flex flex-center">
-                  <div class="">{{ manager.designation }}</div>
-                </q-item-section>
-                <q-item-section
-                  class="text-center text-item"
-                  style="max-width: 400px"
-                >
-                {{formData.managers}}
-                  <!-- <q-select
-                    v-if="formData.managers[i]"
-                    bg-color="white"
-                    borderless
-                    dense
-                    :options="privileges"
-                    v-model="formData.managers[i].privilege"
-                    label="Select privilege"
-                    multiple
-                    v-close-popup
-                  /> -->
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-card-section>
-        </q-card>
+        <list-update
+          :users="getManagers"
+          :assignUsers="program.managers"
+          @onUpdateUser="updateManager"
+        />
       </div>
+
       <div class="card-invite q-mt-lg">
-        <q-card class="my-card" flat>
-          <q-toolbar
-            class="toolbar"
-            style="padding-top: 40px; padding-bottom: 15px"
-          >
-            <div class="title">Invite Hackers</div>
-            <q-space />
-            <q-input dense v-model="search" placeholder="Search" borderless>
-              <template v-slot:append>
-                <q-icon name="search" />
-              </template>
-            </q-input>
-          </q-toolbar>
-          <q-card-section>
-            <q-list separator>
-              <q-item class="item-header">
-                <q-item-section style="max-width: 50px"
-                  ><q-checkbox
-                    v-model="allHackers"
-                    class="q-mr-sm"
-                    color="secondary"
-                /></q-item-section>
-                <q-item-section> Username / Email </q-item-section>
-                <q-item-section class="text-center" style="max-width: 18%">
-                  Rank
-                </q-item-section>
-                <q-item-section class="text-center" style="max-width: 18%">
-                  Acceptance Rate
-                </q-item-section>
-                <q-item-section class="text-center" style="max-width: 18%">
-                  Severity Level
-                </q-item-section>
-                <q-item-section class="text-center" style="max-width: 50px">
-                  Action
-                </q-item-section>
-              </q-item>
-              <q-item
-                class="item-element"
-                v-for="hacker in hackers"
-                :key="hacker.id"
-              >
-                <q-item-section style="max-width: 50px"
-                  ><q-checkbox
-                    v-model="formData.invitations"
-                    class="q-mr-sm"
-                    color="secondary"
-                    :val="hacker.id"
-                /></q-item-section>
-                <q-item-section>
-                  <q-item-label class="title"
-                    >{{ hacker.full_name }} {{ hacker.last_name }}</q-item-label
-                  >
-                  <q-item-label caption class="subtitle">{{
-                    hacker.email
-                  }}</q-item-label>
-                </q-item-section>
-                <q-item-section
-                  class="text-center flex flex-center"
-                  style="max-width: 18%"
-                >
-                  <div class="active-badge">67%</div>
-                </q-item-section>
-                <q-item-section
-                  class="text-center text-item"
-                  style="max-width: 18%"
-                >
-                  24
-                </q-item-section>
-                <q-item-section
-                  class="text-center text-item"
-                  style="max-width: 18%"
-                >
-                  P1
-                </q-item-section>
-                <q-item-section
-                  class="text-center text-item"
-                  style="max-width: 50px"
-                >
-                  <q-btn flat icon="more_horiz" />
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-card-section>
-        </q-card>
+        <list-update-hacker
+          :users="getAllHacker"
+          :assignUsers="program.invitations"
+          @onUpdateUser="updateUser"
+        />
       </div>
       <q-card flat class="bg-transparent q-pb-lg">
         <q-card-actions align="right" class="q-pt-lg q-gutter-md btn-actions">
@@ -456,28 +311,31 @@
 <script>
 import submissionComponent from "../../components/submission-component.vue";
 import { mapActions, mapGetters } from "vuex";
+import ListUpdate from "../../components/list-update.vue";
+import ListUpdateHacker from "../../components/list-update-hacker.vue";
 export default {
-  components: { submissionComponent },
+  components: { submissionComponent, ListUpdate, ListUpdateHacker },
   name: "programs",
   data() {
     return {
-        
       formData: {
         id: null,
         user_id: 1,
-        picture: "https://cdn.quasar.dev/img/parallax2.jpg",
-        title: "Lorem ipsum dolor sit amet,",
-        description:
+        program_picture_url: "https://cdn.quasar.dev/img/parallax2.jpg",
+        program_title: "Lorem ipsum dolor sit amet,",
+        program_description:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rutrum congue leo eget malesuada. Cras ultricies ligula sed magna dictum porta.",
-        type: "public",
-        safe_habour_type: "full",
+        program_type: "public",
+        safe_harbour_type: "full",
         reward_type: "points",
         reward_range: false,
-        guidelines:
+        program_guidelines_1:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rutrum congue leo eget malesuada.",
+          program_guidelines_2:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rutrum congue leo eget malesuada.",
         legal_terms:
           "Vivamus suscipit tortor eget felis porttitor volutpat. Curabitur aliquet quam id dui posuere blandit.",
-        scope: 4,
+        program_scope: 4,
         hackers: [],
         managers: [],
         critical: { min: 150, max: 1400 },
@@ -506,14 +364,14 @@ export default {
         { label: "High", value: "3" },
       ],
       level: null,
-      
+
       critical: {
         min: null,
         max: null,
       },
       model: null,
       search: null,
-      
+
       hackers: [],
       managers: [],
 
@@ -551,6 +409,15 @@ export default {
       this.editProgram(this.formData);
       this.$router.push("/main/programs");
     },
+    updateManager(element) {
+      this.formData.managers = element;
+    },
+    updateUser(element) {
+      console.log(element);
+      this.formData.invitations = element.map(function (e) {
+        return e.id;
+      });
+    },
   },
   beforeMount() {
     this.hackers = this.getAllHacker;
@@ -560,34 +427,36 @@ export default {
     this.program = this.getProgram(this.program_id);
     if (!this.program) this.program = {};
     else {
-        console.log(this.programs.managers);
+      //console.log(this.program);
       this.formData = {
         id: this.program.id,
         user_id: this.program.user_id,
         client_id: this.program.client_id,
-        picture: this.program.program_picture_url,
-        title: this.program.program_title,
-        description: this.program.program_description,
-        type: this.program.program_type,
-        safe_habour_type: this.program.safe_habour_type,
+
+        program_picture_url: this.program.program_picture_url,
+        program_title: this.program.program_title,
+        program_description: this.program.program_description,
+        program_type: this.program.program_type,
+        safe_harbour_type: this.program.safe_harbour_type,
         reward_type: this.program.reward_type,
         reward_range: this.program.reward_range,
-        guidelines: this.program.program_guidelines_1,
+        program_guidelines_1: this.program.program_guidelines_1,
+        program_guidelines_2: this.program.program_guidelines_2,
         legal_terms: this.program.legal_terms,
-        scope: this.program.scope,
+        program_scope: this.program.program_scope,
         is_closed: this.program.is_closed,
         close_at: this.program.close_at,
         date_post: this.program.date_post,
 
-        hackers: this.programs.hackers,
-        managers: this.programs.managers,
+        hackers: this.program.hackers,
+        managers: this.program.managers,
 
         critical: this.program.critical,
         severe: this.program.severe,
         medium: this.program.medium,
         low: this.program.low,
 
-        invitations: [],
+        invitations: this.program.invitations,
       };
     }
   },
