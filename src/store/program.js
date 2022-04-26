@@ -109,6 +109,12 @@ const getters = {
         programs.push(program);
       });
     } else {
+      state.programs.forEach((p) => {
+        let program = JSON.parse(JSON.stringify(p));
+        program.can_join = false;
+        program.has_join = false;
+        programs.push(program);
+      });
     }
     return programs;
   },

@@ -9,13 +9,13 @@ import program from "./program";
 const state = {
   submissions: [],
   submissionStatus: [],
+  comments: [],
 };
 
 const getters = {
   getMySubmissions(state) {
-    let programs =program.state.programs;
+    let programs = program.state.programs;
     let user = dasboard.state.user;
-    console.log(user);
     let mySubmissions = [];
     if (user.typeUser == "hacker") {
       mySubmissions = state.submissions.filter(
@@ -25,11 +25,23 @@ const getters = {
       mySubmissions = state.submissions.filter(
         (submission) => submission.client_id == user.id
       );
-      let submissionTriaged= mySubmissions.map((submission)=>{
-        let allStatus = state.submissions.filter(s => s.submission_id==submission.id && s.status=="triaged")
-        if(allStatus.length>0) return submission;
-      })
-      mySubmissions=submissionTriaged;
+      let submissionTriaged = [];
+      mySubmissions.forEach((submission) => {
+        let allStatus = state.submissionStatus.filter(
+          (s) => s.submission_id == submission.id && s.status == "triaged"
+        );
+        if (allStatus.length > 0) submissionTriaged.push(submission);
+      });
+      /* let submissionTriaged = mySubmissions.map((submission) => {
+        let allStatus = state.submissionStatus.filter(
+          (s) => s.submission_id == submission.id && s.status == "triaged"
+        );
+        console.log(allStatus);
+        console.log(submission);
+        if (allStatus.length > 0) return submission;
+      }); */
+      console.log(submissionTriaged);
+      mySubmissions = submissionTriaged;
     } else if (user.typeUser == "admin") {
       const myPrograms = programs.map((program) => {
         if (program.managersId.includes(user.id)) return program;
@@ -113,6 +125,12 @@ const getters = {
       return JSON.parse(JSON.stringify(state.submissions));
     }
   },
+
+  getComments(state) {
+    return (id) => {
+      return state.comments.filter((comment) => comment.submission_id == id);
+    };
+  },
 };
 
 const mutations = {
@@ -122,14 +140,17 @@ const mutations = {
   addStatus(state, payload) {
     state.submissionStatus.push(payload);
   },
-  updateSubmission(state, payload){
-    state.submissions.forEach((submission)=>{
-      if(submission.id==payload.id){
-        submission.submissionStatus_id = payload.submissionStatus_id,
-        submission.comments.push(payload.message);
+  updateSubmission(state, payload) {
+    state.submissions.forEach((submission) => {
+      if (submission.id == payload.id) {
+        submission.submissionStatus_id = payload.submissionStatus_id;
+        submission.submission_status = payload.status_top;
       }
-    })
-  }
+    });
+  },
+  addComment(state, payload) {
+    state.comments.push(payload);
+  },
 };
 
 const actions = {
@@ -137,7 +158,8 @@ const actions = {
     payload.id = Math.floor(Math.random() * 500);
     payload.severety_level = payload.severety_level.value;
     payload.submissionStatus_id = Math.floor(Math.random() * 500);
-    payload.comments=[];
+    payload.submission_status = "pending";
+    payload.comments = [];
     let statusSumission = {
       status: "new",
       status_text: "New Report Submission",
@@ -149,8 +171,9 @@ const actions = {
     commit("addStatus", statusSumission);
     commit("setNewReport", payload);
   },
-  async changeStatus({state, commit},payload){
+  async changeStatus({ state, commit }, payload) {
     payload.submissionStatus_id = Math.floor(Math.random() * 500);
+
     let statusSumission = {
       status: payload.status,
       status_text: payload.status_text,
@@ -159,9 +182,20 @@ const actions = {
       status_raison: "",
       created_at: "",
     };
+    // Add Comment
+
+    let user = dasboard.state.user;
+    let comment = {
+      id: Math.floor(Math.random() * 500),
+      user_id: user.id,
+      submission_id: payload.id,
+      message: payload.message,
+    };
     commit("addStatus", statusSumission);
-    commit('updateSubmission',payload);
-  }
+    commit("updateSubmission", payload);
+    if (comment.message != null && comment.message != "")
+      commit("addComment", comment);
+  },
 };
 
 export default {

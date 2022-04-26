@@ -4,29 +4,76 @@
       <div class="main-content">
         <q-toolbar class="bg-none flex q-pr-none" style="padding-top: 40px">
           <q-space />
-          <q-btn-dropdown color="secondary" class="bg-white" no-caps label="Actions" outline>
+          <q-btn-dropdown
+            color="secondary"
+            class="bg-white"
+            no-caps
+            label="Actions"
+            outline
+            v-if="user.typeUser == 'client' || user.typeUser == 'admin'"
+          >
             <q-list>
-              <q-item clickable v-close-popup @click="onActionClick(1)">
+              <q-item
+                clickable
+                v-close-popup
+                @click="onActionClick(1)"
+                v-if="user.typeUser == 'admin'"
+              >
                 <q-item-section>
-                  <q-item-label>Returned for clarifications</q-item-label>
+                  <q-item-label>Passe Triage</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item
+                clickable
+                v-close-popup
+                @click="onActionClick(2)"
+                v-if="user.typeUser == 'client'"
+              >
+                <q-item-section>
+                  <q-item-label>Accept but still unresolve</q-item-label>
                 </q-item-section>
               </q-item>
 
-              <q-item clickable v-close-popup @click="onActionClick(2)">
+              <q-item
+                clickable
+                v-close-popup
+                @click="onActionClick(3)"
+                v-if="user.typeUser == 'client'"
+              >
+                <q-item-section>
+                  <q-item-label>Accept and resolve</q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-item
+                clickable
+                v-close-popup
+                @click="onActionClick(4)"
+                v-if="user.typeUser == 'client'"
+              >
+                <q-item-section>
+                  <q-item-label>Return For Clarification</q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-item
+                clickable
+                v-close-popup
+                @click="onActionClick(5)"
+                v-if="user.typeUser == 'admin'"
+              >
+                <q-item-section>
+                  <q-item-label>Return For Clarification</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item
+                clickable
+                v-close-popup
+                @click="onActionClick(6)"
+                v-if="user.typeUser == 'admin'"
+              >
                 <q-item-section>
                   <q-item-label>Reject</q-item-label>
-                </q-item-section>
-              </q-item>
-
-              <q-item clickable v-close-popup @click="onActionClick(3)">
-                <q-item-section>
-                  <q-item-label>Accept</q-item-label>
-                </q-item-section>
-              </q-item>
-
-              <q-item clickable v-close-popup @click="onActionClick(4)">
-                <q-item-section>
-                  <q-item-label>Send to Client</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -101,27 +148,57 @@
             </q-card>
           </div>
         </div>
-        
+
         <div class="submission-form q-pt-md">
-          <div class="submission-title q-pb-sm">Leave your comment </div>
-          <q-editor v-model="message" min-height="8rem" style="background: #fbfbfb;
-  border: 1px solid #f3f3f3; padding-left:10px; width:100%; border-radius:12px;" class="q-mb-md" placeholder="" />
-          <!-- <q-input
-            type="textarea"
+          <div class="submission-title q-pb-sm">Leave your comment</div>
+          <q-editor
             v-model="message"
-            borderless
+            min-height="8rem"
+            style="
+              background: white;
+              border: 1px solid #f3f3f3;
+              padding-left: 10px;
+              width: 100%;
+              border-radius: 12px;
+            "
             class="q-mb-md"
-            placeholder="Leave your comment"
-            input-class="submission-message"
-            input-style="background: #fbfbfb;
-  border: 1px solid #f3f3f3; padding-left:10px; width:100%; border-radius:12px;"
-          /> -->
+            placeholder=""
+          />
+          <div
+            class="all-message bg-white q-pt-md q-pb-md q-mb-lg"
+            style="border-radius: 16px"
+            v-if="getComments(submission.id).length>0"
+          >
+          
+            <q-list>
+              <q-item
+                clickable
+                v-ripple
+                v-for="comment in getComments(submission.id)"
+                :key="comment.id"
+              >
+                <q-item-section avatar>
+                  <q-avatar>
+                    <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+                  </q-avatar>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>{{
+                    getUser(comment.user_id).username
+                  }}</q-item-label>
+                  <q-item-label caption>{{ comment.message }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </div>
           <q-btn
-            label="Register"
+            label="Save"
             flat
             no-caps
             class="bg-secondary text-white"
             style="width: 160px"
+            v-if="user.typeUser == 'hacker'"
+            @click="onActionClick(0)"
           />
         </div>
       </div>
@@ -148,7 +225,7 @@
   </q-page>
 </template>
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 import SubmissionComponent from "../../components/submission-component.vue";
 
 export default {
@@ -179,16 +256,71 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("submission", ["getSubmission", "getAllStatus"]),
+    ...mapState("dashboard", ["user"]),
+    ...mapGetters("dashboard", ["getUser"]),
+    ...mapGetters("submission", [
+      "getSubmission",
+      "getAllStatus",
+      "getComments",
+    ]),
     ...mapGetters("program", ["getProgram"]),
   },
   methods: {
-    ...mapActions('submission',[
-      'changeStatus'
-    ]),
-    onSendAction(){
-      
-    }
+    ...mapActions("submission", ["changeStatus"]),
+    onActionClick(num) {
+      let stat = {
+        status: "new",
+        status_text: "New Report Submission",
+        status_top:"Pending"
+      };
+      switch (num) {
+        case 1:
+          stat.status = "triaged";
+          stat.status_text = "Submission passed triage";
+          break;
+        case 2:
+          stat.status = "accepted_unresolved";
+          stat.status_text = "Accepted but still unresolved";
+          stat.status_top="Accepted"
+          break;
+        case 3:
+          stat.status = "accepted_resolved";
+          stat.status_text = "Accepted and resolved";
+          stat.status_top="Accepted"
+          break;
+        case 4:
+          stat.status = "client_returned_for_review";
+          stat.status_text = "Client returned for review";
+          break;
+        case 5:
+          stat.status = "m1_returned_for_review";
+          stat.status_text = "M1 Return For Clarification";
+          break;
+        case 6:
+          stat.status = "rejected";
+          stat.status_text = "Rejected";
+          stat.status_top="Rejected"
+          break;
+        default:
+          stat.status = "new";
+          stat.status_text = "New submission";
+          stat.status_top="Pending"
+          break;
+      }
+      this.onSendAction(stat);
+    },
+    onSendAction(stat) {
+      let action = {
+        message: this.message,
+        id: this.submission.id,
+        status: stat.status,
+        status_text: stat.status_text,
+        status_top:stat.status_top
+      };
+      this.changeStatus(action);
+      this.message=null;
+      //this.router.push('/main/all-programs')
+    },
   },
   async beforeMount() {
     this.submission = this.getSubmission(this.$route.params.id);

@@ -1,5 +1,5 @@
 <template>
-  <q-page class="bg-home">
+  <q-page class="bg-home" v-if="submissions.length > 0">
     <div class="main-content">
       <q-toolbar
         class="bg-none flex q-gutter-sm toolbar-submission"
@@ -26,7 +26,7 @@
         <q-space />
         <q-btn label="Submissions" flat no-caps icon-right="import_export" />
       </q-toolbar>
-      <div class="q-mt-lg" v-if="submissions.length>0">
+      <div class="q-mt-lg" v-if="submissions.length > 0">
         <submission-component
           :program="submission.program"
           class="submission-component cursor-pointer"
@@ -38,7 +38,9 @@
             <q-card-section class="q-pa-none" style="padding-bottom: 27px">
               <q-toolbar>
                 <div class="box-badge">
-                  <span class="title-badge">{{getStatusSubmission(submission.submissionStatus_id)}}</span>
+                  <span class="title-badge">{{
+                    getStatusSubmission(submission.submissionStatus_id)
+                  }}</span>
                 </div>
                 <q-space />
                 <div class="title-badge-2"><span>2 day ago, 3:45 pm</span></div>
@@ -51,6 +53,33 @@
       </div>
     </div>
   </q-page>
+  <q-page v-else class="flex flex-center">
+    <div class="main-content">
+      <q-img src="~assets/empty-program.svg" width="600px" />
+      <div class="title-1">No submission</div>
+      <div class="subtitle-1">
+        You have no submissions
+      </div>
+      <div class="flex flex-center">
+        <q-btn
+          v-if="user.typeUser=='hacker'"
+          label="Back to my programs"
+          class="title-btn text-white bg-secondary"
+          no-caps
+          flat
+          to="/main/my-programs/"
+        />
+        <q-btn
+          v-else
+          label="Back to my programs"
+          class="title-btn text-white bg-secondary"
+          no-caps
+          flat
+          to="/main/programs/"
+        />
+      </div>
+    </div>
+  </q-page>
 </template>
 <script>
 import { mapGetters, mapState } from "vuex";
@@ -58,7 +87,6 @@ import submissionComponent from "../../components/submission-component.vue";
 
 let allSubmissions = [];
 export default {
-  
   components: { submissionComponent },
   data() {
     return {
@@ -79,7 +107,7 @@ export default {
       submissions: [],
     };
   },
-  watch:{
+  watch: {
     /* program:function(val){
       this.submissions = [];
       allSubmissions.forEach((s)=>{
@@ -91,13 +119,14 @@ export default {
   },
   computed: {
     ...mapState("dashboard", ["user"]),
-    ...mapGetters("submission", ["getMySubmissions","getStatusSubmission"]),
-    ...mapGetters("program", ["getProgram","getMyPrograms"]),
+    ...mapGetters("submission", ["getMySubmissions", "getStatusSubmission"]),
+    ...mapGetters("program", ["getProgram", "getMyPrograms"]),
   },
   methods: {
     async showDetails(submission) {
       let route = { name: "submission-detail", params: { id: submission.id } };
-      if (this.user.typeUser !== "hacker") this.$router.push(route);
+      //if (this.user.typeUser !== "hacker")
+      this.$router.push(route);
     },
   },
   async beforeMount() {
@@ -110,10 +139,9 @@ export default {
         submission.program = program;
       });
       this.programs = this.getMyPrograms;
-      this.programs.forEach((p)=>{
-        p.label = p.program_title,
-        p.value = p.id
-      })
+      this.programs.forEach((p) => {
+        (p.label = p.program_title), (p.value = p.id);
+      });
     } catch (error) {}
   },
 };
@@ -192,6 +220,41 @@ export default {
   align-items: center;
   letter-spacing: 1px;
   color: #1b2559;
+}
+.title-1 {
+  font-family: "inter";
+  font-style: normal;
+  font-weight: bold;
+  font-size: 32px;
+  line-height: 34px;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 1px;
+  color: #171717;
+  padding-top: 50px;
+  padding-bottom: 12px;
+}
+.subtitle-1 {
+  font-family: "inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 34px;
+  align-items: center;
+  text-align: center;
+  color: #767676;
+  padding-bottom: 12px;
+}
+.title-btn {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  align-items: center;
+  text-align: center;
+  color: #ffffff;
+  width: 338px;
 }
 .bg-home {
   background-color: #eaf5ff;

@@ -102,6 +102,7 @@
           flat
           class="bg-secondary text-white"
           to="/main/add-program"
+          v-if="user.typeUser=='client'"
         />
         <q-btn label="Submissions" flat no-caps icon-right="import_export" />
       </q-toolbar>
@@ -240,6 +241,7 @@ export default {
     },
   },
   computed: {
+    ...mapState('dashboard',['user']),
     ...mapState("program", ["programs"]),
     ...mapGetters("program", [
       "getClientPrograms",
