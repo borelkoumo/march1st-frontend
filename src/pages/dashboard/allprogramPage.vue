@@ -1,5 +1,5 @@
 <template>
-  <q-page class="bg-home">
+  <q-page class="bg-home" v-if="programs.length>0">
     <div class="main-content">
       <q-toolbar class="bg-none flex q-gutter-sm" style="padding-top: 40px">
         <q-input
@@ -147,6 +147,24 @@
             </template>
           </program-component-2>
         </div>
+      </div>
+    </div>
+  </q-page>
+  <q-page v-else class="flex flex-center">
+    <div class="main-content">
+      <q-img src="~assets/empty-program.svg" width="600px" />
+      <div class="title-1">No programs found</div>
+      <div class="subtitle-1">
+        There is no program
+      </div>
+      <div class="flex flex-center">
+        <q-btn
+          label="Back to home"
+          class="title-btn text-white bg-secondary"
+          no-caps
+          flat
+          to="/dashboard"
+        />
       </div>
     </div>
   </q-page>
@@ -307,7 +325,6 @@ export default {
     this.filterPrograms = this.getAllPrograms;
     this.programs = allPrograms;
     this.companies = this.getAllCompanies;
-    console.log(this.companies);
   },
 };
 </script>
@@ -315,6 +332,41 @@ export default {
 .q-toolbar {
   padding-left: 0px;
   padding-right: 0px;
+}
+.title-1 {
+  font-family: "inter";
+  font-style: normal;
+  font-weight: bold;
+  font-size: 32px;
+  line-height: 34px;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 1px;
+  color: #171717;
+  padding-top: 50px;
+  padding-bottom: 12px;
+}
+.subtitle-1 {
+  font-family: "inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 34px;
+  align-items: center;
+  text-align: center;
+  color: #767676;
+  padding-bottom: 12px;
+}
+.title-btn {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  align-items: center;
+  text-align: center;
+  color: #ffffff;
+  width: 338px;
 }
 .bg-home {
   background-color: #eaf5ff;
