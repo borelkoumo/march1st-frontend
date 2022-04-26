@@ -68,35 +68,8 @@ const getters = {
     return (id) => {
       let val = "";
       state.submissionStatus.forEach((s) => {
-        console.log(s);
         if (s.id == id) val = s;
       });
-      /* switch (val.status) {
-        case "new_report":
-          status = "New Report Submission";
-          break;
-        case "returned_for_clarifications":
-          status = "M1 Returned For Clarifications";
-          break;
-        case "resubmitted_with_clarifications":
-          status = "Resubmitted With Clarifications";
-          break;
-        case "passed_triage":
-          status = "Passed Triage";
-          break;
-        case "client_returned_for_clarifications":
-          status = "Client Returned For Clarifications";
-          break;
-        case "submission_accepted":
-          status = "Submission Accepted";
-          break;
-        case "payement_ok":
-          status = "M1 made payment";
-          break;
-        default:
-          status = "Rejected Submission";
-          break;
-      } */
       return val.status_text;
     };
   },
@@ -158,7 +131,7 @@ const actions = {
     payload.id = Math.floor(Math.random() * 500);
     payload.severety_level = payload.severety_level.value;
     payload.submissionStatus_id = Math.floor(Math.random() * 500);
-    payload.submission_status = "pending";
+    payload.submission_status = "Pending";
     payload.comments = [];
     let statusSumission = {
       status: "new",

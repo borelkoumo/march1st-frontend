@@ -10,7 +10,7 @@
           color="secondary"
           label="Submit a Report"
           no-caps
-          v-if="user.typeUser=='hacker' && getHasJoin(program.id)"
+          v-if="user.typeUser == 'hacker' && getHasJoin(program.id)"
           @click.prevent="showSubmissionForm()"
         />
         <q-btn
@@ -18,8 +18,8 @@
           no-caps
           flat
           label="Edit"
-          :to="'/main/edit-program/'+program.id"
-          v-if="user.typeUser=='client' && program.user_id == user.id"
+          :to="'/main/edit-program/' + program.id"
+          v-if="user.typeUser == 'client' && program.user_id == user.id"
         />
         <!-- <q-btn
           class="bg-positive text-white q-mr-lg"
@@ -36,7 +36,7 @@
           v-if="typeuser == 'client'"
         /> -->
       </q-toolbar>
-      <div class="grid-content q-pt-lg q-pb-lg" >
+      <div class="grid-content q-pt-lg q-pb-lg">
         <div class="">
           <program-component :program="program" style="border-radius: 16px" />
           <div class="grid-element" style="padding-top: 16px">
@@ -60,9 +60,9 @@
                   <q-item-label class="caption-element"
                     >Harbour Type</q-item-label
                   >
-                  <q-item-label class="title-element q-pt-xs"
-                    >{{program.safe_harbour_type}}</q-item-label
-                  >
+                  <q-item-label class="title-element q-pt-xs">{{
+                    program.safe_harbour_type
+                  }}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-card>
@@ -86,9 +86,9 @@
                   <q-item-label class="caption-element"
                     >Reward Type</q-item-label
                   >
-                  <q-item-label class="title-element q-pt-xs"
-                    >{{program.reward_type}}</q-item-label
-                  >
+                  <q-item-label class="title-element q-pt-xs">{{
+                    program.reward_type
+                  }}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-card>
@@ -112,9 +112,9 @@
                   <q-item-label class="caption-element"
                     >Program Type</q-item-label
                   >
-                  <q-item-label class="title-element q-pt-xs"
-                    >{{program.program_type}}</q-item-label
-                  >
+                  <q-item-label class="title-element q-pt-xs">{{
+                    program.program_type
+                  }}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-card>
@@ -125,28 +125,32 @@
                 <q-item-section class="first-element">P1</q-item-section>
                 <q-item-section class="second-element">Critical</q-item-section>
                 <q-item-section class="third-element"
-                  >$ {{program.critical.min}} - $ {{program.critical.max}} Per vulnerability</q-item-section
+                  >$ {{ program.critical.min }} - $
+                  {{ program.critical.max }} Per vulnerability</q-item-section
                 >
               </q-item>
               <q-item>
                 <q-item-section class="first-element">P2</q-item-section>
                 <q-item-section class="second-element">Severe</q-item-section>
                 <q-item-section class="third-element"
-                  >$ {{program.severe.min}} - $ {{program.severe.max}} Per vulnerability</q-item-section
+                  >$ {{ program.severe.min }} - $ {{ program.severe.max }} Per
+                  vulnerability</q-item-section
                 >
               </q-item>
               <q-item>
                 <q-item-section class="first-element">P3</q-item-section>
                 <q-item-section class="second-element">Medium</q-item-section>
                 <q-item-section class="third-element"
-                  >$ {{program.medium.min}} - $ {{program.medium.max}} Per vulnerability</q-item-section
+                  >$ {{ program.medium.min }} - $ {{ program.medium.max }} Per
+                  vulnerability</q-item-section
                 >
               </q-item>
               <q-item>
                 <q-item-section class="first-element">P4</q-item-section>
                 <q-item-section class="second-element">Low</q-item-section>
                 <q-item-section class="third-element"
-                  >$ {{program.low.min}} - $ {{program.low.max}} Per vulnerability</q-item-section
+                  >$ {{ program.low.min }} - $ {{ program.low.max }} Per
+                  vulnerability</q-item-section
                 >
               </q-item>
             </q-list>
@@ -161,7 +165,7 @@
               </div>
               <q-card class="my-card shadow-3">
                 <q-card-section class="description-content">
-                  {{program.program_guidelines_1}}
+                  {{ program.program_guidelines_1 }}
                 </q-card-section>
               </q-card>
             </div>
@@ -180,31 +184,31 @@
                 >Recent Submissions</q-card-section
               >
               <q-separator />
-              <div v-for="submission in program.submissions" :key="submission.id">
-                <q-card-section class="q-pt-none" >
-                <div class="recent-time">2 day ago , 3:45 pm</div>
-                <div class="recent-content q-pb-md">
-                  Submission Title Nemo enim ipsam voluptatem ipsam ta
-                  voluptatem per natur aut odit aut fugit,
-                </div>
-                <q-btn
-                  flat
-                  no-caps
-                  label="Waiting for M1 Review"
-                  style="
-                    background: #fff5d9;
-                    color: #ffbb38;
-                    min-width: 175px;
-                    font-family: 'inter';
-                  "
-                />
-                
-              </q-card-section>
-              <q-separator/>
+              <div
+                v-for="submission in program.submissions"
+                :key="submission.id"
+                class="cursor-pointer"
+                @click="gotoSubmission(submission.id)"
+              >
+                <q-card-section class="q-pt-none">
+                  <div class="recent-time">2 day ago , 3:45 pm</div>
+                  <div class="recent-content q-pb-md">
+                    {{ submission.submission_title }}
+                  </div>
+                  <q-btn
+                    flat
+                    no-caps
+                    :label="getStatusSubmission(submission.submissionStatus_id)"
+                    style="
+                      background: #fff5d9;
+                      color: #ffbb38;
+                      min-width: 175px;
+                      font-family: 'inter';
+                    "
+                  />
+                </q-card-section>
+                <q-separator />
               </div>
-              
-              
-              
             </q-card>
           </div>
         </div>
@@ -242,22 +246,30 @@ export default {
     },
   },
   computed: {
-    ...mapState('dashboard',[
-      'user'
-    ]),
-    ...mapGetters("program", ["getProgram", 'getHasJoin']),
-    ...mapGetters("submission", ['getSubmissionsProgram']),
+    ...mapState("dashboard", ["user"]),
+    ...mapGetters("program", ["getProgram", "getHasJoin"]),
+    ...mapGetters("submission", ["getSubmissionsProgram","getStatusSubmission"]),
+    getLabelStatus:function(statusId){
+      console.log(statusId)
+      return this.getStatusSubmission(statusId);
+      //return "Waiting for M1 Review"
+    }
   },
   methods: {
-    showSubmissionForm(){
-      let route = {name:'add-submission', params:{id:this.program.id}}
+    showSubmissionForm() {
+      let route = { name: "add-submission", params: { id: this.program.id } };
+      this.$router.push(route);
+    },
+    gotoSubmission(id){
+      let route = { name: "submission-detail", params: { id: id } };
       this.$router.push(route);
     }
   },
   beforeMount() {
     this.program = this.getProgram(this.$route.params.id);
-    this.program.submissions = this.getSubmissionsProgram(this.$route.params.id)
-    console.log(this.program);
+    this.program.submissions = this.getSubmissionsProgram(
+      this.$route.params.id
+    );
   },
 };
 </script>
