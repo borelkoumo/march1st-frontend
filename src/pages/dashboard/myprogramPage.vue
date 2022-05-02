@@ -1,5 +1,5 @@
 <template>
-  <q-page class="bg-home" v-if="programs.length > 0">
+  <q-page class="bg-home" v-if="programs.length > 0 || search != null">
     <div class="main-content">
       <q-toolbar class="bg-none flex q-gutter-sm" style="padding-top: 40px">
         <q-input
@@ -193,6 +193,16 @@ export default {
     };
   },
   watch: {
+    search: function (val) {
+      if (val != null) {
+        val = val.trim();
+        this.programs = this.programs.filter(
+          (p) => p.program_title.toLowerCase().search(val.toLowerCase()) != -1
+        );
+      }
+
+      /* console.log(this.programs); */
+    },
     isAllFilters: function (val) {
       if (val) {
         this.checkPublic = true;
@@ -314,7 +324,7 @@ export default {
       "getCashPrograms",
       "getPointOnlyPrograms",
       "getMyPrograms",
-      'getSubmissionsProgram'
+      "getSubmissionsProgram",
     ]),
     totalProgram: function () {
       return (
@@ -327,10 +337,30 @@ export default {
       );
     },
     running: function () {
-      return this.filterPrograms.filter((program) => program.is_closed == 0);
+      let data = this.filterPrograms.filter(
+        (program) => program.is_closed == 0
+      );
+      if (this.search != null) {
+        data = data.filter(
+          (p) =>
+            p.program_title.toLowerCase().search(this.search.toLowerCase()) !=
+            -1
+        );
+      }
+      return data;
     },
     closed: function () {
-      return this.filterPrograms.filter((program) => program.is_closed == 1);
+      let data = this.filterPrograms.filter(
+        (program) => program.is_closed == 1
+      );
+      if (this.search != null) {
+        data = data.filter(
+          (p) =>
+            p.program_title.toLowerCase().search(this.search.toLowerCase()) !=
+            -1
+        );
+      }
+      return data;
     },
   },
   methods: {
@@ -341,9 +371,9 @@ export default {
         this.checkPoint &&
         this.checkCash;
     },
-    goto(id){
-      this.$router.push('/main/program-detail/' +id)
-    }
+    goto(id) {
+      this.$router.push("/main/program-detail/" + id);
+    },
   },
   async beforeMount() {
     this.programs = await this.getMyPrograms;

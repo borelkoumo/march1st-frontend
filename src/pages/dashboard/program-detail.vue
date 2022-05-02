@@ -61,7 +61,8 @@
                     >Harbour Type</q-item-label
                   >
                   <q-item-label class="title-element q-pt-xs">{{
-                    program.safe_harbour_type.charAt(0).toUpperCase() + program.safe_harbour_type.slice(1)
+                    program.safe_harbour_type.charAt(0).toUpperCase() +
+                    program.safe_harbour_type.slice(1)
                   }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -87,7 +88,8 @@
                     >Reward Type</q-item-label
                   >
                   <q-item-label class="title-element q-pt-xs">{{
-                    program.reward_type.charAt(0).toUpperCase() + program.reward_type.slice(1)
+                    program.reward_type.charAt(0).toUpperCase() +
+                    program.reward_type.slice(1)
                   }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -113,7 +115,8 @@
                     >Program Type</q-item-label
                   >
                   <q-item-label class="title-element q-pt-xs">{{
-                    program.program_type.charAt(0).toUpperCase() + program.program_type.slice(1)
+                    program.program_type.charAt(0).toUpperCase() +
+                    program.program_type.slice(1)
                   }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -188,7 +191,7 @@
                 v-for="submission in program.submissions"
                 :key="submission.id"
                 class="cursor-pointer"
-                @click="gotoSubmission(submission.id)"
+                @click="gotoSubmission(submission)"
               >
                 <q-card-section class="q-pt-none">
                   <div class="recent-time">2 day ago , 3:45 pm</div>
@@ -248,22 +251,38 @@ export default {
   computed: {
     ...mapState("dashboard", ["user"]),
     ...mapGetters("program", ["getProgram", "getHasJoin"]),
-    ...mapGetters("submission", ["getSubmissionsProgram","getStatusSubmission"]),
-    getLabelStatus:function(statusId){
-      console.log(statusId)
+    ...mapGetters("submission", [
+      "getSubmissionsProgram",
+      "getStatusSubmission",
+      "getReelStatus",
+    ]),
+    getLabelStatus: function (statusId) {
+      console.log(statusId);
       return this.getStatusSubmission(statusId);
       //return "Waiting for M1 Review"
-    }
+    },
   },
   methods: {
     showSubmissionForm() {
       let route = { name: "add-submission", params: { id: this.program.id } };
       this.$router.push(route);
     },
-    gotoSubmission(id){
-      let route = { name: "submission-detail", params: { id: id } };
-      this.$router.push(route);
-    }
+    gotoSubmission(submission) {
+      console.log(submission);
+      let status = this.getReelStatus(submission.submissionStatus_id);
+      let route = {
+          name: "submission-detail",
+          params: { id: submission.id },
+        };
+      if (this.user.typeUser != "client") {
+        
+        this.$router.push(route);
+      } else {
+        console.log(status);
+        
+        if (status == "triaged") this.$router.push(route);
+      }
+    },
   },
   beforeMount() {
     this.program = this.getProgram(this.$route.params.id);

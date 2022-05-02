@@ -73,6 +73,15 @@ const getters = {
       return val.status_text;
     };
   },
+  getReelStatus(state){
+    return (id) => {
+      let val = "";
+      state.submissionStatus.forEach((s) => {
+        if (s.id == id) val = s;
+      });
+      return val.status;
+    };
+  },
   getAllStatus(state) {
     return (id) => {
       return state.submissionStatus.filter(

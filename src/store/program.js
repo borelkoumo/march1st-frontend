@@ -349,8 +349,8 @@ const actions = {
     commit("removeHackerToProgram", param);
   },
   async editProgram({ state, commit }, payload) {
-    console.log(payload)
-    let max =
+    /* console.log(payload) */
+   /* let max =
       payload.critical.max > payload.severe.max
         ? payload.critical.max
         : payload.severe.max;
@@ -362,11 +362,12 @@ const actions = {
         ? payload.critical.min
         : payload.severe.min;
     min = min > payload.medium.min ? min : payload.medium.min;
-    min = min > payload.low.min ? min : payload.low.min;
+    min = min > payload.low.min ? min : payload.low.min;*/
+
     payload.managersId=payload.managers.map(function(m) {return m.id});
     
-    payload.min=min;
-    payload.max=max;
+    payload.min=payload.low.min;
+    payload.max=payload.critical.max;
     commit('setEditProgram',payload);
   },
 };

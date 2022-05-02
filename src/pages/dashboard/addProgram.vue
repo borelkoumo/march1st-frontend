@@ -301,9 +301,8 @@
               >
                 <q-item-section style="max-width: 50px"
                   ><q-checkbox
-                    v-model="formData.managers"
+                    v-model="manager.isCheck"
                     class="q-mr-sm"
-                    :val="manager"
                     color="secondary"
                 /></q-item-section>
                 <q-item-section>
@@ -320,12 +319,12 @@
                   style="max-width: 400px"
                 >
                   <q-select
-                    v-if="formData.managers[i]"
+                    v-if="manager.isCheck"
                     bg-color="white"
                     borderless
                     dense
                     :options="privileges"
-                    v-model="formData.managers[i].privilege"
+                    v-model="manager.privilege"
                     label="Select privilege"
                     multiple
                     v-close-popup
@@ -465,10 +464,10 @@ export default {
         program_scope: 4,
         hackers: [],
         managers: [],
-        critical: { min: 150, max: 1400 },
-        severe: { min: 25, max: 1000 },
-        medium: { min: 50, max: 1200 },
-        low: { min: 100, max: 1300 },
+        critical: { min: 0, max: 1400 },
+        severe: { min: 0, max: 1000 },
+        medium: { min: 0, max: 900 },
+        low: { min: 0, max: 800 },
         is_closed: false,
         close_at: null,
         status: "Active",
@@ -509,16 +508,22 @@ export default {
 
       allManagers: false,
       allHackers: false,
+
+      allprivilege: [],
     };
   },
   watch: {
     allManagers: function (val) {
       if (val) {
-        Object.keys(this.managers).forEach((key) => {
-          this.formData.managers.push(this.managers[key]);
-        });
+        this.managers=this.managers.map(function(m){
+          m.isCheck=true;
+          return m;
+        })
       } else {
-        this.formData.managers = [];
+        this.managers=this.managers.map(function(m){
+          m.isCheck=false;
+          return m;
+        })
       }
     },
     allHackers: function (val) {
@@ -538,6 +543,7 @@ export default {
     ...mapActions("program", ["saveProgram"]),
     onSaveProgram() {
       this.formData.id = Math.floor(Math.random() * 300);
+      this.formData.managers = this.managers.filter((m) => m.isCheck == true);
       this.saveProgram(this.formData);
       this.$router.push("/main/programs");
     },
@@ -545,6 +551,10 @@ export default {
   beforeMount() {
     this.hackers = this.getAllHacker;
     this.managers = this.getManagers;
+    this.managers.forEach((manager) => {
+      manager.isCheck = false;
+      manager.privilege = null;
+    });
   },
 };
 </script>

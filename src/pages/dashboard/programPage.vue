@@ -1,5 +1,5 @@
 <template>
-  <q-page class="bg-home" v-if="getMyPrograms.length > 0">
+  <q-page class="bg-home" v-if="getMyPrograms.length > 0 || search != null">
     <div class="main-content">
       <q-toolbar
         class="bg-none flex q-gutter-sm q-pl-none q-pr-none"
@@ -102,7 +102,7 @@
           flat
           class="bg-secondary text-white"
           to="/main/add-program"
-          v-if="user.typeUser=='client'"
+          v-if="user.typeUser == 'client'"
         />
         <q-btn label="Submissions" flat no-caps icon-right="import_export" />
       </q-toolbar>
@@ -169,79 +169,118 @@ export default {
     };
   },
   watch: {
+    search: function (val) {
+      if (val != null) {
+        val = val.trim();
+        this.filterPrograms = this.getMyPrograms.filter(
+          (p) => p.program_title.toLowerCase().search(val.toLowerCase()) != -1
+        );
+        
+      }
+
+      /* console.log(this.programs); */
+    },
     isAllFilters: function (val) {
       if (val) {
         this.checkPublic = true;
         this.checkPrivate = true;
         this.checkPoint = true;
         this.checkCash = true;
-        this.filterPrograms=this.getMyPrograms;
-      } 
+        this.filterPrograms = this.getMyPrograms;
+      }
       this.checkAllFilters();
     },
     checkPublic: function (val) {
       this.checkAllFilters();
-      if(val){
-        this.filterPrograms = this.getMyPrograms.filter(program => program.program_type=='public');
-        if(this.checkPrivate) this.filterPrograms = this.getMyPrograms;
+      if (val) {
+        this.filterPrograms = this.getMyPrograms.filter(
+          (program) => program.program_type == "public"
+        );
+        if (this.checkPrivate) this.filterPrograms = this.getMyPrograms;
+      } else {
+        if (this.checkPrivate) this.filterPrograms = this.getPrivatePrograms;
+        else this.filterPrograms = [];
       }
-      else{
-        if(this.checkPrivate) this.filterPrograms = this.getPrivatePrograms;
-        else this.filterPrograms =[];
-      }
-      if(!(this.checkPoint && this.checkCash)){
-        if(this.checkPoint) this.filterPrograms = this.filterPrograms.filter(program => program.reward_type=="points")
-        if(this.checkCash) this.filterPrograms = this.filterPrograms.filter(program => program.reward_type=="cash")
+      if (!(this.checkPoint && this.checkCash)) {
+        if (this.checkPoint)
+          this.filterPrograms = this.filterPrograms.filter(
+            (program) => program.reward_type == "points"
+          );
+        if (this.checkCash)
+          this.filterPrograms = this.filterPrograms.filter(
+            (program) => program.reward_type == "cash"
+          );
       }
     },
     checkPrivate: function (val) {
       this.checkAllFilters();
-      if(val){
-        this.filterPrograms = this.getMyPrograms.filter(program => program.program_type=='private');
-        if(this.checkPublic) this.filterPrograms = this.getMyPrograms;
+      if (val) {
+        this.filterPrograms = this.getMyPrograms.filter(
+          (program) => program.program_type == "private"
+        );
+        if (this.checkPublic) this.filterPrograms = this.getMyPrograms;
+      } else {
+        if (this.checkPublic) this.filterPrograms = this.getPublicPrograms;
+        else this.filterPrograms = [];
       }
-      else{
-        if(this.checkPublic) this.filterPrograms = this.getPublicPrograms;
-        else this.filterPrograms =[];
-      }
-      if(!(this.checkPoint && this.checkCash)){
-        if(this.checkPoint) this.filterPrograms = this.filterPrograms.filter(program => program.reward_type=="points")
-        if(this.checkCash) this.filterPrograms = this.filterPrograms.filter(program => program.reward_type=="cash")
+      if (!(this.checkPoint && this.checkCash)) {
+        if (this.checkPoint)
+          this.filterPrograms = this.filterPrograms.filter(
+            (program) => program.reward_type == "points"
+          );
+        if (this.checkCash)
+          this.filterPrograms = this.filterPrograms.filter(
+            (program) => program.reward_type == "cash"
+          );
       }
     },
     checkPoint: function (val) {
       this.checkAllFilters();
-      if(val){
-        this.filterPrograms = this.getMyPrograms.filter(program => program.reward_type=='points');
-        if(this.checkCash) this.filterPrograms = this.getMyPrograms;
+      if (val) {
+        this.filterPrograms = this.getMyPrograms.filter(
+          (program) => program.reward_type == "points"
+        );
+        if (this.checkCash) this.filterPrograms = this.getMyPrograms;
+      } else {
+        if (this.checkCash) this.filterPrograms = this.getCashPrograms;
+        else this.filterPrograms = [];
       }
-      else{
-        if(this.checkCash) this.filterPrograms = this.getCashPrograms;
-        else this.filterPrograms =[];
-      }
-      if(!(this.checkPublic && this.checkPrivate)){
-        if(this.checkPublic) this.filterPrograms = this.filterPrograms.filter(program => program.program_type=="public")
-        if(this.checkPrivate) this.filterPrograms = this.filterPrograms.filter(program => program.program_type=="private")
+      if (!(this.checkPublic && this.checkPrivate)) {
+        if (this.checkPublic)
+          this.filterPrograms = this.filterPrograms.filter(
+            (program) => program.program_type == "public"
+          );
+        if (this.checkPrivate)
+          this.filterPrograms = this.filterPrograms.filter(
+            (program) => program.program_type == "private"
+          );
       }
     },
     checkCash: function (val) {
       this.checkAllFilters();
-      if(val){
-        this.filterPrograms = this.getMyPrograms.filter(program => program.reward_type=='cash');
-        if(this.checkPoint) this.filterPrograms = this.getMyPrograms;
+      if (val) {
+        this.filterPrograms = this.getMyPrograms.filter(
+          (program) => program.reward_type == "cash"
+        );
+        if (this.checkPoint) this.filterPrograms = this.getMyPrograms;
+      } else {
+        if (this.checkPoint) this.filterPrograms = this.getPointOnlyPrograms;
+        else this.filterPrograms = [];
       }
-      else{
-        if(this.checkPoint) this.filterPrograms = this.getPointOnlyPrograms;
-        else this.filterPrograms =[];
-      }
-      if(!(this.checkPublic && this.checkPrivate)){
-        if(this.checkPublic) this.filterPrograms = this.filterPrograms.filter(program => program.program_type=="public")
-        if(this.checkPrivate) this.filterPrograms = this.filterPrograms.filter(program => program.program_type=="private")
+      if (!(this.checkPublic && this.checkPrivate)) {
+        if (this.checkPublic)
+          this.filterPrograms = this.filterPrograms.filter(
+            (program) => program.program_type == "public"
+          );
+        if (this.checkPrivate)
+          this.filterPrograms = this.filterPrograms.filter(
+            (program) => program.program_type == "private"
+          );
       }
     },
   },
   computed: {
-    ...mapState('dashboard',['user']),
+    ...mapState("dashboard", ["user"]),
     ...mapState("program", ["programs"]),
     ...mapGetters("program", [
       "getClientPrograms",
@@ -250,11 +289,9 @@ export default {
       "getCashPrograms",
       "getPointOnlyPrograms",
       "getMyPrograms",
-      'getSubmissionsProgram'
+      "getSubmissionsProgram",
     ]),
-    ...mapGetters('submission',[
-      'getSubmissionsProgram'
-    ]),
+    ...mapGetters("submission", ["getSubmissionsProgram"]),
     totalProgram: function () {
       return this.getPublicPrograms.length + this.getPrivatePrograms.length;
     },
