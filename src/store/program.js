@@ -268,7 +268,7 @@ const actions = {
     commit("setPrograms");
   },
   async saveProgram({ state, commit, dispatch }, payload) {
-    let max =
+    /*let max =
       payload.critical.max > payload.severe.max
         ? payload.critical.max
         : payload.severe.max;
@@ -280,7 +280,7 @@ const actions = {
         ? payload.critical.min
         : payload.severe.min;
     min = min > payload.medium.min ? min : payload.medium.min;
-    min = min > payload.low.min ? min : payload.low.min;
+    min = min > payload.low.min ? min : payload.low.min;*/
 
     let user = dasboard.state.user;
     let program = {
@@ -308,13 +308,13 @@ const actions = {
       submissions: [],
       invitations: payload.invitations,
 
-      critical: { min: payload.critical.min, max: payload.critical.max },
-      severe: { min: payload.severe.min, max: payload.severe.max },
-      medium: { min: payload.medium.min, max: payload.medium.max },
-      low: { min: payload.low.min, max: payload.low.max },
+      critical: payload.critical,
+      severe: payload.severe,
+      medium: payload.medium,
+      low: payload.low,
 
-      max: max,
-      min: min,
+      max: payload.critical.max,
+      min: payload.low.min,
     };
 
     /* program.invitations.forEach((hacker) => {

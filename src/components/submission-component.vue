@@ -6,7 +6,7 @@
         <q-img :src="program.program_picture_url"/>
       </div>
       <q-card-section class="q-pl-lg">
-        <div class="subtitle">Related Program</div>
+        <div class="subtitle"><router-link :to="'/main/program-detail/'+program.id">Related Program</router-link></div>
         <div class="subtitle-2">
           {{program.program_title}}
         </div>

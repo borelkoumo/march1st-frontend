@@ -52,7 +52,7 @@
               <q-item>
                 <q-item-section avatar>
                   <q-avatar>
-                    <img src="https://cdn.quasar.dev/img/avatar2.jpg" />
+                    <img src="~assets/local/card/shadow-harbor.png" />
                   </q-avatar>
                 </q-item-section>
 
@@ -61,7 +61,7 @@
                     >Harbour Type</q-item-label
                   >
                   <q-item-label class="title-element q-pt-xs">{{
-                    program.safe_harbour_type
+                    program.safe_harbour_type.charAt(0).toUpperCase() + program.safe_harbour_type.slice(1)
                   }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -78,7 +78,7 @@
               <q-item>
                 <q-item-section avatar>
                   <q-avatar>
-                    <img src="https://cdn.quasar.dev/img/avatar2.jpg" />
+                    <img src="~assets/local/card/shadow-reward.png" />
                   </q-avatar>
                 </q-item-section>
 
@@ -87,7 +87,7 @@
                     >Reward Type</q-item-label
                   >
                   <q-item-label class="title-element q-pt-xs">{{
-                    program.reward_type
+                    program.reward_type.charAt(0).toUpperCase() + program.reward_type.slice(1)
                   }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -104,7 +104,7 @@
               <q-item>
                 <q-item-section avatar>
                   <q-avatar>
-                    <img src="https://cdn.quasar.dev/img/avatar2.jpg" />
+                    <img src="~assets/local/card/shadow-type.png" />
                   </q-avatar>
                 </q-item-section>
 
@@ -113,7 +113,7 @@
                     >Program Type</q-item-label
                   >
                   <q-item-label class="title-element q-pt-xs">{{
-                    program.program_type
+                    program.program_type.charAt(0).toUpperCase() + program.program_type.slice(1)
                   }}</q-item-label>
                 </q-item-section>
               </q-item>

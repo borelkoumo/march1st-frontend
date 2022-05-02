@@ -4,13 +4,13 @@
       <div class="main-content">
         <q-toolbar class="bg-none flex q-gutter-sm" style="padding-top: 40px">
           <q-space />
-          <q-btn
+          <!-- <q-btn
             no-caps
             outline
             class="bg-white text-secondary"
             label="Log In"
             style="min-width: 160px"
-          />
+          /> -->
           <q-btn
             no-caps
             label="Submit"
@@ -63,21 +63,19 @@
             </q-card-section>
             <q-card-section class="q-pb-sm">
               <div class="subtitle q-pb-sm">Submission Text</div>
-              <div class="">
-                <q-input
-                  type="textarea"
-                  v-model="formData.submission_text"
-                  label=""
-                  borderless
-                  class="q-pl-sm q-pr-sm"
-                  style="
-                    background: #fbfbfb;
-                    border: 1px solid #f3f3f3;
-                    box-sizing: border-box;
-                    border-radius: 12px;
-                  "
-                />
-              </div>
+              
+              <q-editor
+                v-model="formData.submission_text"
+                min-height="8rem"
+                style="
+                  background: #fbfbfb;
+                  border: 1px solid #f3f3f3;
+                  box-sizing: border-box;
+                  border-radius: 12px;
+                "
+                class="q-mb-md"
+                placeholder=""
+              />
             </q-card-section>
           </q-card>
         </div>
@@ -92,7 +90,7 @@
           </q-card>
         </div>
       </div>
-      <div class="right-content bg-white">
+      <!-- <div class="right-content bg-white">
         <q-card class="card-timeline q-pt-sm q-pb-sm q-pl-md q-pr-md" flat>
           <q-timeline color="secondary">
             <q-timeline-entry tag="div" heading class="title-timeline">
@@ -116,7 +114,7 @@
             </q-timeline-entry>
           </q-timeline>
         </q-card>
-      </div>
+      </div> -->
     </div>
   </q-page>
 </template>
@@ -136,9 +134,9 @@ export default {
           "Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Quisque velit nisi, pretium ut lacinia in, elementum id enim.",
         program_id: null,
         hacker_id: null,
-        client_id:null,
-        etat:null,
-        submission_status:"Pending"
+        client_id: null,
+        etat: null,
+        submission_status: "Pending",
       },
       levels: [
         { label: "Low", value: "Low" },
@@ -151,7 +149,7 @@ export default {
   },
   computed: {
     ...mapState("dashboard", ["user"]),
-    ...mapGetters("program", ["getProgram","getSubmissionsProgram"]),
+    ...mapGetters("program", ["getProgram", "getSubmissionsProgram"]),
   },
   methods: {
     ...mapActions("submission", ["addReport"]),

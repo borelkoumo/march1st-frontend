@@ -1,42 +1,52 @@
 <template>
-
   <q-card class="my-card bg-white q-pt-lg q-pr-md q-pl-md q-pb-md">
     <q-card-section class="q-pb-none q-pt-none">
       <div class="flex justify-between">
-        <div>
+        <div class="">
           <q-avatar rounded>
             <img :src="program.program_picture_url" />
           </q-avatar>
         </div>
         <div>
           <div class="text-right">
-            <q-badge rounded class="q-pl-md q-pr-md access-positive"
-              >{{program.program_type}}</q-badge
-            >
+            <q-badge rounded class="q-pl-md q-pr-md access-positive">{{
+              program.program_type.charAt(0).toUpperCase() +
+              program.program_type.slice(1)
+            }}</q-badge>
           </div>
           <div class="q-pt-md q-pb-sm">
             <q-btn flat dense no-caps>
               <q-avatar size="24px" style="background: rgba(103, 58, 182, 0.5)">
-                <img src="https://cdn.quasar.dev/img/avatar2.jpg" />
+                <img src="~assets/local/card/safe-harbor-1.png" />
               </q-avatar>
-              <div class="q-pl-sm">{{program.safe_harbour_type}}</div>
+              <div class="q-pl-sm">
+                {{
+                  program.safe_harbour_type.charAt(0).toUpperCase() +
+                  program.safe_harbour_type.slice(1)
+                }}
+              </div>
             </q-btn>
           </div>
         </div>
       </div>
     </q-card-section>
     <q-card-section>
-      <div class="title-program">{{program.program_title}}</div>
+      <div class="title-program">{{ program.program_title }}</div>
       <div class="content-program">
-        {{program.program_description}}
+        {{ program.program_description }}
       </div>
     </q-card-section>
     <q-separator />
     <q-card-actions align="between" class="q-pt-md q-pb-md q-pr-none q-pl-none">
       <q-btn no-caps flat class="text-action-1"
-        >$ {{program.min}} - $ {{program.max}} Per vulnerability</q-btn
+        ><span v-if="program.reward_type == 'cash'">$</span> {{ program.min }} -
+        <span v-if="program.reward_type == 'cash'">$</span> {{ program.max }}
+        <span v-if="program.reward_type == 'points'">Points</span> Per
+        vulnerability</q-btn
       >
-      <q-btn no-caps flat class="text-action-2">{{program.scope}} scopes</q-btn>
+      <q-btn no-caps flat class="text-action-2"
+        >{{ program.scope }} scopes</q-btn
+      >
     </q-card-actions>
     <slot name="button">
       <!-- <q-card-actions align="center" class="q-pt-md q-pb-md">
@@ -54,6 +64,14 @@
 <script>
 export default {
   props: ["program"],
+  filters: {
+    set_capi: function (value) {
+      //console.log(value);
+      value = value.toString();
+      return "test";
+      //return value.charAt(0).toUpperCase() + value.slice(1);
+    },
+  },
   data() {
     return {
       progress: [0.8, 0.2, 0.1],

@@ -2,7 +2,27 @@
   <q-card class="my-card bg-white q-pt-lg q-pr-lg q-pl-lg q-pb-md" flat>
     <q-card-section horizontal>
       <div class="box-image" style="width: 200px; height: 200px">
-        <q-img :src="program.program_picture_url" style="max-width: 200px" />
+        <q-img :src="program.program_picture_url">
+          <div class="absolute">
+            <q-badge rounded class="q-pl-md q-pr-md program-type">{{
+              program.program_type.charAt(0).toUpperCase() +
+              program.program_type.slice(1)
+            }}</q-badge>
+          </div>
+          <div class="absolute safe_type">
+            <q-btn flat dense no-caps>
+              <q-avatar size="24px" style="background: rgba(103, 58, 182, 0.5)">
+                <img src="~assets/local/card/safe-harbor-1.png" />
+              </q-avatar>
+              <div class="q-pl-sm">
+                {{
+                  program.safe_harbour_type.charAt(0).toUpperCase() +
+                  program.safe_harbour_type.slice(1)
+                }}
+              </div>
+            </q-btn>
+          </div>
+        </q-img>
       </div>
       <q-card-section class="q-pl-lg q-pr-lg col">
         <div>
@@ -23,7 +43,11 @@
           {{ program.description }}
         </div>
         <div class="price-program">
-          $ {{ program.min }} - $ {{ program.max }} Per vulnerability
+          <span v-if="program.reward_type == 'cash'">$</span>
+          {{ program.min }} -
+          <span v-if="program.reward_type == 'cash'">$</span>
+          {{ program.max }} <span v-if="program.reward_type == 'points'">Points</span>
+          Per vulnerability
         </div>
         <div class="flex no-wrap">
           <div
@@ -38,17 +62,17 @@
                 z-index: 99;
                 border: 1px solid white;
                 margin-left: -12px;
-                width: 20px;
-                height: 20px;
+                width: 8px;
+                height: 8px;
               "
-              size="12px"
+              size="8px"
               v-for="(manager, i) in program.managers"
               :key="manager.id"
               :label="getFirstCharacter(manager.first_name)"
               :style="'background-color:' + colors[i]"
             />
           </div>
-          <div class="title-program">
+          <div class="title-program-2">
             {{ getManagersText }}
           </div>
         </div>
@@ -159,7 +183,8 @@ export default {
   padding-bottom: 12px;
   padding-top: 12px;
 }
-.title-program {
+.title-program,
+.title-program-2 {
   font-family: "inter";
   font-style: normal;
   font-weight: 600;
@@ -169,6 +194,9 @@ export default {
   color: #46516d;
   padding-top: 8px;
   padding-bottom: 8px;
+}
+.title-program-2 {
+  font-size: 12px;
 }
 .subtitle-2 {
   font-family: "inter";
@@ -206,11 +234,34 @@ export default {
 }
 .box-image {
   border-radius: 10px;
+  position: relative;
 }
 .box-image .q-img {
   border-radius: 10px;
   width: 100%;
   height: 100%;
+}
+.q-img__content > div {
+  background: none;
+}
+.program-type {
+  top: 12px;
+  left: 12px;
+  font-family: "inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  align-items: center;
+  text-align: center;
+  background: rgba(88, 135, 255, 0.7);
+  border-radius: 100px;
+
+  color: #ffffff;
+}
+.safe_type {
+  bottom: -8px;
+  left: 0px;
 }
 .title {
   font-family: Inter;

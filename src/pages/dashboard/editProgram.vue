@@ -138,94 +138,74 @@
               </q-item-section>
             </q-item>
           </q-list>
-          <div class="radio-element">
+          <!-- <div class="radio-element">
             <div class="q-pb-xs q-pt-sm">Reward Range</div>
             <q-toggle
               v-model="formData.reward_range"
               color="secondary"
               label="Points Only"
             />
-          </div>
+          </div> -->
         </div>
         <div class="bg-white q-pa-lg" style="border-radius: 16px">
           <q-list>
-            <q-item class="item-amount items-baseline">
+            <q-item class="item-amount">
               <q-item-section class="first-element" style="max-width: 60px"
                 >P1</q-item-section
               >
               <q-item-section class="second-element">Critical</q-item-section>
-              <q-item-section>
-                <q-input
-                  v-model="formData.critical.min"
-                  borderless
-                  class="q-pl-xs q-pr-xs"
-                />
-              </q-item-section>
-              <q-item-section>
-                <q-input
-                  v-model="formData.critical.max"
-                  borderless
-                  class="q-pl-xs q-pr-xs"
+              <q-item-section class="q-pl-sm q-pr-sm">
+                <q-range
+                  v-model="formData.critical"
+                  :min="formData.severe.min"
+                  :max="5000"
+                  label
+                  color="secondary"
                 />
               </q-item-section>
             </q-item>
-            <q-item class="item-amount items-baseline">
+            <q-item class="item-amount">
               <q-item-section class="first-element" style="max-width: 60px"
-                >P1</q-item-section
+                >P2</q-item-section
               >
               <q-item-section class="second-element">Severe</q-item-section>
-              <q-item-section>
-                <q-input
-                  v-model="formData.severe.min"
-                  borderless
-                  class="q-pl-xs q-pr-xs"
-                />
-              </q-item-section>
-              <q-item-section>
-                <q-input
-                  v-model="formData.severe.max"
-                  borderless
-                  class="q-pl-xs q-pr-xs"
+              <q-item-section class="q-pl-sm q-pr-sm">
+                <q-range
+                  v-model="formData.severe"
+                  :min="formData.medium.min"
+                  :max="formData.critical.max"
+                  label
+                  color="secondary"
                 />
               </q-item-section>
             </q-item>
-            <q-item class="item-amount items-baseline">
+            <q-item class="item-amount">
               <q-item-section class="first-element" style="max-width: 60px"
-                >P1</q-item-section
+                >P3</q-item-section
               >
               <q-item-section class="second-element">Medium</q-item-section>
-              <q-item-section>
-                <q-input
-                  v-model="formData.medium.min"
-                  borderless
-                  class="q-pl-xs q-pr-xs"
-                />
-              </q-item-section>
-              <q-item-section>
-                <q-input
-                  v-model="formData.medium.max"
-                  borderless
-                  class="q-pl-xs q-pr-xs"
+              <q-item-section class="q-pl-sm q-pr-sm">
+                <q-range
+                  v-model="formData.medium"
+                  :min="formData.low.min"
+                  :max="formData.severe.max"
+                  label
+                  color="secondary"
                 />
               </q-item-section>
             </q-item>
-            <q-item class="item-amount items-baseline">
+            <q-item class="item-amount">
               <q-item-section class="first-element" style="max-width: 60px"
-                >P1</q-item-section
+                >P4</q-item-section
               >
               <q-item-section class="second-element">Low</q-item-section>
-              <q-item-section>
-                <q-input
-                  v-model="formData.low.min"
-                  borderless
-                  class="q-pl-xs q-pr-xs"
-                />
-              </q-item-section>
-              <q-item-section>
-                <q-input
-                  v-model="formData.low.max"
-                  borderless
-                  class="q-pl-xs q-pr-xs"
+              <q-item-section class="q-pl-sm q-pr-sm">
+                <q-range
+                  v-model="formData.low"
+                  :min="0"
+                  :max="formData.medium.max"
+                  label
+                  color="secondary"
                 />
               </q-item-section>
             </q-item>

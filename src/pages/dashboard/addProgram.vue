@@ -138,94 +138,74 @@
               </q-item-section>
             </q-item>
           </q-list>
-          <div class="radio-element">
+          <!-- <div class="radio-element">
             <div class="q-pb-xs q-pt-sm">Reward Range</div>
             <q-toggle
               v-model="formData.reward_range"
               color="secondary"
               label="Points Only"
             />
-          </div>
+          </div> -->
         </div>
         <div class="bg-white q-pa-lg" style="border-radius: 16px">
           <q-list>
-            <q-item class="item-amount items-baseline">
+            <q-item class="item-amount">
               <q-item-section class="first-element" style="max-width: 60px"
                 >P1</q-item-section
               >
               <q-item-section class="second-element">Critical</q-item-section>
-              <q-item-section>
-                <q-input
-                  v-model="formData.critical.min"
-                  borderless
-                  class="q-pl-xs q-pr-xs"
-                />
-              </q-item-section>
-              <q-item-section>
-                <q-input
-                  v-model="formData.critical.max"
-                  borderless
-                  class="q-pl-xs q-pr-xs"
+              <q-item-section class="q-pl-sm q-pr-sm">
+                <q-range
+                  v-model="formData.critical"
+                  :min="formData.severe.min"
+                  :max="5000"
+                  label
+                  color="secondary"
                 />
               </q-item-section>
             </q-item>
-            <q-item class="item-amount items-baseline">
+            <q-item class="item-amount">
               <q-item-section class="first-element" style="max-width: 60px"
-                >P1</q-item-section
+                >P2</q-item-section
               >
               <q-item-section class="second-element">Severe</q-item-section>
-              <q-item-section>
-                <q-input
-                  v-model="formData.severe.min"
-                  borderless
-                  class="q-pl-xs q-pr-xs"
-                />
-              </q-item-section>
-              <q-item-section>
-                <q-input
-                  v-model="formData.severe.max"
-                  borderless
-                  class="q-pl-xs q-pr-xs"
+              <q-item-section class="q-pl-sm q-pr-sm">
+                <q-range
+                  v-model="formData.severe"
+                  :min="formData.medium.min"
+                  :max="formData.critical.max"
+                  label
+                  color="secondary"
                 />
               </q-item-section>
             </q-item>
-            <q-item class="item-amount items-baseline">
+            <q-item class="item-amount">
               <q-item-section class="first-element" style="max-width: 60px"
-                >P1</q-item-section
+                >P3</q-item-section
               >
               <q-item-section class="second-element">Medium</q-item-section>
-              <q-item-section>
-                <q-input
-                  v-model="formData.medium.min"
-                  borderless
-                  class="q-pl-xs q-pr-xs"
-                />
-              </q-item-section>
-              <q-item-section>
-                <q-input
-                  v-model="formData.medium.max"
-                  borderless
-                  class="q-pl-xs q-pr-xs"
+              <q-item-section class="q-pl-sm q-pr-sm">
+                <q-range
+                  v-model="formData.medium"
+                  :min="formData.low.min"
+                  :max="formData.severe.max"
+                  label
+                  color="secondary"
                 />
               </q-item-section>
             </q-item>
-            <q-item class="item-amount items-baseline">
+            <q-item class="item-amount">
               <q-item-section class="first-element" style="max-width: 60px"
-                >P1</q-item-section
+                >P4</q-item-section
               >
               <q-item-section class="second-element">Low</q-item-section>
-              <q-item-section>
-                <q-input
-                  v-model="formData.low.min"
-                  borderless
-                  class="q-pl-xs q-pr-xs"
-                />
-              </q-item-section>
-              <q-item-section>
-                <q-input
-                  v-model="formData.low.max"
-                  borderless
-                  class="q-pl-xs q-pr-xs"
+              <q-item-section class="q-pl-sm q-pr-sm">
+                <q-range
+                  v-model="formData.low"
+                  :min="0"
+                  :max="formData.medium.max"
+                  label
+                  color="secondary"
                 />
               </q-item-section>
             </q-item>
@@ -273,7 +253,12 @@
           <q-card-section class="q-pb-sm">
             <div class="subtitle q-pb-sm">Program Scope</div>
             <div class="">
-              <q-input type="" v-model="formData.program_scope" label="" borderless />
+              <q-input
+                type=""
+                v-model="formData.program_scope"
+                label=""
+                borderless
+              />
             </div>
           </q-card-section>
         </q-card>
@@ -311,7 +296,7 @@
               </q-item>
               <q-item
                 class="item-element"
-                v-for="(manager,i) in managers"
+                v-for="(manager, i) in managers"
                 :key="manager.id"
               >
                 <q-item-section style="max-width: 50px"
@@ -335,7 +320,7 @@
                   style="max-width: 400px"
                 >
                   <q-select
-                  v-if="formData.managers[i]"
+                    v-if="formData.managers[i]"
                     bg-color="white"
                     borderless
                     dense
@@ -473,7 +458,7 @@ export default {
         reward_range: false,
         program_guidelines_1:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rutrum congue leo eget malesuada.",
-          program_guidelines_2:
+        program_guidelines_2:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rutrum congue leo eget malesuada.",
         legal_terms:
           "Vivamus suscipit tortor eget felis porttitor volutpat. Curabitur aliquet quam id dui posuere blandit.",
@@ -490,9 +475,9 @@ export default {
         date_post: "10/04/2021",
         invitations: [],
       },
-      privileges:[
-        {label:"Can Edit",value:1},
-        {label:"Can view",value:2},
+      privileges: [
+        { label: "Can Edit", value: 1 },
+        { label: "Can view", value: 2 },
       ],
       programs: [{ label: "dfdffdf", value: "1" }],
       program: null,
