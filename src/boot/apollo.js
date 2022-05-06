@@ -2,14 +2,10 @@ import { ApolloClient } from 'apollo-client'
 import { createHttpLink } from 'apollo-link-http'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 
-import gql from 'graphql-tag';
-
-import graphqlClient from 'graphql';
-
 // HTTP connection to the API
 const httpLink = createHttpLink({
     // You should use an absolute URL here
-    uri: 'http://localhost:1337/graphql',
+    uri: process.env.VUE_APP_STRAPI_GRAPHQL_BACKEND,
 })
 
 // Cache implementation
@@ -22,6 +18,4 @@ const apolloClient = new ApolloClient({
 })
 
 
-export {
-    apolloClient
-}
+export default apolloClient;

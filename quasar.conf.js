@@ -19,7 +19,7 @@ module.exports = configure(function (ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli/boot-files
-    boot: ["i18n", "axios", "auth", "settings", "apexcharts"],
+    boot: ["i18n", "axios", "auth", "settings", "apexcharts","apollo"],
 
     // https://v2.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ["app.sass", "global.css", "global-font.css"],
@@ -79,6 +79,10 @@ module.exports = configure(function (ctx) {
       env: {
         VUE_APP_RP_RPID: "march1st.com",
         VUE_APP_RP_BACKEND: "https://backend.march1st.com/rpbackend",
+
+        //Strapi Backend
+        VUE_APP_STRAPI_REST_BACKEND: "https://strapi.march1st.com/api",
+        VUE_APP_STRAPI_GRAPHQL_BACKEND: "https://strapi.march1st.com/graphql",
 
         // Cognito config for clients
         VUE_APP_COGNITO_USER_POOL_ID: "us-east-1_wV3vHeG4Q",

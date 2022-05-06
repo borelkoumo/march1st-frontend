@@ -1,4 +1,3 @@
-import { apolloClient } from "./utils/apollo";
 import dasboard from "./dashboard";
 import gql from "graphql-tag";
 import program from "./program";

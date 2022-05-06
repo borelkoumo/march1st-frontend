@@ -1,14 +1,9 @@
-import { apolloClient } from "./utils/apollo";
-import gql from "graphql-tag";
 import { users } from "./utils/fakedata";
-//import {managers} from "./utils/fakedata"
-
-/* import {
-    allMenu
-} from './graphql/menu' */
+import { _getHackers, _loginUser, _getCompanies} from "../services/users";
 
 const state = {
   // pour la simulation
+  token:null,
   user: {
     name: "",
     typeUser: "client",
@@ -189,6 +184,9 @@ const state = {
       },
     },
   ],
+  users:[],
+  hackers:[],
+  compagines:[]
 };
 
 const getters = {
@@ -436,7 +434,7 @@ const getters = {
   },
   getUser(state) {
     return (id) => {
-      let user = users.filter((u) => u.id == id);
+      let user = state.users.filter((u) => u.id == id);
       if (user.length > 0) return user[0];
       return {}
     };
@@ -444,10 +442,9 @@ const getters = {
 
   //pour simulation
   getUsers() {
-    return JSON.parse(JSON.stringify(users));
+    return JSON.parse(JSON.stringify(state.users));
   },
   getManagers() {
-    //console.log(managers);
     let managers = users.filter((user) => user.typeUser == "admin");
     return JSON.parse(JSON.stringify(managers));
   },
@@ -455,22 +452,52 @@ const getters = {
 
 const mutations = {
   setUser(state, payload) {
-    state.user = payload;
+    state.user = payload.user;
+    state.token = payload.token;
+  },
+  setUsers(state,payload){
+    state.users = payload.hackers;
+    state.users = state.users.concat(payload.companies);
   },
 };
 
 const actions = {
-  createUser({ commit }, payload) {
-    commit("setUser", payload);
+  async createUser({ commit }, payload) {
+    try {
+      let email=null;
+      if(payload.user.typeUser=='client'){
+        email=payload.manager.email
+      }
+      else if(payload.user.typeUser=='hacker'){
+        email=payload.user.email
+      }
+      const data = await _loginUser({identifier:email,password:payload.password});
+      
+      payload.token= data.login.jwt;
+      commit("setUser", payload);
+      return Promise.resolve(data);
+    } catch (error) {
+      payload.token=null;
+      payload.user={};
+      commit("setUser", payload);
+      return Promise.reject(0)
+    }
   },
-  /* async getMenus({commit}){
-        try {
-            const result = await apolloClient.query(allMenu);
-            commit("setMenus",result.data.menus.data);
-        } catch (error) {
-            
-        }
-    }, */
+  
+  async allUsers({commit}){
+    try {
+      const hackers = await _getHackers();
+      const companies = await _getCompanies();
+      console.log(companies);
+      let usersList={
+        hackers:hackers,
+        companies:companies
+      }
+      commit('setUsers',usersList);
+    } catch (error) {
+      console.log("erro in action dashboard "+ `${error}`);
+    }
+  },
 };
 
 export default {

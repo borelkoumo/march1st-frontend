@@ -1,8 +1,7 @@
-import { apolloClient } from "./utils/apollo";
 import dasboard from "./dashboard";
 /* import submission from "./submission"; */
 
-import gql from "graphql-tag";
+import { _getPrograms } from "../services/program";
 
 const state = {
   programs: [],
@@ -218,12 +217,8 @@ const getters = {
 };
 
 const mutations = {
-  setPrograms(state) {
-    let programs = localStorage.getItem("programs");
-    if (programs) {
-      programs = JSON.parse(programs);
-      state.programs = programs;
-    }
+  setPrograms(state,payload) {
+    state.programs = payload;
   },
   setEditProgram(state,payload){
     let programs=[];
@@ -264,9 +259,6 @@ const mutations = {
 };
 
 const actions = {
-  async getAllPrograms({ state, commit }) {
-    commit("setPrograms");
-  },
   async saveProgram({ state, commit, dispatch }, payload) {
     /*let max =
       payload.critical.max > payload.severe.max
@@ -370,6 +362,16 @@ const actions = {
     payload.max=payload.critical.max;
     commit('setEditProgram',payload);
   },
+  async allPrograms({commit}){
+    try {
+      const programs = await _getPrograms();
+      console.log(programs);
+      
+      commit('setPrograms',programs);
+    } catch (error) {
+      console.log("erro in action program "+ `${error}`);
+    }
+  }
 };
 
 export default {

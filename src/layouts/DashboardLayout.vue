@@ -12,7 +12,7 @@
       <q-scroll-area class="fit">
         <q-list class="pt-box menu-item" style="font-family: 'nunito'">
           <div v-for="menu in getMenus" :key="menu.id">
-            <q-item-label header v-if="menu.hasLabel" class="menu-label " >{{
+            <q-item-label header v-if="menu.hasLabel" class="menu-label">{{
               menu.label
             }}</q-item-label>
             <q-item
@@ -20,7 +20,7 @@
               :key="child.name"
               :icon="child.icon"
               class="q-mr-sm text-white"
-              :class="{'active-menu':child.slug == $route.name}"
+              :class="{ 'active-menu': child.slug == $route.name }"
               clickable
               :to="child.link"
             >
@@ -56,12 +56,20 @@
               src="https://cdn.quasar.dev/img/parallax2.jpg"
             />
           </q-card-section>
-          <q-card-section class="q-pt-xs" v-if="user && user.typeUser=='client'">
-            <div class="q-mt-sm title">{{user.company_name}}</div>
+          <q-card-section
+            class="q-pt-xs"
+            v-if="user && user.typeUser == 'client'"
+          >
+            <div class="q-mt-sm title">{{ user.company_name }}</div>
             <div class="subtitle">Joined 6 months ago</div>
           </q-card-section>
-          <q-card-section class="q-pt-xs" v-if="user && user.typeUser=='hacker'">
-            <div class="q-mt-sm title">{{user.first_name}} {{user.last_name}}</div>
+          <q-card-section
+            class="q-pt-xs"
+            v-if="user && user.typeUser == 'hacker'"
+          >
+            <div class="q-mt-sm title">
+              {{ user.first_name }} {{ user.last_name }}
+            </div>
             <div class="subtitle">Joined 6 months ago</div>
             <div class="subtitle">Current Rank: 70</div>
             <div class="subtitle">Average Rank: 7</div>
@@ -73,7 +81,7 @@
           <q-btn label="PROFILE" class="bg-secondary text-white" flat />
         </q-card-actions>
       </q-card>
-      
+
       <q-card flat class="card-panel">
         <q-tabs
           v-model="tabElement"
@@ -164,7 +172,7 @@
       </q-card>
       <q-scroll-area class="fit"> </q-scroll-area>
     </q-drawer>
-    
+
     <!-- inserer le dialog d'user ici -->
     <q-dialog v-model="prompt" persistent>
       <q-card style="min-width: 350px">
@@ -172,17 +180,30 @@
           <div class="text-h6">Type d'utilisateur</div>
         </q-card-section>
 
-        <q-card-section class="q-pt-none">
+        <q-card-section class="q-pt-none q-gutter-sm">
           <q-select
             v-model="user"
             :options="users"
             label="Sélectionnez un utilisateur"
             outlined
           />
+          <q-select
+            v-if="user != null && user.typeUser == 'client'"
+            v-model="manager"
+            :options="user.company_users"
+            label="Sélectionnez un manager"
+            outlined
+          />
+          <q-input
+            type="password"
+            v-model="password"
+            outlined
+            label="Mot de passe"
+          />
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Save" v-close-popup @click="onCreateUser()"/>
+          <q-btn flat label="Save" v-close-popup @click="onCreateUser()" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -196,7 +217,7 @@
 import { ref } from "vue";
 import ListItem from "../components/list-item.vue";
 
-import {mapState, mapGetters, mapActions} from 'vuex'
+import { mapState, mapGetters, mapActions } from "vuex";
 
 export default {
   name: "MyLayout",
@@ -232,7 +253,7 @@ export default {
         width: "9px",
         opacity: 0.2,
       },
-      
+
       tasks: [
         {
           title: "Submissions required clarifications",
@@ -271,51 +292,76 @@ export default {
   },
   data() {
     return {
-      user:null,
-      users:[],
-      prompt:false,
-      newuser:{}
-    }
+      user: null,
+      manager: null,
+      password: null,
+      users: [],
+      prompt: false,
+      newuser: {},
+    };
+  },
+  watch: {
+    manager: function (val) {
+      console.log(val);
+    },
   },
   computed: {
-    ...mapState('dashboard',[
-      'menus'
-    ]),
-    ...mapGetters('dashboard',[
-      'getMenus',
-      'getUsers'
-    ])
+    ...mapState("dashboard", ["menus"]),
+    ...mapGetters("dashboard", ["getMenus", "getUsers"]),
   },
   methods: {
-    ...mapActions('dashboard',['createUser']),
-    ...mapActions('program',[
-      'getAllPrograms'
-    ]),
-    onCreateUser(){
-      this.createUser(this.user);
-    }
+    ...mapActions("dashboard", ["createUser", "allUsers"]),
+    ...mapActions("program", ["allPrograms"]),
+    async onCreateUser() {
+      let payload = {
+        user: this.user,
+        password: this.password,
+      };
+      if (this.user.typeUser == "client") {
+        payload = {
+          user: this.user,
+          manager:this.manager,
+          password: this.password,
+        };
+      }
+      try {
+        this.$q.loading.show();
+        await this.createUser(payload);
+        this.$q.loading.hide();
+      } catch (error) {
+        this.$q.loading.hide();
+        this.$q.notify({
+          message: "Erreur d'authentification",
+          type: "negative",
+          position: "top",
+          icon: "error",
+        });
+        this.prompt = true;
+      }
+    },
   },
-  beforeMount(){
-    localStorage.removeItem('tasks');
+  async beforeMount() {
+    /*localStorage.removeItem('tasks');
     localStorage.removeItem('submissions');
-    localStorage.removeItem('programs');
-    
-    this.getAllPrograms();
+    localStorage.removeItem('programs');*/
+    try {
+      await this.allUsers();
+    } catch (error) {}
+
+    this.allPrograms();
     this.prompt = true;
-    this.getUsers.forEach(element => {
-      if(element.typeUser=='hacker'){
-        element.label = element.first_name
-      }
-      else if(element.typeUser == 'client'){
-        element.label = element.company_name
-      }
-      else if(element.typeUser == 'admin'){
-        element.label = element.username
+    this.getUsers.forEach((element) => {
+      if (element.typeUser == "hacker") {
+        element.label = element.first_name;
+      } else if (element.typeUser == "client") {
+        element.label = element.company_name;
+      } else if (element.typeUser == "admin") {
+        element.label = element.username;
       }
       element.value = element.id;
       this.users.push(element);
     });
-  }
+  },
 };
 </script>
 
