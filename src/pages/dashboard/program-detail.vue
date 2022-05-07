@@ -21,20 +21,6 @@
           :to="'/main/edit-program/' + program.id"
           v-if="user.typeUser == 'client' && program.user_id == user.id"
         />
-        <!-- <q-btn
-          class="bg-positive text-white q-mr-lg"
-          no-caps
-          flat
-          label="Save"
-          v-if="typeuser == 'client'"
-        />
-        <q-btn
-          class="bg-secondary text-white"
-          no-caps
-          flat
-          label="Publish"
-          v-if="typeuser == 'client'"
-        /> -->
       </q-toolbar>
       <div class="grid-content q-pt-lg q-pb-lg">
         <div class="">
@@ -271,24 +257,26 @@ export default {
       console.log(submission);
       let status = this.getReelStatus(submission.submissionStatus_id);
       let route = {
-          name: "submission-detail",
-          params: { id: submission.id },
-        };
+        name: "submission-detail",
+        params: { id: submission.id },
+      };
       if (this.user.typeUser != "client") {
-        
         this.$router.push(route);
       } else {
         console.log(status);
-        
+
         if (status == "triaged") this.$router.push(route);
       }
     },
   },
   beforeMount() {
-    this.program = this.getProgram(this.$route.params.id);
-    this.program.submissions = this.getSubmissionsProgram(
-      this.$route.params.id
-    );
+    try {
+      this.program = this.getProgram(this.$route.params.id);
+      console.log(this.program)
+      this.program.submissions = this.getSubmissionsProgram(
+        this.$route.params.id
+      );
+    } catch (error) {}
   },
 };
 </script>

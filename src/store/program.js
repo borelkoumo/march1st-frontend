@@ -1,7 +1,7 @@
 import dasboard from "./dashboard";
 /* import submission from "./submission"; */
 
-import { _getPrograms } from "../services/program";
+import { _getPrograms , _getOneProgram } from "../services/program";
 
 const state = {
   programs: [],
@@ -10,10 +10,17 @@ const state = {
 const getters = {
   getHasJoin(state) {
     return (id) => {
+      console.log(id);
       let hasJoin = false;
       let user = dasboard.state.user;
       let p = state.programs.filter((program) => program.id == id);
-      if (p[0].hackers.includes(user.id)) return true;
+      console.log(p);
+      //return false
+      if (p[0].hackers.length>0){
+        console.log(p[0].hackers);
+        //if( p[0].hackers.includes(user.id)) return true;
+        return false;
+      } 
       else return false;
     };
   },
@@ -33,18 +40,23 @@ const getters = {
   },
   getProgram(state) {
     return (id) => {
-      /* let allSubmissions = submission.state.submissions;
-      let submissions = []; */
-      let program = state.programs.filter((program) => program.id == id);
+      /*try {
+        const program = await _getOneProgram(id);
+        return Promise.resolve(program);
+      } catch (error) {
+        console.log("erro in action program "+ `${error}`);
+        return Promise.reject({});
+      }*/
+      try {
+        let program = state.programs.filter((program) => program.id == id);
       if (program[0]){
         let p= JSON.parse(JSON.stringify(program[0]));
-        /* submissions = allSubmissions.filter(
-          (submission) => submission.program_id == id
-        );
-        p.submissions=JSON.parse(JSON.stringify(submissions)); */
         return p;
       } 
-      return {};
+      } catch (error) {
+        return {};
+      }
+      
     };
   },
   getMyPrograms(state) {
@@ -362,11 +374,10 @@ const actions = {
     payload.max=payload.critical.max;
     commit('setEditProgram',payload);
   },
+
   async allPrograms({commit}){
     try {
       const programs = await _getPrograms();
-      console.log(programs);
-      
       commit('setPrograms',programs);
     } catch (error) {
       console.log("erro in action program "+ `${error}`);

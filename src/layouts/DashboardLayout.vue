@@ -294,7 +294,7 @@ export default {
     return {
       user: null,
       manager: null,
-      password: null,
+      password: "Hacker1@2022",
       users: [],
       prompt: false,
       newuser: {},
