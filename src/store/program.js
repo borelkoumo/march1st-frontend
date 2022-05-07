@@ -18,7 +18,7 @@ const getters = {
       //return false
       if (p[0].hackers.length>0){
         console.log(p[0].hackers);
-        //if( p[0].hackers.includes(user.id)) return true;
+        if( p[0].hackers.includes(user.id)) return true;
         return false;
       } 
       else return false;
@@ -40,13 +40,6 @@ const getters = {
   },
   getProgram(state) {
     return (id) => {
-      /*try {
-        const program = await _getOneProgram(id);
-        return Promise.resolve(program);
-      } catch (error) {
-        console.log("erro in action program "+ `${error}`);
-        return Promise.reject({});
-      }*/
       try {
         let program = state.programs.filter((program) => program.id == id);
       if (program[0]){
@@ -59,6 +52,7 @@ const getters = {
       
     };
   },
+
   getMyPrograms(state) {
     let user = dasboard.state.user;
     if (user.typeUser == "client") {
@@ -78,6 +72,7 @@ const getters = {
       return JSON.parse(JSON.stringify(managerPrograms));
     }
   },
+  
   getAllPrograms(state) {
     let user = dasboard.state.user;
     let programs = [];

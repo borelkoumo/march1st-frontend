@@ -5,6 +5,12 @@ const users = [
     location: "Location 1",
     company_logo: "",
     typeUser: "client",
+    company_users:[
+      {
+        username:"userCompany1",
+        role:"admin"
+      }
+    ]
   },
   {
     company_name: "Company 2",

@@ -25,6 +25,14 @@ const PROGRAMS_QUERY = {
             safe_harbour_type
             reward_range
             reward_type
+            hackers{
+              data{
+                id
+                attributes{
+                  first_name
+                }
+              }
+            }
           }
         }
       }
@@ -59,6 +67,14 @@ const ONE_PROGRAM_QUERY = {
             safe_harbour_type
             reward_range
             reward_type
+            hackers{
+              data{
+                id
+                attributes{
+                  first_name
+                }
+              }
+            }
           }
         }
       }

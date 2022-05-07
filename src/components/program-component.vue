@@ -40,7 +40,7 @@
           {{ program.program_title }}
         </div>
         <div class="content-title">
-          {{ program.description }}
+          {{ program.program_description }}
         </div>
         <div class="price-program">
           <span v-if="program.reward_type == 'cash'">$</span>
@@ -238,7 +238,7 @@ export default {
   display: -webkit-box;
   -webkit-line-clamp: 3; /* number of lines to show */
   -webkit-box-orient: vertical;
-  height: 50px;
+  height: 42px;
 }
 .box-image {
   border-radius: 10px;

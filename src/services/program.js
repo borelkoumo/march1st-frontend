@@ -27,8 +27,11 @@ const _getPrograms = async function () {
       program.severe = p.attributes.reward_range.severe;
       program.medium = p.attributes.reward_range.medium;
       program.low = p.attributes.reward_range.low;
-
-      program.hackers = [];
+      let hackers = p.attributes.hackers.data;
+      program.hackers= hackers.map(function(h){
+        return h.id;
+      })
+      //program.hackers = [];
       program.invitations = [];
       program.managers = [];
       return program;

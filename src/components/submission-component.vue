@@ -3,7 +3,9 @@
     <slot name="header"> </slot>
     <q-card-section horizontal>
       <div class="box-image col-3">
-        <q-img :src="program.program_picture_url"/>
+        <div style="max-width: 300px; height: 250px;">
+          <q-img :src="program.program_picture_url"/>
+        </div>
       </div>
       <q-card-section class="q-pl-lg">
         <div class="subtitle"><router-link :to="'/main/program-detail/'+program.id">Related Program</router-link></div>
@@ -16,7 +18,7 @@
         <q-toolbar class="subtitle-3">
           <div>Submitted on 22 May 2021 , 3:45 pm</div>
           <q-space />
-          <div>$ {{program.min}} - $ {{program.max}} Per vulnerability</div>
+          <div>$ {{program.low.min}} - $ {{program.critical.max}} Per vulnerability</div>
         </q-toolbar>
       </q-card-section>
     </q-card-section>
