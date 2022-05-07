@@ -320,7 +320,7 @@ export default {
       if (this.user.typeUser == "client") {
         payload = {
           user: this.user,
-          manager:this.manager,
+          manager: this.manager,
           password: this.password,
         };
       }
@@ -367,8 +367,8 @@ export default {
 
 <style lang="sass">
 .active-menu
-  border-right:1px solid white
   color:white
+  border-right:1px solid white
 
 .card-identification
   height:200px

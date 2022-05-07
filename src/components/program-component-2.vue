@@ -39,13 +39,15 @@
     <q-separator />
     <q-card-actions align="between" class="q-pt-md q-pb-md q-pr-none q-pl-none">
       <q-btn no-caps flat class="text-action-1"
-        ><span v-if="program.reward_type == 'cash'">$</span> {{ program.min }} -
-        <span v-if="program.reward_type == 'cash'">$</span> {{ program.max }}
-        <span v-if="program.reward_type == 'points'">Points</span> Per
-        vulnerability</q-btn
+        ><span v-if="program.reward_type == 'cash'">$</span>
+        {{ program.low.min }} -
+        <span v-if="program.reward_type == 'cash'">$</span>
+        {{ program.critical.max }}
+        <span v-if="program.reward_type == 'points'">&nbsp; Points </span>
+        <span> &nbsp; Per vulnerability</span></q-btn
       >
       <q-btn no-caps flat class="text-action-2"
-        >{{ program.scope }} scopes</q-btn
+        >{{ program.program_scope }} scopes</q-btn
       >
     </q-card-actions>
     <slot name="button">
@@ -108,6 +110,13 @@ export default {
   color: #767676;
   padding-top: 10px;
   padding-bottom: 10px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* number of lines to show */
+  -webkit-box-orient: vertical;
+  height: 50px;
 }
 .text-action-1 {
   font-family: "inter";

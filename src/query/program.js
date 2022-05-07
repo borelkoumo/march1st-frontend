@@ -24,6 +24,7 @@ const PROGRAMS_QUERY = {
             program_type
             safe_harbour_type
             reward_range
+            reward_type
           }
         }
       }

@@ -19,8 +19,11 @@ const _getPrograms = async function(){
             program.createdAt=p.attributes.createdAt
             program.reward_guidelines=p.attributes.reward_guidelines
 
+            
             program.program_type=p.attributes.program_type
             program.safe_harbour_type=p.attributes.safe_harbour_type
+            program.reward_type = p.attributes.reward_type
+
             program.critical=p.attributes.reward_range.critical
             program.severe=p.attributes.reward_range.severe
             program.medium=p.attributes.reward_range.medium

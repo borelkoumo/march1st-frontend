@@ -44,10 +44,10 @@
         </div>
         <div class="price-program">
           <span v-if="program.reward_type == 'cash'">$</span>
-          {{ program.min }} -
+          {{ program.low.min }} -
           <span v-if="program.reward_type == 'cash'">$</span>
-          {{ program.max }} <span v-if="program.reward_type == 'points'">Points</span>
-          Per vulnerability
+          {{ program.critical.max }} <span v-if="program.reward_type == 'points'">&nbsp;Points </span>
+           <span>&nbsp; Per vulnerability</span>
         </div>
         <div class="flex no-wrap">
           <div
@@ -231,6 +231,14 @@ export default {
   align-items: center;
   letter-spacing: -0.015em;
   color: #838181;
+
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* number of lines to show */
+  -webkit-box-orient: vertical;
+  height: 50px;
 }
 .box-image {
   border-radius: 10px;
