@@ -3,7 +3,26 @@ import {
   COMPAGNIES_QUERY,
   HACKERS_QUERY,
   LOGIN_MUTATION,
+  USERS_QUERY
 } from "../query/users";
+const _getUsers = async function(){
+  try {
+    const result = await apolloClient.query(USERS_QUERY);
+    const data = result.data.usersPermissionsUsers.data;
+    const userList = data.map(function (u) {
+      let user = {};
+      user.id = u.id;
+      user.username = u.attributes.username;
+      user.email = u.attributes.email;
+      //hacker.typeUser = "";
+      return user;
+    });
+    return userList;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 const _getHackers = async function () {
   try {
     const result = await apolloClient.query(HACKERS_QUERY);
@@ -66,10 +85,18 @@ const _loginUser = async function (payload) {
   try {
     LOGIN_MUTATION.variables.user = payload;
     const result = await apolloClient.mutate(LOGIN_MUTATION);
-    return Promise.resolve(result.data);
+    
+    let user = result.data.login.user;
+    user.typeUser="hacker";
+    let token = result.data.login.token;
+    let login={
+      user:user,
+      token:token
+    }
+    return Promise.resolve(login);
   } catch (error) {
     return Promise.reject(0);
   }
 };
 
-export { _getHackers, _loginUser, _getCompanies };
+export { _getHackers, _loginUser, _getCompanies, _getUsers};

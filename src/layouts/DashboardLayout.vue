@@ -187,13 +187,6 @@
             label="Sélectionnez un utilisateur"
             outlined
           />
-          <q-select
-            v-if="user != null && user.typeUser == 'client'"
-            v-model="manager"
-            :options="user.company_users"
-            label="Sélectionnez un manager"
-            outlined
-          />
           <q-input
             type="password"
             v-model="password"
@@ -314,16 +307,10 @@ export default {
     ...mapActions("program", ["allPrograms"]),
     async onCreateUser() {
       let payload = {
-        user: this.user,
+        email: this.user.email,
         password: this.password,
       };
-      if (this.user.typeUser == "client") {
-        payload = {
-          user: this.user,
-          manager: this.manager,
-          password: this.password,
-        };
-      }
+      
       try {
         this.$q.loading.show();
         await this.createUser(payload);

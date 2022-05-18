@@ -1,9 +1,14 @@
 import { users } from "./utils/fakedata";
-import { _getHackers, _loginUser, _getCompanies} from "../services/users";
+import {
+  _getHackers,
+  _loginUser,
+  _getCompanies,
+  _getUsers,
+} from "../services/users";
 
 const state = {
   // pour la simulation
-  token:null,
+  token: null,
   user: {
     name: "",
     typeUser: "client",
@@ -184,9 +189,9 @@ const state = {
       },
     },
   ],
-  users:[],
-  hackers:[],
-  compagines:[]
+  users: [],
+  hackers: [],
+  compagines: [],
 };
 
 const getters = {
@@ -436,7 +441,7 @@ const getters = {
     return (id) => {
       let user = state.users.filter((u) => u.id == id);
       if (user.length > 0) return user[0];
-      return {}
+      return {};
     };
   },
 
@@ -455,47 +460,43 @@ const mutations = {
     state.user = payload.user;
     state.token = payload.token;
   },
-  setUsers(state,payload){
-    state.users = payload.hackers;
-    state.users = state.users.concat(payload.companies);
+  setUsers(state, payload) {
+    state.users = payload;
   },
 };
 
 const actions = {
   async createUser({ commit }, payload) {
     try {
-      let email=null;
-      if(payload.user.typeUser=='client'){
-        email=payload.manager.email
-      }
-      else if(payload.user.typeUser=='hacker'){
-        email=payload.user.email
-      }
-      const data = await _loginUser({identifier:email,password:payload.password});
+      const data = await _loginUser({
+        identifier: payload.email,
+        password: payload.password,
+      });
+      //payload.token = data.login.jwt;
       
-      payload.token= data.login.jwt;
-      commit("setUser", payload);
+      commit("setUser", data);
+      //console.log(payload);
       return Promise.resolve(data);
     } catch (error) {
-      payload.token=null;
-      payload.user={};
+      payload.token = null;
+      payload.user = {};
+      console.log(error);
       commit("setUser", payload);
-      return Promise.reject(0)
+      return Promise.reject(0);
     }
   },
-  
-  async allUsers({commit}){
+
+  async allUsers({ commit }) {
     try {
-      const hackers = await _getHackers();
-      const companies = await _getCompanies();
-      console.log(companies);
-      let usersList={
-        hackers:hackers,
-        companies:companies
-      }
-      commit('setUsers',usersList);
+      const users = await _getUsers();
+      let userList = users.map(function(user){
+        user.label=user.username
+        user.value = user.email
+        return user;
+      })
+      commit("setUsers", userList);
     } catch (error) {
-      console.log("erro in action dashboard "+ `${error}`);
+      console.log("erro in action dashboard " + `${error}`);
     }
   },
 };

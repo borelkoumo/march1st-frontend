@@ -1,11 +1,29 @@
 import { gql } from "graphql-tag";
+/**
+ * query all user
+ */
+const USERS_QUERY = {
+  query: gql`
+    query GetUsersPermissionsUsers {
+      usersPermissionsUsers {
+        data {
+          id
+          attributes {
+            username
+            email
+          }
+        }
+      }
+    }
+  `,
+};
 
 /**
  * query hackers from database
  */
 const HACKERS_QUERY = {
   query: gql`
-    query {
+    query GetHackers{
       hackers {
         data {
           id
@@ -35,7 +53,7 @@ const HACKERS_QUERY = {
  */
 const COMPAGNIES_QUERY = {
   query: gql`
-    query {
+    query GetCompanies{
       companies {
         data {
           id
@@ -57,7 +75,6 @@ const COMPAGNIES_QUERY = {
                       attributes {
                         username
                         email
-                        
                       }
                     }
                   }
@@ -83,6 +100,11 @@ const { mutate: LOGIN_MUTATION } = {
       mutation login($user: UsersPermissionsLoginInput!) {
         login(input: $user) {
           jwt
+          user{
+            id
+            email
+            username
+          }
         }
       }
     `,
@@ -91,4 +113,4 @@ const { mutate: LOGIN_MUTATION } = {
     },
   },
 };
-export { HACKERS_QUERY, LOGIN_MUTATION, COMPAGNIES_QUERY };
+export { HACKERS_QUERY, LOGIN_MUTATION, COMPAGNIES_QUERY, USERS_QUERY };
