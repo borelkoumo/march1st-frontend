@@ -23,7 +23,7 @@ const USERS_QUERY = {
  */
 const HACKERS_QUERY = {
   query: gql`
-    query GetHackers{
+    query GetHackers {
       hackers {
         data {
           id
@@ -53,7 +53,7 @@ const HACKERS_QUERY = {
  */
 const COMPAGNIES_QUERY = {
   query: gql`
-    query GetCompanies{
+    query GetCompanies {
       companies {
         data {
           id
@@ -100,7 +100,7 @@ const { mutate: LOGIN_MUTATION } = {
       mutation login($user: UsersPermissionsLoginInput!) {
         login(input: $user) {
           jwt
-          user{
+          user {
             id
             email
             username
@@ -113,4 +113,29 @@ const { mutate: LOGIN_MUTATION } = {
     },
   },
 };
-export { HACKERS_QUERY, LOGIN_MUTATION, COMPAGNIES_QUERY, USERS_QUERY };
+
+//get a role for a user
+const MYROLE_QUERY = {
+  query: gql`
+    query users {
+      me {
+        role {
+          id
+          name
+        }
+      }
+    }
+  `,
+  context: {
+    headers: {
+      /* authorization: token, */
+    },
+  },
+};
+export {
+  HACKERS_QUERY,
+  LOGIN_MUTATION,
+  COMPAGNIES_QUERY,
+  USERS_QUERY,
+  MYROLE_QUERY,
+};

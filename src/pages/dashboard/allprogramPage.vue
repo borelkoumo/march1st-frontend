@@ -131,7 +131,7 @@
                   class="text-action-3"
                   style="background: #5887ff; width: 100%"
                   v-if="program.can_join"
-                  @click.stop="onJoinProgram(program.id)"
+                  @click.stop="onJoinProgram(program)"
                   >Join Program</q-btn
                 >
                 <q-btn
@@ -306,8 +306,8 @@ export default {
         this.checkPoint &&
         this.checkCash;
     },
-    async onJoinProgram(id){
-      await this.joinProgram(id);
+    async onJoinProgram(program){
+      await this.joinProgram(program);
       this.$router.push('/main/my-programs');
     },
     async onLeaveProgram(id){

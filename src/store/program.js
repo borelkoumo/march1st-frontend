@@ -1,7 +1,7 @@
 import dasboard from "./dashboard";
 /* import submission from "./submission"; */
 
-import { _getPrograms , _getOneProgram } from "../services/program";
+import { _getPrograms , _getOneProgram, _joinProgram} from "../services/program";
 
 const state = {
   programs: [],
@@ -245,7 +245,10 @@ const mutations = {
   addHackerToProgram(state, payload) {
     state.programs.forEach((p) => {
       if (p.id == payload.program_id) {
+        console.log(payload);
+        
         p.hackers.push(payload.hacker.id);
+        console.log(p.hackers);
       }
     });
   },
@@ -333,10 +336,12 @@ const actions = {
   },
   async joinProgram({ state, commit }, payload) {
     let user = dasboard.state.user;
+    payload.hackers.push(user.id);
     let param = {
       hacker: user,
-      program_id: payload,
+      program_id: payload.id,
     };
+    const result = _joinProgram(payload);
     commit("addHackerToProgram", param);
   },
   async leaveProgram({ state, commit }, payload) {

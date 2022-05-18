@@ -3,9 +3,10 @@ import {
   COMPAGNIES_QUERY,
   HACKERS_QUERY,
   LOGIN_MUTATION,
-  USERS_QUERY
+  USERS_QUERY,
+  MYROLE_QUERY,
 } from "../query/users";
-const _getUsers = async function(){
+const _getUsers = async function () {
   try {
     const result = await apolloClient.query(USERS_QUERY);
     const data = result.data.usersPermissionsUsers.data;
@@ -21,7 +22,7 @@ const _getUsers = async function(){
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 const _getHackers = async function () {
   try {
@@ -86,16 +87,31 @@ const _loginUser = async function (payload) {
     LOGIN_MUTATION.variables.user = payload;
     const result = await apolloClient.mutate(LOGIN_MUTATION);
     let user = result.data.login.user;
-    user.typeUser="hacker";
+    user.typeUser = "Public";
     let token = result.data.login.jwt;
-    let login={
-      user:user,
-      token:token
-    }
+    let login = {
+      user: user,
+      token: token,
+    };
     return Promise.resolve(login);
   } catch (error) {
     return Promise.reject(0);
   }
 };
 
-export { _getHackers, _loginUser, _getCompanies, _getUsers};
+const _getMyRole = async function (payload) {
+  try {
+    //console.log(payload);
+    MYROLE_QUERY.context.headers.authorization = "Bearer " + payload;
+    //console.log(MYROLE_QUERY);
+    const result = await apolloClient.query(MYROLE_QUERY);
+    let role = result.data.me.role.name;
+    role = role.toLowerCase();
+    //console.log(role);
+    return Promise.resolve(role);
+  } catch (error) {
+    return Promise.reject(0);
+  }
+};
+
+export { _getHackers, _loginUser, _getCompanies, _getUsers, _getMyRole };

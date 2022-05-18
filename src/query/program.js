@@ -25,7 +25,14 @@ const PROGRAMS_QUERY = {
             safe_harbour_type
             reward_range
             reward_type
-            
+            hackers {
+              data {
+                id
+                attributes {
+                  first_name
+                }
+              }
+            }
           }
         }
       }
@@ -35,18 +42,8 @@ const PROGRAMS_QUERY = {
     headers: {
       /* authorization: token, */
     },
-  }
+  },
 };
-/**
- hackers{
-              data{
-                id
-                attributes{
-                  first_name
-                }
-              }
-            }
- */
 
 /**
  * query one program from database
@@ -75,10 +72,10 @@ const ONE_PROGRAM_QUERY = {
             safe_harbour_type
             reward_range
             reward_type
-            hackers{
-              data{
+            hackers {
+              data {
                 id
-                attributes{
+                attributes {
                   first_name
                 }
               }
@@ -91,4 +88,33 @@ const ONE_PROGRAM_QUERY = {
   variables: {},
 };
 
-export { PROGRAMS_QUERY, ONE_PROGRAM_QUERY };
+const { mutate: JOIN_PROGRAM_MUTATION } = {
+  mutate: {
+    mutation: gql`
+      mutation updateProgram($id: ID!, $hackers: [ID]!) {
+        updateProgram(id: $id, data: { hackers: $hackers }) {
+          data {
+            id
+            attributes {
+              hackers {
+                data {
+                  id
+                }
+              }
+            }
+          }
+        }
+      }
+    `,
+    variables: {
+      //user: { identifier: "sdfdf", password: "dfdfdf" },
+    },
+    context: {
+      headers: {
+        /* authorization: token, */
+      },
+    },
+  },
+};
+
+export { PROGRAMS_QUERY, ONE_PROGRAM_QUERY, JOIN_PROGRAM_MUTATION };

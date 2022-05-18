@@ -4,6 +4,7 @@ import {
   _loginUser,
   _getCompanies,
   _getUsers,
+  _getMyRole
 } from "../services/users";
 
 const state = {
@@ -458,6 +459,7 @@ const getters = {
 const mutations = {
   setUser(state, payload) {
     state.user = payload.user;
+    state.user.typeUser=payload.role;
     state.token = payload.token;
     localStorage.setItem("token",payload.token);
   },
@@ -474,10 +476,16 @@ const actions = {
         password: payload.password,
       });
       //payload.token = data.login.jwt;
-      console.log(data);
-      commit("setUser", data);
+      //console.log(data);
+      const role = await _getMyRole(data.token)
+      let dataObject={
+        user:data.user,
+        token:data.token,
+        role:role
+      }
+      commit("setUser", dataObject);
       //console.log(payload);
-      return Promise.resolve(data);
+      return Promise.resolve(role);
     } catch (error) {
       payload.token = null;
       payload.user = {};
