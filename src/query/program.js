@@ -25,7 +25,20 @@ const PROGRAMS_QUERY = {
             safe_harbour_type
             reward_range
             reward_type
-            hackers{
+            
+          }
+        }
+      }
+    }
+  `,
+  context: {
+    headers: {
+      /* authorization: token, */
+    },
+  }
+};
+/**
+ hackers{
               data{
                 id
                 attributes{
@@ -33,12 +46,7 @@ const PROGRAMS_QUERY = {
                 }
               }
             }
-          }
-        }
-      }
-    }
-  `,
-};
+ */
 
 /**
  * query one program from database

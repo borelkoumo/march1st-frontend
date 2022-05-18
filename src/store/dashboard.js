@@ -459,6 +459,7 @@ const mutations = {
   setUser(state, payload) {
     state.user = payload.user;
     state.token = payload.token;
+    localStorage.setItem("token",payload.token);
   },
   setUsers(state, payload) {
     state.users = payload;
@@ -473,7 +474,7 @@ const actions = {
         password: payload.password,
       });
       //payload.token = data.login.jwt;
-      
+      console.log(data);
       commit("setUser", data);
       //console.log(payload);
       return Promise.resolve(data);

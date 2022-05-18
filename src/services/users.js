@@ -85,10 +85,9 @@ const _loginUser = async function (payload) {
   try {
     LOGIN_MUTATION.variables.user = payload;
     const result = await apolloClient.mutate(LOGIN_MUTATION);
-    
     let user = result.data.login.user;
     user.typeUser="hacker";
-    let token = result.data.login.token;
+    let token = result.data.login.jwt;
     let login={
       user:user,
       token:token

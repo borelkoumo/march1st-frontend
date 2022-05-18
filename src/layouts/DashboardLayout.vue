@@ -314,6 +314,7 @@ export default {
       try {
         this.$q.loading.show();
         await this.createUser(payload);
+        await this.allPrograms();
         this.$q.loading.hide();
       } catch (error) {
         this.$q.loading.hide();
@@ -335,7 +336,7 @@ export default {
       await this.allUsers();
     } catch (error) {}
 
-    this.allPrograms();
+    //this.allPrograms();
     this.prompt = true;
     this.getUsers.forEach((element) => {
       if (element.typeUser == "hacker") {

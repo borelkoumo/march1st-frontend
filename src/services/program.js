@@ -2,8 +2,12 @@ import apolloClient from "../boot/apollo";
 import { ONE_PROGRAM_QUERY, PROGRAMS_QUERY } from "../query/program";
 const _getPrograms = async function () {
   try {
+    console.log(localStorage.getItem("token"));
+    PROGRAMS_QUERY.context.headers.authorization="Bearer "+localStorage.getItem('token');
+    //console.log(PROGRAMS_QUERY);
     const result = await apolloClient.query(PROGRAMS_QUERY);
     const data = result.data.programs.data;
+    console.log(data);
     const programList = data.map(function (p) {
       let program = {};
       program.id = p.id;
@@ -27,10 +31,11 @@ const _getPrograms = async function () {
       program.severe = p.attributes.reward_range.severe;
       program.medium = p.attributes.reward_range.medium;
       program.low = p.attributes.reward_range.low;
-      let hackers = p.attributes.hackers.data;
+      /*let hackers = p.attributes.hackers.data;
       program.hackers= hackers.map(function(h){
         return h.id;
-      })
+      })*/
+      program.hackers=[];
       //program.hackers = [];
       program.invitations = [];
       program.managers = [];
@@ -38,6 +43,7 @@ const _getPrograms = async function () {
     });
     return Promise.resolve(programList);
   } catch (error) {
+    console.log(error);
     return Promise.reject(0);
   }
 };
