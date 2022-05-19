@@ -33,9 +33,27 @@ const PROGRAMS_QUERY = {
                 }
               }
             }
-            company{
-              data{
+            company {
+              data {
                 id
+              }
+            }
+            company_users {
+              data {
+                id
+                attributes {
+                  first_name
+                  last_name
+                  user {
+                    data {
+                      id
+                      attributes {
+                        username
+                        email
+                      }
+                    }
+                  }
+                }
               }
             }
           }
@@ -151,5 +169,5 @@ export {
   PROGRAMS_QUERY,
   ONE_PROGRAM_QUERY,
   JOIN_PROGRAM_MUTATION,
-  CREATE_PROGRAM
+  CREATE_PROGRAM,
 };

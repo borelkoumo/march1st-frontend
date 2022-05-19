@@ -102,9 +102,9 @@ const _getCompanyUsers = async function (companyId) {
         first_name: res.attributes.first_name,
         last_name: res.attributes.last_name,
         user: {
-          id:res.attributes.user.data.id,
-          email:res.attributes.user.data.attributes.email,
-          username:res.attributes.user.data.attributes.username,
+          id: res.attributes.user.data.id,
+          email: res.attributes.user.data.attributes.email,
+          username: res.attributes.user.data.attributes.username,
         },
       };
       return companyUser;
@@ -122,7 +122,7 @@ const _getCompanyUsers = async function (companyId) {
       c_u.user.email = data2.attributes.email;
       return c_u;
     })*/
-    
+
     return Promise.resolve(companyUsers);
   } catch (error) {
     console.log("Error in _getCompanyUsers", error);
@@ -176,24 +176,28 @@ const _getMyRole = async function (credentials) {
     MYROLE_QUERY.variables.userId = credentials.user.id;
     //console.log(MYROLE_QUERY);
     const result = await apolloClient.query(MYROLE_QUERY);
-    let role = result.data.me.role.type;
+    let type = result.data.me.role.type;
+    let role = "public";
     let company = null;
-    if (role === "m1_account_manager") {
+    if (type === "m1_account_manager") {
       //company=result.data.march1stUser.data.attributes.company;
-      role = "admin";
-    } else if (role === "hacker") {
+      type = "admin";
+    } else if (type === "hacker") {
       //company=result.data.companyUser.data.attributes.company;
-    } else if (role === "program_manager" || role === "program_super_admin") {
-      console.log("company user in getMyRole", result.data);
+    } else if (type === "program_manager" || type === "program_super_admin") {
+      //console.log("company user in getMyRole", result.data);
       //company=result.data.companyUser.data.attributes.company;
-      role = "client";
+      if (type === "program_manager") role = "manager";
+      else role = "super_manager";
+      type = "client";
     } else {
-      throw new Error(role + " not pris en charge");
+      throw new Error(type + " not pris en charge");
     }
 
     let data = {
       company,
       role,
+      type,
     };
 
     return Promise.resolve(data);

@@ -35,11 +35,29 @@ const _getPrograms = async function () {
       program.hackers = hackers.map(function (h) {
         return h.id;
       });
+      let managersData = p.attributes.company_users.data;
+      program.managers = managersData.map(function(m){
+        let manager={
+          id:m.id,
+          first_name:m.attributes.first_name,
+          last_name:m.attributes.last_name,
+          user:{
+            id:m.attributes.user.data.id,
+            email:m.attributes.user.data.attributes.email,
+            username:m.attributes.user.data.attributes.username,
+          }
+        }
+        return manager;
+      })
+      
+      program.managersId=managersData.map(function(m){
+        return m.id
+      })
+
       program.company = p.attributes.company.data.id
       //program.hackers=[];
       //program.hackers = [];
       program.invitations = [];
-      program.managers = [];
       return program;
     });
     return Promise.resolve(programList);
@@ -132,11 +150,11 @@ const _createProgram = async function(payload){
         is_closed: false,
         company:payload.company,
         hackers:payload.hackers,
-        program_picture_url: faker.image.business(1234, 2345)
-        
+        program_picture_url: faker.image.business(1234, 2345),
+        company_users:payload.company_users
         //program_picture_url: "programs/image17.png",
     }
-    console.log(program);
+    //console.log(program);
     CREATE_PROGRAM.variables.program = program;
     CREATE_PROGRAM.context.headers.authorization =
       "Bearer " + localStorage.getItem("token");

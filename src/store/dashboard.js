@@ -471,6 +471,8 @@ const mutations = {
     };
     if (payload.company) {
       user.company = payload.company;
+      user.role=payload.role;
+      user.company_user=payload.company_user;
     }
     if (payload.hacker) {
       user.hacker = payload.hacker;
@@ -483,8 +485,8 @@ const mutations = {
     state.users = payload;
   },
   setManagers(state, payload) {
-    state.managers=payload;
-  }
+    state.managers = payload;
+  },
 };
 
 const actions = {
@@ -498,35 +500,38 @@ const actions = {
 
       const url = "/custom/userdata?id=" + credentials.user.id;
       const data = await _getQueryServer(url, null, credentials.token);
-      let role = data.user.role.type;
-      console.log(role);
+      console.log(data.user);
+      let type = data.user.role.type;
+      let role = "public";
       let company = null;
       let hacker = null;
       let dataObject = {
         user: credentials.user,
         token: credentials.token,
       };
-      if (role === "m1_account_manager") {
+      if (type === "m1_account_manager") {
         //company=result.data.march1stUser.data.attributes.company;
-        role = "admin";
-      } else if (role === "hacker") {
+        type = "admin";
+      } else if (type === "hacker") {
         hacker = await _getHacker({
           id: credentials.user.id,
           token: credentials.token,
         });
-        (dataObject.typeUser = role), (dataObject.hacker = hacker);
-      } else if (role === "program_manager" || role === "program_super_admin") {
+        (dataObject.typeUser = type), (dataObject.hacker = hacker);
+      } else if (type === "program_manager" || type === "program_super_admin") {
         let company_user = data.user.company_user;
 
         company = await _getCompany({
           id: company_user.id,
           token: credentials.token,
         });
-
-        role = "client";
-        (dataObject.typeUser = role), (dataObject.company = company);
+        if (type == "program_manager") role = "manager";
+        else role = "super_manager";
+        type = "client";
+        (dataObject.typeUser = type), (dataObject.company = company);
+        dataObject.role = role; dataObject.company_user=company_user;
       } else {
-        throw new Error(role + " not pris en charge");
+        throw new Error(type + " not pris en charge");
       }
       //console.log(credentials.user)
 

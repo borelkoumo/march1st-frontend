@@ -102,7 +102,7 @@
           flat
           class="bg-secondary text-white"
           to="/main/add-program"
-          v-if="user.typeUser == 'client'"
+          v-if="user.typeUser === 'client' && user.role==='super_manager'"
         />
         <q-btn label="Submissions" flat no-caps icon-right="import_export" />
       </q-toolbar>

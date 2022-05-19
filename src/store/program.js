@@ -58,23 +58,37 @@ const getters = {
 
   getMyPrograms(state) {
     let user = dasboard.state.user;
-    if (user.typeUser == "client") {
-      console.log(user);
+    if (user.typeUser === "client") {
       console.log(state.programs);
-      return state.programs.filter((program) => program.company === user.company.id);
-    } else if (user.typeUser == "hacker") {
+      if (user.role === "manager") {
+        const programs = state.programs.filter(
+          (program) => program.company === user.company.id
+        );
+        let myprograms = [];
+        programs.forEach((element) => {
+          Object.keys(element.managersId).forEach((key) => {
+            if (Number(element.managersId[key]) === user.company_user.id)
+              myprograms.push(element);
+          });
+        });
+        return myprograms;
+      }
+      return state.programs.filter(
+        (program) => program.company === user.company.id
+      );
+    } else if (user.typeUser === "hacker") {
       let a = state.programs.filter((program) =>
         program.hackers.includes(user.id)
       );
       return a;
-    } else if (user.typeUser == "admin") {
-      let managerPrograms = [];
+    } else if (user.typeUser === "admin") {
+      /*let managerPrograms = [];
       state.programs.forEach((program) => {
         let allManagers = program.managers;
         if (allManagers.filter((m) => m.id == user.id).length > 0)
           managerPrograms.push(program);
-      });
-      return JSON.parse(JSON.stringify(managerPrograms));
+      });*/
+      return JSON.parse(JSON.stringify(state.programs));
     }
   },
 
@@ -296,6 +310,7 @@ const actions = {
         //date_post: "10/04/2021",
 
         hackers: [],
+        company_users: payload.managers.map((m) => m.id),
         //managers: payload.managers,
         //managersId: payload.managers.map((m) => m.id),
         //submissions: [],
