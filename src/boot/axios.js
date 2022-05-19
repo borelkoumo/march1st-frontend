@@ -8,7 +8,7 @@ import axios from "axios";
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
-//const api = axios.create({ baseURL: 'https://api.example.com' })
+const api = axios.create({ baseURL: 'https://strapi.march1st.com/api' })
 // const api = axios.create({
 //   baseURL: "https://6lnymbzvpa.execute-api.us-east-1.amazonaws.com/v1",
 // });
@@ -31,4 +31,4 @@ export default boot(({ app }) => {
   app.config.globalProperties.$server = webAuthnServer;
 });
 
-export { webAuthnServer };
+export { webAuthnServer, api };

@@ -46,6 +46,11 @@ const HACKERS_QUERY = {
       }
     }
   `,
+  context: {
+    headers: {
+      /* authorization: token, */
+    },
+  },
 };
 
 /**
@@ -88,6 +93,44 @@ const COMPAGNIES_QUERY = {
   `,
 };
 
+const COMPAGNY_USERS = {
+  query: gql`
+    query companyUsers($userId: ID!) {
+      company(id: $userId) {
+        data {
+          id
+          attributes {
+            company_users {
+              data {
+                id
+                attributes {
+                  first_name
+                  last_name
+                  user{
+                    data{
+                      id
+                      attributes{
+                        email
+                        username
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `,
+  variables: {},
+  context: {
+    headers: {
+      /* authorization: token, */
+    },
+  },
+};
+
 /**
  * login user
  * @param variable: {identifier:email, password:password}
@@ -117,25 +160,151 @@ const { mutate: LOGIN_MUTATION } = {
 //get a role for a user
 const MYROLE_QUERY = {
   query: gql`
-    query users {
+    query usersPermissionUser($userId: ID!) {
       me {
         role {
           id
           name
+          type
+        }
+        id
+      }
+      companyUser(id: $userId) {
+        data {
+          id
+          attributes {
+            first_name
+            company {
+              data {
+                id
+                attributes {
+                  company_name
+                  company_size
+                  company_logo
+                }
+              }
+            }
+          }
+        }
+      }
+      hacker(id: $userId) {
+        data {
+          id
+          attributes {
+            first_name
+          }
+        }
+      }
+      march1stUser(id: $userId) {
+        data {
+          id
+          attributes {
+            name
+          }
         }
       }
     }
   `,
+  variables: {},
   context: {
     headers: {
       /* authorization: token, */
     },
   },
 };
+
+const COMPANY_QUERY = {
+  query: gql`
+    query companyUser($userId: ID!) {
+      companyUser(id: $userId) {
+        data {
+          id
+          attributes {
+            first_name
+            company {
+              data {
+                id
+                attributes {
+                  company_name
+                  company_size
+                  company_logo
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `,
+  variables: {},
+  context: {
+    headers: {
+      /* authorization: token, */
+    },
+  },
+};
+
+const HACKER_QUERY = {
+  query: gql`
+    query usersPermissionsUser($userId: ID!) {
+      hacker(id: $userId) {
+        data {
+          id
+          attributes {
+            first_name
+            last_name
+            profile_picture_url
+            phone
+          }
+        }
+      }
+    }
+  `,
+  variables: {},
+  context: {
+    headers: {
+      /* authorization: token, */
+    },
+  },
+};
+
+const USER_COMPANY_USER = {
+  query: gql`
+    query usersPermissionsUser($companyUserId: ID!) {
+      companyUser(id: $companyUserId) {
+        data {
+          id
+          attributes {
+            user {
+              data {
+                id
+                attributes {
+                  username
+                  email
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `,
+  variables: {},
+  context: {
+    headers: {
+      /* authorization: token, */
+    },
+  },
+};
+
 export {
   HACKERS_QUERY,
   LOGIN_MUTATION,
   COMPAGNIES_QUERY,
   USERS_QUERY,
   MYROLE_QUERY,
+  COMPANY_QUERY,
+  HACKER_QUERY,
+  COMPAGNY_USERS,
+  USER_COMPANY_USER,
 };

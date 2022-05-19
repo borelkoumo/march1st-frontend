@@ -1,5 +1,6 @@
+const { faker } = require("@faker-js/faker");
 import apolloClient from "../boot/apollo";
-import { ONE_PROGRAM_QUERY, PROGRAMS_QUERY, JOIN_PROGRAM_MUTATION } from "../query/program";
+import { ONE_PROGRAM_QUERY, PROGRAMS_QUERY, JOIN_PROGRAM_MUTATION, CREATE_PROGRAM } from "../query/program";
 const _getPrograms = async function () {
   try {
     PROGRAMS_QUERY.context.headers.authorization =
@@ -34,6 +35,7 @@ const _getPrograms = async function () {
       program.hackers = hackers.map(function (h) {
         return h.id;
       });
+      program.company = p.attributes.company.data.id
       //program.hackers=[];
       //program.hackers = [];
       program.invitations = [];
@@ -92,10 +94,57 @@ const _joinProgram = async function (payload) {
     JOIN_PROGRAM_MUTATION.context.headers.authorization =
       "Bearer " + localStorage.getItem("token");
     const result = await apolloClient.mutate(JOIN_PROGRAM_MUTATION);
-    console.log(result);
+    //console.log(result);
   } catch (error) {
     console.log(error);
   }
 };
+const _createProgram = async function(payload){
+  try {
+    let program ={
+      program_title: payload.program_title,
+        program_description: payload.program_description,
+        program_type: payload.program_type,
+        safe_harbour_type: payload.safe_harbour_type,
+        reward_type: payload.reward_type,
+        reward_range: {
+          low: {
+            max: payload.low.max,
+            min: payload.low.min
+          },
+          medium: {
+            max: payload.medium.max,
+            min: payload.medium.min
+          },
+          severe: {
+            max: payload.severe.max,
+            min: payload.severe.min
+          },
+          critical: {
+            max: payload.critical.max,
+            min: payload.critical.min
+          }
+        },
+        program_guidelines_1: payload.program_guidelines_1,
+        program_guidelines_2: payload.program_guidelines_2,
+        program_scope: payload.program_scope,
+        legal_terms: payload.legal_terms,
+        is_closed: false,
+        company:payload.company,
+        hackers:payload.hackers,
+        program_picture_url: faker.image.business(1234, 2345)
+        
+        //program_picture_url: "programs/image17.png",
+    }
+    console.log(program);
+    CREATE_PROGRAM.variables.program = program;
+    CREATE_PROGRAM.context.headers.authorization =
+      "Bearer " + localStorage.getItem("token");
+      const result = await apolloClient.mutate(CREATE_PROGRAM);
+    console.log(result);
+  } catch (error) {
+    console.log(error);
+  }
+}
 
-export { _getPrograms, _getOneProgram, _joinProgram };
+export { _getPrograms, _getOneProgram, _joinProgram, _createProgram };

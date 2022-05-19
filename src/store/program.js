@@ -1,7 +1,12 @@
 import dasboard from "./dashboard";
 /* import submission from "./submission"; */
 
-import { _getPrograms , _getOneProgram, _joinProgram} from "../services/program";
+import {
+  _getPrograms,
+  _getOneProgram,
+  _joinProgram,
+  _createProgram,
+} from "../services/program";
 
 const state = {
   programs: [],
@@ -16,12 +21,11 @@ const getters = {
       let p = state.programs.filter((program) => program.id == id);
       console.log(p);
       //return false
-      if (p[0].hackers.length>0){
+      if (p[0].hackers.length > 0) {
         console.log(p[0].hackers);
-        if( p[0].hackers.includes(user.id)) return true;
+        if (p[0].hackers.includes(user.id)) return true;
         return false;
-      } 
-      else return false;
+      } else return false;
     };
   },
   getPublicPrograms(state) {
@@ -42,37 +46,38 @@ const getters = {
     return (id) => {
       try {
         let program = state.programs.filter((program) => program.id == id);
-      if (program[0]){
-        let p= JSON.parse(JSON.stringify(program[0]));
-        return p;
-      } 
+        if (program[0]) {
+          let p = JSON.parse(JSON.stringify(program[0]));
+          return p;
+        }
       } catch (error) {
         return {};
       }
-      
     };
   },
 
   getMyPrograms(state) {
     let user = dasboard.state.user;
     if (user.typeUser == "client") {
-      return state.programs.filter((program) => program.client_id == user.id);
+      console.log(user);
+      console.log(state.programs);
+      return state.programs.filter((program) => program.company === user.company.id);
     } else if (user.typeUser == "hacker") {
       let a = state.programs.filter((program) =>
         program.hackers.includes(user.id)
       );
       return a;
-    }
-    else if(user.typeUser=="admin"){
-      let managerPrograms=[];
-      state.programs.forEach((program)=>{
+    } else if (user.typeUser == "admin") {
+      let managerPrograms = [];
+      state.programs.forEach((program) => {
         let allManagers = program.managers;
-        if(allManagers.filter(m => m.id==user.id).length>0) managerPrograms.push(program);
-      })
+        if (allManagers.filter((m) => m.id == user.id).length > 0)
+          managerPrograms.push(program);
+      });
       return JSON.parse(JSON.stringify(managerPrograms));
     }
   },
-  
+
   getAllPrograms(state) {
     let user = dasboard.state.user;
     let programs = [];
@@ -124,8 +129,6 @@ const getters = {
     }
     return programs;
   },
-
-
 
   getPrograms(state) {
     let programs = localStorage.getItem("programs");
@@ -224,19 +227,18 @@ const getters = {
 };
 
 const mutations = {
-  setPrograms(state,payload) {
+  setPrograms(state, payload) {
     state.programs = payload;
   },
-  setEditProgram(state,payload){
-    let programs=[];
-    state.programs.forEach((p)=>{
-      if(p.id==payload.id){
+  setEditProgram(state, payload) {
+    let programs = [];
+    state.programs.forEach((p) => {
+      if (p.id == payload.id) {
         programs.push(payload);
+      } else {
+        programs.push(p);
       }
-      else{
-        programs.push(p)
-      }
-    })
+    });
     state.programs = programs;
   },
   addProgram(state, payload) {
@@ -246,7 +248,7 @@ const mutations = {
     state.programs.forEach((p) => {
       if (p.id == payload.program_id) {
         console.log(payload);
-        
+
         p.hackers.push(payload.hacker.id);
         console.log(p.hackers);
       }
@@ -270,69 +272,60 @@ const mutations = {
 
 const actions = {
   async saveProgram({ state, commit, dispatch }, payload) {
-    /*let max =
-      payload.critical.max > payload.severe.max
-        ? payload.critical.max
-        : payload.severe.max;
-    max = max > payload.medium.max ? max : payload.medium.max;
-    max = max > payload.low.max ? max : payload.low.max;
+    try {
+      let user = dasboard.state.user;
+      let program = {
+        //id: payload.id,
+        /*program_title: payload.program_title,
+        program_description: payload.program_description,
+        program_type: payload.program_type,
+        safe_harbour_type: payload.safe_harbour_type,
+        reward_type: payload.reward_type,
+        reward_range: payload.reward_range,
+        program_guidelines_1: payload.program_guidelines_1,
+        program_guidelines_2: payload.program_guidelines_2,
+        program_scope: payload.program_scope,
+        legal_terms: payload.legal_terms,*/
+        //program_picture_url: "programs/image17.png",
+        ...payload,
+        is_closed: false,
+        //closed_at: "",
+        //user_id: user.id,
+        //client_id: user.id,
+        company: user.company.id,
+        //date_post: "10/04/2021",
 
-    let min =
-      payload.critical.min > payload.severe.min
-        ? payload.critical.min
-        : payload.severe.min;
-    min = min > payload.medium.min ? min : payload.medium.min;
-    min = min > payload.low.min ? min : payload.low.min;*/
+        hackers: [],
+        //managers: payload.managers,
+        //managersId: payload.managers.map((m) => m.id),
+        //submissions: [],
+        //invitations: payload.invitations,
 
-    let user = dasboard.state.user;
-    let program = {
-      id: payload.id,
-      program_title: payload.program_title,
-      program_description: payload.program_description,
-      program_type: payload.program_type,
-      safe_harbour_type: payload.safe_harbour_type,
-      reward_type: payload.reward_type,
-      reward_range: payload.reward_range,
-      program_guidelines_1: payload.program_guidelines_1,
-      program_guidelines_2: payload.program_guidelines_2,
-      program_scope: payload.program_scope,
-      legal_terms: payload.legal_terms,
-      program_picture_url: "programs/image17.png",
-      is_closed: false,
-      closed_at: "",
-      user_id: user.id,
-      client_id: user.id,
-      date_post: "10/04/2021",
+        /*critical: payload.critical,
+        severe: payload.severe,
+        medium: payload.medium,
+        low: payload.low,*/
 
-      hackers: [],
-      managers: payload.managers,
-      managersId:payload.managers.map(m => m.id),
-      submissions: [],
-      invitations: payload.invitations,
-
-      critical: payload.critical,
-      severe: payload.severe,
-      medium: payload.medium,
-      low: payload.low,
-
-      max: payload.critical.max,
-      min: payload.low.min,
-    };
-
-    /* program.invitations.forEach((hacker) => {
-      let task = {
-        task_created: user.id,
-        task_received: hacker,
-        task_type: "invitation",
-        status: "",
-        task_link: "Private Invitation",
-        task_title: "You received an invitation to join a bounty program",
-        task_description: program.title,
-        task_date: "",
+        max: payload.critical.max,
+        min: payload.low.min,
       };
-      dispatch("task/addTask", task, { root: true });
-    }); */
-    commit("addProgram", program);
+
+      /* program.invitations.forEach((hacker) => {
+        let task = {
+          task_created: user.id,
+          task_received: hacker,
+          task_type: "invitation",
+          status: "",
+          task_link: "Private Invitation",
+          task_title: "You received an invitation to join a bounty program",
+          task_description: program.title,
+          task_date: "",
+        };
+        dispatch("task/addTask", task, { root: true });
+      }); */
+      const result = await _createProgram(program);
+      //commit("addProgram", program);
+    } catch (error) {}
   },
   async joinProgram({ state, commit }, payload) {
     let user = dasboard.state.user;
@@ -354,7 +347,7 @@ const actions = {
   },
   async editProgram({ state, commit }, payload) {
     /* console.log(payload) */
-   /* let max =
+    /* let max =
       payload.critical.max > payload.severe.max
         ? payload.critical.max
         : payload.severe.max;
@@ -368,21 +361,23 @@ const actions = {
     min = min > payload.medium.min ? min : payload.medium.min;
     min = min > payload.low.min ? min : payload.low.min;*/
 
-    payload.managersId=payload.managers.map(function(m) {return m.id});
-    
-    payload.min=payload.low.min;
-    payload.max=payload.critical.max;
-    commit('setEditProgram',payload);
+    payload.managersId = payload.managers.map(function (m) {
+      return m.id;
+    });
+
+    payload.min = payload.low.min;
+    payload.max = payload.critical.max;
+    commit("setEditProgram", payload);
   },
 
-  async allPrograms({commit}){
+  async allPrograms({ commit }) {
     try {
       const programs = await _getPrograms();
-      commit('setPrograms',programs);
+      commit("setPrograms", programs);
     } catch (error) {
-      console.log("erro in action program "+ `${error}`);
+      console.log("erro in action program " + `${error}`);
     }
-  }
+  },
 };
 
 export default {

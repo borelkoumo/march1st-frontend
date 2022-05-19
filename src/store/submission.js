@@ -1,6 +1,6 @@
 import dasboard from "./dashboard";
-import gql from "graphql-tag";
 import program from "./program";
+import {_createSubmission} from "../services/submission";
 
 //const programs =program.state.programs;
 //const user = dasboard.state.user;

@@ -1,10 +1,14 @@
+import { _postQueryServer, _getQueryServer } from "./utils/helper";
 import { users } from "./utils/fakedata";
 import {
   _getHackers,
   _loginUser,
   _getCompanies,
   _getUsers,
-  _getMyRole
+  _getMyRole,
+  _getCompany,
+  _getHacker,
+  _getCompanyUsers,
 } from "../services/users";
 
 const state = {
@@ -13,6 +17,7 @@ const state = {
   user: {
     name: "",
     typeUser: "client",
+    company: null,
   },
   cards: [
     {
@@ -193,6 +198,7 @@ const state = {
   users: [],
   hackers: [],
   compagines: [],
+  managers: [],
 };
 
 const getters = {
@@ -451,45 +457,88 @@ const getters = {
     return JSON.parse(JSON.stringify(state.users));
   },
   getManagers() {
-    let managers = users.filter((user) => user.typeUser == "admin");
-    return JSON.parse(JSON.stringify(managers));
+    return JSON.parse(JSON.stringify(state.managers));
   },
 };
 
 const mutations = {
   setUser(state, payload) {
-    state.user = payload.user;
-    state.user.typeUser=payload.role;
+    let user = {
+      email: payload.user.email,
+      typeUser: payload.typeUser,
+      id: payload.user.id,
+      username: payload.user.username,
+    };
+    if (payload.company) {
+      user.company = payload.company;
+    }
+    if (payload.hacker) {
+      user.hacker = payload.hacker;
+    }
+    state.user = user;
     state.token = payload.token;
-    localStorage.setItem("token",payload.token);
+    localStorage.setItem("token", payload.token);
   },
   setUsers(state, payload) {
     state.users = payload;
   },
+  setManagers(state, payload) {
+    state.managers=payload;
+  }
 };
 
 const actions = {
   async createUser({ commit }, payload) {
     try {
-      const data = await _loginUser({
+      const credentials = await _loginUser({
         identifier: payload.email,
         password: payload.password,
       });
-      //payload.token = data.login.jwt;
-      //console.log(data);
-      const role = await _getMyRole(data.token)
-      let dataObject={
-        user:data.user,
-        token:data.token,
-        role:role
+      console.log("Credential in createUser ", credentials);
+
+      const url = "/custom/userdata?id=" + credentials.user.id;
+      const data = await _getQueryServer(url, null, credentials.token);
+      let role = data.user.role.type;
+      console.log(role);
+      let company = null;
+      let hacker = null;
+      let dataObject = {
+        user: credentials.user,
+        token: credentials.token,
+      };
+      if (role === "m1_account_manager") {
+        //company=result.data.march1stUser.data.attributes.company;
+        role = "admin";
+      } else if (role === "hacker") {
+        hacker = await _getHacker({
+          id: credentials.user.id,
+          token: credentials.token,
+        });
+        (dataObject.typeUser = role), (dataObject.hacker = hacker);
+      } else if (role === "program_manager" || role === "program_super_admin") {
+        let company_user = data.user.company_user;
+
+        company = await _getCompany({
+          id: company_user.id,
+          token: credentials.token,
+        });
+
+        role = "client";
+        (dataObject.typeUser = role), (dataObject.company = company);
+      } else {
+        throw new Error(role + " not pris en charge");
       }
+      //console.log(credentials.user)
+
+      //console.log(dataObject)
       commit("setUser", dataObject);
-      //console.log(payload);
-      return Promise.resolve(role);
+
+      /*console.log(data);*/
+      return Promise.resolve(dataObject);
     } catch (error) {
       payload.token = null;
       payload.user = {};
-      console.log(error);
+      console.log("Error in createUser", error.message);
       commit("setUser", payload);
       return Promise.reject(0);
     }
@@ -498,12 +547,31 @@ const actions = {
   async allUsers({ commit }) {
     try {
       const users = await _getUsers();
-      let userList = users.map(function(user){
-        user.label=user.username
-        user.value = user.email
+      let userList = users.map(function (user) {
+        user.label = user.username;
+        user.value = user.email;
         return user;
-      })
+      });
       commit("setUsers", userList);
+    } catch (error) {
+      console.log("erro in action dashboard " + `${error}`);
+    }
+  },
+
+  async getAllManagers({ commit, state }) {
+    try {
+      const data = await _getCompanyUsers(state.user.company.id);
+      //commit("setManagers", data);
+      return Promise.resolve(data);
+    } catch (error) {
+      console.log("erro in action dashboard " + `${error}`);
+    }
+  },
+
+  async getAllHackers({ commit, state }) {
+    try {
+      const data = await _getHackers();
+      return Promise.resolve(data);
     } catch (error) {
       console.log("erro in action dashboard " + `${error}`);
     }

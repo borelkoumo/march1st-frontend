@@ -306,9 +306,9 @@
                     color="secondary"
                 /></q-item-section>
                 <q-item-section>
-                  <q-item-label class="title">{{ manager.name }}</q-item-label>
+                  <q-item-label class="title">{{ manager.first_name }}</q-item-label>
                   <q-item-label caption class="subtitle">{{
-                    manager.email
+                    manager.user.email
                   }}</q-item-label>
                 </q-item-section>
                 <q-item-section class="text-center title flex flex-center">
@@ -386,7 +386,7 @@
                 /></q-item-section>
                 <q-item-section>
                   <q-item-label class="title"
-                    >{{ hacker.full_name }} {{ hacker.last_name }}</q-item-label
+                    >{{ hacker.first_name }} {{ hacker.last_name }}</q-item-label
                   >
                   <q-item-label caption class="subtitle">{{
                     hacker.email
@@ -445,9 +445,9 @@ export default {
   data() {
     return {
       formData: {
-        id: null,
-        user_id: 1,
-        picture: "https://cdn.quasar.dev/img/parallax2.jpg",
+        //id: null,
+        //user_id: 1,
+        //picture: "https://cdn.quasar.dev/img/parallax2.jpg",
         program_title: "Lorem ipsum dolor sit amet,",
         program_description:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rutrum congue leo eget malesuada. Cras ultricies ligula sed magna dictum porta.",
@@ -469,9 +469,9 @@ export default {
         medium: { min: 0, max: 900 },
         low: { min: 0, max: 800 },
         is_closed: false,
-        close_at: null,
-        status: "Active",
-        date_post: "10/04/2021",
+        //close_at: null,
+        //status: "Active",
+        //date_post: "10/04/2021",
         invitations: [],
       },
       privileges: [
@@ -515,15 +515,15 @@ export default {
   watch: {
     allManagers: function (val) {
       if (val) {
-        this.managers=this.managers.map(function(m){
-          m.isCheck=true;
+        this.managers = this.managers.map(function (m) {
+          m.isCheck = true;
           return m;
-        })
+        });
       } else {
-        this.managers=this.managers.map(function(m){
-          m.isCheck=false;
+        this.managers = this.managers.map(function (m) {
+          m.isCheck = false;
           return m;
-        })
+        });
       }
     },
     allHackers: function (val) {
@@ -537,24 +537,31 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("dashboard", ["getAllHacker", "getManagers"]),
+    ...mapGetters("dashboard", ["getAllHacker"]),
   },
   methods: {
     ...mapActions("program", ["saveProgram"]),
+    ...mapActions("dashboard", ["getAllManagers","getAllHackers"]),
+
     onSaveProgram() {
-      this.formData.id = Math.floor(Math.random() * 300);
+      //this.formData.id = Math.floor(Math.random() * 300);
       this.formData.managers = this.managers.filter((m) => m.isCheck == true);
       this.saveProgram(this.formData);
       this.$router.push("/main/programs");
     },
   },
-  beforeMount() {
-    this.hackers = this.getAllHacker;
-    this.managers = this.getManagers;
-    this.managers.forEach((manager) => {
-      manager.isCheck = false;
-      manager.privilege = null;
-    });
+  async beforeMount() {
+    //this.hackers = this.getAllHacker;
+
+    try {
+      this.managers = await this.getAllManagers();
+      this.hackers= await this.getAllHackers();
+      
+      this.managers.forEach((manager) => {
+        manager.isCheck = false;
+        manager.privilege = null;
+      });
+    } catch (error) {}
   },
 };
 </script>

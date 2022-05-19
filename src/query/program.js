@@ -33,6 +33,11 @@ const PROGRAMS_QUERY = {
                 }
               }
             }
+            company{
+              data{
+                id
+              }
+            }
           }
         }
       }
@@ -117,4 +122,34 @@ const { mutate: JOIN_PROGRAM_MUTATION } = {
   },
 };
 
-export { PROGRAMS_QUERY, ONE_PROGRAM_QUERY, JOIN_PROGRAM_MUTATION };
+const { mutate: CREATE_PROGRAM } = {
+  mutate: {
+    mutation: gql`
+      mutation createProgram($program: ProgramInput!) {
+        createProgram(data: $program) {
+          data {
+            id
+            attributes {
+              program_title
+            }
+          }
+        }
+      }
+    `,
+    variables: {
+      //user: { identifier: "sdfdf", password: "dfdfdf" },
+    },
+    context: {
+      headers: {
+        /* authorization: token, */
+      },
+    },
+  },
+};
+
+export {
+  PROGRAMS_QUERY,
+  ONE_PROGRAM_QUERY,
+  JOIN_PROGRAM_MUTATION,
+  CREATE_PROGRAM
+};

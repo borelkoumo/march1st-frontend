@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@aws-amplify/auth": "^4.3.9",
+    "@faker-js/faker": "^6.3.1",
     "@quasar/extras": "^1.0.0",
     "@quasar/quasar-app-extension-apollo": "^1.0.0-beta.8",
     "apexcharts": "^3.33.1",

@@ -53,22 +53,30 @@
           <q-card-section class="col-4 flex flex-center">
             <q-img
               class="rounded-borders"
-              src="https://cdn.quasar.dev/img/parallax2.jpg"
+              :src="connectUser.company.company_logo"
+              v-if="connectUser && connectUser.typeUser == 'client'"
+            />
+            <q-img
+              v-if="connectUser && connectUser.typeUser == 'hacker'"
+              class="rounded-borders"
+              :src="connectUser.hacker.profile_picture_url"
             />
           </q-card-section>
           <q-card-section
             class="q-pt-xs"
-            v-if="user && user.typeUser == 'client'"
+            v-if="connectUser && connectUser.typeUser == 'client'"
           >
-            <div class="q-mt-sm title">{{ user.company_name }}</div>
+            <div class="q-mt-sm title">
+              {{ connectUser.company.company_name }}
+            </div>
             <div class="subtitle">Joined 6 months ago</div>
           </q-card-section>
           <q-card-section
             class="q-pt-xs"
-            v-if="user && user.typeUser == 'hacker'"
+            v-if="connectUser && connectUser.typeUser == 'hacker'"
           >
             <div class="q-mt-sm title">
-              {{ user.first_name }} {{ user.last_name }}
+              {{ connectUser.hacker.first_name }} {{ connectUser.hacker.last_name }}
             </div>
             <div class="subtitle">Joined 6 months ago</div>
             <div class="subtitle">Current Rank: 70</div>
@@ -76,7 +84,7 @@
             <div class="subtitle">Average Vulnerability Severity</div>
           </q-card-section>
         </q-card-section>
-        <q-card-actions align="right">
+        <q-card-actions align="right" class="q-pt-none">
           <q-btn label="SIGNOUT" class="bg-primary text-white" flat />
           <q-btn label="PROFILE" class="bg-secondary text-white" flat />
         </q-card-actions>
@@ -182,7 +190,7 @@
 
         <q-card-section class="q-pt-none q-gutter-sm">
           <q-select
-            v-model="user"
+            v-model="selectuser"
             :options="users"
             label="Sélectionnez un utilisateur"
             outlined
@@ -285,7 +293,8 @@ export default {
   },
   data() {
     return {
-      user: null,
+      selectuser: null,
+      connectUser: null,
       manager: null,
       password: "Hacker1@2022",
       users: [],
@@ -297,9 +306,24 @@ export default {
     manager: function (val) {
       console.log(val);
     },
+    user: function (val) {
+      /* console.log(val);
+      this.connectUser={
+        email:val.email,
+        id:val.id,
+        company:{
+          company_name:val.company.company_name,
+          company_logo:val.company.company_logo
+        }
+      } */
+      //console.log(data);
+      //this.connectUser=data;
+      //console.log(this.connectUser);
+      this.connectUser = val;
+    },
   },
   computed: {
-    ...mapState("dashboard", ["menus"]),
+    ...mapState("dashboard", ["menus", "user"]),
     ...mapGetters("dashboard", ["getMenus", "getUsers"]),
   },
   methods: {
@@ -307,10 +331,10 @@ export default {
     ...mapActions("program", ["allPrograms"]),
     async onCreateUser() {
       let payload = {
-        email: this.user.email,
+        email: this.selectuser.email,
         password: this.password,
       };
-      
+
       try {
         this.$q.loading.show();
         await this.createUser(payload);
