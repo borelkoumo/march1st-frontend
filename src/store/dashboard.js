@@ -478,6 +478,7 @@ const mutations = {
       user.hacker = payload.hacker;
     }
     state.user = user;
+    console.log(state.user)
     state.token = payload.token;
     localStorage.setItem("token", payload.token);
   },

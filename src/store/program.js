@@ -45,7 +45,7 @@ const getters = {
   getProgram(state) {
     return (id) => {
       try {
-        let program = state.programs.filter((program) => program.id == id);
+        let program = state.programs.filter((program) => program.id === id);
         if (program[0]) {
           let p = JSON.parse(JSON.stringify(program[0]));
           return p;

@@ -57,12 +57,10 @@
     <div class="main-content">
       <q-img src="~assets/empty-program.svg" width="600px" />
       <div class="title-1">No submission</div>
-      <div class="subtitle-1">
-        You have no submissions
-      </div>
+      <div class="subtitle-1">You have no submissions</div>
       <div class="flex flex-center">
         <q-btn
-          v-if="user.typeUser=='hacker'"
+          v-if="user.typeUser == 'hacker'"
           label="Back to my programs"
           class="title-btn text-white bg-secondary"
           no-caps
@@ -82,7 +80,7 @@
   </q-page>
 </template>
 <script>
-import { mapGetters, mapState } from "vuex";
+import { mapGetters, mapState, mapActions } from "vuex";
 import submissionComponent from "../../components/submission-component.vue";
 
 let allSubmissions = [];
@@ -123,6 +121,7 @@ export default {
     ...mapGetters("program", ["getProgram", "getMyPrograms"]),
   },
   methods: {
+    ...mapActions("submission", ["mySubmissions"]),
     async showDetails(submission) {
       let route = { name: "submission-detail", params: { id: submission.id } };
       //if (this.user.typeUser !== "hacker")
@@ -131,17 +130,19 @@ export default {
   },
   async beforeMount() {
     try {
-      allSubmissions = await this.getMySubmissions;
-      console.log(allSubmissions);
+      
+      allSubmissions = await this.mySubmissions();
+      //allSubmissions = await this.getMySubmissions;
+      console.log("Le tableau des submission dans submissionPage", allSubmissions);
       this.submissions = allSubmissions;
-      this.submissions.forEach((submission) => {
+      /*this.submissions.forEach((submission) => {
         let program = this.getProgram(submission.program_id);
         submission.program = program;
-      });
-      this.programs = this.getMyPrograms;
+      });*/
+      /*this.programs = this.getMyPrograms;
       this.programs.forEach((p) => {
         (p.label = p.program_title), (p.value = p.id);
-      });
+      });*/
     } catch (error) {}
   },
 };
