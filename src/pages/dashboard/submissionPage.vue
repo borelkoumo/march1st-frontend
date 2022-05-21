@@ -38,9 +38,7 @@
             <q-card-section class="q-pa-none" style="padding-bottom: 27px">
               <q-toolbar>
                 <div class="box-badge">
-                  <span class="title-badge">{{
-                    getStatusSubmission(submission.submissionStatus_id)
-                  }}</span>
+                  <span class="title-badge">{{submission.submission_status}}</span>
                 </div>
                 <q-space />
                 <div class="title-badge-2"><span>2 day ago, 3:45 pm</span></div>
@@ -130,19 +128,10 @@ export default {
   },
   async beforeMount() {
     try {
-      
+      this.$q.loading.show();
       allSubmissions = await this.mySubmissions();
-      //allSubmissions = await this.getMySubmissions;
-      //console.log("Le tableau des submission dans submissionPage", allSubmissions);
       this.submissions = allSubmissions;
-      /*this.submissions.forEach((submission) => {
-        let program = this.getProgram(submission.program_id);
-        submission.program = program;
-      });*/
-      /*this.programs = this.getMyPrograms;
-      this.programs.forEach((p) => {
-        (p.label = p.program_title), (p.value = p.id);
-      });*/
+      this.$q.loading.hide();
     } catch (error) {}
   },
 };

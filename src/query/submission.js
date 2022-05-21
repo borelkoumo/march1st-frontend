@@ -67,6 +67,15 @@ const SUBMISSIONS_HACKER = {
                   submission_target
                   submission_text
                   createdAt
+                  submission_statuses(sort: "createdAt:DESC") {
+                    data {
+                      id
+                      attributes {
+                        status
+                        status_title
+                      }
+                    }
+                  }
                   program {
                     data {
                       id
@@ -94,5 +103,129 @@ const SUBMISSIONS_HACKER = {
     },
   },
 };
+const SUBMISSIONS_SUPER_MANAGER = {
+  query: gql`
+    query submissions($companyId: ID!) {
+      company(id: $companyId) {
+        data {
+          id
+          attributes {
+            programs {
+              data {
+                id
+                attributes {
+                  submissions {
+                    data {
+                      id
+                      attributes {
+                        submission_text
+                        submission_title
+                        submission_target
+                        severity_level
+                        program {
+                          data {
+                            id
+                            attributes {
+                              program_title
+                              program_description
+                              program_type
+                              safe_harbour_type
+                              reward_range
+                              program_picture_url
+                            }
+                          }
+                        }
+                        submission_statuses(sort: "createdAt:DESC") {
+                          data {
+                            id
+                            attributes {
+                              status
+                              status_title
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `,
+  variables: {},
+  context: {
+    headers: {
+      /* authorization: token, */
+    },
+  },
+};
+const SUBMISSIONS_MANAGER = {
+  query: gql`
+    query submissions($companyUserId: ID!) {
+      companyUser(id: $companyUserId) {
+        data {
+          id
+          attributes {
+            programs {
+              data {
+                id
+                attributes {
+                  submissions {
+                    data {
+                      id
+                      attributes {
+                        submission_text
+                        submission_title
+                        submission_target
+                        severity_level
+                        program {
+                          data {
+                            id
+                            attributes {
+                              program_title
+                              program_description
+                              program_type
+                              safe_harbour_type
+                              reward_range
+                              program_picture_url
+                            }
+                          }
+                        }
+                        submission_statuses(sort: "createdAt:DESC") {
+                          data {
+                            id
+                            attributes {
+                              status
+                              status_title
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `,
+  variables: {},
+  context: {
+    headers: {
+      /* authorization: token, */
+    },
+  },
+};
 
-export { CREATE_SUBMISSION, CREATE_SUBMISSION_STATUS, SUBMISSIONS_HACKER };
+export {
+  CREATE_SUBMISSION,
+  CREATE_SUBMISSION_STATUS,
+  SUBMISSIONS_HACKER,
+  SUBMISSIONS_SUPER_MANAGER,
+  SUBMISSIONS_MANAGER,
+};

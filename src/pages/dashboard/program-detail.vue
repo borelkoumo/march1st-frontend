@@ -272,10 +272,9 @@ export default {
   beforeMount() {
     try {
       this.program = this.getProgram(this.$route.params.id);
-      console.log(this.program)
-      this.program.submissions = this.getSubmissionsProgram(
-        this.$route.params.id
-      );
+      //console.log(this.program)
+      this.program.submissions = this.program.submissions;
+      console.log("La valeur de submission dans program-detail ",this.program.submissions)
     } catch (error) {}
   },
 };

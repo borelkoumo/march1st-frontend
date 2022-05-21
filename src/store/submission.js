@@ -160,7 +160,7 @@ const actions = {
       const submissionStatusId = await _createSubmissionStatus(
         submissionStatus
       );
-      console.log("Valeur de submissionStatusId dans store ",submissionStatusId)
+      //console.log("Valeur de submissionStatusId dans store ",submissionStatusId)
       let submission = {
         submission_title: payload.submission_title,
         severity_level: payload.severety_level.toLowerCase(),
@@ -205,11 +205,19 @@ const actions = {
     let user = dasboard.state.user;
     try {
       let result = null;
-      //console.log(user);
-      if (user.typeUser == "hacker") {
+      if (user.typeUser === "hacker") {
         result = await _mySubmissions({
           id: user.hacker.id,
           typeUser: "hacker",
+        });
+        commit("setSubmissions", result);
+        return Promise.resolve(result);
+      }
+      else if(user.typeUser==="client"){
+        result = await _mySubmissions({
+          id: user.role==="super_manager"?user.company.id:user.company_user.id,
+          typeUser: "client",
+          role:user.role
         });
         commit("setSubmissions", result);
         return Promise.resolve(result);

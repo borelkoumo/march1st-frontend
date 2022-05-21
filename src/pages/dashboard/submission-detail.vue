@@ -89,7 +89,7 @@
                 <q-toolbar>
                   <div class="box-badge">
                     <span class="title-badge"
-                      >Severity Level : {{ submission.severety_level }}</span
+                      >Severity Level : {{ submission.severity_level }}</span
                     >
                   </div>
                   <q-space />

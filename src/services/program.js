@@ -64,11 +64,29 @@ const _getPrograms = async function () {
         return m.id;
       });
       let submissions = p.attributes.submissions.data;
-      program.submissions = submissions.map(function(s){
-        let submission={}
+      //console.log("Submission dans services ",submissions)
+      program.submissions = submissions.map(function (s) {
+        let submission = {};
         submission.id = s.id;
-        submission.submission_title=s.attributes.submission_title
-      })
+        submission.submission_title = s.attributes.submission_title;
+        const statusesData = s.attributes.submission_statuses.data;
+        if (statusesData.length > 0) {
+          let status = statusesData[0].attributes.status;
+          if (
+            status === "accepted_unresolved" ||
+            status === "accepted_resolved"
+          ) {
+            submission.submission_status = "Accepted";
+          } else if (status === "rejected") {
+            submission.submission_status = "Rejected";
+          } else {
+            submission.submission_status = "Pending";
+          }
+        } else {
+          submission.submission_status = "Pending";
+        }
+        return submission;
+      });
       program.company = p.attributes.company.data.id;
       return program;
     });
@@ -190,7 +208,7 @@ const _createInvitation = async function (payload) {
     CREATE_INVITATION.context.headers.authorization =
       "Bearer " + localStorage.getItem("token");
     const result = await apolloClient.mutate(CREATE_INVITATION);
-    console.log(result);
+    //console.log(result);
   } catch (error) {
     console.log(error);
   }

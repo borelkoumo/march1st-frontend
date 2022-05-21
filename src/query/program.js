@@ -68,12 +68,21 @@ const PROGRAMS_QUERY = {
                 }
               }
             }
-            submissions{
-              data{
+            submissions {
+              data {
                 id
-                attributes{
+                attributes {
                   submission_text
                   submission_title
+                  submission_statuses(sort: "createdAt:DESC") {
+                    data {
+                      id
+                      attributes {
+                        status
+                        status_title
+                      }
+                    }
+                  }
                 }
               }
             }
