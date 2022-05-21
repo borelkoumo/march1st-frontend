@@ -324,7 +324,7 @@ export default {
   },
   async beforeMount() {
     this.submission = this.getSubmission(this.$route.params.id);
-    this.submission.program = this.getProgram(this.submission.program_id);
+   // this.submission.program = this.getProgram(this.submission.program_id);
   },
 };
 </script>

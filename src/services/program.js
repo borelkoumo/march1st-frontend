@@ -1,6 +1,13 @@
 const { faker } = require("@faker-js/faker");
 import apolloClient from "../boot/apollo";
-import { ONE_PROGRAM_QUERY, PROGRAMS_QUERY, JOIN_PROGRAM_MUTATION, CREATE_PROGRAM } from "../query/program";
+import {
+  ONE_PROGRAM_QUERY,
+  PROGRAMS_QUERY,
+  JOIN_PROGRAM_MUTATION,
+  CREATE_PROGRAM,
+  CREATE_INVITATION,
+} from "../query/program";
+import { programs } from "../store/utils/fakedata";
 const _getPrograms = async function () {
   try {
     PROGRAMS_QUERY.context.headers.authorization =
@@ -36,28 +43,33 @@ const _getPrograms = async function () {
         return h.id;
       });
       let managersData = p.attributes.company_users.data;
-      program.managers = managersData.map(function(m){
-        let manager={
-          id:m.id,
-          first_name:m.attributes.first_name,
-          last_name:m.attributes.last_name,
-          user:{
-            id:m.attributes.user.data.id,
-            email:m.attributes.user.data.attributes.email,
-            username:m.attributes.user.data.attributes.username,
-          }
-        }
+      program.managers = managersData.map(function (m) {
+        let manager = {
+          id: m.id,
+          first_name: m.attributes.first_name,
+          last_name: m.attributes.last_name,
+          user: {
+            id: m.attributes.user.data.id,
+            email: m.attributes.user.data.attributes.email,
+            username: m.attributes.user.data.attributes.username,
+          },
+        };
         return manager;
+      });
+      let invitations = p.attributes.invitations.data;
+      program.invitations = invitations.map(function (i) {
+        return i.attributes.hacker.data.id;
+      });
+      program.managersId = managersData.map(function (m) {
+        return m.id;
+      });
+      let submissions = p.attributes.submissions.data;
+      program.submissions = submissions.map(function(s){
+        let submission={}
+        submission.id = s.id;
+        submission.submission_title=s.attributes.submission_title
       })
-      
-      program.managersId=managersData.map(function(m){
-        return m.id
-      })
-
-      program.company = p.attributes.company.data.id
-      //program.hackers=[];
-      //program.hackers = [];
-      program.invitations = [];
+      program.company = p.attributes.company.data.id;
       return program;
     });
     return Promise.resolve(programList);
@@ -117,52 +129,77 @@ const _joinProgram = async function (payload) {
     console.log(error);
   }
 };
-const _createProgram = async function(payload){
+const _createProgram = async function (payload) {
   try {
-    let program ={
+    let program = {
       program_title: payload.program_title,
-        program_description: payload.program_description,
-        program_type: payload.program_type,
-        safe_harbour_type: payload.safe_harbour_type,
-        reward_type: payload.reward_type,
-        reward_range: {
-          low: {
-            max: payload.low.max,
-            min: payload.low.min
-          },
-          medium: {
-            max: payload.medium.max,
-            min: payload.medium.min
-          },
-          severe: {
-            max: payload.severe.max,
-            min: payload.severe.min
-          },
-          critical: {
-            max: payload.critical.max,
-            min: payload.critical.min
-          }
+      program_description: payload.program_description,
+      program_type: payload.program_type,
+      safe_harbour_type: payload.safe_harbour_type,
+      reward_type: payload.reward_type,
+      reward_range: {
+        low: {
+          max: payload.low.max,
+          min: payload.low.min,
         },
-        program_guidelines_1: payload.program_guidelines_1,
-        program_guidelines_2: payload.program_guidelines_2,
-        program_scope: payload.program_scope,
-        legal_terms: payload.legal_terms,
-        is_closed: false,
-        company:payload.company,
-        hackers:payload.hackers,
-        program_picture_url: faker.image.business(1234, 2345),
-        company_users:payload.company_users
-        //program_picture_url: "programs/image17.png",
-    }
-    //console.log(program);
+        medium: {
+          max: payload.medium.max,
+          min: payload.medium.min,
+        },
+        severe: {
+          max: payload.severe.max,
+          min: payload.severe.min,
+        },
+        critical: {
+          max: payload.critical.max,
+          min: payload.critical.min,
+        },
+      },
+      program_guidelines_1: payload.program_guidelines_1,
+      program_guidelines_2: payload.program_guidelines_2,
+      program_scope: payload.program_scope,
+      legal_terms: payload.legal_terms,
+      is_closed: false,
+      company: payload.company,
+      hackers: payload.hackers,
+      program_picture_url: faker.image.business(1234, 2345),
+      company_users: payload.company_users,
+      //program_picture_url: "programs/image17.png",
+    };
+    //console.log("La valeur de program avant la creation dans service ",program);
     CREATE_PROGRAM.variables.program = program;
     CREATE_PROGRAM.context.headers.authorization =
       "Bearer " + localStorage.getItem("token");
-      const result = await apolloClient.mutate(CREATE_PROGRAM);
+    const result = await apolloClient.mutate(CREATE_PROGRAM);
+    //console.log(result);
+    const data = result.data.createProgram.data.id;
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+const _createInvitation = async function (payload) {
+  try {
+    /* let invitation = {
+      company_user: payload.company_user,
+      hacker: payload.hacker,
+      program: payload.program,
+    }; */
+    //console.log(program);
+    CREATE_INVITATION.variables.invitation = payload;
+    CREATE_INVITATION.context.headers.authorization =
+      "Bearer " + localStorage.getItem("token");
+    const result = await apolloClient.mutate(CREATE_INVITATION);
     console.log(result);
   } catch (error) {
     console.log(error);
   }
-}
+};
 
-export { _getPrograms, _getOneProgram, _joinProgram, _createProgram };
+export {
+  _getPrograms,
+  _getOneProgram,
+  _joinProgram,
+  _createProgram,
+  _createInvitation,
+};

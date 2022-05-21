@@ -114,10 +114,12 @@
           class="cursor-pointer"
           @click.stop="goto(program.id)"
         >
+        <!-- :submissions="getSubmissionsProgram(program.id)" -->
           <template v-slot:level>
             <q-card-section class="col-3 q-pl-lg q-pr-none">
               <submission-level
-                :submissions="getSubmissionsProgram(program.id)"
+                :submissions="program.submissions"
+                
                 :progress="progress"
               />
             </q-card-section>

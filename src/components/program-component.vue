@@ -110,7 +110,6 @@ export default {
     },
     getFirstCharacter: function () {
       return (manager) => {
-        console.log(manager);
         return manager.charAt(0).toUpperCase();
       };
     },

@@ -6,7 +6,9 @@ import {
   _getOneProgram,
   _joinProgram,
   _createProgram,
+  _createInvitation,
 } from "../services/program";
+import { PROGRAMS_QUERY } from "../query/program";
 
 const state = {
   programs: [],
@@ -59,7 +61,6 @@ const getters = {
   getMyPrograms(state) {
     let user = dasboard.state.user;
     if (user.typeUser === "client") {
-      console.log(state.programs);
       if (user.role === "manager") {
         const programs = state.programs.filter(
           (program) => program.company === user.company.id
@@ -222,19 +223,14 @@ const getters = {
     let result = false;
     let user = dasboard.state.user;
     return (program_id) => {
-      let programs = localStorage.getItem("programs");
-      if (programs) {
-        programs = JSON.parse(programs);
-        console.log(programs);
-        programs.forEach((program) => {
-          if (
-            program.id == program_id &&
-            program.invitations.includes(user.id)
-          ) {
-            result = true;
-          }
-        });
-      }
+      state.programs.forEach((program) => {
+        if (
+          program.id == program_id &&
+          program.invitations.includes(user.hacker.id)
+        ) {
+          result = true;
+        }
+      });
       return result;
     };
   },
@@ -338,7 +334,17 @@ const actions = {
         };
         dispatch("task/addTask", task, { root: true });
       }); */
-      const result = await _createProgram(program);
+      const program_id = await _createProgram(program);
+      //console.log("La valeur de program_id est ", program_id);
+      payload.invitations.forEach(async (id) => {
+        let payload = {
+          company_user: user.company_user.id,
+          hacker: id,
+          program: program_id,
+        };
+        console.log("invitation du hacker", id, "invitation=", payload);
+        await _createInvitation(payload);
+      });
       //commit("addProgram", program);
     } catch (error) {}
   },

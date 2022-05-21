@@ -1,6 +1,11 @@
 import dasboard from "./dashboard";
 import program from "./program";
-import {_createSubmission, _mySubmissions} from "../services/submission";
+import {
+  _createSubmission,
+  _createSubmissionStatus,
+  _mySubmissions,
+  __createSubmissionStatus,
+} from "../services/submission";
 
 //const programs =program.state.programs;
 /* const user = dasboard.state.user; */
@@ -72,7 +77,7 @@ const getters = {
       return val.status_text;
     };
   },
-  getReelStatus(state){
+  getReelStatus(state) {
     return (id) => {
       let val = "";
       state.submissionStatus.forEach((s) => {
@@ -132,29 +137,44 @@ const mutations = {
   addComment(state, payload) {
     state.comments.push(payload);
   },
-  setSubmissions(state,payload){
-    console.log("La valeur du tableau des submissions dans store",payload);
+  setSubmissions(state, payload) {
     state.submissions = payload;
-  }
+  },
 };
 
 const actions = {
   async addReport({ state, commit }, payload) {
-    payload.id = Math.floor(Math.random() * 500);
+    const user = dasboard.state.user;
     payload.severety_level = payload.severety_level.value;
-    payload.submissionStatus_id = Math.floor(Math.random() * 500);
     payload.submission_status = "Pending";
     payload.comments = [];
-    let statusSumission = {
+    let submissionStatus = {
       status: "new",
       status_text: "New Report Submission",
-      submission_id: payload.id,
-      id: payload.submissionStatus_id,
       status_raison: "",
       created_at: "",
     };
-    commit("addStatus", statusSumission);
-    commit("setNewReport", payload);
+    //commit("addStatus", statusSumission);
+    //commit("setNewReport", payload);
+    try {
+      const submissionStatusId = await _createSubmissionStatus(
+        submissionStatus
+      );
+      console.log("Valeur de submissionStatusId dans store ",submissionStatusId)
+      let submission = {
+        submission_title: payload.submission_title,
+        severity_level: payload.severety_level.toLowerCase(),
+        submission_target: payload.submission_target,
+        submission_text: payload.submission_text,
+        submission_statuses: [submissionStatusId],
+        program: payload.program_id,
+        hacker: user.hacker.id,
+      };
+      const submissionId = await _createSubmission(submission);
+      console.log("La valeur de submission Id dans store",submissionId)
+    } catch (error) {
+      console.log("Création de submission ", error);
+    }
   },
   async changeStatus({ state, commit }, payload) {
     payload.submissionStatus_id = Math.floor(Math.random() * 500);
@@ -181,21 +201,21 @@ const actions = {
     if (comment.message != null && comment.message != "")
       commit("addComment", comment);
   },
-  async mySubmissions({state, commit}){
+  async mySubmissions({ state, commit }) {
     let user = dasboard.state.user;
     try {
-      let result = null
+      let result = null;
       //console.log(user);
-      if(user.typeUser=="hacker"){
-        result = await _mySubmissions({id:user.hacker.id,typeUser:"hacker"});
-        commit("setSubmissions",result)
-        return Promise.resolve(result)
+      if (user.typeUser == "hacker") {
+        result = await _mySubmissions({
+          id: user.hacker.id,
+          typeUser: "hacker",
+        });
+        commit("setSubmissions", result);
+        return Promise.resolve(result);
       }
-      
-    } catch (error) {
-      
-    }
-  }
+    } catch (error) {}
+  },
 };
 
 export default {

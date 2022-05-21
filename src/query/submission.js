@@ -24,6 +24,32 @@ const { mutate: CREATE_SUBMISSION } = {
     },
   },
 };
+const { mutate: CREATE_SUBMISSION_STATUS } = {
+  mutate: {
+    mutation: gql`
+      mutation createSubmissionStatus(
+        $submissionStatus: SubmissionStatusInput!
+      ) {
+        createSubmissionStatus(data: $submissionStatus) {
+          data {
+            id
+            attributes {
+              status_title
+            }
+          }
+        }
+      }
+    `,
+    variables: {
+      //user: { identifier: "sdfdf", password: "dfdfdf" },
+    },
+    context: {
+      headers: {
+        /* authorization: token, */
+      },
+    },
+  },
+};
 
 const SUBMISSIONS_HACKER = {
   query: gql`
@@ -69,4 +95,4 @@ const SUBMISSIONS_HACKER = {
   },
 };
 
-export { CREATE_SUBMISSION, SUBMISSIONS_HACKER };
+export { CREATE_SUBMISSION, CREATE_SUBMISSION_STATUS, SUBMISSIONS_HACKER };

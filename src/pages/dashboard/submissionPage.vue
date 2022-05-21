@@ -133,7 +133,7 @@ export default {
       
       allSubmissions = await this.mySubmissions();
       //allSubmissions = await this.getMySubmissions;
-      console.log("Le tableau des submission dans submissionPage", allSubmissions);
+      //console.log("Le tableau des submission dans submissionPage", allSubmissions);
       this.submissions = allSubmissions;
       /*this.submissions.forEach((submission) => {
         let program = this.getProgram(submission.program_id);

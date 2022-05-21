@@ -56,6 +56,27 @@ const PROGRAMS_QUERY = {
                 }
               }
             }
+            invitations {
+              data {
+                id
+                attributes {
+                  hacker {
+                    data {
+                      id
+                    }
+                  }
+                }
+              }
+            }
+            submissions{
+              data{
+                id
+                attributes{
+                  submission_text
+                  submission_title
+                }
+              }
+            }
           }
         }
       }
@@ -164,10 +185,32 @@ const { mutate: CREATE_PROGRAM } = {
     },
   },
 };
+const { mutate: CREATE_INVITATION } = {
+  mutate: {
+    mutation: gql`
+      mutation createInvitation($invitation: InvitationInput!) {
+        createInvitation(data: $invitation) {
+          data {
+            id
+          }
+        }
+      }
+    `,
+    variables: {
+      //user: { identifier: "sdfdf", password: "dfdfdf" },
+    },
+    context: {
+      headers: {
+        /* authorization: token, */
+      },
+    },
+  },
+};
 
 export {
   PROGRAMS_QUERY,
   ONE_PROGRAM_QUERY,
   JOIN_PROGRAM_MUTATION,
   CREATE_PROGRAM,
+  CREATE_INVITATION,
 };

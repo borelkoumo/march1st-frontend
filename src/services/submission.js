@@ -1,28 +1,43 @@
 const { faker } = require("@faker-js/faker");
 import apolloClient from "../boot/apollo";
-import { CREATE_SUBMISSION, SUBMISSIONS_HACKER } from "../query/submission";
+import {
+  CREATE_SUBMISSION,
+  CREATE_SUBMISSION_STATUS,
+  SUBMISSIONS_HACKER,
+} from "../query/submission";
 import program from "../store/program";
 
 const _createSubmission = async function (payload) {
   try {
     let submission = {
-      submission_title: payload.submission_title,
-      submission_level: payload.submission_level,
-      submission_target: payload.submission_target,
-      submission_text: payload.submission_text,
-      attachment_1: "",
-      submission_statuses: [],
-      program: payload.program,
-      hacker: payload.hacker,
+      ...payload,
+      attachment_1: ""
     };
-    console.log(submission);
+    console.log("La submission avant création dans submission service ",submission);
     CREATE_SUBMISSION.variables.submission = submission;
     CREATE_SUBMISSION.context.headers.authorization =
       "Bearer " + localStorage.getItem("token");
     const result = await apolloClient.mutate(CREATE_SUBMISSION);
-    console.log(result);
+    console.log("Id de la cration de submission dans service ", result.data.id)
+    return result.data.id;
   } catch (error) {
     console.log(error);
+  }
+};
+const _createSubmissionStatus = async function (payload) {
+  try {
+    let submissionStatus = {
+      status: payload.status,
+      status_title: payload.status_text,
+      comment: "",
+    };
+    CREATE_SUBMISSION_STATUS.variables.submissionStatus = submissionStatus;
+    CREATE_SUBMISSION_STATUS.context.headers.authorization =
+      "Bearer " + localStorage.getItem("token");
+    const result = await apolloClient.mutate(CREATE_SUBMISSION_STATUS);
+    return result.data.createSubmissionStatus.data.id;
+  } catch (error) {
+    console.log("Creation de submisssionStatus ",error);
   }
 };
 
@@ -42,7 +57,7 @@ const _mySubmissions = async function (payload) {
         let submission = {};
         submission.id = s.id;
         submission.submission_title = s.attributes.submission_title;
-        submission.submission_level = s.attributes.submission_level;
+        submission.submission_level = s.attributes.severity_level;
         submission.submission_target = s.attributes.submission_target;
         submission.submission_text = s.attributes.submission_text;
 
@@ -75,13 +90,16 @@ const _mySubmissions = async function (payload) {
         } else {
           submission.program = null;
         }
-        console.log("La valeur de submission ",submission);
+        console.log("La valeur de submission ", submission);
         return submission;
       });
       sumbmissions = sumbmissions.filter(
         (s) => s.program !== null || s.program !== undefined
       );
-      console.log("La valeur du tableau des submissions dans service",sumbmissions);
+      console.log(
+        "La valeur du tableau des submissions dans service",
+        sumbmissions
+      );
       return sumbmissions;
     }
   } catch (error) {
@@ -89,4 +107,4 @@ const _mySubmissions = async function (payload) {
   }
 };
 
-export { _createSubmission, _mySubmissions };
+export { _createSubmission, _mySubmissions, _createSubmissionStatus };
