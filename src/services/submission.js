@@ -37,9 +37,13 @@ const _createSubmissionStatus = async function (payload) {
   try {
     let submissionStatus = {
       status: payload.status,
-      status_title: payload.status_text,
+      status_title: payload.status_title,
       comment: "",
     };
+    if(payload.submissionId){
+      submissionStatus.submission=payload.submissionId
+    }
+    console.log(payload);
     CREATE_SUBMISSION_STATUS.variables.submissionStatus = submissionStatus;
     CREATE_SUBMISSION_STATUS.context.headers.authorization =
       "Bearer " + localStorage.getItem("token");

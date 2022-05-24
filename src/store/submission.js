@@ -146,12 +146,12 @@ const actions = {
   async addReport({ state, commit }, payload) {
     const user = dasboard.state.user;
     payload.severety_level = payload.severety_level.value;
-    payload.submission_status = "Pending";
+    
     payload.comments = [];
     let submissionStatus = {
       status: "new",
-      status_text: "New Report Submission",
-      status_raison: "",
+      status_title: "New Report Submission",
+      comment: "",
       created_at: "",
     };
     //commit("addStatus", statusSumission);
@@ -177,29 +177,19 @@ const actions = {
     }
   },
   async changeStatus({ state, commit }, payload) {
-    payload.submissionStatus_id = Math.floor(Math.random() * 500);
-
-    let statusSumission = {
+    let submissionStatus = {
       status: payload.status,
-      status_text: payload.status_text,
-      submission_id: payload.id,
-      id: payload.submissionStatus_id,
-      status_raison: "",
-      created_at: "",
+      status_title: payload.status_title,
+      submissionId:payload.submissionId,
+      comment:payload.comment
     };
-    // Add Comment
-
-    let user = dasboard.state.user;
-    let comment = {
-      id: Math.floor(Math.random() * 500),
-      user_id: user.id,
-      submission_id: payload.id,
-      message: payload.message,
-    };
-    commit("addStatus", statusSumission);
-    commit("updateSubmission", payload);
-    if (comment.message != null && comment.message != "")
-      commit("addComment", comment);
+    try {
+      const submissionStatusId = await _createSubmissionStatus(
+        submissionStatus
+      );
+    } catch (error) {
+      console.log("error dans changeStatus ", error)
+    }
   },
   async mySubmissions({ state, commit }, payload) {
     let user = dasboard.state.user;

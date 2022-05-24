@@ -111,7 +111,12 @@ const SUBMISSIONS_SUPER_MANAGER = {
   query: gql`
     query submissions($companyId: ID!, $page: Int!, $pageSize: Int!) {
       submissions(
-        filters: { program: { company: { id: { eq: $companyId } } } }
+        filters: {
+          program: { company: { id: { eq: $companyId } } }
+          submission_statuses: {
+            status: { notIn: ["new", "m1_returned_for_review"] }
+          }
+        }
         pagination: { page: $page, pageSize: $pageSize }
       ) {
         data {
@@ -167,7 +172,12 @@ const SUBMISSIONS_MANAGER = {
   query: gql`
     query submissions($companyUserId: ID!, $page: Int!, $pageSize: Int!) {
       submissions(
-        filters: { program: { company_users: { id: { eq: $companyUserId } } } }
+        filters: {
+          program: { company_users: { id: { eq: $companyUserId } } }
+          submission_statuses: {
+            status: { notIn: ["new", "m1_returned_for_review"] }
+          }
+        }
         pagination: { page: $page, pageSize: $pageSize }
       ) {
         data {

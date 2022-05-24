@@ -16,7 +16,7 @@
           track-color="white"
         />
       </q-item-section>
-      <q-item-section class="number" v-if="submissions.length>0">{{accepted/submissions.length * 100}}</q-item-section>
+      <q-item-section class="number" v-if="submissions.length>0">{{(accepted/submissions.length * 100).toFixed(2)}}</q-item-section>
       <q-item-section class="number" v-else>0</q-item-section>
     </q-item>
     <q-item>
@@ -29,7 +29,7 @@
           track-color="white"
         />
       </q-item-section>
-      <q-item-section class="number" v-if="submissions.length>0">{{rejected/submissions.length * 100}}</q-item-section>
+      <q-item-section class="number" v-if="submissions.length>0">{{(rejected/submissions.length * 100).toFixed(2)}}</q-item-section>
       <q-item-section class="number" v-else>0</q-item-section>
     </q-item>
     <q-item>
@@ -42,7 +42,7 @@
           track-color="white"
         />
       </q-item-section>
-      <q-item-section class="number" v-if="submissions.length>0">{{pending/submissions.length * 100}}</q-item-section>
+      <q-item-section class="number" v-if="submissions.length>0">{{(pending/submissions.length * 100).toFixed(2)}}</q-item-section>
       <q-item-section class="number" v-else>0</q-item-section>
     </q-item>
     <slot name="bottom">

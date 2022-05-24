@@ -270,60 +270,54 @@ export default {
     onActionClick(num) {
       let stat = {
         status: "new",
-        status_text: "New Report Submission",
-        status_top:"Pending"
+        status_title: "New Report",
       };
       switch (num) {
         case 1:
           stat.status = "triaged";
-          stat.status_text = "Submission passed triage";
+          stat.status_title = "Passed triage";
           break;
         case 2:
           stat.status = "accepted_unresolved";
-          stat.status_text = "Accepted but still unresolved";
-          stat.status_top="Accepted"
+          stat.status_title = "Accepted but still unresolved";
           break;
         case 3:
           stat.status = "accepted_resolved";
-          stat.status_text = "Accepted and resolved";
-          stat.status_top="Accepted"
+          stat.status_title = "Accepted and resolved";
           break;
         case 4:
           stat.status = "client_returned_for_review";
-          stat.status_text = "Client returned for review";
+          stat.status_title = "Client returned for review";
           break;
         case 5:
           stat.status = "m1_returned_for_review";
-          stat.status_text = "M1 Return For Clarification";
+          stat.status_title = "M1 returned for clarification";
           break;
         case 6:
           stat.status = "rejected";
-          stat.status_text = "Rejected";
-          stat.status_top="Rejected"
+          stat.status_title = "Rejected";
           break;
         default:
           stat.status = "new";
-          stat.status_text = "New submission";
-          stat.status_top="Pending"
+          stat.status_title = "New Report submission";
           break;
       }
       this.onSendAction(stat);
     },
     onSendAction(stat) {
       let action = {
-        message: this.message,
-        id: this.submission.id,
-        status: stat.status,
-        status_text: stat.status_text,
-        status_top:stat.status_top
+        comment: this.message,
+        submissionId: this.submission.id,
+        ...stat
       };
       this.changeStatus(action);
       this.message=null;
-      //this.router.push('/main/all-programs')
+      this.$router.push('/main/my-submissions')
     },
   },
   async beforeMount() {
     this.submission = this.getSubmission(this.$route.params.id);
+    console.log(this.submission)
    // this.submission.program = this.getProgram(this.submission.program_id);
   },
 };
