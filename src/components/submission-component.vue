@@ -63,6 +63,7 @@ export default {
   color: #838181;
   margin-top: 29px;
 }
+
 .content-title {
   font-family: "inter";
   font-style: normal;
@@ -70,9 +71,18 @@ export default {
   font-size: 14px;
   line-height: 20px;
   display: flex;
+  color: #838181;
   align-items: center;
   letter-spacing: -0.015em;
-  color: #838181;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* number of lines to show */
+  -webkit-box-orient: vertical;
+  height: 70px;
 }
 .box-image {
   border-radius: 10px;

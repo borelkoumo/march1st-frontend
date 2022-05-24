@@ -73,6 +73,7 @@ const SUBMISSIONS_HACKER = {
                       attributes {
                         status
                         status_title
+                        createdAt
                       }
                     }
                   }
@@ -141,6 +142,7 @@ const SUBMISSIONS_SUPER_MANAGER = {
                             attributes {
                               status
                               status_title
+                              createdAt
                             }
                           }
                         }
@@ -200,12 +202,59 @@ const SUBMISSIONS_MANAGER = {
                             attributes {
                               status
                               status_title
+                              createdAt
                             }
                           }
                         }
                       }
                     }
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `,
+  variables: {},
+  context: {
+    headers: {
+      /* authorization: token, */
+    },
+  },
+};
+const SUBMISSIONS_ADMIN = {
+  query: gql`
+    query submissions {
+      submissions {
+        data {
+          id
+          attributes {
+            submission_text
+            submission_title
+            submission_target
+            severity_level
+            program {
+              data {
+                id
+                attributes {
+                  program_title
+                  program_description
+                  program_type
+                  safe_harbour_type
+                  reward_range
+                  program_picture_url
+                }
+              }
+            }
+            submission_statuses(sort: "createdAt:DESC") {
+              data {
+                id
+                attributes {
+                  status
+                  status_title
+                  createdAt
                 }
               }
             }
@@ -228,4 +277,5 @@ export {
   SUBMISSIONS_HACKER,
   SUBMISSIONS_SUPER_MANAGER,
   SUBMISSIONS_MANAGER,
+  SUBMISSIONS_ADMIN,
 };

@@ -353,14 +353,11 @@ export default {
     },
   },
   async beforeMount() {
-    /*localStorage.removeItem('tasks');
-    localStorage.removeItem('submissions');
-    localStorage.removeItem('programs');*/
     try {
       await this.allUsers();
     } catch (error) {}
 
-    //this.allPrograms();
+    
     this.prompt = true;
     this.getUsers.forEach((element) => {
       if (element.typeUser == "hacker") {
@@ -368,7 +365,7 @@ export default {
       } else if (element.typeUser == "client") {
         element.label = element.company_name;
       } else if (element.typeUser == "admin") {
-        element.label = element.username;
+        element.label = element.first_name;
       }
       element.value = element.id;
       this.users.push(element);

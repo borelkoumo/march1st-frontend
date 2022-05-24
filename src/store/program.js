@@ -83,12 +83,6 @@ const getters = {
       );
       return a;
     } else if (user.typeUser === "admin") {
-      /*let managerPrograms = [];
-      state.programs.forEach((program) => {
-        let allManagers = program.managers;
-        if (allManagers.filter((m) => m.id == user.id).length > 0)
-          managerPrograms.push(program);
-      });*/
       return JSON.parse(JSON.stringify(state.programs));
     }
   },

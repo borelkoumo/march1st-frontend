@@ -222,6 +222,14 @@ const actions = {
         commit("setSubmissions", result);
         return Promise.resolve(result);
       }
+      else if(user.typeUser==="admin"){
+        result = await _mySubmissions({
+          id: user.march1st.id,
+          typeUser: "admin"
+        });
+        commit("setSubmissions", result);
+        return Promise.resolve(result);
+      }
     } catch (error) {}
   },
 };

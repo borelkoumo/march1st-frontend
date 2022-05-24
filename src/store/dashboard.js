@@ -8,6 +8,7 @@ import {
   _getMyRole,
   _getCompany,
   _getHacker,
+  _getMarch1st,
   _getCompanyUsers,
 } from "../services/users";
 
@@ -441,6 +442,7 @@ const getters = {
           ],
         },
       ];
+      console.log(menus)
       return menus;
     }
   },
@@ -477,6 +479,10 @@ const mutations = {
     if (payload.hacker) {
       user.hacker = payload.hacker;
     }
+    if(payload.march1st){
+      user.march1st = payload.march1st;
+    }
+    console.log(user);
     state.user = user;
     state.token = payload.token;
     localStorage.setItem("token", payload.token);
@@ -496,22 +502,26 @@ const actions = {
         identifier: payload.email,
         password: payload.password,
       });
-      console.log("Credential in createUser ", credentials);
 
       const url = "/custom/userdata?id=" + credentials.user.id;
       const data = await _getQueryServer(url, null, credentials.token);
-      console.log(data.user);
+      
       let type = data.user.role.type;
       let role = "public";
       let company = null;
       let hacker = null;
+      let march1st = null;
       let dataObject = {
         user: credentials.user,
         token: credentials.token,
       };
       if (type === "m1_account_manager") {
-        //company=result.data.march1stUser.data.attributes.company;
+        march1st = await _getMarch1st({
+          id: credentials.user.id,
+          token: credentials.token,
+        });
         type = "admin";
+        (dataObject.typeUser = type), (dataObject.march1st = march1st);
       } else if (type === "hacker") {
         hacker = await _getHacker({
           id: credentials.user.id,

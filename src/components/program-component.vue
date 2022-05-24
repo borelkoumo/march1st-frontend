@@ -237,7 +237,7 @@ export default {
   display: -webkit-box;
   -webkit-line-clamp: 3; /* number of lines to show */
   -webkit-box-orient: vertical;
-  height: 42px;
+  height: 65px;
 }
 .box-image {
   border-radius: 10px;

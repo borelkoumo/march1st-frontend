@@ -210,12 +210,12 @@
             </q-timeline-entry>
             <q-timeline-entry
               tag="div"
-              v-for="timeline in getAllStatus(submission.id)"
+              v-for="timeline in submission.statuses"
               :key="timeline.id"
             >
-              <div class="subtitle-timeline">4 June 2021 5:00pm</div>
+              <div class="subtitle-timeline">{{timeline.createdAt}}</div>
               <div class="content-timeline">
-                {{ timeline.status_text }}
+                {{ timeline.status_title }}
               </div>
             </q-timeline-entry>
           </q-timeline>

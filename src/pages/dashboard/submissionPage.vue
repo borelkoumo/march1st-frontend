@@ -1,5 +1,30 @@
 <template>
-  <q-page class="bg-home" v-if="submissions.length > 0">
+  <!-- <q-page v-if="submissions.length <=0 && allSubmissions.length===0" class="flex flex-center">
+    <div class="main-content">
+      <q-img src="~assets/empty-program.svg" width="600px" />
+      <div class="title-1">No submission</div>
+      <div class="subtitle-1">You have no submissions</div>
+      <div class="flex flex-center">
+        <q-btn
+          v-if="user.typeUser == 'hacker'"
+          label="Back to my programs"
+          class="title-btn text-white bg-secondary"
+          no-caps
+          flat
+          to="/main/my-programs/"
+        />
+        <q-btn
+          v-else
+          label="Back to my programs"
+          class="title-btn text-white bg-secondary"
+          no-caps
+          flat
+          to="/main/programs/"
+        />
+      </div>
+    </div>
+  </q-page> -->
+  <q-page class="bg-home">
     <div class="main-content">
       <q-toolbar
         class="bg-none flex q-gutter-sm toolbar-submission"
@@ -38,7 +63,9 @@
             <q-card-section class="q-pa-none" style="padding-bottom: 27px">
               <q-toolbar>
                 <div class="box-badge">
-                  <span class="title-badge">{{submission.submission_status}}</span>
+                  <span class="title-badge">{{
+                    submission.submission_status
+                  }}</span>
                 </div>
                 <q-space />
                 <div class="title-badge-2"><span>2 day ago, 3:45 pm</span></div>
@@ -49,30 +76,12 @@
           </template>
         </submission-component>
       </div>
-    </div>
-  </q-page>
-  <q-page v-else class="flex flex-center">
-    <div class="main-content">
-      <q-img src="~assets/empty-program.svg" width="600px" />
-      <div class="title-1">No submission</div>
-      <div class="subtitle-1">You have no submissions</div>
-      <div class="flex flex-center">
-        <q-btn
-          v-if="user.typeUser == 'hacker'"
-          label="Back to my programs"
-          class="title-btn text-white bg-secondary"
-          no-caps
-          flat
-          to="/main/my-programs/"
-        />
-        <q-btn
-          v-else
-          label="Back to my programs"
-          class="title-btn text-white bg-secondary"
-          no-caps
-          flat
-          to="/main/programs/"
-        />
+      <div v-else class="flex flex-center">
+        <div class="">
+          <q-img src="~assets/empty-program.svg" width="600px" />
+          <div class="title-1">No submission</div>
+          <div class="subtitle-1">You have no submissions</div>
+        </div>
       </div>
     </div>
   </q-page>
@@ -104,14 +113,18 @@ export default {
     };
   },
   watch: {
-    /* program:function(val){
+    program: function (val) {
       this.submissions = [];
-      allSubmissions.forEach((s)=>{
-        if(s.program_id == val.value){
-          this.submissions.push(s);
-        }
-      })
-    } */
+      if (val.value === 0) {
+        this.submissions = allSubmissions;
+      } else {
+        allSubmissions.forEach((s) => {
+          if (s.program.id === val.value) {
+            this.submissions.push(s);
+          }
+        });
+      }
+    },
   },
   computed: {
     ...mapState("dashboard", ["user"]),
@@ -131,6 +144,19 @@ export default {
       this.$q.loading.show();
       allSubmissions = await this.mySubmissions();
       this.submissions = allSubmissions;
+
+      this.programs.push({ id: 0, label: "All Programs", value: 0 });
+      this.programs = this.programs.concat(
+        this.getMyPrograms.map(function (p) {
+          let program = {
+            id: p.id,
+            label: p.program_title,
+            value: p.id,
+          };
+          return program;
+        })
+      );
+
       this.$q.loading.hide();
     } catch (error) {}
   },

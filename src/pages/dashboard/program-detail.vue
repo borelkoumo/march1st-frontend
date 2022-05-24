@@ -187,7 +187,7 @@
                   <q-btn
                     flat
                     no-caps
-                    :label="getStatusSubmission(submission.submissionStatus_id)"
+                    :label="submission.submission_status_title"
                     style="
                       background: #fff5d9;
                       color: #ffbb38;
@@ -242,10 +242,9 @@ export default {
       "getStatusSubmission",
       "getReelStatus",
     ]),
-    getLabelStatus: function (statusId) {
-      console.log(statusId);
-      return this.getStatusSubmission(statusId);
-      //return "Waiting for M1 Review"
+    getLabelStatus(submission) {
+      console.log(submission);
+      return "text"
     },
   },
   methods: {

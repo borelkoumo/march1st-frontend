@@ -106,10 +106,10 @@ const COMPAGNY_USERS = {
                 attributes {
                   first_name
                   last_name
-                  user{
-                    data{
+                  user {
+                    data {
                       id
-                      attributes{
+                      attributes {
                         email
                         username
                       }
@@ -267,6 +267,28 @@ const HACKER_QUERY = {
     },
   },
 };
+const MARCH1st_QUERY = {
+  query: gql`
+    query usersPermissionsUser($userId: ID!) {
+      march1stUser(id: $userId) {
+        data {
+          id
+          attributes {
+            name
+            title
+            phone
+          }
+        }
+      }
+    }
+  `,
+  variables: {},
+  context: {
+    headers: {
+      /* authorization: token, */
+    },
+  },
+};
 
 const USER_COMPANY_USER = {
   query: gql`
@@ -299,6 +321,7 @@ const USER_COMPANY_USER = {
 
 export {
   HACKERS_QUERY,
+  MARCH1st_QUERY,
   LOGIN_MUTATION,
   COMPAGNIES_QUERY,
   USERS_QUERY,

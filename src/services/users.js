@@ -7,6 +7,7 @@ import {
   LOGIN_MUTATION,
   COMPANY_QUERY,
   HACKER_QUERY,
+  MARCH1st_QUERY,
   COMPAGNY_USERS,
   USER_COMPANY_USER,
 } from "../query/users";
@@ -155,7 +156,7 @@ const _getHacker = async function (credentials) {
     HACKER_QUERY.variables.userId = credentials.id;
 
     const result = await apolloClient.query(HACKER_QUERY);
-    console.log(result.data);
+    //console.log(result.data);
     const hacker = {
       id: result.data.hacker.data.id,
       first_name: result.data.hacker.data.attributes.first_name,
@@ -165,6 +166,25 @@ const _getHacker = async function (credentials) {
       phone: result.data.hacker.data.attributes.phone,
     };
     return Promise.resolve(hacker);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+const _getMarch1st = async function (credentials) {
+  try {
+    MARCH1st_QUERY.context.headers.authorization = "Bearer " + credentials.token;
+    MARCH1st_QUERY.variables.userId = credentials.id;
+
+    const result = await apolloClient.query(MARCH1st_QUERY);
+    //console.log(result.data);
+    const march1st = {
+      id: result.data.march1stUser.data.id,
+      first_name: result.data.march1stUser.data.attributes.name,
+      
+      profile_picture_url:"",
+      phone: result.data.march1stUser.data.attributes.phone,
+    };
+    return Promise.resolve(march1st);
   } catch (error) {
     return Promise.reject(error);
   }
@@ -232,4 +252,5 @@ export {
   _getCompanyUsers,
   _getCompany,
   _getHacker,
+  _getMarch1st
 };

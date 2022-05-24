@@ -116,7 +116,7 @@ export default {
   display: -webkit-box;
   -webkit-line-clamp: 3; /* number of lines to show */
   -webkit-box-orient: vertical;
-  height: 50px;
+  height: 70px;
 }
 .text-action-1 {
   font-family: "inter";

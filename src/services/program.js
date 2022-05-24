@@ -64,7 +64,6 @@ const _getPrograms = async function () {
         return m.id;
       });
       let submissions = p.attributes.submissions.data;
-      //console.log("Submission dans services ",submissions)
       program.submissions = submissions.map(function (s) {
         let submission = {};
         submission.id = s.id;
@@ -72,6 +71,7 @@ const _getPrograms = async function () {
         const statusesData = s.attributes.submission_statuses.data;
         if (statusesData.length > 0) {
           let status = statusesData[0].attributes.status;
+          submission.submission_status_title = statusesData[0].attributes.status_title
           if (
             status === "accepted_unresolved" ||
             status === "accepted_resolved"
@@ -84,12 +84,14 @@ const _getPrograms = async function () {
           }
         } else {
           submission.submission_status = "Pending";
+          submission.submission_status_title = "Unknow Status"
         }
         return submission;
       });
       program.company = p.attributes.company.data.id;
       return program;
     });
+    console.log(programList);
     return Promise.resolve(programList);
   } catch (error) {
     console.log(error);
