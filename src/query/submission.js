@@ -53,45 +53,48 @@ const { mutate: CREATE_SUBMISSION_STATUS } = {
 
 const SUBMISSIONS_HACKER = {
   query: gql`
-    query submissions($hackerId: ID!) {
-      hacker(id: $hackerId) {
+    query submissions($hackerId: ID!, $page: Int!, $pageSize: Int!) {
+      submissions(
+        filters: { hacker: { id: { eq: $hackerId } } }
+        pagination: { page: $page, pageSize: $pageSize }
+      ) {
         data {
           id
           attributes {
-            submissions {
+            submission_text
+            submission_title
+            submission_target
+            severity_level
+            program {
               data {
                 id
                 attributes {
-                  submission_title
-                  severity_level
-                  submission_target
-                  submission_text
-                  createdAt
-                  submission_statuses(sort: "createdAt:DESC") {
-                    data {
-                      id
-                      attributes {
-                        status
-                        status_title
-                        createdAt
-                      }
-                    }
-                  }
-                  program {
-                    data {
-                      id
-                      attributes {
-                        program_title
-                        program_type
-                        program_picture_url
-                        program_description
-                        reward_range
-                      }
-                    }
-                  }
+                  program_title
+                  program_description
+                  program_type
+                  safe_harbour_type
+                  reward_range
+                  program_picture_url
                 }
               }
             }
+            submission_statuses(sort: "createdAt:DESC") {
+              data {
+                id
+                attributes {
+                  status
+                  status_title
+                  createdAt
+                }
+              }
+            }
+          }
+        }
+        meta {
+          pagination {
+            total
+            page
+            pageSize
           }
         }
       }
@@ -106,52 +109,48 @@ const SUBMISSIONS_HACKER = {
 };
 const SUBMISSIONS_SUPER_MANAGER = {
   query: gql`
-    query submissions($companyId: ID!) {
-      company(id: $companyId) {
+    query submissions($companyId: ID!, $page: Int!, $pageSize: Int!) {
+      submissions(
+        filters: { program: { company: { id: { eq: $companyId } } } }
+        pagination: { page: $page, pageSize: $pageSize }
+      ) {
         data {
           id
           attributes {
-            programs {
+            submission_text
+            submission_title
+            submission_target
+            severity_level
+            program {
               data {
                 id
                 attributes {
-                  submissions {
-                    data {
-                      id
-                      attributes {
-                        submission_text
-                        submission_title
-                        submission_target
-                        severity_level
-                        program {
-                          data {
-                            id
-                            attributes {
-                              program_title
-                              program_description
-                              program_type
-                              safe_harbour_type
-                              reward_range
-                              program_picture_url
-                            }
-                          }
-                        }
-                        submission_statuses(sort: "createdAt:DESC") {
-                          data {
-                            id
-                            attributes {
-                              status
-                              status_title
-                              createdAt
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
+                  program_title
+                  program_description
+                  program_type
+                  safe_harbour_type
+                  reward_range
+                  program_picture_url
                 }
               }
             }
+            submission_statuses(sort: "createdAt:DESC") {
+              data {
+                id
+                attributes {
+                  status
+                  status_title
+                  createdAt
+                }
+              }
+            }
+          }
+        }
+        meta {
+          pagination {
+            total
+            page
+            pageSize
           }
         }
       }
@@ -166,52 +165,48 @@ const SUBMISSIONS_SUPER_MANAGER = {
 };
 const SUBMISSIONS_MANAGER = {
   query: gql`
-    query submissions($companyUserId: ID!) {
-      companyUser(id: $companyUserId) {
+    query submissions($companyUserId: ID!, $page: Int!, $pageSize: Int!) {
+      submissions(
+        filters: { program: { company_users: { id: { eq: $companyUserId } } } }
+        pagination: { page: $page, pageSize: $pageSize }
+      ) {
         data {
           id
           attributes {
-            programs {
+            submission_text
+            submission_title
+            submission_target
+            severity_level
+            program {
               data {
                 id
                 attributes {
-                  submissions {
-                    data {
-                      id
-                      attributes {
-                        submission_text
-                        submission_title
-                        submission_target
-                        severity_level
-                        program {
-                          data {
-                            id
-                            attributes {
-                              program_title
-                              program_description
-                              program_type
-                              safe_harbour_type
-                              reward_range
-                              program_picture_url
-                            }
-                          }
-                        }
-                        submission_statuses(sort: "createdAt:DESC") {
-                          data {
-                            id
-                            attributes {
-                              status
-                              status_title
-                              createdAt
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
+                  program_title
+                  program_description
+                  program_type
+                  safe_harbour_type
+                  reward_range
+                  program_picture_url
                 }
               }
             }
+            submission_statuses(sort: "createdAt:DESC") {
+              data {
+                id
+                attributes {
+                  status
+                  status_title
+                  createdAt
+                }
+              }
+            }
+          }
+        }
+        meta {
+          pagination {
+            total
+            page
+            pageSize
           }
         }
       }
@@ -226,49 +221,49 @@ const SUBMISSIONS_MANAGER = {
 };
 const SUBMISSIONS_ADMIN = {
   query: gql`
-    query submissions($page:Int!, $pageSize:Int!){
-  submissions(pagination:{page:$page, pageSize:$pageSize}){
-    data{
-      id
-      attributes{
-        submission_text
-        submission_title
-        submission_target
-        severity_level
-        program{
-          data{
-            id
-            attributes{
-              program_title
-              program_description
-              program_type
-              safe_harbour_type
-              reward_range
-              program_picture_url
+    query submissions($page: Int!, $pageSize: Int!) {
+      submissions(pagination: { page: $page, pageSize: $pageSize }) {
+        data {
+          id
+          attributes {
+            submission_text
+            submission_title
+            submission_target
+            severity_level
+            program {
+              data {
+                id
+                attributes {
+                  program_title
+                  program_description
+                  program_type
+                  safe_harbour_type
+                  reward_range
+                  program_picture_url
+                }
+              }
+            }
+            submission_statuses(sort: "createdAt:DESC") {
+              data {
+                id
+                attributes {
+                  status
+                  status_title
+                  createdAt
+                }
+              }
             }
           }
         }
-        submission_statuses(sort:"createdAt:DESC"){
-          data{
-            id
-            attributes{
-              status
-              status_title
-              createdAt
-            }
+        meta {
+          pagination {
+            total
+            page
+            pageSize
           }
         }
       }
     }
-    meta{
-      pagination{
-        total
-        page,
-        pageSize
-      }
-    }
-  }
-}
   `,
   variables: {},
   context: {

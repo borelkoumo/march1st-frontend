@@ -76,7 +76,7 @@
           </template>
         </submission-component>
         <div class="q-pa-lg flex flex-center">
-          <q-pagination v-model="page" :max="totalPage" color="secondary" />
+          <q-pagination v-model="page" :max="totalPage" v-if="totalPage>1" color="secondary" />
         </div>
       </div>
       <div v-else class="flex flex-center">
@@ -85,7 +85,7 @@
           <div class="title-1">No submission</div>
           <div class="subtitle-1">You have no submissions</div>
         </div>
-        <div class="q-pa-lg flex flex-center">
+        <div class="q-pa-lg flex flex-center" v-if="totalPage>1">
           <q-pagination v-model="page" :max="totalPage" color="secondary" />
         </div>
       </div>
@@ -168,6 +168,7 @@ export default {
     ...mapGetters("program", ["getProgram", "getMyPrograms"]),
     totalPage() {
       //let entier;
+      if(this.total/this.pageSize<1) return 1;
       if (this.total % this.pageSize === 0) return this.total / this.pageSize;
       else return this.total / this.pageSize + 1;
     },

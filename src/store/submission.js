@@ -209,17 +209,19 @@ const actions = {
         result = await _mySubmissions({
           id: user.hacker.id,
           typeUser: "hacker",
+          pagination:payload
         });
-        commit("setSubmissions", result);
+        commit("setSubmissions", result.submissions);
         return Promise.resolve(result);
       }
       else if(user.typeUser==="client"){
         result = await _mySubmissions({
           id: user.role==="super_manager"?user.company.id:user.company_user.id,
           typeUser: "client",
-          role:user.role
+          role:user.role,
+          pagination:payload
         });
-        commit("setSubmissions", result);
+        commit("setSubmissions", result.submissions);
         return Promise.resolve(result);
       }
       else if(user.typeUser==="admin"){
