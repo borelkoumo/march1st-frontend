@@ -201,7 +201,7 @@ const actions = {
     if (comment.message != null && comment.message != "")
       commit("addComment", comment);
   },
-  async mySubmissions({ state, commit }) {
+  async mySubmissions({ state, commit }, payload) {
     let user = dasboard.state.user;
     try {
       let result = null;
@@ -224,10 +224,11 @@ const actions = {
       }
       else if(user.typeUser==="admin"){
         result = await _mySubmissions({
-          id: user.march1st.id,
-          typeUser: "admin"
+          typeUser: "admin",
+          pagination:payload
         });
-        commit("setSubmissions", result);
+        commit("setSubmissions", result.submissions);
+        console.log(result)
         return Promise.resolve(result);
       }
     } catch (error) {}

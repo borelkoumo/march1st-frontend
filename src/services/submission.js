@@ -16,16 +16,16 @@ const _createSubmission = async function (payload) {
       ...payload,
       attachment_1: "",
     };
-    console.log(
+    /* console.log(
       "La submission avant création dans submission service ",
       submission
-    );
+    ); */
     CREATE_SUBMISSION.variables.submission = submission;
     CREATE_SUBMISSION.context.headers.authorization =
       "Bearer " + localStorage.getItem("token");
     const result = await apolloClient.mutate(CREATE_SUBMISSION);
-    console.log("Id de la cration de submission dans service ", result.data.id);
-    return result.data.id;
+    console.log("Id de la cration de submission dans service ", result.data.createSubmission.data.id);
+    return result.data.createSubmission.data.id;
   } catch (error) {
     console.log(error);
   }
@@ -209,6 +209,8 @@ const _mySubmissions = async function (payload) {
         return allSubmissions;
       }
     } else if (payload.typeUser === "admin") {
+      SUBMISSIONS_ADMIN.variables.page = payload.pagination.page;
+      SUBMISSIONS_ADMIN.variables.pageSize = payload.pagination.pageSize;
       SUBMISSIONS_ADMIN.context.headers.authorization =
         "Bearer " + localStorage.getItem("token");
       result = await apolloClient.query(SUBMISSIONS_ADMIN);
@@ -255,7 +257,8 @@ const _mySubmissions = async function (payload) {
       submissions = submissions.filter(
         (s) => s.program !== null || s.program !== undefined
       );
-      return submissions;
+      const pagination = result.data.submissions.meta.pagination;
+      return {pagination, submissions}
     }
   } catch (error) {
     console.log(error);

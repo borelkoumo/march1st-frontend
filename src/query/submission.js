@@ -226,42 +226,49 @@ const SUBMISSIONS_MANAGER = {
 };
 const SUBMISSIONS_ADMIN = {
   query: gql`
-    query submissions {
-      submissions {
-        data {
-          id
-          attributes {
-            submission_text
-            submission_title
-            submission_target
-            severity_level
-            program {
-              data {
-                id
-                attributes {
-                  program_title
-                  program_description
-                  program_type
-                  safe_harbour_type
-                  reward_range
-                  program_picture_url
-                }
-              }
+    query submissions($page:Int!, $pageSize:Int!){
+  submissions(pagination:{page:$page, pageSize:$pageSize}){
+    data{
+      id
+      attributes{
+        submission_text
+        submission_title
+        submission_target
+        severity_level
+        program{
+          data{
+            id
+            attributes{
+              program_title
+              program_description
+              program_type
+              safe_harbour_type
+              reward_range
+              program_picture_url
             }
-            submission_statuses(sort: "createdAt:DESC") {
-              data {
-                id
-                attributes {
-                  status
-                  status_title
-                  createdAt
-                }
-              }
+          }
+        }
+        submission_statuses(sort:"createdAt:DESC"){
+          data{
+            id
+            attributes{
+              status
+              status_title
+              createdAt
             }
           }
         }
       }
     }
+    meta{
+      pagination{
+        total
+        page,
+        pageSize
+      }
+    }
+  }
+}
   `,
   variables: {},
   context: {

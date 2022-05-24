@@ -75,12 +75,18 @@
             </q-card-section>
           </template>
         </submission-component>
+        <div class="q-pa-lg flex flex-center">
+          <q-pagination v-model="page" :max="totalPage" color="secondary" />
+        </div>
       </div>
       <div v-else class="flex flex-center">
         <div class="">
           <q-img src="~assets/empty-program.svg" width="600px" />
           <div class="title-1">No submission</div>
           <div class="subtitle-1">You have no submissions</div>
+        </div>
+        <div class="q-pa-lg flex flex-center">
+          <q-pagination v-model="page" :max="totalPage" color="secondary" />
         </div>
       </div>
     </div>
@@ -95,6 +101,11 @@ export default {
   components: { submissionComponent },
   data() {
     return {
+      page: 1,
+      pageSize: 10,
+      total: 0,
+      totalPage: 0,
+
       programs: [],
       program: null,
       status: [
@@ -125,11 +136,41 @@ export default {
         });
       }
     },
+    page: async function (val) {
+      try {
+        this.$q.loading.show();
+        let submissionsWithPagination = await this.mySubmissions({
+          page: val,
+          pageSize: this.pageSize,
+        });
+        allSubmissions = submissionsWithPagination.submissions;
+        this.total = submissionsWithPagination.pagination.total;
+        console.log(this.program);
+        if (this.program && this.program.value!==0) {
+          this.submissions = [];
+          allSubmissions.forEach((s) => {
+            if (s.program.id == program.value) {
+              this.submissions.push(s);
+            }
+          });
+        } else {
+          this.submissions = allSubmissions;
+        }
+        this.$q.loading.hide();
+      } catch (error) {
+        this.$q.loading.hide();
+      }
+    },
   },
   computed: {
     ...mapState("dashboard", ["user"]),
     ...mapGetters("submission", ["getMySubmissions", "getStatusSubmission"]),
     ...mapGetters("program", ["getProgram", "getMyPrograms"]),
+    totalPage() {
+      //let entier;
+      if (this.total % this.pageSize === 0) return this.total / this.pageSize;
+      else return this.total / this.pageSize + 1;
+    },
   },
   methods: {
     ...mapActions("submission", ["mySubmissions"]),
@@ -142,7 +183,13 @@ export default {
   async beforeMount() {
     try {
       this.$q.loading.show();
-      allSubmissions = await this.mySubmissions();
+      let submissionsWithPagination = await this.mySubmissions({
+        page: this.page,
+        pageSize: this.pageSize,
+      });
+      allSubmissions = submissionsWithPagination.submissions;
+      this.total = submissionsWithPagination.pagination.total;
+
       this.submissions = allSubmissions;
 
       this.programs.push({ id: 0, label: "All Programs", value: 0 });
@@ -158,7 +205,9 @@ export default {
       );
 
       this.$q.loading.hide();
-    } catch (error) {}
+    } catch (error) {
+      this.$q.loading.hide();
+    }
   },
 };
 </script>
