@@ -90,7 +90,8 @@ function formatFullName(string = "") {
     return string
       .trim()
       .split(" ")
-      .map((e) => e[0].toUpperCase() + e.substring(1).toLowerCase()).join(' ');
+      .map((e) => e[0].toUpperCase() + e.substring(1).toLowerCase())
+      .join(" ");
   } catch (error) {
     return string;
   }
@@ -99,7 +100,9 @@ function formatFullName(string = "") {
 function getAuthConfig(typeUser) {
   //let typeUser = localStorage.getItem("typeUser");
   if (!typeUser) {
-    throw new Error ('Type user cannot be null. Please provide type user in getAuthConfig()')
+    throw new Error(
+      "Type user cannot be null. Please provide type user in getAuthConfig()"
+    );
   }
   if (typeUser === "client") {
     printLog(`in base64.js getAuthConfig: Using CLIENT user pool`);
