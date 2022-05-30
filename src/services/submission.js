@@ -43,7 +43,7 @@ const _createSubmissionStatus = async function (payload) {
     if(payload.submissionId){
       submissionStatus.submission=payload.submissionId
     }
-    console.log(payload);
+    //console.log(payload);
     CREATE_SUBMISSION_STATUS.variables.submissionStatus = submissionStatus;
     CREATE_SUBMISSION_STATUS.context.headers.authorization =
       "Bearer " + localStorage.getItem("token");
@@ -224,6 +224,7 @@ const _mySubmissions = async function (payload) {
         "Bearer " + localStorage.getItem("token");
       result = await apolloClient.query(SUBMISSIONS_ADMIN);
       const submissionData = result.data.submissions.data;
+      //console.log("la valeur de result dans submission", submissionData);
       let submissions = [];
       submissions = submissionData.map(function (s) {
         let submission = {};
@@ -238,21 +239,27 @@ const _mySubmissions = async function (payload) {
           submission.submission_status =
             statusesData[0].attributes.status_title;
           let statuses = statusesData.map(function (s) {
+            //console.log("la valeur de s.id=",s.id)
             let statusSubmission = {};
             statusSubmission.id = s.id;
             statusSubmission.status = s.attributes.status;
             statusSubmission.status_title = s.attributes.status_title;
             statusSubmission.createdAt = s.attributes.createdAt;
+            //console.log("la valeur de statusSubmission=",statusSubmission)
             return statusSubmission;
           });
           submission.statuses = statuses;
+          //console.log("submission.statues = ",submission.statuses)
         } else {
           submission.submission_status = "Unknow Status";
         }
-
-        if (s.attributes.program.data.id) {
+        //console.log("s.attributes.program.data=",s.attributes.program);
+        if (s.attributes.program.data) {
+          //console.log("la valeur de s dans a",s.attributes.program.data);
           let program = { ...s.attributes.program.data.attributes };
+          //console.log("La valeur de program",program);
           program.id = s.attributes.program.data.id;
+
           program.critical = program.reward_range.critical;
           program.medium = program.reward_range.medium;
           program.severe = program.reward_range.severe;
@@ -260,14 +267,19 @@ const _mySubmissions = async function (payload) {
           submission.program = program;
         } else {
           submission.program = null;
+          //console.log("le program est null")
         }
         return submission;
       });
-      submissions = submissions.filter(
+      //console.log("La valeur de submission")
+      const allSubmissions = submissions.filter(
         (s) => s.program !== null || s.program !== undefined
       );
+      //console.log(allSubmissions);
       const pagination = result.data.submissions.meta.pagination;
-      return { pagination, submissions };
+      //console.log("La valeur de pagination",pagination)
+      //submissions = submissions.filter((s)=>s.program!=null)
+      return { pagination,  submissions:allSubmissions};
     }
   } catch (error) {
     console.log(error);

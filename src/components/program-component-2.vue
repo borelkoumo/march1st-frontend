@@ -3,13 +3,13 @@
     <q-card-section class="q-pb-none q-pt-none">
       <div class="flex justify-between">
         <div class="">
-          <q-avatar rounded>
+          <q-avatar rounded size="90px">
             <img :src="program.program_picture_url" />
           </q-avatar>
         </div>
         <div>
           <div class="text-right">
-            <q-badge rounded class="q-pl-md q-pr-md access-positive">{{
+            <q-badge rounded class="q-pl-md q-pr-md" :class="{'access-positive':program.program_type==='public', 'access-negative':program.program_type==='private'}">{{
               program.program_type.charAt(0).toUpperCase() +
               program.program_type.slice(1)
             }}</q-badge>
@@ -82,7 +82,7 @@ export default {
 };
 </script>
 <style scoped>
-.access-positive {
+.access-positive , .access-negative{
   font-family: "inter";
   font-style: normal;
   font-weight: 500;
@@ -91,6 +91,10 @@ export default {
   text-align: center;
   color: #5887ff;
   background: rgba(88, 135, 255, 0.1);
+}
+.access-negative{
+  color: #F55B5D;
+  background: #F7D5D5;;
 }
 
 .title-program {

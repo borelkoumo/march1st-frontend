@@ -10,6 +10,8 @@ import {
 } from "../services/program";
 import { PROGRAMS_QUERY } from "../query/program";
 
+
+
 const state = {
   programs: [],
 };
@@ -17,14 +19,12 @@ const state = {
 const getters = {
   getHasJoin(state) {
     return (id) => {
-      console.log(id);
       let hasJoin = false;
-      let user = dasboard.state.user;
+      let user = localStorage.getItem("m_user")===null?null:JSON.parse(localStorage.getItem("m_user"));
+      if(user===null) false;
       let p = state.programs.filter((program) => program.id == id);
-      console.log(p);
       //return false
       if (p[0].hackers.length > 0) {
-        console.log(p[0].hackers);
         if (p[0].hackers.includes(user.id)) return true;
         return false;
       } else return false;
@@ -59,7 +59,8 @@ const getters = {
   },
 
   getMyPrograms(state) {
-    let user = dasboard.state.user;
+    let user = localStorage.getItem("m_user")===null?null:JSON.parse(localStorage.getItem("m_user"));
+    if(user===null) return [];
     if (user.typeUser === "client") {
       if (user.role === "manager") {
         const programs = state.programs.filter(
@@ -77,7 +78,8 @@ const getters = {
       return state.programs.filter(
         (program) => program.company === user.company.id
       );
-    } else if (user.typeUser === "hacker") {
+    }
+    else if (user.typeUser === "hacker") {
       let a = state.programs.filter((program) =>
         program.hackers.includes(user.id)
       );
@@ -88,7 +90,8 @@ const getters = {
   },
 
   getAllPrograms(state) {
-    let user = dasboard.state.user;
+    let user = localStorage.getItem("m_user")===null?null:JSON.parse(localStorage.getItem("m_user"));
+    if(user==null) return [];
     let programs = [];
     if (user.typeUser == "client") {
       state.programs.forEach((p) => {
@@ -149,7 +152,8 @@ const getters = {
     }
   },
   getClientPrograms(state) {
-    let user = dasboard.state.user;
+    let user = localStorage.getItem("m_user")===null?null:JSON.parse(localStorage.getItem("m_user"));
+    if(user==null) return [];
     let programs = [];
     let allPrograms = localStorage.getItem("programs");
     //console.log(allPrograms);
@@ -176,7 +180,8 @@ const getters = {
   },
   getHackerPrograms(state) {
     let programs = [];
-    let user = dasboard.state.user;
+    let user = localStorage.getItem("m_user")===null?null:JSON.parse(localStorage.getItem("m_user"));
+    if(user==null) return [];
     let allPrograms = localStorage.getItem("programs");
     if (allPrograms) {
       allPrograms = JSON.parse(allPrograms);
@@ -199,7 +204,8 @@ const getters = {
   },
   isHackerJoined(state) {
     let result = false;
-    let user = dasboard.state.user;
+    let user = localStorage.getItem("m_user")===null?null:JSON.parse(localStorage.getItem("m_user"));
+    if(user==null) return false;
     return (program_id) => {
       let program = {};
 
@@ -215,7 +221,8 @@ const getters = {
   },
   isHackerHasInvitation(state) {
     let result = false;
-    let user = dasboard.state.user;
+    let user = localStorage.getItem("m_user")===null?null:JSON.parse(localStorage.getItem("m_user"));
+    if(user==null) return false;
     return (program_id) => {
       state.programs.forEach((program) => {
         if (
@@ -277,83 +284,51 @@ const mutations = {
 const actions = {
   async saveProgram({ state, commit, dispatch }, payload) {
     try {
-      let user = dasboard.state.user;
+      let user = localStorage.getItem("m_user")===null?null:JSON.parse(localStorage.getItem("m_user"));
+      if(user==null) return null;
       let program = {
-        //id: payload.id,
-        /*program_title: payload.program_title,
-        program_description: payload.program_description,
-        program_type: payload.program_type,
-        safe_harbour_type: payload.safe_harbour_type,
-        reward_type: payload.reward_type,
-        reward_range: payload.reward_range,
-        program_guidelines_1: payload.program_guidelines_1,
-        program_guidelines_2: payload.program_guidelines_2,
-        program_scope: payload.program_scope,
-        legal_terms: payload.legal_terms,*/
-        //program_picture_url: "programs/image17.png",
         ...payload,
         is_closed: false,
-        //closed_at: "",
-        //user_id: user.id,
-        //client_id: user.id,
         company: user.company.id,
-        //date_post: "10/04/2021",
-
         hackers: [],
         company_users: payload.managers.map((m) => m.id),
-        //managers: payload.managers,
-        //managersId: payload.managers.map((m) => m.id),
-        //submissions: [],
-        //invitations: payload.invitations,
-
-        /*critical: payload.critical,
-        severe: payload.severe,
-        medium: payload.medium,
-        low: payload.low,*/
-
         max: payload.critical.max,
         min: payload.low.min,
       };
-
-      /* program.invitations.forEach((hacker) => {
-        let task = {
-          task_created: user.id,
-          task_received: hacker,
-          task_type: "invitation",
-          status: "",
-          task_link: "Private Invitation",
-          task_title: "You received an invitation to join a bounty program",
-          task_description: program.title,
-          task_date: "",
-        };
-        dispatch("task/addTask", task, { root: true });
-      }); */
       const program_id = await _createProgram(program);
-      //console.log("La valeur de program_id est ", program_id);
+      dispatch("allPrograms");
       payload.invitations.forEach(async (id) => {
         let payload = {
           company_user: user.company_user.id,
           hacker: id,
           program: program_id,
         };
-        console.log("invitation du hacker", id, "invitation=", payload);
-        await _createInvitation(payload);
+        //console.log("invitation du hacker", id, "invitation=", payload);
+         await _createInvitation(payload);
       });
+      dispatch("allPrograms");
       //commit("addProgram", program);
     } catch (error) {}
   },
-  async joinProgram({ state, commit }, payload) {
-    let user = dasboard.state.user;
-    payload.hackers.push(user.id);
-    let param = {
-      hacker: user,
-      program_id: payload.id,
-    };
-    const result = _joinProgram(payload);
-    commit("addHackerToProgram", param);
+  async joinProgram({ state, commit, dispatch }, payload) {
+    try {
+      let user = localStorage.getItem("m_user")===null?null:JSON.parse(localStorage.getItem("m_user"));
+      if(user==null) return null;
+      payload.hackers.push(user.id);
+      let param = {
+        hacker: user,
+        program_id: payload.id,
+      };
+      const result = await _joinProgram(payload);
+      commit("addHackerToProgram", param);
+      dispatch("allPrograms");
+    }catch (e){
+      console.log("error when join program",e.message())
+    }
   },
   async leaveProgram({ state, commit }, payload) {
-    let user = dasboard.state.user;
+    let user = localStorage.getItem("m_user")===null?null:JSON.parse(localStorage.getItem("m_user"));
+    if(user==null) return null;
     let param = {
       hacker: user,
       program_id: payload,
@@ -390,9 +365,18 @@ const actions = {
       const programs = await _getPrograms();
       commit("setPrograms", programs);
     } catch (error) {
-      console.log("erro in action program " + `${error}`);
+      console.log("error in action program " + `${error}`);
     }
   },
+  async oneProgram({commit},payload){
+    try {
+      const program = await _getOneProgram(payload);
+      return Promise.resolve(program);
+      // commit("setPrograms", programs);
+    } catch (error) {
+      console.log("error in action program " + `${error}`);
+    }
+  }
 };
 
 export default {

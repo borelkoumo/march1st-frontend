@@ -74,7 +74,7 @@
           </template>
           <template v-slot:footer>
             <span class="" style="color: #66788a"
-              >{{ cards[1].percentage }} {{ cards[1].time }}</span
+            >{{ cards[1].percentage }} {{ cards[1].time }}</span
             >
           </template>
         </card-element>
@@ -131,7 +131,7 @@
           </template>
           <template v-slot:footer>
             <span class="" style="color: #66788a"
-              >{{ cards[3].percentage }} {{ cards[3].time }}</span
+            >{{ cards[3].percentage }} {{ cards[3].time }}</span
             >
           </template>
         </card-element>
@@ -222,37 +222,37 @@ export default {
 </script>
 <style lang="sass" scoped>
 .container-dashboard
-    width:1172px
-    margin:0px auto
+  width:1172px
+  margin:0px auto
 .bg-home
-    background-color : #eaf5ff
+  background-color : #eaf5ff
 .pl-box
-    padding-left:70px
+  padding-left:70px
 .pr-box
-    padding-right:70px
+  padding-right:70px
 .title-toolbar
-    font-family: 'nunito'
-    font-style: normal
-    font-weight: bold
-    font-size: 32px
-    line-height: 44px
-    letter-spacing: -0.0555556px
-    color: #163053
+  font-family: 'nunito'
+  font-style: normal
+  font-weight: bold
+  font-size: 32px
+  line-height: 44px
+  letter-spacing: -0.0555556px
+  color: #163053
 .card-element
-    .title-element
-        font-family: "nunito"
-        font-style: normal
-        font-weight: 700
-        font-size: 12px
-        line-height: 16px
-        letter-spacing: 0.996px
-        text-transform: uppercase
-    .number-element
-        font-family: "nunito"
-        font-style: normal
-        font-weight: 600
-        font-size: 24px
-        line-height: 28px
-        letter-spacing: -0.06px
-        padding-top: 8px
+  .title-element
+    font-family: "nunito"
+    font-style: normal
+    font-weight: 700
+    font-size: 12px
+    line-height: 16px
+    letter-spacing: 0.996px
+    text-transform: uppercase
+  .number-element
+    font-family: "nunito"
+    font-style: normal
+    font-weight: 600
+    font-size: 24px
+    line-height: 28px
+    letter-spacing: -0.06px
+    padding-top: 8px
 </style>

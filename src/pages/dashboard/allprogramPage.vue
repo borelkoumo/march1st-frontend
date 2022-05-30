@@ -30,7 +30,7 @@
           v-model="company"
           label="All Companies"
           style="min-width: 200px"
-          v-if="user.typeUser=='admin'"
+          v-if="user.typeUser==='admin'"
         />
         <q-btn-dropdown
           class="bg-white text-dark"
@@ -172,13 +172,13 @@
 <script>
 import programComponent2 from "../../components/program-component-2.vue";
 import { mapActions, mapGetters, mapState } from "vuex";
-let allPrograms = [];
+let programsList = [];
 export default {
   components: { programComponent2 },
   data() {
     return {
       search: null,
-      
+
       programs: [],
       companies:[],
       company:null,
@@ -192,6 +192,15 @@ export default {
     };
   },
   watch: {
+    search: function (val) {
+      if (val != null) {
+        val = val.trim();
+        this.filterPrograms = this.getAllPrograms.filter(
+          (p) => p.program_title.toLowerCase().search(val.toLowerCase()) != -1
+        );
+
+      }
+    },
     isAllFilters: function (val) {
       if (val) {
         this.checkPublic = true;
@@ -199,7 +208,7 @@ export default {
         this.checkPoint = true;
         this.checkCash = true;
         this.filterPrograms=this.getAllPrograms;
-      } 
+      }
       this.checkAllFilters();
     },
     checkPublic: function (val) {
@@ -264,16 +273,16 @@ export default {
     },
     company:function(val){
       this.programs = [];
-      allPrograms.forEach((p)=>{
+      programsList.forEach((p)=>{
         if(p.user_id == val.value){
           this.programs.push(p);
         }
       })
     }
   },
-  
+
   computed: {
-    ...mapState('dashboard',['user']),
+    ...mapState('dashboard',['user','getAllCompanies']),
     ...mapGetters('dashboard',[
       'getAllCompanies'
     ]),
@@ -291,9 +300,13 @@ export default {
     },
   },
   methods: {
+    ...mapActions('dashboard',[
+      'allCompanies'
+    ]),
     ...mapActions('program',[
       'joinProgram',
-      'leaveProgram'
+      'leaveProgram',
+      'allPrograms'
     ]),
     goto(id) {
       let route = { name: "program-detail", params: { id: id } };
@@ -307,8 +320,12 @@ export default {
         this.checkCash;
     },
     async onJoinProgram(program){
-      await this.joinProgram(program);
-      this.$router.push('/main/my-programs');
+      try {
+        await this.joinProgram(program);
+        this.$router.push('/main/my-programs');
+      }catch (e) {
+        console.log(e.message())
+      }
     },
     async onLeaveProgram(id){
       await this.leaveProgram(id);
@@ -319,12 +336,20 @@ export default {
       this.$router.push(route);
     }
   },
-  beforeMount() {
-    allPrograms = this.getAllPrograms;
+  async beforeMount() {
+    try {
+      this.$q.loading.show();
+      await this.allPrograms();
+      await this.allCompanies();
+      programsList = this.getAllPrograms;
+      this.filterPrograms = this.getAllPrograms;
+      this.programs = programsList;
+      this.companies = this.getAllCompanies;
+      this.$q.loading.hide();
+    }catch (e) {
+      this.$q.loading.hide();
+    }
 
-    this.filterPrograms = this.getAllPrograms;
-    this.programs = allPrograms;
-    this.companies = this.getAllCompanies;
   },
 };
 </script>

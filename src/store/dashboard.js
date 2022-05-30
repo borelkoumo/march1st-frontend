@@ -198,19 +198,17 @@ const state = {
   ],
   users: [],
   hackers: [],
-  compagines: [],
+  companies: [],
   managers: [],
 };
 
 const getters = {
   getAllCompanies() {
     let companies = [];
-    users.forEach((user) => {
-      if (user.typeUser == "client") {
-        user.label = user.company_name;
-        user.value = user.id;
-        companies.push(JSON.parse(JSON.stringify(user)));
-      }
+    state.companies.forEach((company) => {
+      company.label = company.company_name;
+      company.value = company.id;
+      companies.push(JSON.parse(JSON.stringify(company)));
     });
     return companies;
   },
@@ -446,14 +444,10 @@ const getters = {
       return menus;
     }
   },
-  getUser(state) {
-    return (id) => {
-      let user = state.users.filter((u) => u.id == id);
-      if (user.length > 0) return user[0];
-      return {};
-    };
+  user(state) {
+    let user = localStorage.getItem('m_user')===null?null:JSON.parse(localStorage.getItem('m_user'));
+    return user;
   },
-
   //pour simulation
   getUsers() {
     return JSON.parse(JSON.stringify(state.users));
@@ -482,10 +476,11 @@ const mutations = {
     if(payload.march1st){
       user.march1st = payload.march1st;
     }
-    console.log(user);
     state.user = user;
+    console.log("La valeur de state.user=",state.user);
     state.token = payload.token;
     localStorage.setItem("token", payload.token);
+    localStorage.setItem("m_user", JSON.stringify(state.user));
   },
   setUsers(state, payload) {
     state.users = payload;
@@ -493,6 +488,9 @@ const mutations = {
   setManagers(state, payload) {
     state.managers = payload;
   },
+  setCompanies(state,payload){
+    state.companies=payload;
+  }
 };
 
 const actions = {
@@ -505,7 +503,7 @@ const actions = {
 
       const url = "/custom/userdata?id=" + credentials.user.id;
       const data = await _getQueryServer(url, null, credentials.token);
-      
+
       let type = data.user.role.type;
       let role = "public";
       let company = null;
@@ -575,7 +573,9 @@ const actions = {
 
   async getAllManagers({ commit, state }) {
     try {
-      const data = await _getCompanyUsers(state.user.company.id);
+      let user = localStorage.getItem("m_user")===null?null:JSON.parse(localStorage.getItem("m_user"));
+      if(user==null) throw new Error("User non définit");
+      const data = await _getCompanyUsers(user.company.id);
       //commit("setManagers", data);
       return Promise.resolve(data);
     } catch (error) {
@@ -591,6 +591,16 @@ const actions = {
       console.log("erro in action dashboard " + `${error}`);
     }
   },
+
+  async allCompanies({commit,state}){
+    try {
+      const data = await _getCompanies();
+      commit('setCompanies',data);
+      return Promise.resolve(data);
+    } catch (error) {
+      console.log("erro in action dashboard " + `${error}`);
+    }
+  }
 };
 
 export default {

@@ -13,8 +13,8 @@
         <q-list class="pt-box menu-item" style="font-family: 'nunito'">
           <div v-for="menu in getMenus" :key="menu.id">
             <q-item-label header v-if="menu.hasLabel" class="menu-label">{{
-              menu.label
-            }}</q-item-label>
+                menu.label
+              }}</q-item-label>
             <q-item
               v-for="child in menu.children"
               :key="child.name"
@@ -85,7 +85,7 @@
           </q-card-section>
         </q-card-section>
         <q-card-actions align="right" class="q-pt-none">
-          <q-btn label="SIGNOUT" class="bg-primary text-white" flat />
+          <q-btn label="SIGNOUT" class="bg-primary text-white" flat @click="onSignout()"/>
           <q-btn label="PROFILE" class="bg-secondary text-white" flat />
         </q-card-actions>
       </q-card>
@@ -296,7 +296,7 @@ export default {
       selectuser: null,
       connectUser: null,
       manager: null,
-      password: "Hacker1@2022",
+      password: "March1st@2022",
       users: [],
       prompt: false,
       newuser: {},
@@ -329,6 +329,10 @@ export default {
   methods: {
     ...mapActions("dashboard", ["createUser", "allUsers"]),
     ...mapActions("program", ["allPrograms"]),
+    onSignout(){
+      localStorage.removeItem('m_user');
+      this.prompt=true;
+    },
     async onCreateUser() {
       let payload = {
         email: this.selectuser.email,
@@ -357,8 +361,7 @@ export default {
       await this.allUsers();
     } catch (error) {}
 
-    
-    this.prompt = true;
+    //this.prompt = true;
     this.getUsers.forEach((element) => {
       if (element.typeUser == "hacker") {
         element.label = element.first_name;

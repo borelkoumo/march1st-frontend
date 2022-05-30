@@ -232,7 +232,7 @@ const SUBMISSIONS_MANAGER = {
 const SUBMISSIONS_ADMIN = {
   query: gql`
     query submissions($page: Int!, $pageSize: Int!) {
-      submissions(pagination: { page: $page, pageSize: $pageSize }) {
+      submissions(filters:{program:{id:{ne:null}}},pagination: { page: $page, pageSize: $pageSize }) {
         data {
           id
           attributes {

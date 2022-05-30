@@ -151,7 +151,7 @@
           <q-list>
             <q-item class="item-amount">
               <q-item-section class="first-element" style="max-width: 60px"
-                >P1</q-item-section
+              >P1</q-item-section
               >
               <q-item-section class="second-element">Critical</q-item-section>
               <q-item-section class="q-pl-sm q-pr-sm">
@@ -166,7 +166,7 @@
             </q-item>
             <q-item class="item-amount">
               <q-item-section class="first-element" style="max-width: 60px"
-                >P2</q-item-section
+              >P2</q-item-section
               >
               <q-item-section class="second-element">Severe</q-item-section>
               <q-item-section class="q-pl-sm q-pr-sm">
@@ -181,7 +181,7 @@
             </q-item>
             <q-item class="item-amount">
               <q-item-section class="first-element" style="max-width: 60px"
-                >P3</q-item-section
+              >P3</q-item-section
               >
               <q-item-section class="second-element">Medium</q-item-section>
               <q-item-section class="q-pl-sm q-pr-sm">
@@ -196,7 +196,7 @@
             </q-item>
             <q-item class="item-amount">
               <q-item-section class="first-element" style="max-width: 60px"
-                >P4</q-item-section
+              >P4</q-item-section
               >
               <q-item-section class="second-element">Low</q-item-section>
               <q-item-section class="q-pl-sm q-pr-sm">
@@ -215,42 +215,42 @@
       <div class="q-pt-lg q-pb-lg">
         <q-card class="my-card card-description" flat>
           <q-card-section class="title q-pt-lg q-pb-md"
-            >Detailed Description</q-card-section
+          >Detailed Description</q-card-section
           >
           <q-card-section class="q-pb-sm">
             <div class="subtitle q-pb-sm">Program Guidelines</div>
             <div class="">
-              <q-input
-                type=""
+              <q-editor
                 v-model="formData.program_guidelines_1"
-                label=""
-                borderless
+                :dense="$q.screen.lt.md"
+                :toolbar="toolbar"
+                :fonts="fonts"
               />
             </div>
           </q-card-section>
           <q-card-section class="q-pb-sm">
             <div class="subtitle q-pb-sm">Rewards Guidelines</div>
             <div class="">
-              <q-input
-                type=""
+              <q-editor
                 v-model="formData.program_guidelines_2"
-                label=""
-                borderless
+                :dense="$q.screen.lt.md"
+                :toolbar="toolbar"
+                :fonts="fonts"
               />
             </div>
           </q-card-section>
           <q-card-section class="q-pb-sm">
             <div class="subtitle q-pb-sm">Legal Terms</div>
             <div class="">
-              <q-input
-                type=""
+              <q-editor
                 v-model="formData.legal_terms"
-                label=""
-                borderless
+                :dense="$q.screen.lt.md"
+                :toolbar="toolbar"
+                :fonts="fonts"
               />
             </div>
           </q-card-section>
-          <q-card-section class="q-pb-sm">
+<!--          <q-card-section class="q-pb-sm">
             <div class="subtitle q-pb-sm">Program Scope</div>
             <div class="">
               <q-input
@@ -260,7 +260,7 @@
                 borderless
               />
             </div>
-          </q-card-section>
+          </q-card-section>-->
         </q-card>
       </div>
       <div class="card-invite">
@@ -281,10 +281,10 @@
             <q-list separator>
               <q-item class="item-header">
                 <q-item-section style="max-width: 50px"
-                  ><q-checkbox
-                    v-model="allManagers"
-                    class="q-mr-sm"
-                    color="secondary"
+                ><q-checkbox
+                  v-model="allManagers"
+                  class="q-mr-sm"
+                  color="secondary"
                 /></q-item-section>
                 <q-item-section> Username </q-item-section>
                 <q-item-section class="text-center">
@@ -300,16 +300,16 @@
                 :key="manager.id"
               >
                 <q-item-section style="max-width: 50px"
-                  ><q-checkbox
-                    v-model="manager.isCheck"
-                    class="q-mr-sm"
-                    color="secondary"
+                ><q-checkbox
+                  v-model="manager.isCheck"
+                  class="q-mr-sm"
+                  color="secondary"
                 /></q-item-section>
                 <q-item-section>
                   <q-item-label class="title">{{ manager.first_name }}</q-item-label>
                   <q-item-label caption class="subtitle">{{
-                    manager.user.email
-                  }}</q-item-label>
+                      manager.user.email
+                    }}</q-item-label>
                 </q-item-section>
                 <q-item-section class="text-center title flex flex-center">
                   <div class="">{{ manager.designation }}</div>
@@ -353,10 +353,10 @@
             <q-list separator>
               <q-item class="item-header">
                 <q-item-section style="max-width: 50px"
-                  ><q-checkbox
-                    v-model="allHackers"
-                    class="q-mr-sm"
-                    color="secondary"
+                ><q-checkbox
+                  v-model="allHackers"
+                  class="q-mr-sm"
+                  color="secondary"
                 /></q-item-section>
                 <q-item-section> Username / Email </q-item-section>
                 <q-item-section class="text-center" style="max-width: 18%">
@@ -378,19 +378,19 @@
                 :key="hacker.id"
               >
                 <q-item-section style="max-width: 50px"
-                  ><q-checkbox
-                    v-model="formData.invitations"
-                    class="q-mr-sm"
-                    color="secondary"
-                    :val="hacker.id"
+                ><q-checkbox
+                  v-model="formData.invitations"
+                  class="q-mr-sm"
+                  color="secondary"
+                  :val="hacker.id"
                 /></q-item-section>
                 <q-item-section>
                   <q-item-label class="title"
-                    >{{ hacker.first_name }} {{ hacker.last_name }}</q-item-label
+                  >{{ hacker.first_name }} {{ hacker.last_name }}</q-item-label
                   >
                   <q-item-label caption class="subtitle">{{
-                    hacker.email
-                  }}</q-item-label>
+                      hacker.email
+                    }}</q-item-label>
                 </q-item-section>
                 <q-item-section
                   class="text-center flex flex-center"
@@ -444,6 +444,68 @@ export default {
   name: "programs",
   data() {
     return {
+      fonts:{
+        arial: 'Arial',
+        arial_black: 'Arial Black',
+        comic_sans: 'Comic Sans MS',
+        courier_new: 'Courier New',
+        impact: 'Impact',
+        lucida_grande: 'Lucida Grande',
+        times_new_roman: 'Times New Roman',
+        verdana: 'Verdana'
+      },
+      toolbar:[
+        [
+          {
+            label: this.$q.lang.editor.align,
+            icon: this.$q.iconSet.editor.align,
+            fixedLabel: true,
+            list: 'only-icons',
+            options: ['left', 'center', 'right', 'justify']
+          }
+        ],
+      ['bold', 'italic'],
+    ['token', 'hr', 'link', 'custom_btn'],
+      [
+        {
+          label: this.$q.lang.editor.fontSize,
+          icon: this.$q.iconSet.editor.fontSize,
+          fixedLabel: true,
+          fixedIcon: true,
+          list: 'no-icons',
+          options: [
+            'size-1',
+            'size-2',
+            'size-3',
+            'size-4',
+            'size-5',
+            'size-6',
+            'size-7'
+          ]
+        },
+        {
+          label: this.$q.lang.editor.defaultFont,
+          icon: this.$q.iconSet.editor.font,
+          fixedIcon: true,
+          list: 'no-icons',
+          options: [
+            'default_font',
+            'arial',
+            'arial_black',
+            'comic_sans',
+            'courier_new',
+            'impact',
+            'lucida_grande',
+            'times_new_roman',
+            'verdana'
+          ]
+        },
+      ],
+      ['unordered', 'ordered'],
+
+      ['undo', 'redo'],
+      ['viewsource']
+  ],
       formData: {
         //id: null,
         //user_id: 1,
@@ -543,11 +605,15 @@ export default {
     ...mapActions("program", ["saveProgram"]),
     ...mapActions("dashboard", ["getAllManagers","getAllHackers"]),
 
-    onSaveProgram() {
-      //this.formData.id = Math.floor(Math.random() * 300);
-      this.formData.managers = this.managers.filter((m) => m.isCheck == true);
-      this.saveProgram(this.formData);
-      this.$router.push("/main/programs");
+    async onSaveProgram() {
+      try {
+        this.formData.managers = this.managers.filter((m) => m.isCheck == true);
+        await this.saveProgram(this.formData);
+        this.$router.push("/main/programs");
+      }catch (e) {
+        console.log("error where create program", e.message());
+      }
+
     },
   },
   async beforeMount() {
@@ -556,7 +622,7 @@ export default {
     try {
       this.managers = await this.getAllManagers();
       this.hackers= await this.getAllHackers();
-      
+
       this.managers.forEach((manager) => {
         manager.isCheck = false;
         manager.privilege = null;

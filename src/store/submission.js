@@ -9,6 +9,7 @@ import {
 
 //const programs =program.state.programs;
 /* const user = dasboard.state.user; */
+//let user = localStorage.getItem("m_user")===null?null:JSON.parse(localStorage.getItem("m_user"));
 
 const state = {
   submissions: [],
@@ -19,7 +20,10 @@ const state = {
 const getters = {
   getMySubmissions(state) {
     let programs = program.state.programs;
-    let user = dasboard.state.user;
+
+    let user = localStorage.getItem("m_user")===null?null:JSON.parse(localStorage.getItem("m_user"));
+    if(user==null) return [];
+
     let mySubmissions = [];
     if (user.typeUser == "hacker") {
       mySubmissions = state.submissions.filter(
@@ -144,9 +148,10 @@ const mutations = {
 
 const actions = {
   async addReport({ state, commit }, payload) {
-    const user = dasboard.state.user;
+    let user = localStorage.getItem("m_user")===null?null:JSON.parse(localStorage.getItem("m_user"));
+    if(user==null) return null;
     payload.severety_level = payload.severety_level.value;
-    
+
     payload.comments = [];
     let submissionStatus = {
       status: "new",
@@ -192,7 +197,8 @@ const actions = {
     }
   },
   async mySubmissions({ state, commit }, payload) {
-    let user = dasboard.state.user;
+    let user = localStorage.getItem("m_user")===null?null:JSON.parse(localStorage.getItem("m_user"));
+    if(user==null) return null;
     try {
       let result = null;
       if (user.typeUser === "hacker") {

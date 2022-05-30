@@ -133,12 +133,58 @@ const ONE_PROGRAM_QUERY = {
                 }
               }
             }
+            submissions {
+              data {
+                id
+                attributes {
+                  submission_text
+                  submission_title
+                  submission_statuses(sort: "createdAt:DESC") {
+                    data {
+                      id
+                      attributes {
+                        status
+                        status_title
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            company {
+              data {
+                id
+              }
+            }
+            company_users {
+              data {
+                id
+                attributes {
+                  first_name
+                  last_name
+                  user {
+                    data {
+                      id
+                      attributes {
+                        username
+                        email
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
     }
   `,
   variables: {},
+  context: {
+    headers: {
+      /* authorization: token, */
+    },
+  }
 };
 
 const { mutate: JOIN_PROGRAM_MUTATION } = {

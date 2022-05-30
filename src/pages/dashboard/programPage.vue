@@ -25,6 +25,16 @@
             />
           </template>
         </q-input>
+        <q-select
+          bg-color="white"
+          filled
+          dense
+          :options="companies"
+          v-model="company"
+          label="All Companies"
+          style="min-width: 200px"
+          v-if="user.typeUser=='admin'"
+        />
         <q-btn-dropdown
           class="bg-white text-dark"
           flat
@@ -119,7 +129,7 @@
             <q-card-section class="col-3 q-pl-lg q-pr-none">
               <submission-level
                 :submissions="program.submissions"
-                
+
                 :progress="progress"
               />
             </q-card-section>
@@ -157,6 +167,7 @@ export default {
   components: { programComponent, ProgramComponent2, SubmissionLevel },
   data() {
     return {
+      companies:[],
       search: null,
 
       progress: [0.8, 0.2, 0.1],
@@ -177,7 +188,7 @@ export default {
         this.filterPrograms = this.getMyPrograms.filter(
           (p) => p.program_title.toLowerCase().search(val.toLowerCase()) != -1
         );
-        
+
       }
 
       /* console.log(this.programs); */
@@ -280,10 +291,21 @@ export default {
           );
       }
     },
+    getMyPrograms:function(val){
+      this.programs=[];
+      Object.keys(val).forEach((key)=>{
+        this.programs.push(val[key]);
+      })
+      this.filterPrograms = this.programs;
+    }
   },
   computed: {
-    ...mapState("dashboard", ["user"]),
-    ...mapState("program", ["programs"]),
+    //...mapState("dashboard", ["user"]),
+    ...mapGetters("dashboard",[
+      'user',
+      'getAllCompanies'
+    ]),
+    // ...mapState("program", ["programs"]),
     ...mapGetters("program", [
       "getClientPrograms",
       "getPublicPrograms",
@@ -299,6 +321,12 @@ export default {
     },
   },
   methods: {
+    ...mapActions("program",[
+      "allPrograms"
+    ]),
+    ...mapActions('dashboard',[
+      'allCompanies'
+    ]),
     goto(id) {
       let route = { name: "program-detail", params: { id: id } };
       this.$router.push(route);
@@ -311,9 +339,25 @@ export default {
         this.checkCash;
     },
   },
-  beforeMount() {
+  async beforeMount() {
     //this.programs = this.getClientPrograms;
-    this.filterPrograms = this.getMyPrograms;
+    try {
+      this.$q.loading.show();
+      await this.allPrograms();
+      this.programs = await this.getMyPrograms;
+      this.programs=[];
+      Object.keys(this.getMyPrograms).forEach((key)=>{
+        this.programs.push(this.getMyPrograms[key]);
+      })
+      this.filterPrograms = this.programs;
+      await this.allCompanies();
+      this.$q.loading.hide();
+    }catch (e) {
+      this.$q.loading.hide();
+      console.log(e)
+    }
+    this.companies = this.getAllCompanies;
+    //this.filterPrograms = this.getMyPrograms;
   },
   async mounted() {
     //console.log(this.getClientPrograms);

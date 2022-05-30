@@ -20,7 +20,7 @@
                 v-if="user.typeUser == 'admin'"
               >
                 <q-item-section>
-                  <q-item-label>Passe Triage</q-item-label>
+                  <q-item-label>Passed Triage</q-item-label>
                 </q-item-section>
               </q-item>
               <q-item
@@ -89,7 +89,7 @@
                 <q-toolbar>
                   <div class="box-badge">
                     <span class="title-badge"
-                      >Severity Level : {{ submission.severity_level }}</span
+                      >Severity Level : {{ submission.submission_level }}</span
                     >
                   </div>
                   <q-space />
@@ -169,7 +169,7 @@
             style="border-radius: 16px"
             v-if="getComments(submission.id).length>0"
           >
-          
+
             <q-list>
               <q-item
                 clickable

@@ -91,6 +91,11 @@ const COMPAGNIES_QUERY = {
       }
     }
   `,
+  context: {
+    headers: {
+      /* authorization: token, */
+    },
+  }
 };
 
 const COMPAGNY_USERS = {

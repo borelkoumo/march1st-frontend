@@ -174,7 +174,7 @@
 </template>
 <script>
 import programComponent2 from "../../components/program-component-2.vue";
-import { mapState, mapGetters } from "vuex";
+import {mapState, mapGetters, mapActions} from "vuex";
 
 export default {
   components: { programComponent2 },
@@ -200,8 +200,6 @@ export default {
           (p) => p.program_title.toLowerCase().search(val.toLowerCase()) != -1
         );
       }
-
-      /* console.log(this.programs); */
     },
     isAllFilters: function (val) {
       if (val) {
@@ -364,6 +362,9 @@ export default {
     },
   },
   methods: {
+    ...mapActions('program',[
+      'allPrograms'
+    ]),
     checkAllFilters() {
       this.isAllFilters =
         this.checkPublic &&
@@ -376,8 +377,16 @@ export default {
     },
   },
   async beforeMount() {
-    this.programs = await this.getMyPrograms;
-    this.filterPrograms = this.programs;
+    try {
+      this.$q.loading.show();
+      await this.allPrograms();
+      this.programs = await this.getMyPrograms;
+      this.filterPrograms = this.programs;
+      this.$q.loading.hide();
+    }catch (e) {
+      this.$q.loading.hide();
+    }
+
   },
 };
 </script>

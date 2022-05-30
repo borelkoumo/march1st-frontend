@@ -4,7 +4,7 @@
       <div class="box-image" style="width: 200px; height: 200px">
         <q-img :src="program.program_picture_url">
           <div class="absolute">
-            <q-badge rounded class="q-pl-md q-pr-md program-type">{{
+            <q-badge rounded class="q-pl-md q-pr-md program-type" :class="{'access-positive':program.program_type==='public', 'access-negative':program.program_type==='private'}">{{
               program.program_type.charAt(0).toUpperCase() +
               program.program_type.slice(1)
             }}</q-badge>
@@ -114,9 +114,27 @@ export default {
       };
     },
   },
+  beforeMount() {
+    console.log(this.program)
+  }
 };
 </script>
 <style scoped>
+.access-positive , .access-negative{
+  font-family: "inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+  color: #5887ff;
+  background: rgba(88, 135, 255, 0.1);
+}
+.access-negative{
+  color: #F55B5D;
+  background: #F7D5D5;;
+}
+
 .accepted {
   color: linear-gradient(90.32deg, #5eeea8 0%, #4cd291 100%);
   border-radius: 10px;

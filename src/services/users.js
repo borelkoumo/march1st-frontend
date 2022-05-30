@@ -54,9 +54,11 @@ const _getHackers = async function () {
 
 const _getCompanies = async function () {
   try {
+    COMPAGNIES_QUERY.context.headers.authorization =
+      "Bearer " + localStorage.getItem("token");
     const result = await apolloClient.query(COMPAGNIES_QUERY);
     const data = result.data.companies.data;
-    console.log(data);
+    //console.log(data);
     const companiesList = data.map(function (u) {
       let company = {};
       company.id = u.id;
@@ -117,7 +119,7 @@ const _getCompanyUsers = async function (companyId) {
       USER_COMPANY_USER.variables.companyUserId = c_u.id;
       const result2 = await apolloClient.query(USER_COMPANY_USER);
       const data2 = result2.data.companyUser.data.attributes.user.data;
-      
+
       c_u.user.id = data2.id;
       c_u.user.username = data2.attributes.username;
       c_u.user.email = data2.attributes.email;
@@ -180,7 +182,7 @@ const _getMarch1st = async function (credentials) {
     const march1st = {
       id: result.data.march1stUser.data.id,
       first_name: result.data.march1stUser.data.attributes.name,
-      
+
       profile_picture_url:"",
       phone: result.data.march1stUser.data.attributes.phone,
     };

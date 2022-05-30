@@ -19,11 +19,11 @@
           flat
           label="Edit"
           :to="'/main/edit-program/' + program.id"
-          v-if="user.typeUser == 'client' && program.user_id == user.id"
+          v-if="user.typeUser == 'client' && program.company == user.company.id && user.role==='super_manager'"
         />
       </q-toolbar>
       <div class="grid-content q-pt-lg q-pb-lg">
-        <div class="">
+        <div class="" v-if="program">
           <program-component :program="program" style="border-radius: 16px" />
           <div class="grid-element" style="padding-top: 16px">
             <q-card
@@ -114,32 +114,32 @@
                 <q-item-section class="first-element">P1</q-item-section>
                 <q-item-section class="second-element">Critical</q-item-section>
                 <q-item-section class="third-element"
-                  >$ {{ program.critical.min }} - $
-                  {{ program.critical.max }} Per vulnerability</q-item-section
+                ><span v-if="program.reward_type==='cash'">$</span> {{ program.critical.min }} - <span v-if="program.reward_type==='cash'">$</span>
+                  {{ program.critical.max }}<span v-if="program.reward_type==='points'"> Points</span> Per vulnerability</q-item-section
                 >
               </q-item>
               <q-item>
                 <q-item-section class="first-element">P2</q-item-section>
                 <q-item-section class="second-element">Severe</q-item-section>
                 <q-item-section class="third-element"
-                  >$ {{ program.severe.min }} - $ {{ program.severe.max }} Per
-                  vulnerability</q-item-section
+                  ><span v-if="program.reward_type==='cash'">$</span> {{ program.severe.min }} - <span v-if="program.reward_type==='cash'">$</span>
+                  {{ program.severe.max }}<span v-if="program.reward_type==='points'"> Points</span> Per vulnerability</q-item-section
                 >
               </q-item>
               <q-item>
                 <q-item-section class="first-element">P3</q-item-section>
                 <q-item-section class="second-element">Medium</q-item-section>
                 <q-item-section class="third-element"
-                  >$ {{ program.medium.min }} - $ {{ program.medium.max }} Per
-                  vulnerability</q-item-section
+                  ><span v-if="program.reward_type==='cash'">$</span> {{ program.medium.min }} - <span v-if="program.reward_type==='cash'">$</span>
+                  {{ program.medium.max }}<span v-if="program.reward_type==='points'"> Points</span> Per vulnerability</q-item-section
                 >
               </q-item>
               <q-item>
                 <q-item-section class="first-element">P4</q-item-section>
                 <q-item-section class="second-element">Low</q-item-section>
                 <q-item-section class="third-element"
-                  >$ {{ program.low.min }} - $ {{ program.low.max }} Per
-                  vulnerability</q-item-section
+                  ><span v-if="program.reward_type==='cash'">$</span> {{ program.low.min }} - <span v-if="program.reward_type==='cash'">$</span>
+                  {{ program.low.max }}<span v-if="program.reward_type==='points'"> Points</span> Per vulnerability</q-item-section
                 >
               </q-item>
             </q-list>
@@ -160,7 +160,7 @@
             </div>
           </div>
         </div>
-        <div>
+        <div v-if="program">
           <submission-level
             :submissions="program.submissions"
             :progress="progress"
@@ -206,14 +206,14 @@
   </q-page>
 </template>
 <script>
-import { mapGetters, mapState } from "vuex";
+import {mapActions, mapGetters, mapState} from "vuex";
 import programComponent from "../../components/program-component.vue";
 import SubmissionLevel from "../../components/submission-level.vue";
 export default {
   components: { programComponent, SubmissionLevel },
   data() {
     return {
-      program: {},
+      program: null,
       progress: [0.8, 0.2, 0.1],
       typeuser: "client",
       programType: "public",
@@ -230,12 +230,22 @@ export default {
     };
   },
   watch: {
-    "$router.params.id": function (val) {
-      this.program = this.getProgram(this.$route.param.id);
+    "$router.params.id": async function (val) {
+      try {
+        //this.program = this.getProgram(this.$route.params.id);
+        this.$q.loading.show();
+        this.program = await this.oneProgram(val);
+        console.log("La valeur de program dans program-detail ", this.program)
+        this.$q.loading.hide();
+        //this.program.submissions = this.program.submissions;
+        //console.log("La valeur de submission dans program-detail ",this.program.submissions)
+      } catch (error) {
+        this.$q.loading.hide();
+      }
     },
   },
   computed: {
-    ...mapState("dashboard", ["user"]),
+    ...mapGetters("dashboard", ["user"]),
     ...mapGetters("program", ["getProgram", "getHasJoin"]),
     ...mapGetters("submission", [
       "getSubmissionsProgram",
@@ -248,12 +258,15 @@ export default {
     },
   },
   methods: {
+    ...mapActions('program',[
+      'oneProgram'
+    ]),
     showSubmissionForm() {
       let route = { name: "add-submission", params: { id: this.program.id } };
       this.$router.push(route);
     },
     gotoSubmission(submission) {
-      console.log(submission);
+      //console.log(submission);
       let status = this.getReelStatus(submission.submissionStatus_id);
       let route = {
         name: "submission-detail",
@@ -268,13 +281,18 @@ export default {
       }
     },
   },
-  beforeMount() {
+  async beforeMount() {
     try {
-      this.program = this.getProgram(this.$route.params.id);
-      //console.log(this.program)
-      this.program.submissions = this.program.submissions;
-      console.log("La valeur de submission dans program-detail ",this.program.submissions)
-    } catch (error) {}
+      //this.program = this.getProgram(this.$route.params.id);
+      this.$q.loading.show();
+      this.program = await this.oneProgram(this.$route.params.id);
+      console.log("La valeur de program dans program-detail ", this.program)
+      this.$q.loading.hide();
+      //this.program.submissions = this.program.submissions;
+      //console.log("La valeur de submission dans program-detail ",this.program.submissions)
+    } catch (error) {
+      this.$q.loading.hide();
+    }
   },
 };
 </script>
@@ -510,6 +528,7 @@ export default {
   line-height: 25px;
   letter-spacing: -0.015em;
   color: #838181;
+  display: inline;
 }
 .caption-element {
   font-family: "inter";
