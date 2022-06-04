@@ -114,7 +114,7 @@
           to="/main/add-program"
           v-if="user.typeUser === 'client' && user.role==='super_manager'"
         />
-        <q-btn label="Submissions" flat no-caps icon-right="import_export" />
+        <q-btn label="Programs" flat no-caps icon-right="import_export" @click="isSorting=!isSorting"/>
       </q-toolbar>
       <div class="q-mt-lg q-gutter-md q-pb-lg">
         <program-component
@@ -161,6 +161,7 @@
 import ProgramComponent2 from "../../components/program-component-2.vue";
 import programComponent from "../../components/program-component.vue";
 import SubmissionLevel from "../../components/submission-level.vue";
+import {compareAsc, compareDesc} from "pages/utils/sorting";
 
 import { mapActions, mapGetters, mapState } from "vuex";
 export default {
@@ -179,9 +180,19 @@ export default {
       checkPoint: true,
       checkCash: true,
       isAllFilters: true,
+
+      isSorting:false
     };
   },
   watch: {
+    isSorting:function(val){
+      if(val){
+        this.filterPrograms.sort(compareAsc);
+      }
+      else{
+        this.filterPrograms.sort(compareDesc);
+      }
+    },
     search: function (val) {
       if (val != null) {
         val = val.trim();
@@ -363,6 +374,7 @@ export default {
     //console.log(this.getClientPrograms);
   },
 };
+
 </script>
 <style scoped>
 .title-1 {

@@ -110,7 +110,7 @@
         </q-btn-dropdown>
         <q-space />
 
-        <q-btn label="Most Recent" flat no-caps icon-right="import_export" />
+        <q-btn label="Most Recent" flat no-caps icon-right="import_export" @click="isSorting=!isSorting"/>
       </q-toolbar>
       <div class="q-mt-lg">
         <div class="q-pb-sm head-title">Running ({{ running.length }})</div>
@@ -175,11 +175,13 @@
 <script>
 import programComponent2 from "../../components/program-component-2.vue";
 import {mapState, mapGetters, mapActions} from "vuex";
+import {compareAsc, compareDesc} from "pages/utils/sorting";
 
 export default {
   components: { programComponent2 },
   data() {
     return {
+      isSorting:false,
       search: null,
 
       showProgram: true, //verify if the length of program is > 0
@@ -193,6 +195,14 @@ export default {
     };
   },
   watch: {
+    isSorting:function(val){
+      if(val){
+        this.filterPrograms.sort(compareAsc);
+      }
+      else{
+        this.filterPrograms.sort(compareDesc);
+      }
+    },
     search: function (val) {
       if (val != null) {
         val = val.trim();
@@ -389,6 +399,7 @@ export default {
 
   },
 };
+
 </script>
 <style scoped>
 .title-1 {

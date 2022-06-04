@@ -73,6 +73,7 @@ const _mySubmissions = async function (payload) {
         submission.submission_level = s.attributes.severity_level;
         submission.submission_target = s.attributes.submission_target;
         submission.submission_text = s.attributes.submission_text;
+        submission.createdAt = s.attributes.createdAt;
 
         const statusesData = s.attributes.submission_statuses.data;
         if (statusesData.length > 0) {
@@ -127,59 +128,7 @@ const _mySubmissions = async function (payload) {
           submission.submission_level = s.attributes.severity_level;
           submission.submission_target = s.attributes.submission_target;
           submission.submission_text = s.attributes.submission_text;
-
-          const statusesData = s.attributes.submission_statuses.data;
-          if (statusesData.length > 0) {
-            submission.submission_status =
-              statusesData[0].attributes.status_title;
-            let statuses = statusesData.map(function (s) {
-              let statusSubmission = {};
-              statusSubmission.id = s.id;
-              statusSubmission.status = s.attributes.status;
-              statusSubmission.status_title = s.attributes.status_title;
-              statusSubmission.createdAt = s.attributes.createdAt;
-              return statusSubmission;
-            });
-            submission.statuses = statuses;
-          } else {
-            submission.submission_status = "Unknow Status";
-          }
-
-          if (s.attributes.program.data.id) {
-            let program = { ...s.attributes.program.data.attributes };
-            program.id = s.attributes.program.data.id;
-            program.critical = program.reward_range.critical;
-            program.medium = program.reward_range.medium;
-            program.severe = program.reward_range.severe;
-            program.low = program.reward_range.low;
-            submission.program = program;
-          } else {
-            submission.program = null;
-          }
-          return submission;
-        });
-        submissions = submissions.filter(
-          (s) => s.program !== null || s.program !== undefined
-        );
-        const pagination = result.data.submissions.meta.pagination;
-        return { pagination, submissions };
-      } else {
-        SUBMISSIONS_MANAGER.variables.page = payload.pagination.page;
-        SUBMISSIONS_MANAGER.variables.pageSize =
-          payload.pagination.pageSize;
-        SUBMISSIONS_MANAGER.variables.companyUserId = payload.id;
-        SUBMISSIONS_MANAGER.context.headers.authorization =
-          "Bearer " + localStorage.getItem("token");
-        result = await apolloClient.query(SUBMISSIONS_MANAGER);
-        const submissionData = result.data.submissions.data;
-        let submissions = [];
-        submissions = submissionData.map(function (s) {
-          let submission = {};
-          submission.id = s.id;
-          submission.submission_title = s.attributes.submission_title;
-          submission.submission_level = s.attributes.severity_level;
-          submission.submission_target = s.attributes.submission_target;
-          submission.submission_text = s.attributes.submission_text;
+          submission.createdAt = s.attributes.createdAt;
 
           const statusesData = s.attributes.submission_statuses.data;
           if (statusesData.length > 0) {
@@ -217,7 +166,63 @@ const _mySubmissions = async function (payload) {
         const pagination = result.data.submissions.meta.pagination;
         return { pagination, submissions };
       }
-    } else if (payload.typeUser === "admin") {
+      else {
+        SUBMISSIONS_MANAGER.variables.page = payload.pagination.page;
+        SUBMISSIONS_MANAGER.variables.pageSize =
+          payload.pagination.pageSize;
+        SUBMISSIONS_MANAGER.variables.companyUserId = payload.id;
+        SUBMISSIONS_MANAGER.context.headers.authorization =
+          "Bearer " + localStorage.getItem("token");
+        result = await apolloClient.query(SUBMISSIONS_MANAGER);
+        const submissionData = result.data.submissions.data;
+        let submissions = [];
+        submissions = submissionData.map(function (s) {
+          let submission = {};
+          submission.id = s.id;
+          submission.submission_title = s.attributes.submission_title;
+          submission.submission_level = s.attributes.severity_level;
+          submission.submission_target = s.attributes.submission_target;
+          submission.submission_text = s.attributes.submission_text;
+          submission.createdAt = s.attributes.createdAt;
+
+          const statusesData = s.attributes.submission_statuses.data;
+          if (statusesData.length > 0) {
+            submission.submission_status =
+              statusesData[0].attributes.status_title;
+            let statuses = statusesData.map(function (s) {
+              let statusSubmission = {};
+              statusSubmission.id = s.id;
+              statusSubmission.status = s.attributes.status;
+              statusSubmission.status_title = s.attributes.status_title;
+              statusSubmission.createdAt = s.attributes.createdAt;
+              return statusSubmission;
+            });
+            submission.statuses = statuses;
+          } else {
+            submission.submission_status = "Unknow Status";
+          }
+
+          if (s.attributes.program.data.id) {
+            let program = { ...s.attributes.program.data.attributes };
+            program.id = s.attributes.program.data.id;
+            program.critical = program.reward_range.critical;
+            program.medium = program.reward_range.medium;
+            program.severe = program.reward_range.severe;
+            program.low = program.reward_range.low;
+            submission.program = program;
+          } else {
+            submission.program = null;
+          }
+          return submission;
+        });
+        submissions = submissions.filter(
+          (s) => s.program !== null || s.program !== undefined
+        );
+        const pagination = result.data.submissions.meta.pagination;
+        return { pagination, submissions };
+      }
+    }
+    else if (payload.typeUser === "admin") {
       SUBMISSIONS_ADMIN.variables.page = payload.pagination.page;
       SUBMISSIONS_ADMIN.variables.pageSize = payload.pagination.pageSize;
       SUBMISSIONS_ADMIN.context.headers.authorization =
@@ -233,6 +238,7 @@ const _mySubmissions = async function (payload) {
         submission.submission_level = s.attributes.severity_level;
         submission.submission_target = s.attributes.submission_target;
         submission.submission_text = s.attributes.submission_text;
+        submission.createdAt = s.attributes.createdAt;
 
         const statusesData = s.attributes.submission_statuses.data;
         if (statusesData.length > 0) {

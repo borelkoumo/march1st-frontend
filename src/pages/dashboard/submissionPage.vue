@@ -49,7 +49,7 @@
           borderless
         />
         <q-space />
-        <q-btn label="Submissions" flat no-caps icon-right="import_export" />
+        <q-btn label="Submissions" flat no-caps icon-right="import_export" @click="isSorting=!isSorting"/>
       </q-toolbar>
       <div class="q-mt-lg" v-if="submissions.length > 0">
         <submission-component
@@ -95,12 +95,15 @@
 <script>
 import { mapGetters, mapState, mapActions } from "vuex";
 import submissionComponent from "../../components/submission-component.vue";
+import {compareAsc, compareDesc} from "pages/utils/sorting";
 
 let allSubmissions = [];
 export default {
   components: { submissionComponent },
   data() {
     return {
+      isSorting:false,
+
       page: 1,
       pageSize: 10,
       total: 0,
@@ -124,6 +127,14 @@ export default {
     };
   },
   watch: {
+    isSorting:function(val){
+      if(val){
+        this.submissions.sort(compareAsc);
+      }
+      else{
+        this.submissions.sort(compareDesc);
+      }
+    },
     program: function (val) {
       this.submissions = [];
       if (val.value === 0) {
@@ -145,7 +156,7 @@ export default {
         });
         allSubmissions = submissionsWithPagination.submissions;
         this.total = submissionsWithPagination.pagination.total;
-        console.log(this.program);
+        //console.log(this.program);
         if (this.program && this.program.value!==0) {
           this.submissions = [];
           allSubmissions.forEach((s) => {
@@ -191,7 +202,7 @@ export default {
       allSubmissions = submissionsWithPagination.submissions;
       this.total = submissionsWithPagination.pagination.total;
 
-      this.submissions = allSubmissions;
+      this.submissions = JSON.parse(JSON.stringify(allSubmissions));
 
       this.programs.push({ id: 0, label: "All Programs", value: 0 });
       this.programs = this.programs.concat(
@@ -211,6 +222,7 @@ export default {
     }
   },
 };
+
 </script>
 <style>
 .toolbar-submission .q-field--dense .q-field__label {

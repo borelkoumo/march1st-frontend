@@ -65,6 +65,7 @@ const SUBMISSIONS_HACKER = {
             submission_title
             submission_target
             severity_level
+            createdAt
             program {
               data {
                 id
@@ -126,6 +127,7 @@ const SUBMISSIONS_SUPER_MANAGER = {
             submission_title
             submission_target
             severity_level
+            createdAt
             program {
               data {
                 id
@@ -187,6 +189,7 @@ const SUBMISSIONS_MANAGER = {
             submission_title
             submission_target
             severity_level
+            createdAt
             program {
               data {
                 id
@@ -240,6 +243,7 @@ const SUBMISSIONS_ADMIN = {
             submission_title
             submission_target
             severity_level
+            createdAt
             program {
               data {
                 id

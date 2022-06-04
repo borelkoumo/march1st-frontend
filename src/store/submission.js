@@ -40,15 +40,6 @@ const getters = {
         );
         if (allStatus.length > 0) submissionTriaged.push(submission);
       });
-      /* let submissionTriaged = mySubmissions.map((submission) => {
-        let allStatus = state.submissionStatus.filter(
-          (s) => s.submission_id == submission.id && s.status == "triaged"
-        );
-        console.log(allStatus);
-        console.log(submission);
-        if (allStatus.length > 0) return submission;
-      }); */
-      console.log(submissionTriaged);
       mySubmissions = submissionTriaged;
     } else if (user.typeUser == "admin") {
       const myPrograms = programs.map((program) => {

@@ -104,7 +104,7 @@
         </q-btn-dropdown>
 
         <q-space />
-        <q-btn label="Most Recent" flat no-caps icon-right="import_export" />
+        <q-btn label="Most Recent" flat no-caps icon-right="import_export" @click="isSorting=!isSorting"/>
       </q-toolbar>
       <div class="q-mt-lg">
         <!-- @click="showDetails(program)" -->
@@ -172,6 +172,8 @@
 <script>
 import programComponent2 from "../../components/program-component-2.vue";
 import { mapActions, mapGetters, mapState } from "vuex";
+import {compareAsc, compareDesc} from "pages/utils/sorting";
+
 let programsList = [];
 export default {
   components: { programComponent2 },
@@ -189,9 +191,19 @@ export default {
       checkCash: true,
       isAllFilters: true,
       filterPrograms: [],
+
+      isSorting:false
     };
   },
   watch: {
+    isSorting:function(val){
+      if(val){
+        this.filterPrograms.sort(compareAsc);
+      }
+      else{
+        this.filterPrograms.sort(compareDesc);
+      }
+    },
     search: function (val) {
       if (val != null) {
         val = val.trim();
@@ -352,6 +364,7 @@ export default {
 
   },
 };
+
 </script>
 <style scoped>
 .q-toolbar {
