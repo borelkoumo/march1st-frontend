@@ -214,10 +214,8 @@ const getters = {
   },
   getAllHacker() {
     let hackers = [];
-    users.forEach((user) => {
-      if (user.typeUser == "hacker") {
-        hackers.push(JSON.parse(JSON.stringify(user)));
-      }
+    state.hackers.forEach((hacker)=>{
+      hackers.push(JSON.parse(JSON.stringify(hacker)));
     });
     return hackers;
   },
@@ -453,7 +451,11 @@ const getters = {
     return JSON.parse(JSON.stringify(state.users));
   },
   getManagers() {
-    return JSON.parse(JSON.stringify(state.managers));
+    let managers = [];
+    state.managers.forEach((manager)=>{
+      managers.push(JSON.parse(JSON.stringify(manager)));
+    });
+    return managers;
   },
 };
 
@@ -490,6 +492,9 @@ const mutations = {
   },
   setCompanies(state,payload){
     state.companies=payload;
+  },
+  setHackers(state,payload){
+    state.hackers = payload;
   }
 };
 
@@ -576,7 +581,7 @@ const actions = {
       let user = localStorage.getItem("m_user")===null?null:JSON.parse(localStorage.getItem("m_user"));
       if(user==null) throw new Error("User non définit");
       const data = await _getCompanyUsers(user.company.id);
-      //commit("setManagers", data);
+      commit("setManagers", data);
       return Promise.resolve(data);
     } catch (error) {
       console.log("erro in action dashboard " + `${error}`);
@@ -586,9 +591,11 @@ const actions = {
   async getAllHackers({ commit, state }) {
     try {
       const data = await _getHackers();
+      commit('setHackers',data);
       return Promise.resolve(data);
     } catch (error) {
-      console.log("erro in action dashboard " + `${error}`);
+      return Promise.reject("erro in action dashboard " + `${error}`);
+      //console.log("erro in action dashboard " + `${error}`);
     }
   },
 

@@ -134,6 +134,18 @@ const ONE_PROGRAM_QUERY = {
                 }
               }
             }
+            invitations {
+              data {
+                id
+                attributes {
+                  hacker {
+                    data {
+                      id
+                    }
+                  }
+                }
+              }
+            }
             submissions {
               data {
                 id

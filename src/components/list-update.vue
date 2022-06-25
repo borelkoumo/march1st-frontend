@@ -18,8 +18,8 @@
               <q-item-section side>
                 <q-checkbox v-model="selectList" :val="user" color="secondary"/>
               </q-item-section>
-              <q-item-section>{{ user.username }}</q-item-section>
-              <q-item-section>{{ user.email }}</q-item-section>
+              <q-item-section>{{ user.first_name }}</q-item-section>
+              <q-item-section>{{ user.user.email }}</q-item-section>
             </q-item>
           </q-list>
         </q-card-section>
@@ -54,8 +54,8 @@
               <q-item-section side>
                 <q-checkbox v-model="selectList" :val="user" color="secondary"/>
               </q-item-section>
-              <q-item-section>{{ user.username }}</q-item-section>
-              <q-item-section>{{ user.email }}</q-item-section>
+              <q-item-section>{{ user.first_name }}</q-item-section>
+              <q-item-section>{{ user.user.email }}</q-item-section>
             </q-item>
           </q-list>
         </q-card-section>
@@ -95,7 +95,7 @@ export default {
     notAssign: function () {
       //let users=[];
       let users = this.baseList.map((user) => {
-        let result = this.resultList.filter((r) => r.id == user.id);
+        let result = this.resultList.filter((manager) => manager.id == user.id);
         if (result.length == 0) user.isAssign = false;
         else user.isAssign = true;
         return user;
@@ -111,7 +111,9 @@ export default {
       },
       onUnAssignUser(){
           this.selectList.forEach((u)=>{
-              this.resultList = this.resultList.filter((r)=> r.id!=u.id)
+              console.log(this.baseList);
+              this.notAssign = this.resultList.filter((r)=>r.id==u.id);
+              this.resultList = this.resultList.filter((r)=> r.id!=u.id);
           })
           this.selectList=[];
           this.$emit('onUpdateUser',this.resultList)

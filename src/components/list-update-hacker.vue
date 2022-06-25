@@ -132,6 +132,7 @@ export default {
     /*this.resultList = this.assignUsers.map(function (id) {
       return this.getUser(id);
     });*/
+    console.log(this.users);
     this.resultList=this.assignUsers.map(function(id){
       return vm.getUser(id);
     })

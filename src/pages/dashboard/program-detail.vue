@@ -19,7 +19,7 @@
           flat
           label="Edit"
           :to="'/main/edit-program/' + program.id"
-          v-if="user.typeUser == 'client' && program.company == user.company.id && user.role==='super_manager'"
+          v-if="program && user.typeUser == 'client' && program.company == user.company.id && user.role==='super_manager'"
         />
       </q-toolbar>
       <div class="grid-content q-pt-lg q-pb-lg">

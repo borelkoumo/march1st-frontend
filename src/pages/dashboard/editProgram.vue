@@ -253,12 +253,17 @@
           <q-card-section class="q-pb-sm">
             <div class="subtitle q-pb-sm">Program Scope</div>
             <div class="">
-              <q-input type="" v-model="formData.program_scope" label="" borderless />
+              <q-input
+                type=""
+                v-model="formData.program_scope"
+                label=""
+                borderless
+              />
             </div>
           </q-card-section>
         </q-card>
       </div>
-      <div class="card-invite">
+      <div class="card-invite" v-if="program">
         <list-update
           :users="getManagers"
           :assignUsers="program.managers"
@@ -266,7 +271,7 @@
         />
       </div>
 
-      <div class="card-invite q-mt-lg">
+      <div class="card-invite q-mt-lg" v-if="program">
         <list-update-hacker
           :users="getAllHacker"
           :assignUsers="program.invitations"
@@ -311,7 +316,7 @@ export default {
         reward_range: false,
         program_guidelines_1:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rutrum congue leo eget malesuada.",
-          program_guidelines_2:
+        program_guidelines_2:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rutrum congue leo eget malesuada.",
         legal_terms:
           "Vivamus suscipit tortor eget felis porttitor volutpat. Curabitur aliquet quam id dui posuere blandit.",
@@ -384,60 +389,73 @@ export default {
     ...mapGetters("program", ["getProgram"]),
   },
   methods: {
-    ...mapActions("program", ["editProgram"]),
+    ...mapActions("program", ["editProgram",'oneProgram']),
+    ...mapActions("dashboard", ["getAllHackers","getAllManagers"]),
     onEditProgram() {
       this.editProgram(this.formData);
       this.$router.push("/main/programs");
     },
     updateManager(element) {
+      console.log(element);
       this.formData.managers = element;
     },
     updateUser(element) {
-      console.log(element);
+      //console.log(element);
       this.formData.invitations = element.map(function (e) {
         return e.id;
       });
     },
   },
-  beforeMount() {
-    this.hackers = this.getAllHacker;
-    this.managers = this.getManagers;
+  async beforeMount() {
+    try {
+      this.$q.loading.show();
+      await this.getAllHackers();
+      await this.getAllManagers();
+      this.hackers = this.getAllHacker;
+      //console.log(this.hackers);
+      this.managers = this.getManagers;
 
-    this.program_id = this.$route.params.id;
-    this.program = this.getProgram(this.program_id);
-    if (!this.program) this.program = {};
-    else {
-      //console.log(this.program);
-      this.formData = {
-        id: this.program.id,
-        user_id: this.program.user_id,
-        client_id: this.program.client_id,
+      this.program_id = this.$route.params.id;
+      this.program = await this.oneProgram(this.program_id);
+      if (!this.program) this.program = {};
+      else {
+        //console.log(this.program);
+        this.formData = {
+          id: this.program.id,
+          user_id: this.program.user_id,
+          client_id: this.program.client_id,
 
-        program_picture_url: this.program.program_picture_url,
-        program_title: this.program.program_title,
-        program_description: this.program.program_description,
-        program_type: this.program.program_type,
-        safe_harbour_type: this.program.safe_harbour_type,
-        reward_type: this.program.reward_type,
-        reward_range: this.program.reward_range,
-        program_guidelines_1: this.program.program_guidelines_1,
-        program_guidelines_2: this.program.program_guidelines_2,
-        legal_terms: this.program.legal_terms,
-        program_scope: this.program.program_scope,
-        is_closed: this.program.is_closed,
-        close_at: this.program.close_at,
-        date_post: this.program.date_post,
+          program_picture_url: this.program.program_picture_url,
+          program_title: this.program.program_title,
+          program_description: this.program.program_description,
+          program_type: this.program.program_type,
+          safe_harbour_type: this.program.safe_harbour_type,
+          reward_type: this.program.reward_type,
+          reward_range: this.program.reward_range,
+          program_guidelines_1: this.program.program_guidelines_1,
+          program_guidelines_2: this.program.program_guidelines_2,
+          legal_terms: this.program.legal_terms,
+          program_scope: this.program.program_scope,
+          is_closed: this.program.is_closed,
+          close_at: this.program.close_at,
+          date_post: this.program.date_post,
 
-        hackers: this.program.hackers,
-        managers: this.program.managers,
+          hackers: this.program.hackers,
+          managers: this.program.managers,
 
-        critical: this.program.critical,
-        severe: this.program.severe,
-        medium: this.program.medium,
-        low: this.program.low,
+          critical: this.program.critical,
+          severe: this.program.severe,
+          medium: this.program.medium,
+          low: this.program.low,
 
-        invitations: this.program.invitations,
-      };
+          invitations: this.program.invitations,
+        };
+        console.log(program);
+      }
+      this.$q.loading.hide();
+    } catch (e) {
+      console.log("Error dans before mount");
+      this.$q.loading.hide();
     }
   },
 };

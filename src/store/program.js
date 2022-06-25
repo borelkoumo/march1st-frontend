@@ -371,6 +371,7 @@ const actions = {
   async oneProgram({commit},payload){
     try {
       const program = await _getOneProgram(payload);
+      console.log(program);
       return Promise.resolve(program);
       // commit("setPrograms", programs);
     } catch (error) {

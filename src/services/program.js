@@ -129,6 +129,10 @@ const _getOneProgram = async function (payload) {
     program.managersId = managersData.map(function (m) {
       return m.id;
     });
+    let invitations = p.attributes.invitations.data;
+      program.invitations = invitations.map(function (i) {
+        return i.attributes.hacker.data.id;
+      });
     //les submissions du programs
     const submissionsData = p.attributes.submissions.data;
     program.submissions = getSubmissions(submissionsData)

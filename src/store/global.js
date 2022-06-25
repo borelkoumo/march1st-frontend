@@ -1,4 +1,5 @@
 import { webAuthnServer } from "../boot/axios";
+import {_postQueryServer} from "src/store/utils/helper";
 import {
   base64UrlEncode,
   base64UrlDecode,
@@ -305,7 +306,7 @@ const actions = {
     }
   },
 
-  async sendAttestationResult({ state }, attestation) {
+  async sendAttestationResult({ state, dispatch }, attestation) {
     const url = "/attestation/result";
     const params = {
       sessionId: getters.getSessionId(state),
@@ -316,13 +317,71 @@ const actions = {
     try {
       const response = await _queryServer(url, params);
       printLog("Public Key Credential", response);
+
+      dispatch('strapiClientSignUp',getters.getUserData(state))
       return getters.getUserData(state);
     } catch (error) {
       printLog(`Error when parsing credentials`, error);
       throw new Error(error);
     }
   },
+  async strapiSignIn({state},loggedUser){
+    try {
+      const url="/custom/signin";
+      let c = new FormData();
+      c.append('token',loggedUser);
+      const data = await _postQueryServer(url,c);
+      console.log("La valeur de data dans = "+ data);
+      return data;
+    }catch (e) {
+      console.log(`Erreur dans strapiClientSignUp ${e}`);
+    }
+  },
 
+  async strapiClientSignUp({state},userData){
+    try {
+      const url="/custom/signup-client";
+      let c = new FormData();
+      let strapiUser={
+        username:userData.username,
+        email:userData.email,
+        provider:"local",
+        password:"",
+        confirm:true,
+        blocked:false,
+
+        companyName:userData.attributes['custom:companyName'],
+        fullName:userData.attributes['custom:name'],
+        title:userData.attributes['custom:title']
+      }
+      c.append('strapiUser',JSON.stringify(strapiUser));
+      const data = await _postQueryServer(url,c);
+      console.log("La valeur de data dans = "+ data);
+      return data;
+    }catch (e) {
+      console.log(`Erreur dans strapiClientSignUp ${e}`);
+    }
+  },
+  async strapiHackerSignUp({state},userData){
+    try {
+      const url="/custom/signup-hacker";
+      let c = new FormData();
+      let strapiUser={
+        username:userData.username,
+        email:userData.email,
+        provider:"local",
+        password:"",
+        confirm:true,
+        blocked:false,
+      }
+      c.append('strapiUser',JSON.stringify(strapiUser));
+      const data = await _postQueryServer(url,c);
+      console.log("La valeur de data dans = "+ data);
+      return data;
+    }catch (e) {
+      console.log(`Erreur dans strapiClientSignUp ${e}`);
+    }
+  },
   async onSubmitLoginForm({ commit }, payload) {
     printLog(`Inside onSubmitLoginForm function. Params=`, payload);
     /**
@@ -406,7 +465,7 @@ const actions = {
     }
   },
 
-  async sendChallengeResult({ commit, state }, payload) {
+  async sendChallengeResult({ commit, state, dispatch }, payload) {
     try {
       // to send the answer of the custom challenge
       let customChallengeAnswer = JSON.stringify(payload.customChallengeAnswer);
@@ -419,6 +478,10 @@ const actions = {
       );
       printLog("User is logged in. loggedUser=", loggedUser);
       commit("setUserData", loggedUser);
+
+      //Login with strapi
+      dispatch('strapiSignIn',loggedUser);
+
       return loggedUser;
     } catch (error) {
       printLog(`Error in sendChallengeResult`, error);

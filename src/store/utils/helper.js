@@ -1,8 +1,8 @@
 import { api } from "../../boot/axios";
 //helper function
 const _postQueryServer = async (path, payload = {}, token = null) => {
-  api.defaults.headers.common = { Authorization: `Bearer ${token}` };
-  console.log(path);
+  if(token)
+    api.defaults.headers.common = { Authorization: `Bearer ${token}` };
   return api({
     mode: "cors",
     url: path,
@@ -10,12 +10,12 @@ const _postQueryServer = async (path, payload = {}, token = null) => {
     data: payload,
     config: {
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
       },
     },
   })
     .then((response) => {
+      console.log(response);
       if (response.data.status === "OK") {
         return Promise.resolve(response.data);
       } else {
