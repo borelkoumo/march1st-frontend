@@ -1,4 +1,6 @@
 const { faker } = require("@faker-js/faker");
+import { _postQueryServer } from "../store/utils/helper";
+
 import apolloClient from "../boot/apollo";
 import {
   ONE_PROGRAM_QUERY,
@@ -194,11 +196,13 @@ const _createProgram = async function (payload) {
       //program_picture_url: "programs/image17.png",
     };
     //console.log("La valeur de program avant la creation dans service ",program);
-    CREATE_PROGRAM.variables.program = program;
+   CREATE_PROGRAM.variables.program = program;
     CREATE_PROGRAM.context.headers.authorization =
       "Bearer " + localStorage.getItem("token");
+    console.log(program);
+    console.log(localStorage.getItem("token"));
     const result = await apolloClient.mutate(CREATE_PROGRAM);
-    //console.log(result);
+    console.log(result);
     const data = result.data.createProgram.data.id;
     return data;
   } catch (error) {

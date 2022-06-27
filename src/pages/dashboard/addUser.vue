@@ -59,8 +59,8 @@
             <div class="subtitle q-pb-sm">Role</div>
             <div class="">
               <q-select
-                :options="locations"
-                v-model="location"
+                :options="roles"
+                v-model="role"
                 label="Select Role"
                 borderless
                 class="q-pl-sm q-pr-sm select-input"
@@ -268,7 +268,7 @@
           style="width: 160px"
         />
         <q-btn
-          label="Add Client"
+          label="Add User"
           flat
           class="text-center text-white bg-secondary"
           no-caps
@@ -289,6 +289,16 @@ export default {
       locations: [],
       location: null,
       search: null,
+      role:null,
+      roles:[
+        {label:"Program Super Admin", value:"program_super_admin"},
+        {label:"Program Manager", value:"program_manager"}
+      ],
+      privileges:[
+        {label:"Read program",value:"read"},
+        {label:"Edit program",value:"read"},
+        {label:"Create program",value:"read"},
+      ],
 
       box1: false,
       box2: false,

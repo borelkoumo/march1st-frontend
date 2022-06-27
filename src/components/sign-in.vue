@@ -139,6 +139,9 @@ export default {
       "setTypeUser",
       "getTypeUser",
     ]),
+    ...mapActions("dashboard",[
+      'createUser'
+    ]),
 
     formatTypeUser() {
       return this.typeUser.toUpperCase();
@@ -191,6 +194,9 @@ export default {
         this.setLoadingMsg("Getting authentication options ...");
         const signInOptions = getSignInOptions(this.cognitoUser.challengeParam);
         const loggedUser = await this.callAuthenticator(signInOptions);
+        //console.log("loggedUser dans signIn = ",loggedUser);
+        let jwtToken = loggedUser.signInUserSession.idToken.jwtToken;
+        await this.createUser(jwtToken);
         this.notifyPositive(`Sucessfully logged in`);
         printLog("Logged user", loggedUser);
         this.$router.push("/");
@@ -317,6 +323,8 @@ export default {
           };
           printLog(`Custom challenge answer`, payload.customChallengeAnswer);
           const loggedUser = await this.sendChallengeResult(payload);
+          let jwtToken = loggedUser.signInUserSession.idToken.jwtToken;
+          await this.createUser(jwtToken);
           //go to the home page
           this.notifyPositive(`Your are now logged in`);
           this.$router.push("/");

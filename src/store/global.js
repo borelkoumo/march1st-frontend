@@ -325,18 +325,6 @@ const actions = {
       throw new Error(error);
     }
   },
-  async strapiSignIn({state},loggedUser){
-    try {
-      const url="/custom/signin";
-      let c = new FormData();
-      c.append('token',loggedUser);
-      const data = await _postQueryServer(url,c);
-      console.log("La valeur de data dans = "+ data);
-      return data;
-    }catch (e) {
-      console.log(`Erreur dans strapiClientSignUp ${e}`);
-    }
-  },
 
   async strapiClientSignUp({state},userData){
     try {
@@ -351,11 +339,11 @@ const actions = {
         blocked:false,
 
         companyName:userData.attributes['custom:companyName'],
-        fullName:userData.attributes['custom:name'],
+        fullName:userData.name,
         title:userData.attributes['custom:title']
       }
-      c.append('strapiUser',JSON.stringify(strapiUser));
-      const data = await _postQueryServer(url,c);
+      //c.append('strapiUser',JSON.stringify(strapiUser));
+      const data = await _postQueryServer(url,strapiUser);
       console.log("La valeur de data dans = "+ data);
       return data;
     }catch (e) {
@@ -478,9 +466,6 @@ const actions = {
       );
       printLog("User is logged in. loggedUser=", loggedUser);
       commit("setUserData", loggedUser);
-
-      //Login with strapi
-      dispatch('strapiSignIn',loggedUser);
 
       return loggedUser;
     } catch (error) {

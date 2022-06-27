@@ -214,7 +214,7 @@ const getters = {
   },
   getAllHacker() {
     let hackers = [];
-    state.hackers.forEach((hacker)=>{
+    state.hackers.forEach((hacker) => {
       hackers.push(JSON.parse(JSON.stringify(hacker)));
     });
     return hackers;
@@ -318,6 +318,12 @@ const getters = {
               name: "My Account",
               slug: "my-account",
               link: "/main/my-account",
+            },
+            {
+              icon: "people",
+              name: "Add User",
+              slug: "add-user",
+              link: "/main/add-user",
             },
             {
               icon: "shopping_basket",
@@ -438,12 +444,15 @@ const getters = {
           ],
         },
       ];
-      console.log(menus)
+      console.log(menus);
       return menus;
     }
   },
   user(state) {
-    let user = localStorage.getItem('m_user')===null?null:JSON.parse(localStorage.getItem('m_user'));
+    let user =
+      localStorage.getItem("m_user") === null
+        ? null
+        : JSON.parse(localStorage.getItem("m_user"));
     return user;
   },
   //pour simulation
@@ -452,7 +461,7 @@ const getters = {
   },
   getManagers() {
     let managers = [];
-    state.managers.forEach((manager)=>{
+    state.managers.forEach((manager) => {
       managers.push(JSON.parse(JSON.stringify(manager)));
     });
     return managers;
@@ -469,17 +478,17 @@ const mutations = {
     };
     if (payload.company) {
       user.company = payload.company;
-      user.role=payload.role;
-      user.company_user=payload.company_user;
+      user.role = payload.role;
+      user.company_user = payload.company_user;
     }
     if (payload.hacker) {
       user.hacker = payload.hacker;
     }
-    if(payload.march1st){
+    if (payload.march1st) {
       user.march1st = payload.march1st;
     }
     state.user = user;
-    console.log("La valeur de state.user=",state.user);
+    console.log("La valeur de state.user=", state.user);
     state.token = payload.token;
     localStorage.setItem("token", payload.token);
     localStorage.setItem("m_user", JSON.stringify(state.user));
@@ -490,15 +499,80 @@ const mutations = {
   setManagers(state, payload) {
     state.managers = payload;
   },
-  setCompanies(state,payload){
-    state.companies=payload;
+  setCompanies(state, payload) {
+    state.companies = payload;
   },
-  setHackers(state,payload){
+  setHackers(state, payload) {
     state.hackers = payload;
-  }
+  },
 };
 
 const actions = {
+  async createUserWithToken({ commit }, jwtToken) {
+    try {
+      const url = "/custom/login-client";
+      let token = {
+        idToken: jwtToken,
+      };
+      const data = await _postQueryServer(url, token);
+
+      console.log("La valeur de data dans createUser = ", data);
+      let type = data.user.role.type;
+      let role = "public";
+      let company = null;
+      let hacker = null;
+      let march1st = null;
+      let dataObject = {
+        user: data.user,
+        token: data.jwtStrapi,
+      };
+      if (type === "m1_account_manager") {
+        march1st = await _getMarch1st({
+          id: data.user.id,
+          token: data.jwtStrapi,
+        });
+        type = "admin";
+        (dataObject.typeUser = type), (dataObject.march1st = march1st);
+      } else if (type === "hacker") {
+        hacker = await _getHacker({
+          id: data.user.id,
+          token: data.jwtStrapi,
+        });
+        (dataObject.typeUser = type), (dataObject.hacker = hacker);
+      } else if (type === "program_manager" || type === "program_super_admin") {
+        let company_user = data.user.company_user;
+
+        company = await _getCompany({
+          id: company_user.id,
+          token: data.jwtStrapi,
+        });
+        if (type == "program_manager") role = "manager";
+        else role = "super_manager";
+        type = "client";
+        (dataObject.typeUser = type), (dataObject.company = company);
+        dataObject.role = role;
+        dataObject.company_user = company_user;
+      } else {
+        throw new Error(type + " not pris en charge");
+      }
+      //console.log(credentials.user)
+
+      //console.log(dataObject)
+      commit("setUser", dataObject);
+
+      /*console.log(data);*/
+      return Promise.resolve(dataObject);
+    } catch (error) {
+      let errorData = {
+        token: null,
+        user: {},
+      };
+
+      console.log("Error in createUser", error.message);
+      commit("setUser", errorData);
+      return Promise.reject(0);
+    }
+  },
   async createUser({ commit }, payload) {
     try {
       const credentials = await _loginUser({
@@ -507,27 +581,28 @@ const actions = {
       });
 
       const url = "/custom/userdata?id=" + credentials.user.id;
-      const data = await _getQueryServer(url, null, credentials.token);
 
+      const data = await _getQueryServer(url, null, credentials.token);
+      console.log("La valeur de data dans createUser = ", data);
       let type = data.user.role.type;
       let role = "public";
       let company = null;
       let hacker = null;
       let march1st = null;
       let dataObject = {
-        user: credentials.user,
+        user: data.user,
         token: credentials.token,
       };
       if (type === "m1_account_manager") {
         march1st = await _getMarch1st({
-          id: credentials.user.id,
+          id: data.user.id,
           token: credentials.token,
         });
         type = "admin";
         (dataObject.typeUser = type), (dataObject.march1st = march1st);
       } else if (type === "hacker") {
         hacker = await _getHacker({
-          id: credentials.user.id,
+          id: data.user.id,
           token: credentials.token,
         });
         (dataObject.typeUser = type), (dataObject.hacker = hacker);
@@ -542,22 +617,23 @@ const actions = {
         else role = "super_manager";
         type = "client";
         (dataObject.typeUser = type), (dataObject.company = company);
-        dataObject.role = role; dataObject.company_user=company_user;
+        dataObject.role = role;
+        dataObject.company_user = company_user;
       } else {
         throw new Error(type + " not pris en charge");
       }
-      //console.log(credentials.user)
-
-      //console.log(dataObject)
       commit("setUser", dataObject);
 
       /*console.log(data);*/
       return Promise.resolve(dataObject);
     } catch (error) {
-      payload.token = null;
-      payload.user = {};
+      let errorData = {
+        token: null,
+        user: {},
+      };
+
       console.log("Error in createUser", error.message);
-      commit("setUser", payload);
+      commit("setUser", errorData);
       return Promise.reject(0);
     }
   },
@@ -578,10 +654,14 @@ const actions = {
 
   async getAllManagers({ commit, state }) {
     try {
-      let user = localStorage.getItem("m_user")===null?null:JSON.parse(localStorage.getItem("m_user"));
-      if(user==null) throw new Error("User non définit");
+      let user =
+        localStorage.getItem("m_user") === null
+          ? null
+          : JSON.parse(localStorage.getItem("m_user"));
+      if (user == null) throw new Error("User non définit");
       const data = await _getCompanyUsers(user.company.id);
       commit("setManagers", data);
+
       return Promise.resolve(data);
     } catch (error) {
       console.log("erro in action dashboard " + `${error}`);
@@ -591,7 +671,7 @@ const actions = {
   async getAllHackers({ commit, state }) {
     try {
       const data = await _getHackers();
-      commit('setHackers',data);
+      commit("setHackers", data);
       return Promise.resolve(data);
     } catch (error) {
       return Promise.reject("erro in action dashboard " + `${error}`);
@@ -599,15 +679,15 @@ const actions = {
     }
   },
 
-  async allCompanies({commit,state}){
+  async allCompanies({ commit, state }) {
     try {
       const data = await _getCompanies();
-      commit('setCompanies',data);
+      commit("setCompanies", data);
       return Promise.resolve(data);
     } catch (error) {
       console.log("erro in action dashboard " + `${error}`);
     }
-  }
+  },
 };
 
 export default {

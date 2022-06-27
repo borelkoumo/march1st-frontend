@@ -15,12 +15,13 @@ const _postQueryServer = async (path, payload = {}, token = null) => {
     },
   })
     .then((response) => {
-      console.log(response);
-      if (response.data.status === "OK") {
+      //console.log(response);
+      return Promise.resolve(response.data);
+      /*if (response.data.status === "OK") {
         return Promise.resolve(response.data);
       } else {
         return Promise.reject(response.data.message);
-      }
+      }*/
     })
     .catch((e) => {
       return Promise.reject(e);

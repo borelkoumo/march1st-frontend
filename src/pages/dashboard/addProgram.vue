@@ -622,12 +622,15 @@ export default {
     try {
       this.managers = await this.getAllManagers();
       this.hackers= await this.getAllHackers();
-
+      this.managers=JSON.parse(JSON.stringify(this.managers));
       this.managers.forEach((manager) => {
         manager.isCheck = false;
         manager.privilege = null;
       });
-    } catch (error) {}
+      console.log(this.managers);
+    } catch (error) {
+      console.log(error)
+    }
   },
 };
 </script>
