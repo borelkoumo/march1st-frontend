@@ -229,6 +229,11 @@ export default {
           customChallengeAnswer: this.customChallengeAnswer,
         };
         const loggedUser = await this.sendChallengeResult(payload);
+        let jwtToken = loggedUser.signInUserSession.idToken.jwtToken;
+          await this.createUser(jwtToken);
+          //go to the home page
+          this.notifyPositive(`Your are now logged in`);
+          this.$router.push("/dashboard");
         printLog(`Logged user`, loggedUser);
         return loggedUser;
       } catch (error) {
@@ -327,7 +332,7 @@ export default {
           await this.createUser(jwtToken);
           //go to the home page
           this.notifyPositive(`Your are now logged in`);
-          this.$router.push("/");
+          this.$router.push("/dashboard");
         } catch (error) {
           this.notifyNegative(error.message);
         }
