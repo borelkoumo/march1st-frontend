@@ -221,7 +221,9 @@ const MYROLE_QUERY = {
 const COMPANY_QUERY = {
   query: gql`
     query companyUser($userId: ID!) {
-      companyUser(id: $userId) {
+      companyUsers(
+        filters:{user:{id:{eq:$userId}}}
+      ) {
         data {
           id
           attributes {
@@ -252,7 +254,9 @@ const COMPANY_QUERY = {
 const HACKER_QUERY = {
   query: gql`
     query usersPermissionsUser($userId: ID!) {
-      hacker(id: $userId) {
+      hackers(
+        filters: { user: { id: { eq: $userId } } }
+      ) {
         data {
           id
           attributes {
@@ -275,7 +279,9 @@ const HACKER_QUERY = {
 const MARCH1st_QUERY = {
   query: gql`
     query usersPermissionsUser($userId: ID!) {
-      march1stUser(id: $userId) {
+      march1stUsers(
+        filters:{user:{id:{eq:$userId}}}
+      ) {
         data {
           id
           attributes {

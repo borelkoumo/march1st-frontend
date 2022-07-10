@@ -139,12 +139,12 @@ const _getCompany = async function (credentials) {
     //console.log(MYROLE_QUERY);
     const result = await apolloClient.query(COMPANY_QUERY);
     const company = {
-      id: result.data.companyUser.data.attributes.company.data.id,
+      id: result.data.companyUsers.data[0].attributes.company.data.id,
       company_name:
-        result.data.companyUser.data.attributes.company.data.attributes
+      result.data.companyUsers.data[0].attributes.company.data.attributes
           .company_name,
       company_logo:
-        result.data.companyUser.data.attributes.company.data.attributes
+      result.data.companyUsers.data[0].attributes.company.data.attributes
           .company_logo,
     };
     return Promise.resolve(company);
@@ -158,14 +158,14 @@ const _getHacker = async function (credentials) {
     HACKER_QUERY.variables.userId = credentials.id;
 
     const result = await apolloClient.query(HACKER_QUERY);
-    //console.log(result.data);
+    console.log(result.data);
     const hacker = {
-      id: result.data.hacker.data.id,
-      first_name: result.data.hacker.data.attributes.first_name,
-      last_name: result.data.hacker.data.attributes.last_name,
+      id: result.data.hackers.data[0].id,
+      first_name: result.data.hackers.data[0].attributes.first_name,
+      last_name: result.data.hackers.data[0].attributes.last_name,
       profile_picture_url:
-        result.data.hacker.data.attributes.profile_picture_url,
-      phone: result.data.hacker.data.attributes.phone,
+      result.data.hackers.data[0].attributes.profile_picture_url,
+      phone: result.data.hackers.data[0].attributes.phone,
     };
     return Promise.resolve(hacker);
   } catch (error) {
@@ -178,13 +178,12 @@ const _getMarch1st = async function (credentials) {
     MARCH1st_QUERY.variables.userId = credentials.id;
 
     const result = await apolloClient.query(MARCH1st_QUERY);
-    //console.log(result.data);
     const march1st = {
-      id: result.data.march1stUser.data.id,
-      first_name: result.data.march1stUser.data.attributes.name,
+      id: result.data.march1stUsers.data[0].id,
+      first_name: result.data.march1stUsers.data[0].attributes.name,
 
       profile_picture_url:"",
-      phone: result.data.march1stUser.data.attributes.phone,
+      phone: result.data.march1stUsers.data[0].attributes.phone,
     };
     return Promise.resolve(march1st);
   } catch (error) {

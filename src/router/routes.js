@@ -42,7 +42,7 @@ const routes = [
       requiresSettings: true,
     },
   },
-  {
+  /*{
     path: "/dashboard",
     component: () => import("layouts/DashboardLayout.vue"),
     children: [
@@ -52,8 +52,20 @@ const routes = [
         component: () => import("pages/dashboard/homePage.vue"),
       }
     ]
-  },
+  },*/
   {
+    path: "/new-dashboard",
+    name:"dashboard",
+    component: () => import("layouts/PanelLayout.vue"),
+    children: [
+      {
+        path: "",
+        name: "home",
+        component: () => import("pages/dashboard/homePage.vue"),
+      }
+    ]
+  },
+  /*{
     path: "/main",
     component: () => import("layouts/SecondLayout.vue"),
     children: [
@@ -79,7 +91,7 @@ const routes = [
         component: () => import("pages/dashboard/submission-detail.vue"),
         props:true
       },
-      
+
       {
         path: "program-detail/:id",
         name:"program-detail",
@@ -168,7 +180,7 @@ const routes = [
         component: () => import("pages/dashboard/vulnerability.vue"),
       },
     ]
-  },
+  },*/
 
   {
     path: "/error",

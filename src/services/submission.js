@@ -9,6 +9,7 @@ import {
   SUBMISSIONS_ADMIN,
 } from "../query/submission";
 import program from "../store/program";
+import { _postQueryServer } from 'src/store/utils/helper';
 
 const _createSubmission = async function (payload) {
   try {
@@ -16,19 +17,22 @@ const _createSubmission = async function (payload) {
       ...payload,
       attachment_1: "",
     };
-    /* console.log(
-      "La submission avant création dans submission service ",
-      submission
-    ); */
-    CREATE_SUBMISSION.variables.submission = submission;
-    CREATE_SUBMISSION.context.headers.authorization =
-      "Bearer " + localStorage.getItem("token");
+    let token = localStorage.getItem('token');
+    /*=========================================================*/
+    /*                    GraphQl                             */
+    /*=======================================================*/
+    /*CREATE_SUBMISSION.variables.submission = submission;
+    CREATE_SUBMISSION.context.headers.authorization ="Bearer " + token;
     const result = await apolloClient.mutate(CREATE_SUBMISSION);
-    console.log(
-      "Id de la cration de submission dans service ",
-      result.data.createSubmission.data.id
-    );
-    return result.data.createSubmission.data.id;
+    return result.data.createSubmission.data.id;*/
+
+    /*=========================================================*/
+    /*                    Rest API                            */
+    /*=======================================================*/
+    const url="/submissions";
+    const data = await _postQueryServer(url,submission,token);
+    console.log("La valeur de submission est = ",data);
+    //return data;
   } catch (error) {
     console.log(error);
   }

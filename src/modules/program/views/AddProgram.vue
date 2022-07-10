@@ -6,28 +6,7 @@
         style="padding-top: 40px"
       >
         <q-toolbar-title class="title-header">Add A Program</q-toolbar-title>
-        <q-space />
-        <!-- <q-btn
-          no-caps
-          outline
-          class="bg-white text-secondary"
-          label="Cancel"
-          style="min-width: 160px"
-        />
-        <q-btn
-          no-caps
-          label="Save"
-          class="bg-positive text-white"
-          flat
-          style="min-width: 160px"
-        />
-        <q-btn
-          no-caps
-          label="Publish"
-          class="bg-secondary text-white"
-          flat
-          style="min-width: 160px"
-        /> -->
+
       </q-toolbar>
       <q-card
         class="card-user q-mt-lg bg-transparent"
@@ -138,20 +117,12 @@
               </q-item-section>
             </q-item>
           </q-list>
-          <!-- <div class="radio-element">
-            <div class="q-pb-xs q-pt-sm">Reward Range</div>
-            <q-toggle
-              v-model="formData.reward_range"
-              color="secondary"
-              label="Points Only"
-            />
-          </div> -->
         </div>
         <div class="bg-white q-pa-lg" style="border-radius: 16px">
           <q-list>
             <q-item class="item-amount">
               <q-item-section class="first-element" style="max-width: 60px"
-              >P1</q-item-section
+                >P1</q-item-section
               >
               <q-item-section class="second-element">Critical</q-item-section>
               <q-item-section class="q-pl-sm q-pr-sm">
@@ -166,7 +137,7 @@
             </q-item>
             <q-item class="item-amount">
               <q-item-section class="first-element" style="max-width: 60px"
-              >P2</q-item-section
+                >P2</q-item-section
               >
               <q-item-section class="second-element">Severe</q-item-section>
               <q-item-section class="q-pl-sm q-pr-sm">
@@ -181,7 +152,7 @@
             </q-item>
             <q-item class="item-amount">
               <q-item-section class="first-element" style="max-width: 60px"
-              >P3</q-item-section
+                >P3</q-item-section
               >
               <q-item-section class="second-element">Medium</q-item-section>
               <q-item-section class="q-pl-sm q-pr-sm">
@@ -196,7 +167,7 @@
             </q-item>
             <q-item class="item-amount">
               <q-item-section class="first-element" style="max-width: 60px"
-              >P4</q-item-section
+                >P4</q-item-section
               >
               <q-item-section class="second-element">Low</q-item-section>
               <q-item-section class="q-pl-sm q-pr-sm">
@@ -215,7 +186,7 @@
       <div class="q-pt-lg q-pb-lg">
         <q-card class="my-card card-description" flat>
           <q-card-section class="title q-pt-lg q-pb-md"
-          >Detailed Description</q-card-section
+            >Detailed Description</q-card-section
           >
           <q-card-section class="q-pb-sm">
             <div class="subtitle q-pb-sm">Program Guidelines</div>
@@ -250,17 +221,7 @@
               />
             </div>
           </q-card-section>
-<!--          <q-card-section class="q-pb-sm">
-            <div class="subtitle q-pb-sm">Program Scope</div>
-            <div class="">
-              <q-input
-                type=""
-                v-model="formData.program_scope"
-                label=""
-                borderless
-              />
-            </div>
-          </q-card-section>-->
+
         </q-card>
       </div>
       <div class="card-invite">
@@ -271,7 +232,7 @@
           >
             <div class="title">Assign Managers</div>
             <q-space />
-            <q-input dense v-model="search" placeholder="Search" borderless>
+            <q-input dense v-model="search_manager" placeholder="Search" borderless>
               <template v-slot:append>
                 <q-icon name="search" />
               </template>
@@ -281,10 +242,10 @@
             <q-list separator>
               <q-item class="item-header">
                 <q-item-section style="max-width: 50px"
-                ><q-checkbox
-                  v-model="allManagers"
-                  class="q-mr-sm"
-                  color="secondary"
+                  ><q-checkbox
+                    v-model="checkAllManagers"
+                    class="q-mr-sm"
+                    color="secondary"
                 /></q-item-section>
                 <q-item-section> Username </q-item-section>
                 <q-item-section class="text-center">
@@ -296,20 +257,22 @@
               </q-item>
               <q-item
                 class="item-element"
-                v-for="(manager, i) in managers"
+                v-for="manager in allManagers"
                 :key="manager.id"
               >
                 <q-item-section style="max-width: 50px"
-                ><q-checkbox
-                  v-model="manager.isCheck"
-                  class="q-mr-sm"
-                  color="secondary"
+                  ><q-checkbox
+                    v-model="manager.isCheck"
+                    class="q-mr-sm"
+                    color="secondary"
                 /></q-item-section>
                 <q-item-section>
-                  <q-item-label class="title">{{ manager.first_name }}</q-item-label>
+                  <q-item-label class="title">{{
+                    manager.first_name
+                  }}</q-item-label>
                   <q-item-label caption class="subtitle">{{
-                      manager.user.email
-                    }}</q-item-label>
+                    manager.user.email
+                  }}</q-item-label>
                 </q-item-section>
                 <q-item-section class="text-center title flex flex-center">
                   <div class="">{{ manager.designation }}</div>
@@ -343,7 +306,7 @@
           >
             <div class="title">Invite Hackers</div>
             <q-space />
-            <q-input dense v-model="search" placeholder="Search" borderless>
+            <q-input dense v-model="search_hacker" placeholder="Search" borderless>
               <template v-slot:append>
                 <q-icon name="search" />
               </template>
@@ -353,10 +316,10 @@
             <q-list separator>
               <q-item class="item-header">
                 <q-item-section style="max-width: 50px"
-                ><q-checkbox
-                  v-model="allHackers"
-                  class="q-mr-sm"
-                  color="secondary"
+                  ><q-checkbox
+                    v-model="checkAllHackers"
+                    class="q-mr-sm"
+                    color="secondary"
                 /></q-item-section>
                 <q-item-section> Username / Email </q-item-section>
                 <q-item-section class="text-center" style="max-width: 18%">
@@ -374,23 +337,24 @@
               </q-item>
               <q-item
                 class="item-element"
-                v-for="hacker in hackers"
+                v-for="hacker in allHackers"
                 :key="hacker.id"
               >
                 <q-item-section style="max-width: 50px"
-                ><q-checkbox
-                  v-model="formData.invitations"
-                  class="q-mr-sm"
-                  color="secondary"
-                  :val="hacker.id"
+                  ><q-checkbox
+                    v-model="formData.invitations"
+                    class="q-mr-sm"
+                    color="secondary"
+                    :val="hacker.id"
                 /></q-item-section>
                 <q-item-section>
                   <q-item-label class="title"
-                  >{{ hacker.first_name }} {{ hacker.last_name }}</q-item-label
+                    >{{ hacker.first_name }}
+                    {{ hacker.last_name }}</q-item-label
                   >
                   <q-item-label caption class="subtitle">{{
-                      hacker.email
-                    }}</q-item-label>
+                    hacker.email
+                  }}</q-item-label>
                 </q-item-section>
                 <q-item-section
                   class="text-center flex flex-center"
@@ -436,12 +400,10 @@
     </div>
   </q-page>
 </template>
+
 <script>
-import submissionComponent from "../../components/submission-component.vue";
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters } from 'vuex';
 export default {
-  components: { submissionComponent },
-  name: "programs",
   data() {
     return {
       fonts:{
@@ -535,107 +497,94 @@ export default {
         //status: "Active",
         //date_post: "10/04/2021",
         invitations: [],
+
+        company:null
       },
-      privileges: [
-        { label: "Can Edit", value: 1 },
-        { label: "Can view", value: 2 },
-      ],
-      programs: [{ label: "dfdffdf", value: "1" }],
-      program: null,
-      status: [{ label: "fgfgfgfg", value: "3" }],
-      stat: null,
-      content: "",
-      levels: [
-        { label: "Low", value: "0" },
-        { label: "Medium", value: "1" },
-        { label: "Severe", value: "2" },
-        { label: "High", value: "3" },
-      ],
-      level: null,
+      allHackers:[],
+      search_hacker:null,
+      checkAllHackers:false,
 
-      programType: "public",
-      pointOnly: true,
-      critical: {
-        min: null,
-        max: null,
-      },
-      model: null,
-      search: null,
-      box1: false,
-      box2: false,
-      box3: false,
-
-      hackers: [],
-      managers: [],
-
-      allManagers: false,
-      allHackers: false,
-
-      allprivilege: [],
-    };
+      search_manager:null,
+      checkAllManagers:false,
+      allManagers:[],
+      privileges:[]
+    }
   },
-  watch: {
-    allManagers: function (val) {
+  watch:{
+    checkAllHackers:function(val){
       if (val) {
-        this.managers = this.managers.map(function (m) {
-          m.isCheck = true;
-          return m;
-        });
-      } else {
-        this.managers = this.managers.map(function (m) {
-          m.isCheck = false;
-          return m;
-        });
-      }
-    },
-    allHackers: function (val) {
-      if (val) {
-        Object.keys(this.hackers).forEach((key) => {
-          this.formData.invitations.push(this.hackers[key].id);
+        this.allHackers.forEach((hacker) => {
+          this.formData.invitations.push(hacker.id);
         });
       } else {
         this.formData.invitations = [];
       }
     },
+    checkAllManagers:function(val){
+      if (val) {
+        this.allManagers.forEach((manager) => {
+          manager.isCheck=true;
+        });
+      } else {
+        this.allManagers.forEach((manager) => {
+          manager.isCheck=false;
+        });
+      }
+    }
   },
   computed: {
-    ...mapGetters("dashboard", ["getAllHacker"]),
+    ...mapGetters('auth',[
+      'getUser',
+      'getHackers'
+    ])
   },
   methods: {
-    ...mapActions("program", ["saveProgram"]),
-    ...mapActions("dashboard", ["getAllManagers","getAllHackers"]),
-
+    ...mapActions('program',[
+      'CREATE_PROGRAM'
+    ]),
+    ...mapActions('auth',[
+      'GET_HACKERS',
+      'GET_MY_COMPANYUSERS'
+    ]),
     async onSaveProgram() {
       try {
-        this.formData.managers = this.managers.filter((m) => m.isCheck == true);
-        await this.saveProgram(this.formData);
-        this.$router.push("/main/programs");
+        this.formData.managers = this.allManagers.filter((m) => m.isCheck == true);
+        this.formData.company=this.getUser.company.id;
+        await this.CREATE_PROGRAM(this.formData);
+        this.$router.push("/new-dashboard");
       }catch (e) {
         console.log("error where create program", e.message());
       }
-
     },
   },
-  async beforeMount() {
-    //this.hackers = this.getAllHacker;
-
-    try {
-      this.managers = await this.getAllManagers();
-      this.hackers= await this.getAllHackers();
-      this.managers=JSON.parse(JSON.stringify(this.managers));
-      this.managers.forEach((manager) => {
-        manager.isCheck = false;
-        manager.privilege = null;
-      });
-      console.log(this.managers);
-    } catch (error) {
-      console.log(error)
-    }
-  },
+  async mounted(){
+    const companyUserData = await this.GET_MY_COMPANYUSERS();
+    this.allManagers = companyUserData.map(function(companyUser){
+      let manager={
+        first_name:companyUser.first_name,
+        id:companyUser.id,
+        last_name:companyUser.last_name,
+        user:companyUser.user,
+        isCheck:false
+      }
+      return manager;
+    });
+    await this.GET_HACKERS();
+    this.allHackers = this.getHackers.map(function(user){
+      let hacker={
+        email:user.email,
+        first_name:user.hacker.first_name,
+        id:user.hacker.id,
+        last_name:user.hacker.last_name
+      }
+      return hacker;
+    })
+  }
 };
 </script>
-<style scoped>
-.wrap-image {
+
+<style lang="scss" scoped>
+  .wrap-image {
   width: 300px;
   background: #f5f5f5;
   border: 1px dashed #b0b0b0;

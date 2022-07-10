@@ -196,7 +196,7 @@ const state = {
       },
     },
   ],
-  users: [],
+  //users: [],
   hackers: [],
   companies: [],
   managers: [],
@@ -457,7 +457,7 @@ const getters = {
   },
   //pour simulation
   getUsers() {
-    return JSON.parse(JSON.stringify(state.users));
+    //return JSON.parse(JSON.stringify(state.users));
   },
   getManagers() {
     let managers = [];
@@ -583,7 +583,7 @@ const actions = {
       const url = "/custom/userdata?id=" + credentials.user.id;
 
       const data = await _getQueryServer(url, null, credentials.token);
-      console.log("La valeur de data dans createUser = ", data);
+      //console.log("La valeur de data dans createUser = ", data);
       let type = data.user.role.type;
       let role = "public";
       let company = null;
@@ -601,10 +601,12 @@ const actions = {
         type = "admin";
         (dataObject.typeUser = type), (dataObject.march1st = march1st);
       } else if (type === "hacker") {
+        //console.log("la valeur de user = ",data.user);
         hacker = await _getHacker({
           id: data.user.id,
           token: credentials.token,
         });
+        console.log("la valeur de hacker est=",hacker);
         (dataObject.typeUser = type), (dataObject.hacker = hacker);
       } else if (type === "program_manager" || type === "program_super_admin") {
         let company_user = data.user.company_user;
@@ -620,8 +622,9 @@ const actions = {
         dataObject.role = role;
         dataObject.company_user = company_user;
       } else {
-        throw new Error(type + " not pris en charge");
+        throw new Error(type + " non pris en charge");
       }
+      console.log(dataObject);
       commit("setUser", dataObject);
 
       /*console.log(data);*/

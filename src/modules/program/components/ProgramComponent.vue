@@ -1,85 +1,101 @@
 <template>
-  <q-card class="my-card bg-white q-pt-lg q-pr-lg q-pl-lg q-pb-md" flat>
-    <q-card-section horizontal>
-      <div class="box-image" style="width: 200px; height: 200px">
-        <q-img :src="program.program_picture_url">
-          <div class="absolute">
-            <q-badge rounded class="q-pl-md q-pr-md program-type" :class="{'access-positive':program.program_type==='public', 'access-negative':program.program_type==='private'}">{{
-              program.program_type.charAt(0).toUpperCase() +
-              program.program_type.slice(1)
-            }}</q-badge>
+  <router-link :to="'/new-dashboard/programs/program-detail/' + program.id" style="text-decoration:none">
+    <q-card class="my-card bg-white q-pt-lg q-pr-lg q-pl-lg q-pb-md" flat>
+      <q-card-section horizontal>
+        <div class="box-image" style="width: 200px; height: 200px">
+          <q-img :src="program.program_picture_url">
+            <div class="absolute">
+              <q-badge
+                rounded
+                class="q-pl-md q-pr-md program-type"
+                :class="{
+                  'access-positive': program.program_type === 'public',
+                  'access-negative': program.program_type === 'private',
+                }"
+                >{{
+                  program.program_type.charAt(0).toUpperCase() +
+                  program.program_type.slice(1)
+                }}</q-badge
+              >
+            </div>
+            <div class="absolute safe_type">
+              <q-btn flat dense no-caps>
+                <q-avatar
+                  size="24px"
+                  style="background: rgba(103, 58, 182, 0.5)"
+                >
+                  <img src="~assets/local/card/safe-harbor-1.png" />
+                </q-avatar>
+                <div class="q-pl-sm">
+                  {{
+                    program.safe_harbour_type.charAt(0).toUpperCase() +
+                    program.safe_harbour_type.slice(1)
+                  }}
+                </div>
+              </q-btn>
+            </div>
+          </q-img>
+        </div>
+        <q-card-section class="q-pl-lg q-pr-lg col">
+          <div>
+            <q-badge
+              class="q-pt-xs q-pb-xs negative-class"
+              v-if="program.is_closed"
+              >Close</q-badge
+            >
+            <q-badge class="q-pt-xs q-pb-xs active-class" v-else
+              >Active</q-badge
+            >
+            <q-badge class="q-pt-xs q-pb-xs bg-transparent time-program"
+              >Active since 9 days ago</q-badge
+            >
           </div>
-          <div class="absolute safe_type">
-            <q-btn flat dense no-caps>
-              <q-avatar size="24px" style="background: rgba(103, 58, 182, 0.5)">
-                <img src="~assets/local/card/safe-harbor-1.png" />
-              </q-avatar>
-              <div class="q-pl-sm">
-                {{
-                  program.safe_harbour_type.charAt(0).toUpperCase() +
-                  program.safe_harbour_type.slice(1)
-                }}
-              </div>
-            </q-btn>
+          <div class="title-program">
+            {{ program.program_title }}
           </div>
-        </q-img>
-      </div>
-      <q-card-section class="q-pl-lg q-pr-lg col">
-        <div>
-          <q-badge
-            class="q-pt-xs q-pb-xs negative-class"
-            v-if="program.is_closed"
-            >Close</q-badge
-          >
-          <q-badge class="q-pt-xs q-pb-xs active-class" v-else>Active</q-badge>
-          <q-badge class="q-pt-xs q-pb-xs bg-transparent time-program"
-            >Active since 9 days ago</q-badge
-          >
-        </div>
-        <div class="title-program">
-          {{ program.program_title }}
-        </div>
-        <div class="content-title">
-          {{ program.program_description }}
-        </div>
-        <div class="price-program">
-          <span v-if="program.reward_type == 'cash'">$</span>
-          {{ program.low.min }} -
-          <span v-if="program.reward_type == 'cash'">$</span>
-          {{ program.critical.max }} <span v-if="program.reward_type == 'points'">&nbsp;Points </span>
-           <span>&nbsp; Per vulnerability</span>
-        </div>
-        <div class="flex no-wrap">
-          <div
-            class="q-pr-md no-wrap flex flex-center"
-            style="padding-left: 12px"
-          >
-            <q-btn
-              round
-              flat
-              class="text-white"
-              style="
-                z-index: 99;
-                border: 1px solid white;
-                margin-left: -12px;
-                width: 8px;
-                height: 8px;
-              "
-              size="8px"
-              v-for="(manager, i) in program.managers"
-              :key="manager.id"
-              :label="getFirstCharacter(manager.first_name)"
-              :style="'background-color:' + colors[i]"
-            />
+          <div class="content-title">
+            {{ program.program_description }}
           </div>
-          <div class="title-program-2">
-            {{ getManagersText }}
+          <div class="price-program">
+            <span v-if="program.reward_type == 'cash'">$</span>
+            {{ program.low.min }} -
+            <span v-if="program.reward_type == 'cash'">$</span>
+            {{ program.critical.max }}
+            <span v-if="program.reward_type == 'points'">&nbsp;Points </span>
+            <span>&nbsp; Per vulnerability</span>
           </div>
-        </div>
+          <div class="flex no-wrap">
+            <div
+              class="q-pr-md no-wrap flex flex-center"
+              style="padding-left: 12px"
+            >
+              <q-btn
+                round
+                flat
+                class="text-white"
+                style="
+                  z-index: 99;
+                  border: 1px solid white;
+                  margin-left: -12px;
+                  width: 8px;
+                  height: 8px;
+                "
+                size="8px"
+                v-for="(manager, i) in program.managers"
+                :key="manager.id"
+                :label="getFirstCharacter(manager.first_name)"
+                :style="'background-color:' + colors[i]"
+              />
+            </div>
+            <div class="title-program-2">
+              {{ getManagersText }}
+            </div>
+          </div>
+        </q-card-section>
+        <slot name="level"> </slot>
       </q-card-section>
-      <slot name="level"> </slot>
-    </q-card-section>
-  </q-card>
+    </q-card>
+  </router-link>
 </template>
 <script>
 export default {
@@ -114,13 +130,12 @@ export default {
       };
     },
   },
-  beforeMount() {
-
-  }
+  beforeMount() {},
 };
 </script>
 <style scoped>
-.access-positive , .access-negative{
+.access-positive,
+.access-negative {
   font-family: "inter";
   font-style: normal;
   font-weight: 500;
@@ -130,9 +145,9 @@ export default {
   color: #5887ff;
   background: rgba(88, 135, 255, 0.1);
 }
-.access-negative{
-  color: #F55B5D;
-  background: #F7D5D5;;
+.access-negative {
+  color: #f55b5d;
+  background: #f7d5d5;
 }
 
 .accepted {

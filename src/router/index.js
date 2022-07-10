@@ -2,6 +2,8 @@ import { route } from 'quasar/wrappers'
 import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from 'vue-router'
 import routes from './routes'
 
+import routesProgram from '../modules/program/routes'
+import routesSubmission from './../modules/submission/routes';
 /*
  * If not building with SSR mode, you can
  * directly export the Router instantiation;
@@ -11,6 +13,14 @@ import routes from './routes'
  * with the Router instance.
  */
 
+routes.forEach((route)=>{
+  if(route.name==='dashboard'){
+    route.children.push(routesProgram);
+    route.children.push(routesSubmission);
+    //console.log(route);
+  }
+})
+console.log(routes);
 export default route(function (/* { store, ssrContext } */) {
   const createHistory = process.env.SERVER
     ? createMemoryHistory

@@ -148,12 +148,19 @@ const _getOneProgram = async function (payload) {
 
 const _joinProgram = async function (payload) {
   try {
+    let token = localStorage.getItem("token");
+    /*=========================================================*/
+    /*                    Graphql                             */
+    /*=======================================================*/
     JOIN_PROGRAM_MUTATION.variables.id = payload.id;
     JOIN_PROGRAM_MUTATION.variables.hackers = payload.hackers;
-    JOIN_PROGRAM_MUTATION.context.headers.authorization =
-      "Bearer " + localStorage.getItem("token");
+    JOIN_PROGRAM_MUTATION.context.headers.authorization = "Bearer " + token;
     const result = await apolloClient.mutate(JOIN_PROGRAM_MUTATION);
-    //console.log(result);
+    /*=========================================================*/
+    /*                    REST API                            */
+    /*=======================================================*/
+    /*const url="/programs";
+    const data = await _postQueryServer(url,program,token);*/
   } catch (error) {
     console.log(error);
   }
@@ -195,33 +202,44 @@ const _createProgram = async function (payload) {
       company_users: payload.company_users,
       //program_picture_url: "programs/image17.png",
     };
-    //console.log("La valeur de program avant la creation dans service ",program);
-   CREATE_PROGRAM.variables.program = program;
-    CREATE_PROGRAM.context.headers.authorization =
-      "Bearer " + localStorage.getItem("token");
-    console.log(program);
-    console.log(localStorage.getItem("token"));
+    let token = localStorage.getItem("token");
+    /*=========================================================*/
+    /*                    Graphql                             */
+    /*=======================================================*/
+    /*CREATE_PROGRAM.variables.program = program;
+    CREATE_PROGRAM.context.headers.authorization ="Bearer " + token;
     const result = await apolloClient.mutate(CREATE_PROGRAM);
-    console.log(result);
     const data = result.data.createProgram.data.id;
-    return data;
+
+    /*=========================================================*/
+    /*                    Rest API                            */
+    /*=======================================================*/
+    const url="/programs";
+    const data = await _postQueryServer(url,program,token);
+    //console.log("La valeur de program est = ", data);
+    return data.data.id;
   } catch (error) {
     console.log(error);
   }
 };
-const _createInvitation = async function (payload) {
+const _createInvitation = async function (invitation) {
   try {
-    /* let invitation = {
-      company_user: payload.company_user,
-      hacker: payload.hacker,
-      program: payload.program,
-    }; */
-    //console.log(program);
-    CREATE_INVITATION.variables.invitation = payload;
-    CREATE_INVITATION.context.headers.authorization =
-      "Bearer " + localStorage.getItem("token");
-    const result = await apolloClient.mutate(CREATE_INVITATION);
-    //console.log(result);
+    let token = localStorage.getItem("token");
+    /*=========================================================*/
+    /*                    Graphql                             */
+    /*=======================================================*/
+    /*CREATE_INVITATION.variables.invitation = invitation;
+    CREATE_INVITATION.context.headers.authorization ="Bearer " + token;
+    const result = await apolloClient.mutate(CREATE_INVITATION);*/
+
+    /*=========================================================*/
+    /*                    Rest API                            */
+    /*=======================================================*/
+    const url="/invitations";
+    const data = await _postQueryServer(url,invitation,token);
+    console.log("La valeur de invitation est = ",data);
+    return data;
+
   } catch (error) {
     console.log(error);
   }

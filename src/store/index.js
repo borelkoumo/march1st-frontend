@@ -2,13 +2,15 @@ import { store } from 'quasar/wrappers'
 import { createStore } from 'vuex'
 
 import global from './global'
-import program from './program'
+//import program from './program'
 import dashboard from './dashboard'
-import submission from './submission'
+//import submission from './submission'
 import task from './task'
 
 // import example from './module-example'
-
+import program from '../modules/program/store'
+import submission from '../modules/submission/store'
+import auth from '../modules/auth/store'
 /*
  * If not building with SSR mode, you can
  * directly export the Store instantiation;
@@ -21,10 +23,12 @@ const Store = createStore({
     modules: {
         // example
         global,
+        task,
+        dashboard,
+
         program,
         submission,
-        task,
-        dashboard
+        auth
     },
 
     // enable strict mode (adds overhead!)

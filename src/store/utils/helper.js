@@ -1,13 +1,18 @@
 import { api } from "../../boot/axios";
 //helper function
 const _postQueryServer = async (path, payload = {}, token = null) => {
+  let data={
+    data:{
+      ...payload
+    }
+  }
   if(token)
     api.defaults.headers.common = { Authorization: `Bearer ${token}` };
   return api({
     mode: "cors",
     url: path,
     method: "POST",
-    data: payload,
+    data: data,
     config: {
       headers: {
         "Content-Type": "application/json"

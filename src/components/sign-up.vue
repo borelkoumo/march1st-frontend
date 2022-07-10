@@ -312,8 +312,13 @@
           const message = await this.onSubmitValidationCode(this.code);
           printLog(`onSubmitValidationCode result = ${message}`);
 
+          //On le redirige vers le login
+          this.$router.push("/auth/login");
+
+          /*============================= Getting credential options ============================*/
+
           // Get attestation options
-          this.setLoadingMsg("Getting credential options ...");
+          /*this.setLoadingMsg("Getting credential options ...");
           this.credentialOptions = await this.getCredentialOptions();
           printLog(`getCredentialOptions result = ${this.credentialOptions}`);
 
@@ -327,7 +332,9 @@
           } else {
             //on lance une fois le processus
             await this.generatePublicKey();
-          }
+          }*/
+
+          /*============================= End Getting credential options ============================*/
         } catch (error) {
           this.step = 2;
           this.notifyNegative(error.message);
