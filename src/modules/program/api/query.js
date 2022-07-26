@@ -24,8 +24,8 @@ const PROGRAMS_QUERY = {
             program_type
             safe_harbour_type
             reward_range
-            reward_type,
-            createdAt,
+            reward_type
+            createdAt
             hackers {
               data {
                 id
@@ -98,7 +98,105 @@ const PROGRAMS_QUERY = {
     },
   },
 };
-
+/**
+ * query super admin programs
+ */
+const SUPER_MANAGER_PROGRAM = {
+  query: gql`
+    query getMyPrograms($companyId: ID!) {
+      programs(filters: { company: { id: { eq: $companyId } } }) {
+        data {
+          id
+          attributes {
+            program_title
+            program_description
+            program_guidelines_1
+            program_guidelines_2
+            program_scope
+            legal_terms
+            program_picture_url
+            is_closed
+            closed_at
+            createdAt
+            reward_guidelines
+            program_type
+            safe_harbour_type
+            reward_range
+            reward_type
+            createdAt
+            hackers {
+              data {
+                id
+                attributes {
+                  first_name
+                }
+              }
+            }
+            company {
+              data {
+                id
+              }
+            }
+            company_users {
+              data {
+                id
+                attributes {
+                  first_name
+                  last_name
+                  user {
+                    data {
+                      id
+                      attributes {
+                        username
+                        email
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            invitations {
+              data {
+                id
+                attributes {
+                  hacker {
+                    data {
+                      id
+                    }
+                  }
+                }
+              }
+            }
+            submissions {
+              data {
+                id
+                attributes {
+                  submission_text
+                  submission_title
+                  submission_statuses(sort: "createdAt:DESC") {
+                    data {
+                      id
+                      attributes {
+                        status
+                        status_title
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `,
+  variables: {},
+  context: {
+    headers: {
+      /* authorization: token, */
+    },
+  },
+};
 /**
  * query one program from database
  * @param id of program
@@ -197,7 +295,7 @@ const ONE_PROGRAM_QUERY = {
     headers: {
       /* authorization: token, */
     },
-  }
+  },
 };
 
 const { mutate: JOIN_PROGRAM_MUTATION } = {
@@ -281,4 +379,5 @@ export {
   JOIN_PROGRAM_MUTATION,
   CREATE_PROGRAM,
   CREATE_INVITATION,
+  SUPER_MANAGER_PROGRAM
 };

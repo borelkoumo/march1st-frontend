@@ -41,7 +41,7 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://v2.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: "history", // available values: 'hash', 'history'
-      
+
       // transpile: false,
 
       // Add dependencies for transpiling with Babel (Array of string/regex)
@@ -85,16 +85,10 @@ module.exports = configure(function (ctx) {
         VUE_APP_STRAPI_GRAPHQL_BACKEND: "https://strapi.march1st.com/graphql",
 
         // Cognito config for clients
-        VUE_APP_COGNITO_USER_POOL_ID: "us-east-1_uf5ZLuAl0",
-        VUE_APP_COGNITO_USER_POOL_CLIENT_ID: "6fsknh1fegmvr6ap1kq8q70c4h",
+        VUE_APP_COGNITO_USER_POOL_ID: "us-east-1_OUF0wzrZm",
+        VUE_APP_COGNITO_USER_POOL_CLIENT_ID: "2bk5cl52nd291vlsacc7jmkuf8",
         VUE_APP_COGNITO_IDENTITY_POOL_ID:
-          "us-east-1:dcaedcb9-24d9-4086-bf05-9192c11b883e",
-        
-        // Cognito config for hackers
-        VUE_APP_COGNITO_HACKER_USER_POOL_ID: "us-east-1_wUR2ukF2L",
-        VUE_APP_COGNITO_HACKER_USER_POOL_CLIENT_ID: "12mm0fmb0c3lgv4mce8jm0tphj",
-        VUE_APP_COGNITO_HACKER_IDENTITY_POOL_ID:
-          "us-east-1:5798a2bd-a689-4b83-aeb8-71f1b08e4118",
+          "us-east-1:e22adb21-407d-4519-a5be-6bb4e412b1ef",
 
         VUE_APP_COGNITO_REGION: "us-east-1",
 

@@ -32,10 +32,23 @@
             </div>
           </div>
           <div class="form-control">
+            <div>Enter your password</div>
+            <div class="q-pt-sm">
+              <q-input
+                dense
+                type="password"
+                v-model="formData.password"
+                color="grey-3"
+                bg-color="white"
+                outlined
+              />
+            </div>
+          </div>
+          <div class="form-control">
             <q-btn
               flat
               outlined
-              label="Passwordless Login"
+              label="Connexion"
               class="bg-secondary col text-white"
               no-caps
               type="submit"
@@ -102,7 +115,8 @@ export default {
   data() {
     return {
       formData: {
-        email: "borelkoumo@mailinator.com",
+        email: "fb_program_manager1@gmail.com",
+        password:"March1st@2022"
       },
       step: 1,
       showQrCode: false,
@@ -133,11 +147,12 @@ export default {
   },
   methods: {
     ...mapActions("global", [
-      "onSubmitLoginForm",
-      "getCredentialInNavigator",
-      "sendChallengeResult",
       "setTypeUser",
       "getTypeUser",
+    ]),
+    ...mapActions('auth',[
+      "onSubmitLoginForm",
+      "strapiSignIn2"
     ]),
     ...mapActions("dashboard",[
       'createUser'
@@ -145,11 +160,6 @@ export default {
 
     formatTypeUser() {
       return this.typeUser.toUpperCase();
-    },
-
-    setWebSocketMsg(message) {
-      printLog("WSS", message);
-      this.webSocketMsg = message;
     },
 
     setLoadingMsg(message) {
@@ -182,186 +192,22 @@ export default {
       try {
         // Submit login form to cognito
         this.setLoadingMsg("Getting authentication challenge ...");
-        this.cognitoUser = await this.onSubmitLoginForm(this.formData);
-        await this.signIn();
-      } catch (error) {
-        this.notifyNegative(error.message);
-      }
-    },
+        //this.cognitoUser = await this.onSubmitLoginForm(this.formData);
 
-    async signIn() {
-      try {
-        this.setLoadingMsg("Getting authentication options ...");
-        const signInOptions = getSignInOptions(this.cognitoUser.challengeParam);
-        const loggedUser = await this.callAuthenticator(signInOptions);
-        //console.log("loggedUser dans signIn = ",loggedUser);
-        let jwtToken = loggedUser.signInUserSession.idToken.jwtToken;
-        await this.createUser(jwtToken);
+        //direct submission with strapi
+        await this.strapiSignIn2(this.formData);
+
+        console.log("CognitoUser dans submitLoginForm: ",this.cognitoUser);
+        //let jwtToken = this.cognitoUser.signInUserSession.idToken.jwtToken;
+        //await this.createUser(jwtToken);
         this.notifyPositive(`Sucessfully logged in`);
-        printLog("Logged user", loggedUser);
-        this.$router.push("/");
+        //printLog("Logged user", loggedUser);
+
+        this.$router.push('/');
+        this.$q.loading.hide();
       } catch (error) {
         this.notifyNegative(error.message);
-        /**
-         * If we are on desktop, show QR Code
-         */
-        if (!this.$q.platform.is.mobile) {
-          // Sign in with phone
-          this.step = 2;
-          await this.signInWithPhone();
-        } else {
-          printLog("You can't use QR code because you are on mobile device");
-        }
       }
-    },
-
-    async callAuthenticator(signInOptions) {
-      try {
-        this.setLoadingMsg("Getting credentials in browser ...");
-        // Get credential from credential API
-        this.customChallengeAnswer = await this.getCredentialInNavigator(
-          signInOptions
-        );
-        this.setLoadingMsg("Sending attestation to authentication server ...");
-        // Send attestation result to authentication server
-        let payload = {
-          user: this.cognitoUser,
-          customChallengeAnswer: this.customChallengeAnswer,
-        };
-        const loggedUser = await this.sendChallengeResult(payload);
-        let jwtToken = loggedUser.signInUserSession.idToken.jwtToken;
-          await this.createUser(jwtToken);
-          //go to the home page
-          this.notifyPositive(`Your are now logged in`);
-          this.$router.push("/dashboard");
-        printLog(`Logged user`, loggedUser);
-        return loggedUser;
-      } catch (error) {
-        throw new Error(error);
-      }
-    },
-
-    async signInWithPhone() {
-      printLog("In function handleSignInWithPhone");
-
-      /******************************************************
-       * WebSocket events callbacks
-       *******************************************************/
-      const getAttestationUrl = (connectionId, email) => {
-        // Verify if this env var exists
-        if (process.env.MOBILE_URL) {
-          const mobileUrl = new URL(process.env.MOBILE_URL);
-
-          // Create params
-          const params = {
-            connectionId,
-            email,
-          };
-
-          // Create query string
-          const queryString = new URLSearchParams(params);
-
-          // create Assertion URL
-          const attestationUrl = new URL(
-            `/getattestation?${queryString}`,
-            mobileUrl
-          );
-          printLog("Attestation URL = ", attestationUrl.toString());
-          return attestationUrl.toString();
-        } else {
-          throw new Error("process.env.MOBILE_URL is null");
-        }
-      };
-
-      const onOpenCallback = () => {
-        this.setWebSocketMsg("Websocket connection openned...");
-      };
-
-      const onConnectionIdCallback = (connectionId) => {
-        this.setWebSocketMsg(`Connection id received : ${connectionId}`);
-        // Get site URL
-        const url = getAttestationUrl(connectionId, this.formData.email);
-        this.attestationUrl = url;
-      };
-
-      const onCloseCallback = () => {
-        this.setWebSocketMsg(`Websocket connection closed...`);
-        wssClient = null;
-        this.attestationUrl = null;
-      };
-
-      //change to onGetCustomChallenge
-      const onGetSignInOptions = (to) => {
-        printLog(`wssClient`, wssClient);
-        // Send back Sign In Options
-        if (wssClient) {
-          this.setWebSocketMsg(`Sending signin options to phone ...`);
-          wssClient.sendMessage({
-            to: to,
-            message: {
-              nextAction: "receiveSignInOptions",
-              signInOptions: this.cognitoUser.challengeParam,
-            },
-          });
-        } else {
-          throw new Error("Websocket client is null");
-        }
-      };
-
-      const onSignInAttestationAvailable = async (attestation) => {
-        try {
-          this.setWebSocketMsg(
-            `Attestation generated on phone is available ...`
-          );
-          this.setWebSocketMsg(
-            "Sending attestation to authentication server ..."
-          );
-          this.setLoadingMsg(
-            "Sending attestation to authentication server ..."
-          );
-          printLog(`Attestation`, attestation);
-          /** Change this part */
-          // Send attestation result to authentication server
-          let payload = {
-            user: this.cognitoUser,
-            customChallengeAnswer: attestation,
-          };
-          printLog(`Custom challenge answer`, payload.customChallengeAnswer);
-          const loggedUser = await this.sendChallengeResult(payload);
-          let jwtToken = loggedUser.signInUserSession.idToken.jwtToken;
-          await this.createUser(jwtToken);
-          //go to the home page
-          this.notifyPositive(`Your are now logged in`);
-          this.$router.push("/dashboard");
-        } catch (error) {
-          this.notifyNegative(error.message);
-        }
-      };
-
-      // Show spinner
-      this.showSpinner = true;
-      // Show message
-      this.setWebSocketMsg("Openning websocket connection...");
-      const client = new WebSocketClient(
-        onOpenCallback,
-        onConnectionIdCallback,
-        onCloseCallback,
-        /**
-         *  Callbacks pour le signUp
-         * */
-        () => {}, // onGetCredentialOptions
-        () => {}, // onReceiveCredentialOptions
-        () => {}, // onAttestationAvailable
-        /**
-         *  Callbacks pour le signIn
-         * */
-        onGetSignInOptions,
-        () => {}, // onReceiveSignInOptions
-        onSignInAttestationAvailable
-      );
-
-      // Set state value
-      wssClient = client;
     },
   },
 

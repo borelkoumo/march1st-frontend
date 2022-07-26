@@ -37,7 +37,7 @@
               />
             </div>
           </div>
-          <div class="form-control" v-if="typeUser == 'client'">
+          <div class="form-control" >
             <div>Full Name</div>
             <div class="q-pt-sm">
               <q-input
@@ -63,7 +63,7 @@
               />
             </div>
           </div>
-          <div class="form-control" v-if="typeUser == 'hacker'">
+          <!--<div class="form-control" v-if="typeUser == 'hacker'">
             <div>Username/Pseudonym</div>
             <div class="q-pt-sm">
               <q-input
@@ -75,7 +75,7 @@
                 outlined
               />
             </div>
-          </div>
+          </div>-->
           <div class="form-control">
             <div>Email</div>
             <div class="q-pt-sm">
@@ -85,6 +85,20 @@
                 v-model="formData.email"
                 color="grey-3"
                 bg-color="white"
+                outlined
+              />
+            </div>
+          </div>
+          <div class="form-control">
+            <div>Password</div>
+            <div class="q-pt-sm">
+              <q-input
+                dense
+                placeholder="Enter your password"
+                v-model="formData.password"
+                color="grey-3"
+                bg-color="white"
+                type="password"
                 outlined
               />
             </div>
@@ -132,34 +146,6 @@
             />
           </div>
         </q-form>
-        <q-form @submit="generatePublicKey()" class="q-pb-sm" v-if="step == 3">
-          <div style="max-width: 320px; margin: auto">
-            <p class="text-center">
-              Unable to signup using desktop, please use your mobile phone to
-              continue
-            </p>
-          </div>
-          <div class="q-pt-lg text-center">
-            <span>{{ webSocketMsg }}</span>
-          </div>
-          <div
-            class="q-pt-md"
-            style="text-align: center; margin: auto"
-            v-if="showSpinner"
-          >
-            <q-spinner color="primary" :size="sizeQRCODE" :thickness="2" />
-          </div>
-          <div
-            class="q-pt-md"
-            style="text-align: center; margin: auto"
-            v-if="showQrCode"
-          >
-            <qrcode-vue :value="assertionUrl" :size="sizeQRCODE"></qrcode-vue>
-          </div>
-        </q-form>
-        <div class="" v-if="step == 4">
-          <div>Step 4</div>
-        </div>
         <div class="q-pt-xs" v-if="step != 4">
           <q-toolbar class="">
             <span>Already have an account?</span>
@@ -180,17 +166,12 @@
 </template>
 
 <script>
-  import QrcodeVue from "qrcode.vue";
   import { mapActions, mapGetters, mapState } from "vuex";
-
-  import WebSocketClient from "src/store/utils/WebSocketClient";
-  import { isPlatformAuthenticatorAvailable } from "src/store/utils/WebAuthnUtils";
   import { printLog } from "src/store/utils/base64";
-  let wssClient = null;
 
   export default {
     name: "login",
-    components: { QrcodeVue },
+    components: {  },
     data() {
       return {
         formData: {
@@ -199,28 +180,18 @@
           title: "Developer",
           email: "borelkoumo@mailinator.com",
           username: "",
+          password:"March1st@2022",
+          role:null
         },
-        showQrCode: false,
-        sizeQRCODE: 200,
+
         code: null,
-        credentialOptions: null,
         step: 1,
-        assertionUrl: "example.com",
-        webSocketMsg: "Scan QR Code to start process",
+
         showSpinner: false,
       };
     },
     watch: {
-      typeUser: async function (val) {},
-      assertionUrl: function (val) {
-        // Hide spinner
-        this.showSpinner = false;
-        // Show QR Code
-        this.showQrCode = true;
-      },
-      webSocketMsg: function (val) {
-        this.webSocketMsg = val;
-      },
+
     },
     computed: {
       ...mapState("global", ["typeUser"]),
@@ -228,21 +199,14 @@
     },
     methods: {
       ...mapActions("global", [
-        "onSubmitSignUpForm",
-        "onSubmitSignUpFormHacker",
-        "onSubmitValidationCode",
-        "getCredentialOptions",
-        "callAuthenticator",
-        "sendAttestationResult",
         "setTypeUser",
         "getTypeUser",
         "strapiClientSignUp"
       ]),
-
-      setWebSocketMsg(message) {
-        printLog("WSS", message);
-        this.webSocketMsg = message;
-      },
+      ...mapActions('auth',[
+        "onSubmitSignUpForm",
+        "onSubmitValidationCode",
+      ]),
 
       setLoadingMsg(message) {
         printLog(message);
@@ -271,8 +235,8 @@
       },
 
       async submitSignUpForm() {
-        if (this.typeUser == "client") {
-          try {
+        this.formData.role=this.typeUser;
+        try {
             this.setLoadingMsg("Submitting sign up form ...");
             const codeDeliveryDetails = await this.onSubmitSignUpForm(
               this.formData
@@ -283,8 +247,12 @@
             );
             this.step = 2;
           } catch (error) {
+            console.log("Error in submitSignup", error);
             this.notifyNegative(error.message);
           }
+
+        /*if (this.typeUser == "client") {
+
         } else if (this.typeUser == "hacker") {
           try {
             this.setLoadingMsg("Submitting sign up form ...");
@@ -302,7 +270,7 @@
         } else {
           this.notifyNegative(`Unknown user type : ${this.typeUser}`);
           throw new Error(`Unknown user type : ${this.typeUser}`);
-        }
+        }*/
       },
 
       async submitValidationCode() {
@@ -311,187 +279,13 @@
           this.setLoadingMsg("Checking validation code ...");
           const message = await this.onSubmitValidationCode(this.code);
           printLog(`onSubmitValidationCode result = ${message}`);
-
           //On le redirige vers le login
           this.$router.push("/auth/login");
-
-          /*============================= Getting credential options ============================*/
-
-          // Get attestation options
-          /*this.setLoadingMsg("Getting credential options ...");
-          this.credentialOptions = await this.getCredentialOptions();
-          printLog(`getCredentialOptions result = ${this.credentialOptions}`);
-
-          // Show messages
-          this.notifyPositive(message);
-          if (
-            !isPlatformAuthenticatorAvailable() &&
-            !this.$q.platform.is.mobile
-          ) {
-            await this.signUpWithPhone();
-          } else {
-            //on lance une fois le processus
-            await this.generatePublicKey();
-          }*/
-
-          /*============================= End Getting credential options ============================*/
+          this.$q.loading.hide();
         } catch (error) {
           this.step = 2;
           this.notifyNegative(error.message);
         }
-      },
-
-      async generatePublicKey() {
-        try {
-          this.setLoadingMsg("Getting credential options ...");
-
-          // Generate public key
-          const attestation = await this.callAuthenticator(
-            this.credentialOptions
-          );
-          this.setLoadingMsg(
-            "Public keys generated. Sending attestation to authentication server ..."
-          );
-          // Send attestation result to authentication server
-          const userData = await this.sendAttestationResult(attestation);
-          console.log("la valeur de userData dans genearatedPublicKey =", userData);
-          this.notifyPositive(
-            `Account  created for user ${userData.email}. You can now sign in`
-          );
-          this.$router.push("/auth/login");
-        } catch (error) {
-          this.notifyNegative(error.message);
-          // signup with phone
-          this.step = 3;
-          await this.signUpWithPhone();
-        }
-      },
-
-      async signUpWithPhone() {
-        this.setWebSocketMsg("In function handleSignUpWithPhone");
-
-        /******************************************************
-         * WebSocket events callbacks
-         *******************************************************/
-        const getAssertionUrl = (connectionId, email, fullName) => {
-          // Verify if this env var exists
-          if (process.env.MOBILE_URL) {
-            const mobileUrl = new URL(process.env.MOBILE_URL);
-            printLog("siteUrl = ", mobileUrl.origin);
-
-            // Create params
-            const params = {
-              connectionId,
-              email,
-              fullName,
-            };
-            printLog("Params", params);
-
-            // Create query string
-            const queryString = new URLSearchParams(params);
-
-            // create Assertion URL
-            const assertionUrl = new URL(
-              `/getassertion?${queryString}`,
-              mobileUrl
-            );
-            printLog("Assertion URL", assertionUrl);
-
-            return assertionUrl.toString();
-          } else {
-            throw new Error("process.env.MOBILE_URL is null");
-          }
-        };
-
-        const onOpenCallback = () => {
-          this.setWebSocketMsg("Websocket connection openned...");
-        };
-
-        const onConnectionIdCallback = (connectionId) => {
-          this.setWebSocketMsg(`Please scan QR (ID : ${connectionId})`);
-          // Get site URL
-          const url = getAssertionUrl(
-            connectionId,
-            this.formData.email,
-            this.formData.fullName
-          );
-          this.assertionUrl = url;
-          this.$q.loading.hide();
-        };
-
-        const onCloseCallback = () => {
-          this.setWebSocketMsg(`Websocket connection closed...`);
-          this.$q.loading.hide();
-          wssClient = null;
-          this.assertionUrl = null;
-        };
-
-        const onGetCredentialOptions = (to) => {
-          printLog(`wssClient = ${wssClient}`);
-          // Send back credentialOptions
-          if (wssClient) {
-            this.setWebSocketMsg(`Sending credential options to phone...`);
-            wssClient.sendMessage({
-              to: to,
-              message: {
-                nextAction: "receiveCredentialOptions",
-                credentialOptions: this.credentialOptions,
-              },
-            });
-            this.setWebSocketMsg(`Credential options sent to phone...`);
-          } else {
-            this.$q.loading.hide();
-            throw new Error("websocket client is null or is not openned");
-          }
-        };
-
-        const onSignUpAttestationAvailable = async (attestation) => {
-          try {
-            this.setWebSocketMsg(
-              `Attestation generated on phone is available ...`
-            );
-            this.setWebSocketMsg(
-              "Sending attestation to authentication server ..."
-            );
-            this.setLoadingMsg(
-              "Sending attestation to authentication server ..."
-            );
-            // Send attestation result to authentication server
-            const userData = await this.sendAttestationResult(attestation);
-            this.notifyPositive(
-              `Account created for user ${userData.email}. You can now sign in`
-            );
-            //on ouvre le login
-            this.$router.push("/auth/login");
-          } catch (error) {
-            this.setWebSocketMsg(error.message);
-          }
-        };
-
-        // Show spinner
-        this.showSpinner = true;
-        // Show message
-        this.setWebSocketMsg("Openning websocket connection...");
-        const client = new WebSocketClient(
-          onOpenCallback,
-          onConnectionIdCallback,
-          onCloseCallback,
-          /**
-           *  Callbacks pour le signUp
-           * */
-          onGetCredentialOptions,
-          () => {}, // onReceiveCredentialOptions
-          onSignUpAttestationAvailable,
-          /**
-           *  Callbacks pour le signIn
-           * */
-          () => {}, // onGetSignInOptions
-          () => {}, // onReceiveSignInOptions
-          () => {} // onSignInAttestationAvailable
-        );
-
-        // Set state value
-        wssClient = client;
       },
     },
     async beforeMount() {},

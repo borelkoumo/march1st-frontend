@@ -95,31 +95,24 @@ const COMPAGNIES_QUERY = {
     headers: {
       /* authorization: token, */
     },
-  }
+  },
 };
 
 const COMPAGNY_USERS = {
   query: gql`
-    query companyUsers($userId: ID!) {
-      company(id: $userId) {
+    query getCompaniesUsers($companyId: ID!) {
+      companyUsers(filters: { company: { id: { eq: $companyId } } }) {
         data {
           id
           attributes {
-            company_users {
+            first_name,
+            last_name,
+            user {
               data {
                 id
                 attributes {
-                  first_name
-                  last_name
-                  user {
-                    data {
-                      id
-                      attributes {
-                        email
-                        username
-                      }
-                    }
-                  }
+                  username
+                  email
                 }
               }
             }
@@ -162,7 +155,7 @@ const { mutate: LOGIN_MUTATION } = {
   },
 };
 
-//get a role for a user
+//get a role for a user //(filters:{user:{id:{eq:$userId}})
 const MYROLE_QUERY = {
   query: gql`
     query usersPermissionUser($userId: ID!) {
@@ -174,17 +167,24 @@ const MYROLE_QUERY = {
         }
         id
       }
-      companyUser(id: $userId) {
+      companyUsers(filters: { user: { id: { eq: $userId } } }) {
         data {
           id
           attributes {
             first_name
+            last_name
+            profile_picture_url
+            title
+            user {
+              data {
+                id
+              }
+            }
             company {
               data {
                 id
                 attributes {
                   company_name
-                  company_size
                   company_logo
                 }
               }
@@ -192,20 +192,22 @@ const MYROLE_QUERY = {
           }
         }
       }
-      hacker(id: $userId) {
+      hackers(filters: { user: { id: { eq: $userId } } }) {
         data {
           id
           attributes {
             first_name
+            last_name
+            profile_picture_url
+            phone
+            adress
+            createdAt
           }
         }
       }
-      march1stUser(id: $userId) {
+      march1stUsers(filters: { user: { id: { eq: $userId } } }) {
         data {
           id
-          attributes {
-            name
-          }
         }
       }
     }
@@ -221,9 +223,7 @@ const MYROLE_QUERY = {
 const COMPANY_QUERY = {
   query: gql`
     query companyUser($userId: ID!) {
-      companyUsers(
-        filters:{user:{id:{eq:$userId}}}
-      ) {
+      companyUsers(filters: { user: { id: { eq: $userId } } }) {
         data {
           id
           attributes {
@@ -254,9 +254,7 @@ const COMPANY_QUERY = {
 const HACKER_QUERY = {
   query: gql`
     query usersPermissionsUser($userId: ID!) {
-      hackers(
-        filters: { user: { id: { eq: $userId } } }
-      ) {
+      hackers(filters: { user: { id: { eq: $userId } } }) {
         data {
           id
           attributes {
@@ -279,9 +277,7 @@ const HACKER_QUERY = {
 const MARCH1st_QUERY = {
   query: gql`
     query usersPermissionsUser($userId: ID!) {
-      march1stUsers(
-        filters:{user:{id:{eq:$userId}}}
-      ) {
+      march1stUsers(filters: { user: { id: { eq: $userId } } }) {
         data {
           id
           attributes {

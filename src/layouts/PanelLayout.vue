@@ -53,36 +53,36 @@
           <q-card-section class="col-4 flex flex-center">
             <q-img
               class="rounded-borders"
-              :src="connectUser.company.company_logo"
-              v-if="connectUser && connectUser.role == 'client'"
+              :src="getUser.company.company_logo"
+              v-if="getUser && getUser.role == 'client'"
             />
             <q-img
-              v-if="connectUser && connectUser.role == 'hacker'"
+              v-if="getUser && getUser.role == 'hacker'"
               class="rounded-borders"
-              :src="connectUser.hacker.profile_picture_url"
+              :src="getUser.hacker.profile_picture_url"
             />
             <q-img
-              v-if="connectUser && connectUser.role == 'march1st'"
+              v-if="getUser && getUser.role == 'march1st'"
               class="rounded-borders"
-              :src="connectUser.march1st.profile_picture_url"
+              :src="getUser.march1st.profile_picture_url"
             />
           </q-card-section>
           <q-card-section
             class="q-pt-xs"
-            v-if="connectUser && connectUser.role == 'client'"
+            v-if="getUser && getUser.role == 'client'"
           >
             <div class="q-mt-sm title">
-              {{ connectUser.company.company_name }}
+              {{ getUser.company.company_name }}
             </div>
             <div class="subtitle">Joined 6 months ago</div>
           </q-card-section>
           <q-card-section
             class="q-pt-xs"
-            v-if="connectUser && connectUser.role == 'hacker'"
+            v-if="getUser && getUser.role == 'hacker'"
           >
             <div class="q-mt-sm title">
-              {{ connectUser.hacker.first_name }}
-              {{ connectUser.hacker.last_name }}
+              {{ getUser.hacker.first_name }}
+              {{ getUser.hacker.last_name }}
             </div>
             <div class="subtitle">Joined 6 months ago</div>
             <div class="subtitle">Current Rank: 70</div>
@@ -91,11 +91,11 @@
           </q-card-section>
           <q-card-section
             class="q-pt-xs"
-            v-if="connectUser && connectUser.role == 'march1st'"
+            v-if="getUser && getUser.role == 'march1st'"
           >
             <div class="q-mt-sm title">
-              {{ connectUser.march1st.first_name }}
-              {{ connectUser.march1st.last_name }}
+              {{ getUser.march1st.first_name }}
+              {{ getUser.march1st.last_name }}
             </div>
           </q-card-section>
         </q-card-section>
@@ -402,7 +402,7 @@ export default {
       console.log(val);
     },
     myuser: function (val) {
-      console.log(val)
+      //console.log(val)
       this.connectUser = val;
     },
     mesusers: function (val) {
@@ -421,7 +421,11 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("auth", ["getAllUsers","getCompanies"]),
+    ...mapGetters("auth", [
+      "getUser",
+      "getAllUsers",
+      "getCompanies"
+      ]),
     ...mapState("auth", ["companies", "mesusers","myuser"]),
 
     getMenus: () => {
@@ -506,13 +510,12 @@ export default {
     },
   },
   methods: {
-    ...mapActions("auth", ["register", "login"]),
+    ...mapActions("auth", ["register", "login","logOutUser"]),
     ...mapActions("program", ["allPrograms"]),
 
-    onSignout() {
-      localStorage.removeItem("user");
-      this.connectUser=null;
-      this.prompt2 = true;
+    async onSignout() {
+      this.$router.push('/auth/login');
+      await this.logOutUser();
     },
 
     async onLoginUser() {
@@ -560,8 +563,8 @@ export default {
     }
   },
   mounted() {
-    console.log(this.$route.name)
-    if(localStorage.getItem('user')==null) this.prompt2=true;
+
+    if(localStorage.getItem('user')==null) this.$router.push("/");
     else this.connectUser = JSON.parse(localStorage.getItem('user'));
 
     this.allCompanies = this.getCompanies.map(function (company) {

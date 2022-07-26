@@ -95,10 +95,10 @@ const _getCompanyUsers = async function (companyId) {
   try {
     COMPAGNY_USERS.context.headers.authorization =
       "Bearer " + localStorage.getItem("token");
-    COMPAGNY_USERS.variables.userId = companyId;
+    COMPAGNY_USERS.variables.companyId = companyId;
     //console.log(MYROLE_QUERY);
     const result = await apolloClient.query(COMPAGNY_USERS);
-    const data = result.data.company.data.attributes.company_users.data;
+    const data = result.data.companyUsers.data;
     let companyUsers = data.map(function (res) {
       let companyUser = {
         id: res.id,
@@ -125,8 +125,8 @@ const _getCompanyUsers = async function (companyId) {
       c_u.user.email = data2.attributes.email;
       return c_u;
     })*/
-
-    return Promise.resolve(companyUsers);
+    return companyUsers;
+    //return Promise.resolve(companyUsers);
   } catch (error) {
     console.log("Error in _getCompanyUsers", error);
   }
@@ -200,28 +200,57 @@ const _getMyRole = async function (credentials) {
     let type = result.data.me.role.type;
     let role = "public";
     let company = null;
+    let user={
+      company:null,
+      companyUser:null,
+      hacker:null,
+      march1st:null,
+      role:null,
+      type:null
+    };
     if (type === "m1_account_manager") {
-      //company=result.data.march1stUser.data.attributes.company;
-      type = "admin";
+      console.log(result.data.march1stUsers)
     } else if (type === "hacker") {
-      //company=result.data.companyUser.data.attributes.company;
+      user.hacker={
+        role:"hacker"
+      }
+      user.role="hacker";
     } else if (type === "program_manager" || type === "program_super_admin") {
-      //console.log("company user in getMyRole", result.data);
-      //company=result.data.companyUser.data.attributes.company;
-      if (type === "program_manager") role = "manager";
-      else role = "super_manager";
-      type = "client";
+      user.companyUser = {
+        id:result.data.companyUsers.data[0].id,
+        first_name:result.data.companyUsers.data[0].attributes.first_name,
+        last_name:result.data.companyUsers.data[0].attributes.last_name,
+        profile_picture_url:result.data.companyUsers.data[0].attributes.profile_picture_url,
+        title:result.data.companyUsers.data[0].attributes.title,
+        user:{
+          id:result.data.companyUsers.data[0].attributes.user.data.id,
+          role:"client",
+          type:type=="program_super_admin"?"super_manager":"manager",
+        },
+        company:{
+          id:result.data.companyUsers.data[0].attributes.company.data.id,
+          company_name:result.data.companyUsers.data[0].attributes.company.data.attributes.company_name,
+          company_logo:result.data.companyUsers.data[0].attributes.company.data.attributes.company_logo
+        }
+      }
+      user.company={
+          id:result.data.companyUsers.data[0].attributes.company.data.id,
+          company_name:result.data.companyUsers.data[0].attributes.company.data.attributes.company_name,
+          company_logo:result.data.companyUsers.data[0].attributes.company.data.attributes.company_logo
+      }
+      user.role="client";
+      user.type = type=="program_super_admin"?"super_manager":"manager";
     } else {
       throw new Error(type + " not pris en charge");
     }
 
-    let data = {
+    /*let data = {
       company,
       role,
       type,
-    };
+    };*/
 
-    return Promise.resolve(data);
+    return Promise.resolve(user);
   } catch (error) {
     console.log("error in _getMyRole", error);
     return Promise.reject(0);

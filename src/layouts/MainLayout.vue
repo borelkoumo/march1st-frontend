@@ -91,7 +91,6 @@
           </q-btn-dropdown>
           <q-separator vertical inset color="white" v-if="isTransparent" />
           <q-separator vertical inset color="primary" v-else />
-
           <q-btn flat class="">
             <q-avatar size="22px" class="gt-xs">
               <img src="vectors/login-white.svg" v-if="isTransparent" />
@@ -106,7 +105,7 @@
               transition-show="jump-down"
               transition-hide="jump-up"
               class="menu-user relative-position bg-transparent"
-              v-if="userData"
+              v-if="getUser"
             >
               <div
                 style="width: 100%; position: relative; min-height: 20px"
@@ -117,17 +116,42 @@
               <q-list style="min-width: 200px" class="bg-white">
                 <q-item clickable v-ripple class="q-pt-sm q-pb-sm">
                   <q-item-section avatar>
-                    <q-avatar>
-                      <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+                    <q-avatar v-if="getUser.role==='client'">
+                      <img :src="getUser.companyUser.profile_picture_url" />
+                    </q-avatar>
+                    <q-avatar v-if="getUser.role==='hacker'">
+                      <img :src="getUser.hacker.profile_picture_url" />
                     </q-avatar>
                   </q-item-section>
-                  <q-item-section>
-                    <q-item-label class="text-bold text-primary">{{
-                      userData.attributes.name
+                  <q-item-section v-if="getUser.role==='client'">
+                    <q-item-label class="text-bold text-primary" >{{
+                      getUser.companyUser.first_name
                     }}</q-item-label>
                     <q-item-label caption lines="1">{{
-                      userData.attributes["custom:companyName"]
+                      getUser.company.company_name
                     }}</q-item-label>
+                  </q-item-section>
+                  <q-item-section v-if="getUser.role==='hacker'">
+                    <q-item-label class="text-bold text-primary" >{{
+                      getUser.hacker.first_name
+                    }}</q-item-label>
+                    <q-item-label caption lines="1">{{
+                      getUser.hacker.last_name
+                    }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+                <q-separator color="info"/>
+                <q-item clickable v-ripple class="q-pt-xs q-pb-xs" to="/new-dashboard">
+                  <q-item-section avatar>
+                    <q-avatar
+                      color="white"
+                      text-color="secondary"
+                      icon="person_outline"
+                      size="55px"
+                    />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label class="text-primary">Dashboard</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator color="info" />
@@ -497,13 +521,18 @@ export default defineComponent({
   },
   computed: {
     ...mapState("global", ["userData"]),
-    ...mapGetters("global", []),
+    ...mapGetters("auth", [
+      'getUser'
+    ]),
   },
   methods: {
     ...mapActions("global", ["logoutUser", "loadUserData"]),
+    ...mapActions("auth",[
+      'logOutUser'
+    ]),
     async logout() {
       try {
-        await this.logoutUser();
+        await this.logOutUser();
         this.$q.notify({
           message: `User logged out`,
           type: "positive",
@@ -526,8 +555,9 @@ export default defineComponent({
   },
   async beforeMount() {
     try {
+      //localStorage.removeItem("user");
       // debugger
-      await this.loadUserData();
+      //await this.loadUserData();
       // debugger
     } catch (error) {
       printLog(error);

@@ -570,15 +570,16 @@ export default {
       return manager;
     });
     await this.GET_HACKERS();
-    this.allHackers = this.getHackers.map(function(user){
+    this.allHackers = this.getHackers.map(function(element){
       let hacker={
-        email:user.email,
-        first_name:user.hacker.first_name,
-        id:user.hacker.id,
-        last_name:user.hacker.last_name
+        email:element.email,
+        first_name:element.first_name,
+        id:element.id,
+        last_name:element.last_name
       }
       return hacker;
     })
+    //this.allHackers = this.getHackers;
   }
 };
 </script>

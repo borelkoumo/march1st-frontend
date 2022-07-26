@@ -21,9 +21,12 @@ export default {
   },
   async beforeMount(){
     try {
+      this.$q.loading.show();
       await this.GET_PROGRAMS();
       await this.GET_MY_PROGRAMS();
+      this.$q.loading.hide();
     } catch (error) {
+      this.$q.loading.hide();
       console.log(error)
     }
   }

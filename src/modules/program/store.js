@@ -1,3 +1,4 @@
+import { ProgramService } from "./api/programGraph";
 const state={
   programs:[],
   myPrograms:[]
@@ -30,25 +31,41 @@ const mutations={
   },
   SET_PROGRAMS(state,programs){
     state.programs=programs;
-
   },
   SET_MY_PROGRAMS(state, programs){
     state.myPrograms=programs;
   }
 }
 const actions={
-  async CREATE_PROGRAM({state,dispatch},program){
-    let programs = localStorage.getItem('programs')?JSON.parse(localStorage.getItem('programs')):[];
-    let id = programs.length+1;
-    program.id=id;
+  async CREATE_PROGRAM({state,dispatch},programData){
+    let program={
+      ...programData,
+      reward_range:{
+        low: {"max":programData.low.max, "min":programData.low.min},
+        medium: {"max":programData.medium.max, "min":programData.medium.max},
+        severe: {"max":programData.severe.max, "min":programData.severe.max},
+        critical: {"max":programData.critical.max, "min":programData.critical.max}
+      },
+      company_users:programData.managers.map(function(manager){
+        return Number(manager.id);
+      })
+    }
+    /*delete program.low;
+    delete program.medium;
+    delete program.critical;
+    delete program.severe;
+    delete program.managers;*/
 
-    program.submissions=[];
-    program.hackers=[];
-    /*program.managers=[];
-    program.invitations=[];*/
-
-    programs.push(program);
-    localStorage.setItem('programs',JSON.stringify(programs));
+    const programId = await ProgramService.createProgram(program);
+    program.invitations.forEach((i)=>{
+      let invitation={
+        program:programId,
+        hacker:i,
+        accepted:false
+      }
+      ProgramService.createInvitation(invitation);
+    })
+    //console.log(program);
     await dispatch('GET_PROGRAMS');
   },
   async UPDATE_PROGRAM({state,commit,dispatch},program){
@@ -61,16 +78,22 @@ const actions={
     localStorage.setItem('programs',JSON.stringify(newPrograms));
     await dispatch('GET_PROGRAMS');
   },
-  async GET_PROGRAMS({state,commit}){
-    const programs = localStorage.getItem('programs')?JSON.parse(localStorage.getItem('programs')):[];
+  async GET_PROGRAMS({state,commit, dispatch}){
+    //const programs = localStorage.getItem('programs')?JSON.parse(localStorage.getItem('programs')):[];
+    const programs = await ProgramService.getAllPrograms();
+    console.log(programs);
     commit('SET_PROGRAMS',programs);
+    await dispatch('GET_MY_PROGRAMS');
   },
-  GET_MY_PROGRAMS({state,commit}){
+  async GET_MY_PROGRAMS({state,commit}){
     const user = JSON.parse(localStorage.getItem('user'));
     const programs = localStorage.getItem('programs')?JSON.parse(localStorage.getItem('programs')):[];
     let myPrograms=[];
     if(user.role==='client'){
-      myPrograms=programs.filter((program) => program.company==user.company.id)
+      console.log(user.company.id)
+      myPrograms= await ProgramService.getSuperManagerPrograms(user.company.id);
+      console.log(myPrograms);
+      //myPrograms=programs.filter((program) => program.company==user.company.id)
       if(user.type=='manager'){
         let programsManagers=[];
         myPrograms.forEach((program)=>{
