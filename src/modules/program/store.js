@@ -50,12 +50,6 @@ const actions={
         return Number(manager.id);
       })
     }
-    /*delete program.low;
-    delete program.medium;
-    delete program.critical;
-    delete program.severe;
-    delete program.managers;*/
-
     const programId = await ProgramService.createProgram(program);
     program.invitations.forEach((i)=>{
       let invitation={
@@ -65,8 +59,8 @@ const actions={
       }
       ProgramService.createInvitation(invitation);
     })
-    //console.log(program);
-    await dispatch('GET_PROGRAMS');
+    dispatch('GET_MY_PROGRAMS');
+    dispatch('GET_PROGRAMS');
   },
   async UPDATE_PROGRAM({state,commit,dispatch},program){
     commit('UPDATE_PROGRAM',program);
@@ -81,22 +75,19 @@ const actions={
   async GET_PROGRAMS({state,commit, dispatch}){
     //const programs = localStorage.getItem('programs')?JSON.parse(localStorage.getItem('programs')):[];
     const programs = await ProgramService.getAllPrograms();
-    console.log(programs);
     commit('SET_PROGRAMS',programs);
-    await dispatch('GET_MY_PROGRAMS');
   },
   async GET_MY_PROGRAMS({state,commit}){
     const user = JSON.parse(localStorage.getItem('user'));
-    const programs = localStorage.getItem('programs')?JSON.parse(localStorage.getItem('programs')):[];
+    //const programs = localStorage.getItem('programs')?JSON.parse(localStorage.getItem('programs')):[];
     let myPrograms=[];
     if(user.role==='client'){
-      console.log(user.company.id)
       myPrograms= await ProgramService.getSuperManagerPrograms(user.company.id);
-      console.log(myPrograms);
+      console.log("GET_MY_PROGRAMS/myPrograms = ", myPrograms);
       //myPrograms=programs.filter((program) => program.company==user.company.id)
       if(user.type=='manager'){
         let programsManagers=[];
-        myPrograms.forEach((program)=>{
+        /*myPrograms.forEach((program)=>{
           let allManagers = program.managers;
           let companies = JSON.parse(localStorage.getItem('companies'));
           let companyData = companies.filter((company)=>company.id==user.company.id)[0];
@@ -107,26 +98,24 @@ const actions={
           if(dataPresent.length>0){
             programsManagers.push(program);
           }
-        })
+        })*/
         myPrograms = programsManagers
       }
     }
     else if(user.role==='hacker'){
-      programs.forEach(program => {
-        if(program.hackers.includes(user.hacker.id)){
-          myPrograms.push(program);
-        }
-      });
+      myPrograms= await ProgramService.getHackerPrograms(user.hacker.id);
     }
     else if(user.role==='march1st'){
-      myPrograms = programs;
+      myPrograms = []
     }
     commit('SET_MY_PROGRAMS',myPrograms);
   },
   async GET_ONE_PROGRAM({state, commit},programId){
-    const programs = localStorage.getItem('programs')?JSON.parse(localStorage.getItem('programs')):[];
+    const program = await ProgramService.getOneProgram(programId);
+    return program;
+    /*const programs = localStorage.getItem('programs')?JSON.parse(localStorage.getItem('programs')):[];
     let programData = programs.filter((program)=>program.id==programId);
-    if(programData.length>0) return programData[0];
+    if(programData.length>0) return programData[0];*/
   },
 
   async JOIN_PROGRAM({state,commit, dispatch},programId){

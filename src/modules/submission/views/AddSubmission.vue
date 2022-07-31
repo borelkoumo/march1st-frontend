@@ -134,7 +134,7 @@ export default {
       formData: {
         id:null,
         submission_title: "Curabitur non nulla sit amet nisl",
-        severety_level: { label: "Severe", value: "Severe" },
+        severity_level: { label: "Severe", value: "Severe" },
         submission_target: "http://localhost:8080/main/my-submissions",
         submission_text:
           "Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Quisque velit nisi, pretium ut lacinia in, elementum id enim.",
@@ -167,7 +167,7 @@ export default {
     ]),
     async onAddReport(){
       this.formData.program_id=Number(this.idProgram);
-      this.formData.severety_level=this.level.value;
+      this.formData.severity_level=this.level.value;
       await this.CREATE_SUBMISSION(this.formData);
       this.$router.push('/new-dashboard');
     }

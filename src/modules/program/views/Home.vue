@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex flex-center" v-if="getMyPrograms.length <= 0">
+  <q-page class="flex flex-center" v-if="allMyPrograms.length <= 0">
     <div class="main-content">
       <q-img src="~assets/empty-program.svg" width="600px" />
       <div class="title-1">Not have any programs</div>
@@ -147,7 +147,7 @@
         <q-btn label="Programs" flat no-caps icon-right="import_export" @click="isSorting=!isSorting"/>
       </q-toolbar>
       <div class="q-mt-lg q-gutter-md q-pb-lg" v-if="getUser.role==='client' || getUser.role==='march1st'">
-        <program-component v-for="program in getMyPrograms" :key="program.id" :program="program">
+        <program-component v-for="program in allMyPrograms" :key="program.id" :program="program">
           <template v-slot:level>
             <q-card-section class="col-3 q-pl-lg q-pr-none">
               <submission-level
@@ -167,7 +167,7 @@
           v-if="getUser.role==='hacker'">
         <program-card-component
             :program="program"
-            v-for="program in getMyPrograms"
+            v-for="program in allMyPrograms"
             :key="program.id"
             class="cursor-pointer"
           />
@@ -177,7 +177,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 import programComponent from '../components/ProgramComponent.vue';
 import programCardComponent from '../components/ProgramCardComponent.vue';
 import submissionLevel from '../components/SubmissionLevel.vue';
@@ -188,21 +188,44 @@ export default {
       search:null,
       isSorting:false,
       company:null,
-
+      allMyPrograms:[],
       progress: [0.8, 0.2, 0.1],
     };
   },
+  watch:{
+    myPrograms:function(val){
+      this.allMyPrograms=val;
+    }
+  },
   computed: {
+    ...mapState("program",[
+      'myPrograms'
+    ]),
     ...mapGetters("program", ["getMyPrograms"]),
     ...mapGetters('auth',[
       'getUser',
       'getCompanies'
     ])
   },
-  methods: {},
+  methods: {
+    ...mapActions('program',["GET_MY_PROGRAMS"])
+  },
+
   async beforeMount() {
+    this.allMyPrograms = this.getMyPrograms;
     //console.log(localStorage.getItem('programs'))
   },
+  async mounted(){
+    this.allMyPrograms = this.getMyPrograms;
+    console.log(this.getMyPrograms);
+    try {
+      this.$q.loading.show();
+      await this.GET_MY_PROGRAMS();
+      this.$q.loading.hide();
+    } catch (error) {
+      this.$q.loading.hide();
+    }
+  }
 };
 </script>
 

@@ -76,6 +76,7 @@ export default {
     pending:function(){
       let count = 0;
       this.submissions.forEach(element => {
+        if(element.submission_status ==="new") count++;
         if(element.submission_status ==="Pending") count++;
       });
       return count;

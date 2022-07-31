@@ -11,6 +11,7 @@ import task from './task'
 import program from '../modules/program/store'
 import submission from '../modules/submission/store'
 import auth from '../modules/auth/store'
+import company from '../modules/company/store'
 /*
  * If not building with SSR mode, you can
  * directly export the Store instantiation;
@@ -28,7 +29,8 @@ const Store = createStore({
 
         program,
         submission,
-        auth
+        auth,
+        company
     },
 
     // enable strict mode (adds overhead!)

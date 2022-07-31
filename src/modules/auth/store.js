@@ -1,5 +1,6 @@
 import { webAuthnServer } from "../../boot/axios";
 import {_postQueryServer} from "src/store/utils/helper";
+import { getUserRole } from "./helper";
 import {
   base64UrlEncode,
   base64UrlDecode,
@@ -23,6 +24,7 @@ const state = {
   locale: { label: "English (United States)", value: "en-US" },
   userData:null,
   myuser:localStorage.getItem('user')?JSON.parse(localStorage.getItem('user')):null,
+  //myuser:null,
   /*user:{
     username:"",
     role:"",
@@ -67,7 +69,8 @@ const getters = {
     return users;
   },
   getUser(state){
-    let user = localStorage.getItem('user')?JSON.parse(localStorage.getItem('user')):null;
+    //let user = localStorage.getItem('user')?JSON.parse(localStorage.getItem('user')):null;
+    let user = state.myuser;
     return user;
   },
   getUserData(state){
@@ -116,31 +119,8 @@ const mutations = {
     localStorage.setItem('users',JSON.stringify(state.mesusers));
   },
   SET_USER(state,user){
-    /*if(user.company){
-      const companies = getters.getCompanies().map(function(company){
-        if(company.id==user.company.id){
-          let company_user={
-            id:company.companyUsers.length+1,
-            first_name:user.first_name,
-            user:user
-          }
-          //user.companyUser=company_user;
-          company.companyUsers.push(company_user);
-        }
-        return company;
-      })
-      state.companies=companies;
-      localStorage.setItem('companies',JSON.stringify(companies));
-    }
-    else if(user.hacker){
-      user.hacker.id=id
-    }
-    else if(user.march1st){
-      user.march1st.id=id
-    }*/
-    //console.log(user);
     localStorage.setItem('user',JSON.stringify(user));
-    state.myuser=JSON.parse(localStorage.getItem('user'));
+    state.myuser=user;
   },
   SET_USER_DATA(state,user){
     state.userData=user;
@@ -179,15 +159,10 @@ const actions = {
 
     try {
       const cognitoUser = await Auth.signUp(userData);
-
       printLog("Auth.signUp SUCCESSFULL");
       printLog("Cognito user", cognitoUser);
 
-      // Set userData with payload
       commit("SET_USER_DATA", userData);
-
-      // Set also cognitoUser
-      //commit("setCognitoUser", cognitoUser);
       return cognitoUser.codeDeliveryDetails;
     } catch (error) {
       printLog("Error in Auth.signUp", error);
@@ -254,35 +229,14 @@ const actions = {
     }
   },
 
-  async onSubmitLoginForm({ commit }, payload) {
+  async onSubmitLoginForm({ commit, dispatch }, payload) {
     printLog(`Inside onSubmitLoginForm function. Params=`, payload);
     Auth.configure(getAuthConfig());
     try {
       const cognitoUser = await Auth.signIn(payload.email, payload.password);
       printLog("SignIn result. User=", cognitoUser);
       let jwtToken = cognitoUser.signInUserSession.idToken.jwtToken;
-      console.log('onSubmitLoginForm/cognitoUser',cognitoUser);
-      //dispatch('strapiSignIn',jwtToken);
-      const role=cognitoUser.attributes['custom:role'];
-      let user={
-        username:cognitoUser.attributes['custom:username'],
-        role:role,
-        email:cognitoUser.attributes.email,
-        type:role=='client'?'super_manager':null,
-        first_name:cognitoUser.attributes.name,
-
-        company:role==='client'?{}:null,
-        hacker:role==='hacker'?{}:null,
-        companyUser:role==='client'?{}:null,
-        march1st:role==='march1st'?{}:null
-      }
-
-      user.company.id=1;
-      user.company.company_name=cognitoUser.attributes['custom:companyName']
-      await commit('SET_USER',user);
-      console.log("onSubmitLoginForm/user ",user);
-      localStorage.setItem('token',jwtToken);
-      return cognitoUser;
+      dispatch('strapiSignIn',jwtToken);
     } catch (error) {
       printLog(`Unable to sign in`, error);
       throw new Error(error);
@@ -295,7 +249,6 @@ const actions = {
         identifier: userData.email,
         password: userData.password
       });
-      //console.log(credentials)
       localStorage.setItem("token",credentials.token);
       dispatch('GET_COMPAGNIES')
       const roleUser = await _getMyRole(credentials);
@@ -319,66 +272,31 @@ const actions = {
 
   async strapiSignIn({ commit }, jwtToken) {
     try {
-      const url = "/custom/login-client";
+      const url = "/custom/login";
       let token = {
         idToken: jwtToken,
       };
       const data = await _postQueryServer(url, token);
-
-      console.log("La valeur de data dans createUser = ", data);
-      let type = data.user.role.type;
-      let role = "public";
-      let company = null;
-      let hacker = null;
-      let march1st = null;
-      let dataObject = {
-        user: data.user,
-        token: data.jwtStrapi,
-      };
-      if (type === "m1_account_manager") {
-        march1st = await _getMarch1st({
-          id: data.user.id,
-          token: data.jwtStrapi,
-        });
-        type = "admin";
-        (dataObject.typeUser = type), (dataObject.march1st = march1st);
-      } else if (type === "hacker") {
-        hacker = await _getHacker({
-          id: data.user.id,
-          token: data.jwtStrapi,
-        });
-        (dataObject.typeUser = type), (dataObject.hacker = hacker);
-      } else if (type === "program_manager" || type === "program_super_admin") {
-        let company_user = data.user.company_user;
-
-        company = await _getCompany({
-          id: company_user.id,
-          token: data.jwtStrapi,
-        });
-        if (type == "program_manager") role = "manager";
-        else role = "super_manager";
-        type = "client";
-        (dataObject.typeUser = type), (dataObject.company = company);
-        dataObject.role = role;
-        dataObject.company_user = company_user;
-      } else {
-        throw new Error(type + " not pris en charge");
+      let user = {
+        id:data.user.id,
+        email:data.user.email,
+        username:data.user.username,
+        role:getUserRole(data.user.role.type).role,
+        type:getUserRole(data.user.role.type).type,
+        companyUser:data.user.company_user,
+        company:data.user.company_user.company,
+        hacker:data.user.hacker,
+        march1st:data.user.march1st
       }
-      //console.log(credentials.user)
-
-      //console.log(dataObject)
-      commit("setUser", dataObject);
-
-      /*console.log(data);*/
-      return Promise.resolve(dataObject);
+      localStorage.setItem("user",JSON.stringify(user));
+      localStorage.setItem('token',data.jwtStrapi);
+      commit('SET_USER',user);
     } catch (error) {
       let errorData = {
         token: null,
         user: {},
       };
-
       console.log("Error in createUser", error.message);
-      commit("setUser", errorData);
       return Promise.reject(0);
     }
   },
@@ -423,7 +341,6 @@ const actions = {
     const users = getters.getAllUsers();
     const data = users.filter((existUser)=> existUser.id==user.value);
     commit('SET_USER',data[0])
-    //console.log(data[0])
   },
 
   async GET_USERS({commit}){

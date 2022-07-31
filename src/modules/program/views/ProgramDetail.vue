@@ -1,5 +1,5 @@
 <template>
-  <q-page class="bg-home">
+  <q-page class="bg-home" v-if="program">
     <div class="main-content">
       <q-toolbar class="header">
         <q-toolbar-title class="title-header">Main Definition</q-toolbar-title>
@@ -215,7 +215,7 @@
 <script>
 import programComponent from '../components/ProgramComponent.vue';
 import submissionLevel from '../components/SubmissionLevel.vue';
-import { mapGetters } from 'vuex'
+import { mapGetters,mapActions } from 'vuex'
 export default {
   components:{
     programComponent,
@@ -241,17 +241,27 @@ export default {
       'getOneProgram'
     ]),
     hasJoinProgram:function(){
-      const program = this.getOneProgram(this.idProgram);
+      //const program = this.getOneProgram(this.idProgram);
+      const program = this.program;
       if(program.hackers.includes(this.getUser.hacker.id)) return true;
       return false;
     }
   },
   methods: {
-
+    ...mapActions('program',[
+      'GET_ONE_PROGRAM'
+    ])
   },
-  beforeMount(){
-    this.idProgram = this.$route.params.id;
-    this.program=this.getOneProgram(this.idProgram);
+  async beforeMount(){
+    try {
+      this.$q.loading.show();
+      this.idProgram = this.$route.params.id;
+      //this.program=this.getOneProgram(this.idProgram);
+      this.program = await this.GET_ONE_PROGRAM(this.idProgram);
+      this.$q.loading.hide();
+    } catch (error) {
+      this.$q.loading.hide();
+    }
   }
 }
 </script>

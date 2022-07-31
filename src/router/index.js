@@ -4,6 +4,7 @@ import routes from './routes'
 
 import routesProgram from '../modules/program/routes'
 import routesSubmission from './../modules/submission/routes';
+import routesCompany from './../modules/company/routes';
 /*
  * If not building with SSR mode, you can
  * directly export the Router instantiation;
@@ -17,6 +18,7 @@ routes.forEach((route)=>{
   if(route.name==='dashboard'){
     route.children.push(routesProgram);
     route.children.push(routesSubmission);
+    route.children.push(routesCompany);
     //console.log(route);
   }
 })

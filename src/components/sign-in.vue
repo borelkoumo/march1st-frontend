@@ -192,10 +192,10 @@ export default {
       try {
         // Submit login form to cognito
         this.setLoadingMsg("Getting authentication challenge ...");
-        //this.cognitoUser = await this.onSubmitLoginForm(this.formData);
+        this.cognitoUser = await this.onSubmitLoginForm(this.formData);
 
         //direct submission with strapi
-        await this.strapiSignIn2(this.formData);
+        //await this.strapiSignIn2(this.formData);
 
         console.log("CognitoUser dans submitLoginForm: ",this.cognitoUser);
         //let jwtToken = this.cognitoUser.signInUserSession.idToken.jwtToken;

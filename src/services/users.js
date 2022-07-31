@@ -191,7 +191,7 @@ const _getMarch1st = async function (credentials) {
   }
 };
 const _getMyRole = async function (credentials) {
-  console.log("credential in _getMyRole", credentials);
+  //console.log("credential in _getMyRole", credentials);
   try {
     MYROLE_QUERY.context.headers.authorization = "Bearer " + credentials.token;
     MYROLE_QUERY.variables.userId = credentials.user.id;
@@ -211,8 +211,15 @@ const _getMyRole = async function (credentials) {
     if (type === "m1_account_manager") {
       console.log(result.data.march1stUsers)
     } else if (type === "hacker") {
+
       user.hacker={
-        role:"hacker"
+        role:"hacker",
+        id:result.data.hackers.data[0].id,
+        first_name:result.data.hackers.data[0].attributes.first_name,
+        last_name:result.data.hackers.data[0].attributes.last_name,
+        profile_picture_url:result.data.hackers.data[0].attributes.profile_picture_url,
+        phone:result.data.hackers.data[0].attributes.phone,
+        adress:result.data.hackers.data[0].attributes.adress
       }
       user.role="hacker";
     } else if (type === "program_manager" || type === "program_super_admin") {

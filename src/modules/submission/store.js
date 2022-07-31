@@ -1,3 +1,5 @@
+import { SubmissionService } from "./api/submissionGraph";
+
 const state={
   submissions:[],
   mySubmissions:[],
@@ -30,9 +32,20 @@ const actions={
   async CREATE_SUBMISSION({commit,dispatch},formData){
     const user = localStorage.getItem('user')?JSON.parse(localStorage.getItem('user')):null;
     if(user){
-      formData.hacker_id = user.hacker.id
+      formData.hacker_id = user.hacker.id;
+      const submissionId = await SubmissionService.createSubmission(formData);
+      //create submissionStatus
+      let submissionStatus={
+        status_title:'New Report Submission',
+        comment:"",
+        status:'new',
+        submission:submissionId
+      }
+      const result = await SubmissionService.createSubmissionStatus(submissionStatus);
     }
-    let oldSubmissions = localStorage.getItem('submissions')?JSON.parse(localStorage.getItem('submissions')):[];
+    await dispatch('GET_MY_SUBMISSIONS');
+    //console.log(formData);
+    /*let oldSubmissions = localStorage.getItem('submissions')?JSON.parse(localStorage.getItem('submissions')):[];
     formData.id = oldSubmissions.length+1;
 
     //Create submission_statues
@@ -61,7 +74,7 @@ const actions={
     })
     localStorage.setItem('programs',JSON.stringify(programs));
 
-    await commit('SET_SUBMISSIONS',oldSubmissions);
+    await commit('SET_SUBMISSIONS',oldSubmissions);*/
   },
   async UPDATE_SUBMISSION({commit,dispatch},formData){
 
