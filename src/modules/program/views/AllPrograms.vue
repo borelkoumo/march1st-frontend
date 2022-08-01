@@ -191,6 +191,21 @@ export default {
       val.forEach(element => {
         console.log(element.program_title+" : "+element.hackers)
       });
+    },
+    search:function(val){
+      if(val==""|| val==null) {
+        this.allPrograms=this.getAllPrograms;
+      }
+      else{
+        this.allPrograms=[];
+        this.programs.forEach(element => {
+          let chaine = element.program_title.toLowerCase();
+          let description = element.program_description.toLowerCase();
+          if(chaine.includes(val.toLowerCase()) || description.includes(val.toLowerCase())){
+            this.allPrograms.push(element);
+          }
+        });
+      }
     }
   },
   computed: {
@@ -258,7 +273,8 @@ export default {
       }
     }
   },
-  mounted(){
+  async mounted(){
+    this.allPrograms=this.getAllPrograms;
     this.allCompanies = this.getCompanies.map(function(company){
       let item={
         label:company.company_name,
@@ -266,7 +282,7 @@ export default {
       }
       return item;
     })
-    this.allPrograms=this.programs;
+
   }
 }
 </script>

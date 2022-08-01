@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex flex-center" v-if="allMyPrograms.length <= 0">
+  <q-page class="flex flex-center" v-if="getMyPrograms.length <= 0">
     <div class="main-content">
       <q-img src="~assets/empty-program.svg" width="600px" />
       <div class="title-1">Not have any programs</div>
@@ -70,9 +70,10 @@
           flat
           label="Filters"
           style="min-width: 200px"
+          :menu-offset="[0,3]"
         >
-          <!--<q-list dense>
-            <q-item clickable v-close-popup @click="onFilterClick(0)">
+          <q-list dense separator>
+            <q-item clickable v-close-popup @click="isAllFilters=!isAllFilters">
               <q-item-section side>
                 <q-checkbox v-model="isAllFilters" color="secondary" />
               </q-item-section>
@@ -80,10 +81,9 @@
                 <q-item-label>All</q-item-label>
               </q-item-section>
               <q-item-section side>
-                {{ totalProgram }}
+                {{ getMyPrograms.length }}
               </q-item-section>
             </q-item>
-            <q-separator />
             <q-item clickable v-close-popup @click="checkPublic = !checkPublic">
               <q-item-section side>
                 <q-checkbox v-model="checkPublic" color="secondary" />
@@ -110,7 +110,6 @@
                 {{ getPrivatePrograms.length }}
               </q-item-section>
             </q-item>
-            <q-separator />
             <q-item clickable v-close-popup @click="checkPoint = !checkPoint">
               <q-item-section side>
                 <q-checkbox v-model="checkPoint" color="secondary" />
@@ -119,7 +118,7 @@
                 <q-item-label>Points Only</q-item-label>
               </q-item-section>
               <q-item-section side>
-                {{ getPublicPrograms.length }}
+                {{ getPointPrograms.length }}
               </q-item-section>
             </q-item>
             <q-item clickable v-close-popup @click="checkCash = !checkCash">
@@ -133,7 +132,7 @@
                 {{ getCashPrograms.length }}
               </q-item-section>
             </q-item>
-          </q-list>-->
+          </q-list>
         </q-btn-dropdown>
         <q-space />
         <q-btn
@@ -190,11 +189,109 @@ export default {
       company:null,
       allMyPrograms:[],
       progress: [0.8, 0.2, 0.1],
+      isAllFilters:true,
+      totalProgram:0,
+      checkPublic:true,
+      checkPrivate:true,
+      checkPoint:true,
+      checkCash:true
     };
   },
   watch:{
     myPrograms:function(val){
       this.allMyPrograms=val;
+    },
+    search:function(val){
+      this.isAllFilters=true;
+      if(val===""|| val==null) {
+        this.allMyPrograms=this.getMyPrograms;
+      }
+      else{
+        this.allMyPrograms=[];
+        this.getMyPrograms.forEach(element => {
+          let chaine = element.program_title.toLowerCase();
+          let description = element.program_description.toLowerCase();
+          if(chaine.includes(val.toLowerCase()) || description.includes(val.toLowerCase())){
+            this.allMyPrograms.push(element);
+          }
+        });
+      }
+    },
+    isAllFilters:function(val){
+      if(val){
+        this.checkPublic=true,
+        this.checkPrivate=true,
+        this.checkPoint=true,
+        this.checkCash=true
+      }
+    },
+    checkPublic:function(val){
+      if(val){
+        if(this.checkPrivate && this.checkPoint && this.checkCash) this.isAllFilters=true;
+        this.allMyPrograms = this.getMyPrograms.filter((program)=>program.program_type==="public");
+        if(this.checkPrivate) this.allMyPrograms = this.getMyPrograms;
+        if(this.checkPoint && !this.checkCash) {
+          this.allMyPrograms = this.allMyPrograms.filter((program)=>program.reward_type==="points");
+        }
+        else if(this.checkCash && !this.checkPoint){
+          this.allMyPrograms = this.allMyPrograms.filter((program)=>program.reward_type==="cash");
+        }
+      }
+      else{
+        this.isAllFilters=false;
+        this.allMyPrograms = this.allMyPrograms.filter((program)=>program.program_type!=="public");
+      }
+    },
+    checkPrivate:function(val){
+      if(val){
+        if(this.checkPublic && this.checkPoint && this.checkCash) this.isAllFilters=true;
+        this.allMyPrograms = this.getMyPrograms.filter((program)=>program.program_type==="private");
+        if(this.checkPublic) this.allMyPrograms = this.getMyPrograms;
+        if(this.checkPoint && !this.checkCash) {
+          this.allMyPrograms = this.allMyPrograms.filter((program)=>program.reward_type==="points");
+        }
+        else if(this.checkCash && !this.checkPoint){
+          this.allMyPrograms = this.allMyPrograms.filter((program)=>program.reward_type==="cash");
+        }
+      }
+      else{
+        this.isAllFilters=false;
+        this.allMyPrograms = this.allMyPrograms.filter((program)=>program.program_type!=="private");
+      }
+    },
+    checkPoint:function(val){
+      if(val){
+        if(this.checkPublic && this.checkPrivate && this.checkCash) this.isAllFilters=true;
+        this.allMyPrograms = this.getMyPrograms.filter((program)=>program.reward_type==="points");
+        if(this.checkCash) this.allMyPrograms = this.getMyPrograms;
+        if(this.checkPublic && !this.checkPrivate) {
+          this.allMyPrograms = this.allMyPrograms.filter((program)=>program.program_type==="public");
+        }
+        else if(this.checkPrivate && !this.checkPublic){
+          this.allMyPrograms = this.allMyPrograms.filter((program)=>program.program_type==="private");
+        }
+      }
+      else{
+        this.isAllFilters=false;
+        this.allMyPrograms = this.allMyPrograms.filter((program)=>program.reward_type!=="points");
+      }
+    },
+    checkCash:function(val){
+      if(val){
+        if(this.checkPublic && this.checkPrivate && this.checkPoint) this.isAllFilters=true;
+        this.allMyPrograms = this.getMyPrograms.filter((program)=>program.reward_type==="cash");
+        if(this.checkPoint) this.allMyPrograms = this.getMyPrograms;
+        if(this.checkPublic && !this.checkPrivate) {
+          this.allMyPrograms = this.allMyPrograms.filter((program)=>program.program_type==="public");
+        }
+        else if(this.checkPrivate && !this.checkPublic){
+          this.allMyPrograms = this.allMyPrograms.filter((program)=>program.program_type==="private");
+        }
+      }
+      else{
+        this.isAllFilters=false;
+        this.allMyPrograms = this.allMyPrograms.filter((program)=>program.reward_type!=="cash");
+      }
     }
   },
   computed: {
@@ -205,10 +302,25 @@ export default {
     ...mapGetters('auth',[
       'getUser',
       'getCompanies'
-    ])
+    ]),
+    getPublicPrograms:function(){
+      return this.getMyPrograms.filter((program)=>program.program_type==="public");
+    },
+    getPrivatePrograms:function(){
+      return this.getMyPrograms.filter((program)=>program.program_type==="private");
+    },
+    getCashPrograms:function(){
+      return this.getMyPrograms.filter((program)=>program.reward_type==="cash");
+    },
+    getPointPrograms:function(){
+      return this.getMyPrograms.filter((program)=>program.reward_type==="points");
+    }
   },
   methods: {
-    ...mapActions('program',["GET_MY_PROGRAMS"])
+    ...mapActions('program',["GET_MY_PROGRAMS"]),
+    onFilterClick(num){
+
+    }
   },
 
   async beforeMount() {
@@ -217,7 +329,6 @@ export default {
   },
   async mounted(){
     this.allMyPrograms = this.getMyPrograms;
-    console.log(this.getMyPrograms);
     try {
       this.$q.loading.show();
       await this.GET_MY_PROGRAMS();
