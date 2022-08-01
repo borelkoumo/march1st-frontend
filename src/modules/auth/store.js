@@ -269,7 +269,6 @@ const actions = {
 
     }
   },
-
   async strapiSignIn({ commit }, jwtToken) {
     try {
       const url = "/custom/login";
@@ -277,6 +276,7 @@ const actions = {
         idToken: jwtToken,
       };
       const data = await _postQueryServer(url, token);
+      console.log("strapiSignIn/data = ", data);
       let user = {
         id:data.user.id,
         email:data.user.email,
@@ -284,7 +284,7 @@ const actions = {
         role:getUserRole(data.user.role.type).role,
         type:getUserRole(data.user.role.type).type,
         companyUser:data.user.company_user,
-        company:data.user.company_user.company,
+        company:data.user.company_user!=null?data.user.company_user.company:null,
         hacker:data.user.hacker,
         march1st:data.user.march1st
       }

@@ -408,12 +408,12 @@ const ONE_PROGRAM_QUERY = {
 const { mutate: JOIN_PROGRAM_MUTATION } = {
   mutate: {
     mutation: gql`
-      mutation updateProgram($id: ID!, $hackers: [ID]!) {
-        updateProgram(id: $id, data: { hackers: $hackers }) {
+      mutation updateHacker($hackerId: ID!, $programs: [ID]!) {
+        updateHacker(id: $hackerId, data: { programs: $programs }) {
           data {
             id
             attributes {
-              hackers {
+              programs {
                 data {
                   id
                 }

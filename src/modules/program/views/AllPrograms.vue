@@ -117,7 +117,7 @@
         >
           <program-card-component
             :program="program"
-            v-for="program in getAllPrograms"
+            v-for="program in allPrograms"
             :key="program.id"
             class="cursor-pointer"
           >
@@ -170,7 +170,7 @@
 
 <script>
 import programCardComponent from '../components/ProgramCardComponent.vue';
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
   components:{
     programCardComponent
@@ -182,9 +182,21 @@ export default {
 
       allCompanies:[],
       company:null,
+      allPrograms:[]
+    }
+  },
+  watch:{
+    programs: function(val){
+      this.allPrograms=val;
+      val.forEach(element => {
+        console.log(element.program_title+" : "+element.hackers)
+      });
     }
   },
   computed: {
+    ...mapState('program',[
+      'programs'
+    ]),
     ...mapGetters('auth',[
       'getUser',
       'getCompanies'
@@ -194,9 +206,8 @@ export default {
     ]),
     canJoinProgram(){
       return (program)=>{
-        //console.log(program.invitations)
-        if((program.invitations.includes(this.getUser.hacker.id)
-         || program.program_type==='public') && !program.hackers.includes(this.getUser.hacker.id)
+        if((program.invitations.includes(""+this.getUser.hacker.id)
+         || program.program_type==='public') && !program.hackers.includes(""+this.getUser.hacker.id)
          ){
           return true;
          }
@@ -207,7 +218,7 @@ export default {
     },
     hasJoinProgram(){
       return(program)=>{
-        if(program.hackers.includes(this.getUser.hacker.id)){
+        if(program.hackers.includes(""+this.getUser.hacker.id)){
           return true;
         }
         return false;
@@ -217,15 +228,34 @@ export default {
   methods: {
     ...mapActions('program',[
       'JOIN_PROGRAM',
-      'LEAVE_PROGRAM'
+      'LEAVE_PROGRAM',
+      'GET_MY_PROGRAMS',
+      'GET_PROGRAMS'
     ]),
     async onJoinProgram(progranId){
-      await this.JOIN_PROGRAM(progranId);
-      //this.$router.push('programs');
+      try {
+        this.$q.loading.show();
+        await this.JOIN_PROGRAM(progranId);
+        await this.GET_MY_PROGRAMS();
+        await this.GET_PROGRAMS();
+        this.$q.loading.hide();
+        //this.$router.push('programs');
+      } catch (error) {
+        console.log(error)
+        this.$q.loading.hide();
+      }
     },
     async onLeaveProgram(programId){
-      this.LEAVE_PROGRAM(programId);
-      //this.$router.push('programs');
+      try {
+        this.$q.loading.show();
+        this.LEAVE_PROGRAM(programId);
+        await this.GET_MY_PROGRAMS();
+        this.$q.loading.hide();
+        //this.$router.push('programs');
+      } catch (error) {
+        console.log(error)
+        this.$q.loading.hide();
+      }
     }
   },
   mounted(){
@@ -236,6 +266,7 @@ export default {
       }
       return item;
     })
+    this.allPrograms=this.programs;
   }
 }
 </script>

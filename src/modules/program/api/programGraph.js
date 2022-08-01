@@ -114,8 +114,16 @@ export class ProgramService{
     const result = await apolloClient.query(ONE_PROGRAM_QUERY);
     const programData = result.data.program.data;
     const program = this.formatProgram(programData);
-    console.log(program);
     return program;
+  }
+  static async joinProgram(hackerId, programs){
+    let token = localStorage.getItem("token");
+    JOIN_PROGRAM_MUTATION.variables.hackerId = hackerId;
+    JOIN_PROGRAM_MUTATION.variables.programs = programs;
+    JOIN_PROGRAM_MUTATION.context.headers.authorization ="Bearer " + token;
+    const result = await apolloClient.mutate(JOIN_PROGRAM_MUTATION);
+    console.log("joinProgram/result = ", result);
+    return result;
   }
 
 

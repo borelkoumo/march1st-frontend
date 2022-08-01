@@ -119,6 +119,7 @@
                     <q-avatar v-if="getUser.role==='client'">
                       <img :src="getUser.companyUser.profile_picture_url" />
                     </q-avatar>
+
                     <q-avatar v-if="getUser.role==='hacker'">
                       <img :src="getUser.hacker.profile_picture_url" />
                     </q-avatar>
@@ -555,7 +556,7 @@ export default defineComponent({
   },
   async beforeMount() {
     try {
-      //localStorage.removeItem("user");
+
       // debugger
       //await this.loadUserData();
       // debugger
@@ -563,6 +564,10 @@ export default defineComponent({
       printLog(error);
     }
   },
+  mounted(){
+      /*localStorage.removeItem("user");
+      localStorage.removeItem("token");*/
+  }
 });
 </script>
 <style>
