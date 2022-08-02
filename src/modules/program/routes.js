@@ -14,6 +14,11 @@ const routesProgram = {
       component:()=> import("./views/AddProgram.vue")
     },
     {
+      path:"edit-program/:id",
+      name:"edit-program",
+      component:()=> import("./views/EditProgram.vue")
+    },
+    {
       path:"all-programs",
       name:"all-programs",
       component:()=> import("./views/AllPrograms.vue")

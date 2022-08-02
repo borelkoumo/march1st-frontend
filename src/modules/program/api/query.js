@@ -458,6 +458,32 @@ const { mutate: CREATE_PROGRAM } = {
     },
   },
 };
+
+const { mutate: UPDATE_PROGRAM } = {
+  mutate: {
+    mutation: gql`
+      mutation updateProgram($programId:ID!,$program: ProgramInput!) {
+        updateProgram(id: $programId, data:$program) {
+          data {
+            id
+            attributes {
+              program_title
+            }
+          }
+        }
+      }
+    `,
+    variables: {
+      //user: { identifier: "sdfdf", password: "dfdfdf" },
+    },
+    context: {
+      headers: {
+        /* authorization: token, */
+      },
+    },
+  },
+};
+
 const { mutate: CREATE_INVITATION } = {
   mutate: {
     mutation: gql`
@@ -479,13 +505,36 @@ const { mutate: CREATE_INVITATION } = {
     },
   },
 };
+const { mutate: REMOVE_INVITATION } = {
+  mutate: {
+    mutation: gql`
+      mutation removeInvitation($invitationId: ID!) {
+        deleteInvitation(id: $invitationId) {
+          data{
+            id
+          }
+        }
+      }
+    `,
+    variables: {
+      //user: { identifier: "sdfdf", password: "dfdfdf" },
+    },
+    context: {
+      headers: {
+        /* authorization: token, */
+      },
+    },
+  },
+};
 
 export {
   PROGRAMS_QUERY,
   ONE_PROGRAM_QUERY,
   JOIN_PROGRAM_MUTATION,
   CREATE_PROGRAM,
+  UPDATE_PROGRAM,
   CREATE_INVITATION,
   SUPER_MANAGER_PROGRAM,
-  HACKER_PROGRAM
+  HACKER_PROGRAM,
+  REMOVE_INVITATION
 };

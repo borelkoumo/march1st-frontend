@@ -143,7 +143,7 @@
           to="programs/add-program"
           v-if="getUser.role === 'client' && getUser.type==='super_manager'"
         />
-        <q-btn label="Programs" flat no-caps icon-right="import_export" @click="isSorting=!isSorting"/>
+        <q-btn label="Programs" flat no-caps icon-right="import_export" @click="isAscending=!isAscending"/>
       </q-toolbar>
       <div class="q-mt-lg q-gutter-md q-pb-lg" v-if="getUser.role==='client' || getUser.role==='march1st'">
         <program-component v-for="program in allMyPrograms" :key="program.id" :program="program">
@@ -180,6 +180,7 @@ import { mapActions, mapGetters, mapState } from "vuex";
 import programComponent from '../components/ProgramComponent.vue';
 import programCardComponent from '../components/ProgramCardComponent.vue';
 import submissionLevel from '../components/SubmissionLevel.vue';
+import { StringManager } from '../../../helpers/StringManager';
 export default {
   components: { programComponent,programCardComponent, submissionLevel },
   data() {
@@ -194,17 +195,18 @@ export default {
       checkPublic:true,
       checkPrivate:true,
       checkPoint:true,
-      checkCash:true
+      checkCash:true,
+      isAscending:false
     };
   },
   watch:{
     myPrograms:function(val){
-      this.allMyPrograms=val;
+      this.allMyPrograms=JSON.parse(JSON.stringify(val));
     },
     search:function(val){
       this.isAllFilters=true;
       if(val===""|| val==null) {
-        this.allMyPrograms=this.getMyPrograms;
+        this.allMyPrograms=JSON.parse(JSON.stringify(this.getMyPrograms));
       }
       else{
         this.allMyPrograms=[];
@@ -229,7 +231,7 @@ export default {
       if(val){
         if(this.checkPrivate && this.checkPoint && this.checkCash) this.isAllFilters=true;
         this.allMyPrograms = this.getMyPrograms.filter((program)=>program.program_type==="public");
-        if(this.checkPrivate) this.allMyPrograms = this.getMyPrograms;
+        if(this.checkPrivate) this.allMyPrograms = JSON.parse(JSON.stringify(this.getMyPrograms));
         if(this.checkPoint && !this.checkCash) {
           this.allMyPrograms = this.allMyPrograms.filter((program)=>program.reward_type==="points");
         }
@@ -246,7 +248,7 @@ export default {
       if(val){
         if(this.checkPublic && this.checkPoint && this.checkCash) this.isAllFilters=true;
         this.allMyPrograms = this.getMyPrograms.filter((program)=>program.program_type==="private");
-        if(this.checkPublic) this.allMyPrograms = this.getMyPrograms;
+        if(this.checkPublic) this.allMyPrograms = JSON.parse(JSON.stringify(this.getMyPrograms));
         if(this.checkPoint && !this.checkCash) {
           this.allMyPrograms = this.allMyPrograms.filter((program)=>program.reward_type==="points");
         }
@@ -263,7 +265,7 @@ export default {
       if(val){
         if(this.checkPublic && this.checkPrivate && this.checkCash) this.isAllFilters=true;
         this.allMyPrograms = this.getMyPrograms.filter((program)=>program.reward_type==="points");
-        if(this.checkCash) this.allMyPrograms = this.getMyPrograms;
+        if(this.checkCash) this.allMyPrograms = JSON.parse(JSON.stringify(this.getMyPrograms));
         if(this.checkPublic && !this.checkPrivate) {
           this.allMyPrograms = this.allMyPrograms.filter((program)=>program.program_type==="public");
         }
@@ -280,7 +282,7 @@ export default {
       if(val){
         if(this.checkPublic && this.checkPrivate && this.checkPoint) this.isAllFilters=true;
         this.allMyPrograms = this.getMyPrograms.filter((program)=>program.reward_type==="cash");
-        if(this.checkPoint) this.allMyPrograms = this.getMyPrograms;
+        if(this.checkPoint) this.allMyPrograms = JSON.parse(JSON.stringify(this.getMyPrograms));
         if(this.checkPublic && !this.checkPrivate) {
           this.allMyPrograms = this.allMyPrograms.filter((program)=>program.program_type==="public");
         }
@@ -291,6 +293,14 @@ export default {
       else{
         this.isAllFilters=false;
         this.allMyPrograms = this.allMyPrograms.filter((program)=>program.reward_type!=="cash");
+      }
+    },
+    isAscending:function(val){
+      if(val){
+        StringManager.ascendingOrder(this.allMyPrograms,'createdAt');
+      }
+      else{
+        StringManager.descendingOrder(this.allMyPrograms,'createdAt');
       }
     }
   },
@@ -324,11 +334,11 @@ export default {
   },
 
   async beforeMount() {
-    this.allMyPrograms = this.getMyPrograms;
+    this.allMyPrograms = JSON.parse(JSON.stringify(this.getMyPrograms));
     //console.log(localStorage.getItem('programs'))
   },
   async mounted(){
-    this.allMyPrograms = this.getMyPrograms;
+    this.allMyPrograms = JSON.parse(JSON.stringify(this.getMyPrograms));
     try {
       this.$q.loading.show();
       await this.GET_MY_PROGRAMS();

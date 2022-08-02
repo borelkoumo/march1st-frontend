@@ -82,6 +82,12 @@ const getters = {
   },
   getHackers(state){
     return state.myhackers;
+  },
+  getHacker(state,id){
+    return(id)=>{
+      const hacker = state.myhackers.find((hacker)=> hacker.id==id);
+      return hacker;
+    }
   }
 
 }
@@ -354,7 +360,6 @@ const actions = {
     try {
       const hackers = await _getHackers();
       commit('SET_HACKERS',hackers);
-      console.log(hackers);
       return hackers;
     } catch (error) {
 

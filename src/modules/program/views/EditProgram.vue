@@ -5,13 +5,35 @@
         class="bg-none flex q-gutter-sm header"
         style="padding-top: 40px"
       >
-        <q-toolbar-title class="title-header">Add A Program</q-toolbar-title>
-
+        <q-toolbar-title class="title-header">Edit A Program</q-toolbar-title>
+        <q-space />
+        <!-- <q-btn
+          no-caps
+          outline
+          class="bg-white text-secondary"
+          label="Cancel"
+          style="min-width: 160px"
+        />
+        <q-btn
+          no-caps
+          label="Save"
+          class="bg-positive text-white"
+          flat
+          style="min-width: 160px"
+        />
+        <q-btn
+          no-caps
+          label="Publish"
+          class="bg-secondary text-white"
+          flat
+          style="min-width: 160px"
+        /> -->
       </q-toolbar>
       <q-card
         class="card-user q-mt-lg bg-transparent"
         flat
         style="border-radius: 10px"
+        v-if="program"
       >
         <div class="wrap-card q-pa-lg flex flex-center bg-white">
           <div class="wrap-image flex flex-center">
@@ -117,6 +139,14 @@
               </q-item-section>
             </q-item>
           </q-list>
+          <!-- <div class="radio-element">
+            <div class="q-pb-xs q-pt-sm">Reward Range</div>
+            <q-toggle
+              v-model="formData.reward_range"
+              color="secondary"
+              label="Points Only"
+            />
+          </div> -->
         </div>
         <div class="bg-white q-pa-lg" style="border-radius: 16px">
           <q-list>
@@ -191,199 +221,63 @@
           <q-card-section class="q-pb-sm">
             <div class="subtitle q-pb-sm">Program Guidelines</div>
             <div class="">
-              <q-editor
+              <q-input
+                type=""
                 v-model="formData.program_guidelines_1"
-                :dense="$q.screen.lt.md"
-                :toolbar="toolbar"
-                :fonts="fonts"
+                label=""
+                borderless
               />
             </div>
           </q-card-section>
           <q-card-section class="q-pb-sm">
             <div class="subtitle q-pb-sm">Rewards Guidelines</div>
             <div class="">
-              <q-editor
+              <q-input
+                type=""
                 v-model="formData.program_guidelines_2"
-                :dense="$q.screen.lt.md"
-                :toolbar="toolbar"
-                :fonts="fonts"
+                label=""
+                borderless
               />
             </div>
           </q-card-section>
           <q-card-section class="q-pb-sm">
             <div class="subtitle q-pb-sm">Legal Terms</div>
             <div class="">
-              <q-editor
+              <q-input
+                type=""
                 v-model="formData.legal_terms"
-                :dense="$q.screen.lt.md"
-                :toolbar="toolbar"
-                :fonts="fonts"
+                label=""
+                borderless
               />
             </div>
           </q-card-section>
+          <q-card-section class="q-pb-sm">
+            <div class="subtitle q-pb-sm">Program Scope</div>
+            <div class="">
+              <q-input
+                type=""
+                v-model="formData.program_scope"
+                label=""
+                borderless
+              />
+            </div>
+          </q-card-section>
+        </q-card>
+      </div>
+      <div class="card-invite" v-if="program">
+        <list-update
+          :users="companyUsers"
+          :assignUsers="program.managers"
+          @onUpdateUser="updateManager"
+        />
+      </div>
 
-        </q-card>
-      </div>
-      <div class="card-invite">
-        <q-card class="my-card" flat>
-          <q-toolbar
-            class="toolbar"
-            style="padding-top: 40px; padding-bottom: 15px"
-          >
-            <div class="title">Assign Managers</div>
-            <q-space />
-            <q-input dense v-model="search_manager" placeholder="Search" borderless>
-              <template v-slot:append>
-                <q-icon name="search" />
-              </template>
-            </q-input>
-          </q-toolbar>
-          <q-card-section>
-            <q-list separator>
-              <q-item class="item-header">
-                <q-item-section style="max-width: 50px"
-                  ><q-checkbox
-                    v-model="checkAllManagers"
-                    class="q-mr-sm"
-                    color="secondary"
-                /></q-item-section>
-                <q-item-section> Username </q-item-section>
-                <q-item-section class="text-center">
-                  Designation
-                </q-item-section>
-                <q-item-section class="text-center" style="max-width: 400px">
-                  Privileges
-                </q-item-section>
-              </q-item>
-              <q-item
-                class="item-element"
-                v-for="manager in allManagers"
-                :key="manager.id"
-              >
-                <q-item-section style="max-width: 50px"
-                  ><q-checkbox
-                    v-model="manager.isCheck"
-                    class="q-mr-sm"
-                    color="secondary"
-                /></q-item-section>
-                <q-item-section>
-                  <q-item-label class="title">{{
-                    manager.first_name
-                  }}</q-item-label>
-                  <q-item-label caption class="subtitle">{{
-                    manager.user.email
-                  }}</q-item-label>
-                </q-item-section>
-                <q-item-section class="text-center title flex flex-center">
-                  <div class="">{{ manager.designation }}</div>
-                </q-item-section>
-                <q-item-section
-                  class="text-center text-item"
-                  style="max-width: 400px"
-                >
-                  <q-select
-                    v-if="manager.isCheck"
-                    bg-color="white"
-                    borderless
-                    dense
-                    :options="privileges"
-                    v-model="manager.privilege"
-                    label="Select privilege"
-                    multiple
-                    v-close-popup
-                  />
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-card-section>
-        </q-card>
-      </div>
-      <div class="card-invite q-mt-lg">
-        <q-card class="my-card" flat>
-          <q-toolbar
-            class="toolbar"
-            style="padding-top: 40px; padding-bottom: 15px"
-          >
-            <div class="title">Invite Hackers</div>
-            <q-space />
-            <q-input dense v-model="search_hacker" placeholder="Search" borderless>
-              <template v-slot:append>
-                <q-icon name="search" />
-              </template>
-            </q-input>
-          </q-toolbar>
-          <q-card-section>
-            <q-list separator>
-              <q-item class="item-header">
-                <q-item-section style="max-width: 50px"
-                  ><q-checkbox
-                    v-model="checkAllHackers"
-                    class="q-mr-sm"
-                    color="secondary"
-                /></q-item-section>
-                <q-item-section> Username / Email </q-item-section>
-                <q-item-section class="text-center" style="max-width: 18%">
-                  Rank
-                </q-item-section>
-                <q-item-section class="text-center" style="max-width: 18%">
-                  Acceptance Rate
-                </q-item-section>
-                <q-item-section class="text-center" style="max-width: 18%">
-                  Severity Level
-                </q-item-section>
-                <q-item-section class="text-center" style="max-width: 50px">
-                  Action
-                </q-item-section>
-              </q-item>
-              <q-item
-                class="item-element"
-                v-for="hacker in allHackers"
-                :key="hacker.id"
-              >
-                <q-item-section style="max-width: 50px"
-                  ><q-checkbox
-                    v-model="formData.invitations"
-                    class="q-mr-sm"
-                    color="secondary"
-                    :val="hacker.id"
-                /></q-item-section>
-                <q-item-section>
-                  <q-item-label class="title"
-                    >{{ hacker.first_name }}
-                    {{ hacker.last_name }}</q-item-label
-                  >
-                  <q-item-label caption class="subtitle">{{
-                    hacker.email
-                  }}</q-item-label>
-                </q-item-section>
-                <q-item-section
-                  class="text-center flex flex-center"
-                  style="max-width: 18%"
-                >
-                  <div class="active-badge">67%</div>
-                </q-item-section>
-                <q-item-section
-                  class="text-center text-item"
-                  style="max-width: 18%"
-                >
-                  24
-                </q-item-section>
-                <q-item-section
-                  class="text-center text-item"
-                  style="max-width: 18%"
-                >
-                  P1
-                </q-item-section>
-                <q-item-section
-                  class="text-center text-item"
-                  style="max-width: 50px"
-                >
-                  <q-btn flat icon="more_horiz" />
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-card-section>
-        </q-card>
+      <div class="card-invite q-mt-lg" v-if="program">
+        <list-update-hacker
+          :hackers="allHackers"
+          :assignHackers="program.invitations"
+          @onUpdateUser="updateUser"
+        />
       </div>
       <q-card flat class="bg-transparent q-pb-lg">
         <q-card-actions align="right" class="q-pt-lg q-gutter-md btn-actions">
@@ -393,85 +287,27 @@
             no-caps
             flat
             class="bg-secondary text-white"
-            @click="onSaveProgram()"
+            @click="onEditProgram()"
           />
         </q-card-actions>
       </q-card>
     </div>
   </q-page>
 </template>
-
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import submissionComponent from "../../submission/components/SubmissionComponent.vue";
+import { mapActions, mapGetters } from "vuex";
+import ListUpdate from "../components/list-update.vue";
+import ListUpdateHacker from "../components/list-update-hacker.vue";
 export default {
+  components: { submissionComponent, ListUpdate, ListUpdateHacker },
+  name: "programs",
   data() {
     return {
-      fonts:{
-        arial: 'Arial',
-        arial_black: 'Arial Black',
-        comic_sans: 'Comic Sans MS',
-        courier_new: 'Courier New',
-        impact: 'Impact',
-        lucida_grande: 'Lucida Grande',
-        times_new_roman: 'Times New Roman',
-        verdana: 'Verdana'
-      },
-      toolbar:[
-        [
-          {
-            label: this.$q.lang.editor.align,
-            icon: this.$q.iconSet.editor.align,
-            fixedLabel: true,
-            list: 'only-icons',
-            options: ['left', 'center', 'right', 'justify']
-          }
-        ],
-      ['bold', 'italic'],
-    ['token', 'hr', 'link', 'custom_btn'],
-      [
-        {
-          label: this.$q.lang.editor.fontSize,
-          icon: this.$q.iconSet.editor.fontSize,
-          fixedLabel: true,
-          fixedIcon: true,
-          list: 'no-icons',
-          options: [
-            'size-1',
-            'size-2',
-            'size-3',
-            'size-4',
-            'size-5',
-            'size-6',
-            'size-7'
-          ]
-        },
-        {
-          label: this.$q.lang.editor.defaultFont,
-          icon: this.$q.iconSet.editor.font,
-          fixedIcon: true,
-          list: 'no-icons',
-          options: [
-            'default_font',
-            'arial',
-            'arial_black',
-            'comic_sans',
-            'courier_new',
-            'impact',
-            'lucida_grande',
-            'times_new_roman',
-            'verdana'
-          ]
-        },
-      ],
-      ['unordered', 'ordered'],
-
-      ['undo', 'redo'],
-      ['viewsource']
-      ],
       formData: {
-        //id: null,
-        //user_id: 1,
-        //picture: "https://cdn.quasar.dev/img/parallax2.jpg",
+        id: null,
+        user_id: 1,
+        program_picture_url: "https://cdn.quasar.dev/img/parallax2.jpg",
         program_title: "Lorem ipsum dolor sit amet,",
         program_description:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rutrum congue leo eget malesuada. Cras ultricies ligula sed magna dictum porta.",
@@ -488,112 +324,155 @@ export default {
         program_scope: 4,
         hackers: [],
         managers: [],
-        critical: { min: 0, max: 1400 },
-        severe: { min: 0, max: 1000 },
-        medium: { min: 0, max: 900 },
-        low: { min: 0, max: 800 },
+        critical: { min: 150, max: 1400 },
+        severe: { min: 25, max: 1000 },
+        medium: { min: 50, max: 1200 },
+        low: { min: 100, max: 1300 },
         is_closed: false,
-        //close_at: null,
-        //status: "Active",
-        //date_post: "10/04/2021",
+        close_at: null,
+        status: "Active",
+        date_post: "10/04/2021",
         invitations: [],
-
-        company:null
       },
-      allHackers:[],
-      search_hacker:null,
-      checkAllHackers:false,
+      privileges: [
+        { label: "Can Edit", value: 1 },
+        { label: "Can view", value: 2 },
+      ],
+      programs: [{ label: "dfdffdf", value: "1" }],
+      program: null,
+      status: [{ label: "fgfgfgfg", value: "3" }],
+      stat: null,
+      content: "",
+      levels: [
+        { label: "Low", value: "0" },
+        { label: "Medium", value: "1" },
+        { label: "Severe", value: "2" },
+        { label: "High", value: "3" },
+      ],
+      level: null,
 
-      search_manager:null,
-      checkAllManagers:false,
-      allManagers:[],
-      privileges:[]
-    }
+      critical: {
+        min: null,
+        max: null,
+      },
+      model: null,
+      search: null,
+
+      companyUsers:[],
+      allHackers: [],
+
+      managers: [],
+      hackers: []
+    };
   },
-  watch:{
-    checkAllHackers:function(val){
+  watch: {
+    /*allManagers: function (val) {
       if (val) {
-        this.allHackers.forEach((hacker) => {
-          this.formData.invitations.push(hacker.id);
+        Object.keys(this.managers).forEach((key) => {
+          this.formData.managers.push(this.managers[key]);
+        });
+      } else {
+        this.formData.managers = [];
+      }
+    },
+    allHackers: function (val) {
+      if (val) {
+        Object.keys(this.hackers).forEach((key) => {
+          this.formData.invitations.push(this.hackers[key].id);
         });
       } else {
         this.formData.invitations = [];
       }
-    },
-    checkAllManagers:function(val){
-      if (val) {
-        this.allManagers.forEach((manager) => {
-          manager.isCheck=true;
-        });
-      } else {
-        this.allManagers.forEach((manager) => {
-          manager.isCheck=false;
-        });
-      }
-    }
+    },*/
   },
   computed: {
-    ...mapGetters('auth',[
-      'getUser',
-      'getHackers'
-    ])
+
   },
   methods: {
-    ...mapActions('program',[
-      'CREATE_PROGRAM'
-    ]),
-    ...mapActions('auth',[
-      'GET_HACKERS',
-      'GET_MY_COMPANYUSERS'
-    ]),
-    async onSaveProgram() {
+    ...mapActions("program", ["UPDATE_PROGRAM",'GET_ONE_PROGRAM']),
+    ...mapActions("auth", ["GET_HACKERS","GET_MY_COMPANYUSERS"]),
+
+    async onEditProgram() {
       try {
         this.$q.loading.show();
-        this.formData.managers = this.allManagers.filter((m) => m.isCheck == true);
-        this.formData.company=this.getUser.company.id;
-        await this.CREATE_PROGRAM(this.formData);
+        this.UPDATE_PROGRAM(this.formData);
         this.$router.push("/new-dashboard");
         this.$q.notify({
-          message:"Create successfully Program",
-          type:"positive",
-          position:"top"
+          message:"Successfully updated program",
+          position:"top",
+          type:"positive"
         })
         this.$q.loading.hide();
-      }catch (e) {
-        console.log("error where create program", e.message());
+      } catch (error) {
         this.$q.loading.hide();
       }
+
+    },
+
+    updateManager(element) {
+      console.log(element);
+      this.formData.managers = element;
+    },
+    updateUser(element) {
+      this.formData.invitations = element.map(function (e) {
+        return {
+          id:e.id,
+          hackerId:e.hacker.id
+        }
+      });
     },
   },
-  async mounted(){
-    const companyUserData = await this.GET_MY_COMPANYUSERS();
-    this.allManagers = companyUserData.map(function(companyUser){
-      let manager={
-        first_name:companyUser.first_name,
-        id:companyUser.id,
-        last_name:companyUser.last_name,
-        user:companyUser.user,
-        isCheck:false
+  async beforeMount() {
+    try {
+      this.$q.loading.show();
+      this.allHackers = await this.GET_HACKERS();
+      this.companyUsers = await this.GET_MY_COMPANYUSERS();
+
+      this.program_id = this.$route.params.id;
+      this.program = await this.GET_ONE_PROGRAM(this.program_id);
+      if (!this.program) this.program = null;
+      else {
+        console.log(this.program);
+        this.formData = {
+          id: this.program.id,
+
+          program_picture_url: this.program.program_picture_url,
+          program_title: this.program.program_title,
+          program_description: this.program.program_description,
+          program_type: this.program.program_type,
+          safe_harbour_type: this.program.safe_harbour_type,
+          reward_type: this.program.reward_type,
+          reward_range: this.program.reward_range,
+          program_guidelines_1: this.program.program_guidelines_1,
+          program_guidelines_2: this.program.program_guidelines_2,
+          legal_terms: this.program.legal_terms,
+          program_scope: this.program.program_scope,
+          is_closed: this.program.is_closed,
+          close_at: this.program.close_at,
+          date_post: this.program.date_post,
+
+          hackers: this.program.hackers,
+          managers: this.program.managers,
+
+          critical: this.program.critical,
+          severe: this.program.severe,
+          medium: this.program.medium,
+          low: this.program.low,
+
+          invitations: this.program.invitations,
+        };
+        //console.log(program);
       }
-      return manager;
-    });
-    await this.GET_HACKERS();
-    this.allHackers = this.getHackers.map(function(element){
-      let hacker={
-        email:element.email,
-        first_name:element.first_name,
-        id:element.id,
-        last_name:element.last_name
-      }
-      return hacker;
-    })
-    //this.allHackers = this.getHackers;
-  }
+      this.$q.loading.hide();
+    } catch (e) {
+      console.log("Error dans before mount");
+      this.$q.loading.hide();
+    }
+  },
 };
 </script>
-
-<style lang="scss" scoped>
-  .wrap-image {
+<style scoped>
+.wrap-image {
   width: 300px;
   background: #f5f5f5;
   border: 1px dashed #b0b0b0;

@@ -23,7 +23,7 @@
           no-caps
           flat
           label="Edit"
-          :to="'/main/edit-program/' + program.id"
+          :to="'/new-dashboard/programs/edit-program/' + program.id"
           v-if="getUser.role == 'client'
           && program.company == getUser.company.id
           && getUser.type==='super_manager'"
@@ -243,7 +243,7 @@ export default {
     hasJoinProgram:function(){
       //const program = this.getOneProgram(this.idProgram);
       const program = this.program;
-      if(program.hackers.includes(this.getUser.hacker.id)) return true;
+      if(program.hackers.includes(""+this.getUser.hacker.id)) return true;
       return false;
     }
   },
@@ -256,7 +256,6 @@ export default {
     try {
       this.$q.loading.show();
       this.idProgram = this.$route.params.id;
-      //this.program=this.getOneProgram(this.idProgram);
       this.program = await this.GET_ONE_PROGRAM(this.idProgram);
       this.$q.loading.hide();
     } catch (error) {

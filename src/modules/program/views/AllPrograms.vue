@@ -104,7 +104,7 @@
         </q-btn-dropdown>-->
 
         <q-space />
-        <q-btn label="Most Recent" flat no-caps icon-right="import_export" @click="isSorting=!isSorting"/>
+        <q-btn label="Most Recent" flat no-caps icon-right="import_export" @click="isAscending=!isAscending"/>
       </q-toolbar>
       <div class="q-mt-lg">
         <div
@@ -170,7 +170,8 @@
 
 <script>
 import programCardComponent from '../components/ProgramCardComponent.vue';
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex';
+import {StringManager} from '../../../helpers/StringManager';
 export default {
   components:{
     programCardComponent
@@ -182,12 +183,15 @@ export default {
 
       allCompanies:[],
       company:null,
-      allPrograms:[]
+      allPrograms:[],
+      isAscending:false
     }
   },
   watch:{
     programs: function(val){
-      this.allPrograms=val;
+      this.allPrograms=val.map(function(program){
+        return JSON.parse(JSON.stringify(program));
+      })
       val.forEach(element => {
         console.log(element.program_title+" : "+element.hackers)
       });
@@ -206,6 +210,14 @@ export default {
           }
         });
       }
+    },
+    isAscending:function(val){
+      if(val){
+        StringManager.ascendingOrder(this.allPrograms,'createdAt');
+      }
+      else{
+        StringManager.descendingOrder(this.allPrograms,'createdAt');
+      }
     }
   },
   computed: {
@@ -221,8 +233,9 @@ export default {
     ]),
     canJoinProgram(){
       return (program)=>{
-        if((program.invitations.includes(""+this.getUser.hacker.id)
-         || program.program_type==='public') && !program.hackers.includes(""+this.getUser.hacker.id)
+        const result = program.invitations.find(invitation => invitation.hackerId==this.getUser.hacker.id);
+        if((result || program.program_type==='public') &&
+        !program.hackers.includes(""+this.getUser.hacker.id)
          ){
           return true;
          }
@@ -271,10 +284,14 @@ export default {
         console.log(error)
         this.$q.loading.hide();
       }
-    }
+    },
+
+
   },
   async mounted(){
-    this.allPrograms=this.getAllPrograms;
+    this.allPrograms=this.getAllPrograms.map(function(program){
+      return JSON.parse(JSON.stringify(program));
+    });
     this.allCompanies = this.getCompanies.map(function(company){
       let item={
         label:company.company_name,
