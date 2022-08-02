@@ -458,7 +458,7 @@ export default {
               icon: "people",
               name: "Add User",
               slug: "add-user",
-              link: "/main/add-user",
+              link: "/new-dashboard/company/add-manager",
             },
             {
               icon: "shopping_basket",

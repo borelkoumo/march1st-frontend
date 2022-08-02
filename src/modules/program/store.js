@@ -162,6 +162,7 @@ const actions = {
     }
     console.log("GET_PROGRAMS/programs = ", myPrograms);
     commit("SET_MY_PROGRAMS", myPrograms);
+    return myPrograms;
   },
   async GET_ONE_PROGRAM({ state, commit }, programId) {
     const program = await ProgramService.getOneProgram(programId);
@@ -216,5 +217,5 @@ export default {
   state,
   getters,
   mutations,
-  actions,
+  actions
 };
