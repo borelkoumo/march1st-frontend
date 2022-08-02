@@ -51,8 +51,8 @@ const actions = {
       }),
     };
     const programId = await ProgramService.createProgram(program);
-    console.log("Create_program/programId = ", programId);
-    await program.invitations.forEach(async (i) => {
+
+    program.invitations.forEach(async (i) => {
       let invitation = {
         program: programId,
         hacker: i,
@@ -60,12 +60,16 @@ const actions = {
       };
       await ProgramService.createInvitation(invitation);
     });
-    await dispatch("GET_PROGRAMS");
-    await dispatch("GET_MY_PROGRAMS");
+
+    dispatch("GET_PROGRAMS");
+    dispatch("GET_MY_PROGRAMS");
   },
   async UPDATE_PROGRAM({ state, commit, dispatch }, programData) {
-    const user = localStorage.getItem('user')!=null?JSON.parse(localStorage.getItem('user')):null;
-    const oldProgram = await dispatch('GET_ONE_PROGRAM',programData.id);
+    const user =
+      localStorage.getItem("user") != null
+        ? JSON.parse(localStorage.getItem("user"))
+        : null;
+    const oldProgram = await dispatch("GET_ONE_PROGRAM", programData.id);
     const oldInvitations = oldProgram.invitations;
     let program = {
       ...programData,
@@ -73,16 +77,19 @@ const actions = {
         low: { max: programData.low.max, min: programData.low.min },
         medium: { max: programData.medium.max, min: programData.medium.min },
         severe: { max: programData.severe.max, min: programData.severe.min },
-        critical: { max: programData.critical.max, min: programData.critical.min,},
+        critical: {
+          max: programData.critical.max,
+          min: programData.critical.min,
+        },
       },
       company_users: programData.managers.map(function (manager) {
         return Number(manager.id);
       }),
-      company:user.company.id
+      company: user.company.id,
     };
-    const hackers=JSON.parse(JSON.stringify(program.hackers));
-    program.hackers = hackers.map(function(hacker){
-      return hacker
+    const hackers = JSON.parse(JSON.stringify(program.hackers));
+    program.hackers = hackers.map(function (hacker) {
+      return hacker;
     });
 
     /*delete program.critical;
@@ -94,17 +101,19 @@ const actions = {
     delete program.date_post;*/
 
     const invitations = JSON.parse(JSON.stringify(program.invitations));
-    program.invitations=oldInvitations.map(function(invitation){
-      return invitation.id
+    program.invitations = oldInvitations.map(function (invitation) {
+      return invitation.id;
     });
 
     //on enregistre la modification
     await ProgramService.updateProgram(program);
 
-    invitations.forEach(element => {
+    invitations.forEach((element) => {
       //console.log(element)
-      const r = oldInvitations.find((invitation)=> invitation.hackerId==element.hackerId);
-      if(!r){
+      const r = oldInvitations.find(
+        (invitation) => invitation.hackerId == element.hackerId
+      );
+      if (!r) {
         //Creation de l'invitation
         let invitation = {
           program: program.id,
@@ -114,17 +123,20 @@ const actions = {
         ProgramService.createInvitation(invitation);
       }
     });
-    oldInvitations.forEach(element=>{
-      const r = invitations.find(invitation => invitation.hackerId == element.hackerId)
-      if(!r){
+    oldInvitations.forEach((element) => {
+      const r = invitations.find(
+        (invitation) => invitation.hackerId == element.hackerId
+      );
+      if (!r) {
         //Supression de l'invitation
         ProgramService.removeInvitation(element.id);
       }
-    })
-    await dispatch('GET_PROGRAMS');
+    });
+    await dispatch("GET_PROGRAMS");
     await dispatch("GET_MY_PROGRAMS");
   },
   async GET_PROGRAMS({ state, commit, dispatch }) {
+    console.log(localStorage.getItem("token"));
     const programs = await ProgramService.getAllPrograms();
     console.log("GET_PROGRAMS/programs = ", programs);
     commit("SET_PROGRAMS", programs);
@@ -175,9 +187,10 @@ const actions = {
       const program = await dispatch("GET_ONE_PROGRAM", programId);
       let hackers = program.hackers;
       if (user.hacker) {
-        const result = program.invitations.find(invitation => invitation.hackerId==user.hacker.id);
-        if (result || program.program_type === "public"
-        ) {
+        const result = program.invitations.find(
+          (invitation) => invitation.hackerId == user.hacker.id
+        );
+        if (result || program.program_type === "public") {
           hackers.push(user.hacker.id);
           const programsData = await ProgramService.getHackerPrograms(
             user.hacker.id
@@ -217,5 +230,5 @@ export default {
   state,
   getters,
   mutations,
-  actions
+  actions,
 };

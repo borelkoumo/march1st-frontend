@@ -7,6 +7,16 @@ const httpLink = createHttpLink({
     // You should use an absolute URL here
     uri: process.env.VUE_APP_STRAPI_GRAPHQL_BACKEND,
 })
+const defaultOptions = {
+  watchQuery: {
+    fetchPolicy: 'network-only',
+    errorPolicy: 'ignore',
+  },
+  query: {
+    fetchPolicy: 'network-only',
+    errorPolicy: 'all',
+  },
+}
 
 // Cache implementation
 const cache = new InMemoryCache()
@@ -15,6 +25,7 @@ const cache = new InMemoryCache()
 const apolloClient = new ApolloClient({
     link: httpLink,
     cache,
+    defaultOptions: defaultOptions,
 })
 
 

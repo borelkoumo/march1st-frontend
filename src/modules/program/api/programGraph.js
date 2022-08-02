@@ -13,7 +13,7 @@ import {
 } from "./query";
 
 export class ProgramService {
-  static async createProgram(payload) {
+  static createProgram(payload) {
     return new Promise(async (resolve, reject) => {
       let program = {
         program_title: payload.program_title,
@@ -41,7 +41,7 @@ export class ProgramService {
       resolve(result.data.createProgram.data.id);
     });
   }
-  static async updateProgram(payload) {
+  static updateProgram(payload) {
     return new Promise(async (resolve, reject) => {
       let program = {
         program_title: payload.program_title,
@@ -92,7 +92,7 @@ export class ProgramService {
       resolve(this.formatPrograms(programsData));
     });
   }
-  static async getAllPrograms() {
+  static getAllPrograms() {
     return new Promise(async (resolve, reject) => {
       let token = localStorage.getItem("token");
       PROGRAMS_QUERY.context.headers.authorization = "Bearer " + token;
@@ -101,7 +101,16 @@ export class ProgramService {
       resolve(this.formatPrograms(programsData));
     });
   }
-  static async createInvitation(invitation) {
+  static async getAllPrograms2(programId) {
+    console.log("getAllPrograms2/programId = ",programId)
+    let token = localStorage.getItem("token");
+    PROGRAMS_QUERY.context.headers.authorization = "Bearer " + token;
+    const result = await apolloClient.query(PROGRAMS_QUERY);
+    const programsData = result.data.programs.data;
+    return this.formatPrograms(programsData);
+  }
+
+  static createInvitation(invitation) {
     return new Promise(async (resolve, reject) => {
       let token = localStorage.getItem("token");
       CREATE_INVITATION.variables.invitation = invitation;
@@ -110,7 +119,7 @@ export class ProgramService {
       resolve(result);
     });
   }
-  static async getOneProgram(programId) {
+  static getOneProgram(programId) {
     return new Promise(async (resolve, reject) => {
       let token = localStorage.getItem("token");
       ONE_PROGRAM_QUERY.variables.programId = programId;
@@ -132,14 +141,13 @@ export class ProgramService {
     });
   }
   static async removeInvitation(invitationId) {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       let token = localStorage.getItem("token");
       REMOVE_INVITATION.variables.invitationId = invitationId;
       REMOVE_INVITATION.context.headers.authorization = "Bearer " + token;
       const result = await apolloClient.mutate(REMOVE_INVITATION);
       resolve(result);
-    })
-
+    });
   }
 
   /*======================================================================*/
@@ -147,6 +155,7 @@ export class ProgramService {
   /*======================================================================*/
 
   static formatPrograms(programsData) {
+    console.log("formatPrograms/programsData.length = ", programsData.length);
     const programs = programsData.map(function (element) {
       let program = {
         id: element.id,
