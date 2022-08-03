@@ -1,18 +1,17 @@
 <template>
   <q-page class="bg-home q-pl-md q-pr-md">
-    <div class="main-content">
-      <q-toolbar
+    <q-toolbar
         class="bg-none flex q-gutter-sm toolbar-submission"
         style="padding-top: 40px"
       >
         <q-select
           bg-color="white"
+          filled
           dense
           :options="allMyPrograms"
           v-model="selectProgram"
           label="Select Program Name"
-          input-class="special-select"
-          style="min-width: 400px"
+          style="min-width: 400px;"
           borderless
         />
         <q-select
@@ -24,16 +23,26 @@
           borderless
         />
         <q-space />
-        <q-btn label="Submissions" flat no-caps icon-right="import_export" @click="isSorting=!isSorting"/>
+        <q-btn
+          label="Submissions"
+          flat
+          no-caps
+          icon-right="import_export"
+          @click="isSorting = !isSorting"
+        />
       </q-toolbar>
-      <div class="q-mt-lg q-gutter-md" v-if="allMyPrograms.length>0 && getMySubmissions.length > 0">
+    <div class="main-content">
+      <div
+        class="q-mt-lg q-gutter-md"
+        v-if="allMyPrograms.length > 0 && getMySubmissions.length > 0"
+      >
         <submission-component
           :submission="submission"
           :program="null"
           class="submission-component cursor-pointer"
-          v-for="submission in getMySubmissions"
+          v-for="submission in allSubmissions"
           :key="submission.submission_title"
-        ><!--  @click.prevent="showDetailsSubmission(submission.id)" -->
+          ><!--  @click.prevent="showDetailsSubmission(submission.id)" -->
           <template v-slot:header>
             <q-card-section class="q-pa-none" style="padding-bottom: 27px">
               <q-toolbar>
@@ -69,65 +78,57 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
-import submissionComponent from '../components/SubmissionComponent.vue';
+import { mapActions, mapGetters } from "vuex";
+import submissionComponent from "../components/SubmissionComponent.vue";
 export default {
-  components:{
-    submissionComponent
+  components: {
+    submissionComponent,
   },
   data() {
     return {
-      allMyPrograms:[],
-      selectProgram:null,
+      allMyPrograms: [],
+      selectProgram: null,
 
-      allStatus:[],
-      selectStatus:null
+      allStatus: [],
+      selectStatus: null,
+    };
+  },
+  watch:{
+    selectProgram:function(val){
+      this.allSubmissions = JSON.parse(JSON.stringify(this.getMySubmissions.filter((submission)=>submission.program.id==val.value)));
     }
   },
   computed: {
-    ...mapGetters('submission',[
-      'getMySubmissions'
-    ]),
-    ...mapGetters('program',[
-      'getMyPrograms',
-      'getOneProgram'
-    ])
+    ...mapGetters("submission", ["getMySubmissions"]),
+    ...mapGetters("program", ["getMyPrograms", "getOneProgram"]),
   },
   methods: {
-    ...mapActions('submission',[
-      'GET_MY_SUBMISSIONS'
-    ]),
-    showDetailsSubmission(idSubmission){
-      this.$router.push('submissions/submission-detail/'+idSubmission);
+    ...mapActions("submission", ["GET_MY_SUBMISSIONS"]),
+    showDetailsSubmission(idSubmission) {
+      this.$router.push("submissions/submission-detail/" + idSubmission);
+    },
+  },
+  async beforeMount() {
+    try {
+      this.$q.loading.show();
+      if (this.getMySubmissions.length == 0) await this.GET_MY_SUBMISSIONS();
+      this.allSubmissions = JSON.parse(JSON.stringify(this.getMySubmissions));
+      this.allMyPrograms = await this.getMyPrograms.map(function (program) {
+        let item = {
+          label: program.program_title,
+          value: program.id,
+        };
+        return item;
+      });
+      this.$q.loading.hide();
+    } catch (error) {
+      this.$q.loading.hide();
     }
   },
-  async beforeMount(){
-    if(this.getMySubmissions.length==0) await this.GET_MY_SUBMISSIONS();
-    this.allMyPrograms = await this.getMyPrograms.map(function(program){
-      let item={
-        label:program.program_title,
-        value:program.id
-      }
-      return item;
-    })
-  }
-}
+};
 </script>
 
 <style lang="scss" scoped>
-  .toolbar-submission .q-field--dense .q-field__label {
-  padding-left: 15px;
-}
-.toolbar-submission .q-field__native {
-  padding-left: 15px;
-}
-.toolbar-submission .special-select {
-  background: #ffffff;
-  border: 1px solid #e4e4e4;
-  box-sizing: border-box;
-  border-radius: 8px;
-}
-
 .submission-component .q-toolbar {
   padding-left: 0;
   padding-right: 0;

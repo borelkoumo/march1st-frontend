@@ -50,7 +50,83 @@ const { mutate: CREATE_SUBMISSION_STATUS } = {
     },
   },
 };
+const {mutate: UPDATE_SUBMISSION } = {
+  mutate: {
+    mutation: gql`
+      mutation updateSubmission($submissionId:ID!, $submission: SubmissionInput!) {
+        createSubmission(id:$submissionId, data: $submission) {
+          data {
+            id
+            attributes {
+              submission_title
+            }
+          }
+        }
+      }
+    `,
+    variables: {
+      //user: { identifier: "sdfdf", password: "dfdfdf" },
+    },
+    context: {
+      headers: {
+        /* authorization: token, */
+      },
+    },
+  },
+};
 
+/**
+ * query one program from database
+ * @param id of program
+ * @return a program who has this id
+ */
+const ONE_SUBMISSION_QUERY = {
+  query: gql`
+    query submission($submissionId: ID!) {
+      submission(id: $submissionId) {
+        data {
+          id
+          attributes {
+            submission_text
+            submission_title
+            submission_target
+            severity_level
+            createdAt
+            program {
+              data {
+                id
+                attributes {
+                  program_title
+                  program_description
+                  program_type
+                  safe_harbour_type
+                  reward_range
+                  program_picture_url
+                }
+              }
+            }
+            submission_statuses(sort: "createdAt:DESC") {
+              data {
+                id
+                attributes {
+                  status
+                  status_title
+                  createdAt
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `,
+  variables: {},
+  context: {
+    headers: {
+      /* authorization: token, */
+    },
+  },
+};
 const SUBMISSIONS_HACKER = {
   query: gql`
     query submissions($hackerId: ID!, $page: Int!, $pageSize: Int!) {
@@ -290,8 +366,10 @@ const SUBMISSIONS_ADMIN = {
 export {
   CREATE_SUBMISSION,
   CREATE_SUBMISSION_STATUS,
+  UPDATE_SUBMISSION,
   SUBMISSIONS_HACKER,
   SUBMISSIONS_SUPER_MANAGER,
   SUBMISSIONS_MANAGER,
   SUBMISSIONS_ADMIN,
+  ONE_SUBMISSION_QUERY
 };

@@ -45,7 +45,7 @@ export default {
   },
   async beforeMount(){
     if(this.programRequest) this.program=this.programRequest;
-    else this.program = await this.GET_ONE_PROGRAM(this.submission.program_id);
+    else this.program = await this.GET_ONE_PROGRAM(this.submission.program.id);
   }
 };
 </script>

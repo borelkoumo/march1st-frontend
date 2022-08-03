@@ -167,9 +167,8 @@
           <div
             class="all-message bg-white q-pt-md q-pb-md q-mb-lg"
             style="border-radius: 16px"
-            v-if="getComments.length>0"
+            v-if="getComments.length > 0"
           >
-
             <q-list>
               <q-item
                 clickable
@@ -213,7 +212,7 @@
               v-for="timeline in submissionStatus"
               :key="timeline.id"
             >
-              <div class="subtitle-timeline">{{timeline.createdAt}}</div>
+              <div class="subtitle-timeline">{{ timeline.createdAt }}</div>
               <div class="content-timeline">
                 {{ timeline.status_title }}
               </div>
@@ -226,63 +225,75 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
-import submissionComponent from '../components/SubmissionComponent.vue';
+import { mapActions, mapGetters } from "vuex";
+import submissionComponent from "../components/SubmissionComponent.vue";
 export default {
-  components:{
-    submissionComponent
+  components: {
+    submissionComponent,
   },
   data() {
     return {
-      idSubmission:null,
-      submission:null,
-      message:null,
-      submissionStatus:[]
-    }
+      idSubmission: null,
+      submission: null,
+      message: null,
+      submissionStatus: [],
+    };
   },
-  watch:{
-    "$route.params.id":function(val){
+  watch: {
+    "$route.params.id": function (val) {
       this.idSubmission = Number(val);
       this.submission = this.getOneSubmission(this.idSubmission);
-    }
+    },
   },
   computed: {
-    ...mapGetters('auth',[
-      'getUser'
-    ]),
-    ...mapGetters('submission',[
-      'getOneSubmission'
-    ]),
-    getComments(){
+    ...mapGetters("auth", ["getUser"]),
+    ...mapGetters("submission", ["getOneSubmission"]),
+    getComments() {
       return [];
-    }
+    },
   },
   methods: {
-    ...mapActions('submission',[
-      'GET_SUBMISSIONSTATUS_BY_SUBMISSION'
+    ...mapActions("submission", [
+      "GET_SUBMISSIONSTATUS_BY_SUBMISSION",
+      "GET_ONE_SUBMISSION",
     ]),
-    onActionClick(num){
-      switch(num){
-        case 1: break;
-        case 2: break;
-        case 3: break;
-        case 4: break;
-        case 5: break;
-        case 6: break;
-        default:  break;
+    onActionClick(num) {
+      switch (num) {
+        case 1:
+          break;
+        case 2:
+          break;
+        case 3:
+          break;
+        case 4:
+          break;
+        case 5:
+          break;
+        case 6:
+          break;
+        default:
+          break;
       }
+    },
+  },
+  async beforeMount() {
+    try {
+      this.$q.loading.show();
+      this.idSubmission = Number(this.$route.params.id);
+      this.submission = await this.GET_ONE_SUBMISSION(this.idSubmission);
+      this.submissionStatus = await this.GET_SUBMISSIONSTATUS_BY_SUBMISSION(
+        this.idSubmission
+      );
+      this.$q.loading.hide();
+    } catch (error) {
+      this.$q.loading.hide();
     }
   },
-  async beforeMount(){
-    this.idSubmission = Number(this.$route.params.id);
-    this.submission = await this.getOneSubmission(this.idSubmission);
-    this.submissionStatus = await this.GET_SUBMISSIONSTATUS_BY_SUBMISSION(this.idSubmission);
-  },
-}
+};
 </script>
 
 <style lang="scss" scoped>
-  .select-action {
+.select-action {
   border: 1px solid #5887ff;
   box-sizing: border-box;
   border-radius: 8px;

@@ -469,7 +469,7 @@ export default {
             {
               icon: "lock_open",
               name: "My Programs",
-              slug: "programs",
+              slug: "my-programs",
               link: "/new-dashboard/programs",
             },
             {
