@@ -17,6 +17,8 @@
         <q-select
           bg-color="white"
           dense
+          filled
+          label="Select Status"
           :options="allStatus"
           v-model="selectStatus"
           style="min-width: 200px"
@@ -38,7 +40,7 @@
       >
         <submission-component
           :submission="submission"
-          :program="null"
+          :program="submission.program"
           class="submission-component cursor-pointer"
           v-for="submission in allSubmissions"
           :key="submission.submission_title"
@@ -89,13 +91,33 @@ export default {
       allMyPrograms: [],
       selectProgram: null,
 
-      allStatus: [],
+      allStatus: [
+        {label:"New Report submission",value:"new"},
+        {label:"Passed Triaged",value:"triaged"},
+        {label:"Accept Unresolved",value:"accepted_unresolved"},
+        {label:"Accept Resolved",value:"accepted_resolved"},
+        {label:"Client returned for review",value:"client_returned_for_review"},
+        {label:"March1st returned for review",value:"m1_returned_for_review"},
+        {label:"Rejected",value:"rejected"}
+      ],
       selectStatus: null,
+      allSubmissions:[]
     };
   },
   watch:{
     selectProgram:function(val){
-      this.allSubmissions = JSON.parse(JSON.stringify(this.getMySubmissions.filter((submission)=>submission.program.id==val.value)));
+      if(!this.selectStatus) this.allSubmissions = this.getMySubmissions.filter((submission)=>submission.program.id==val.value);
+      else{
+        this.allSubmissions = this.getMySubmissions.filter((submission)=>submission.submission_status==this.selectStatus.value);
+        this.allSubmissions = this.allSubmissions.filter((submission)=>submission.program.id==val.value);
+      }
+    },
+    selectStatus:function(val){
+      if(!this.selectProgram) this.allSubmissions = this.getMySubmissions.filter((submission)=>submission.submission_status==val.value);
+      else{
+        this.allSubmissions = this.getMySubmissions.filter((submission)=>submission.program.id==this.selectProgram.value);
+        this.allSubmissions = this.allSubmissions.filter((submission)=>submission.submission_status==val.value);
+      }
     }
   },
   computed: {
