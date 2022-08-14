@@ -34,7 +34,7 @@ export default {
   created() {},
   mounted() {
     const cb = new CelestialBody();
-    //cb.animate();
+    cb.animate();
   },
 };
 </script>
