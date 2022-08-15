@@ -147,6 +147,16 @@ export default {
       this.$q.loading.hide();
     }
   },
+  async mounted(){
+    this.allSubmissions = JSON.parse(JSON.stringify(this.getMySubmissions));
+    try {
+      this.$q.loading.show();
+      await this.GET_MY_SUBMISSIONS();
+      this.$q.loading.hide();
+    } catch (error) {
+      this.$q.loading.hide();
+    }
+  }
 };
 </script>
 

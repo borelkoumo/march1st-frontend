@@ -140,6 +140,14 @@
                       getUser.hacker.last_name
                     }}</q-item-label>
                   </q-item-section>
+                  <q-item-section v-if="getUser.role==='march1st'">
+                    <q-item-label class="text-bold text-primary" >{{
+                      getUser.march1st.name
+                    }}</q-item-label>
+                    <!--<q-item-label caption lines="1">{{
+                      getUser.march1st.last_name
+                    }}</q-item-label>-->
+                  </q-item-section>
                 </q-item>
                 <q-separator color="info"/>
                 <q-item clickable v-ripple class="q-pt-xs q-pb-xs" to="/new-dashboard">

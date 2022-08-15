@@ -170,7 +170,7 @@ const actions = {
     } else if (user.role === "hacker") {
       myPrograms = await ProgramService.getHackerPrograms(user.hacker.id);
     } else if (user.role === "march1st") {
-      myPrograms = [];
+      myPrograms = await ProgramService.getAllPrograms();
     }
     console.log("GET_PROGRAMS/programs = ", myPrograms);
     commit("SET_MY_PROGRAMS", myPrograms);

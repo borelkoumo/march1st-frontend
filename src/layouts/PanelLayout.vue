@@ -89,13 +89,19 @@
             <div class="subtitle">Average Rank: 7</div>
             <div class="subtitle">Average Vulnerability Severity</div>
           </q-card-section>
+
           <q-card-section
             class="q-pt-xs"
             v-if="getUser && getUser.role == 'march1st'"
           >
             <div class="q-mt-sm title">
-              {{ getUser.march1st.first_name }}
-              {{ getUser.march1st.last_name }}
+              {{ getUser.march1st.name }}
+            </div>
+            <div class="q-mt-sm subtitle">
+              {{ getUser.march1st.phone }}
+            </div>
+            <div class="q-mt-sm subtitle">
+              {{ getUser.email }}
             </div>
           </q-card-section>
         </q-card-section>
@@ -549,6 +555,7 @@ export default {
     },
   },
   beforeCreate() {
+    console.log(localStorage.getItem('token'))
     /*localStorage.removeItem('users');
     localStorage.removeItem('companies');
     localStorage.removeItem('programs');
