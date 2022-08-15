@@ -11,11 +11,14 @@ const getUserRole = function(element){
       type:element==='program_super_admin'?'super_manager':'manager'
     }
   }
-  else{
+  else if(element==='m1_account_manager'){
     return{
       role:"march1st",
       type:null
     }
+  }
+  else{
+    throw new Error("Non pris en compte");
   }
 }
 export {

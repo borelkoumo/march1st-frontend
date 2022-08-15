@@ -50,11 +50,14 @@ const { mutate: CREATE_SUBMISSION_STATUS } = {
     },
   },
 };
-const {mutate: UPDATE_SUBMISSION } = {
+const { mutate: UPDATE_SUBMISSION } = {
   mutate: {
     mutation: gql`
-      mutation updateSubmission($submissionId:ID!, $submission: SubmissionInput!) {
-        createSubmission(id:$submissionId, data: $submission) {
+      mutation updateSubmission(
+        $submissionId: ID!
+        $submission: SubmissionInput!
+      ) {
+        createSubmission(id: $submissionId, data: $submission) {
           data {
             id
             attributes {
@@ -311,7 +314,7 @@ const SUBMISSIONS_MANAGER = {
 const SUBMISSIONS_ADMIN = {
   query: gql`
     query submissions($page: Int!, $pageSize: Int!) {
-      submissions(filters:{program:{id:{ne:null}}},pagination: { page: $page, pageSize: $pageSize }) {
+      submissions(pagination: { page: $page, pageSize: $pageSize }) {
         data {
           id
           attributes {
@@ -362,6 +365,35 @@ const SUBMISSIONS_ADMIN = {
     },
   },
 };
+const SUBMISSION_STATUS = {
+  query: gql`
+    query submissionStatuses($submissionId: ID!) {
+      submissionStatuses(
+        filters: { submission: { id: { eq: $submissionId } } }
+        sort: "createdAt:DESC"
+      ) {
+        data {
+          id
+          attributes {
+            status,
+            status_title,
+            comment,
+            createdAt,
+            submission{
+              data{id}
+            }
+          }
+        }
+      }
+    }
+  `,
+  variables: {},
+  context: {
+    headers: {
+      /* authorization: token, */
+    },
+  },
+};
 
 export {
   CREATE_SUBMISSION,
@@ -371,5 +403,6 @@ export {
   SUBMISSIONS_SUPER_MANAGER,
   SUBMISSIONS_MANAGER,
   SUBMISSIONS_ADMIN,
-  ONE_SUBMISSION_QUERY
+  ONE_SUBMISSION_QUERY,
+  SUBMISSION_STATUS
 };

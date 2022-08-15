@@ -51,7 +51,20 @@ const actions = {
     }
     await dispatch('GET_MY_SUBMISSIONS');
   },
-  async UPDATE_SUBMISSION({ commit, dispatch }, formData) {},
+
+  async CREATE_SUBMISSION_STATUS({commit,dispatch},formData){
+    const user = localStorage.getItem("user")
+      ? JSON.parse(localStorage.getItem("user"))
+      : null;
+    if (user) {
+      const result = await SubmissionService.createSubmissionStatus(formData);
+      await dispatch('GET_MY_SUBMISSIONS');
+      return result;
+    }
+  },
+  async CHANGE_SUBMISSION_STATUS({commit,dispatch},formData){
+    //console.log(formData);
+  },
   async GET_ALL_SUBMISSIONS({ commit, dispatch }) {
     const submissions = localStorage.getItem("submissions")
       ? JSON.parse(localStorage.getItem("submissions"))
@@ -62,7 +75,6 @@ const actions = {
     const user = localStorage.getItem("user")
       ? JSON.parse(localStorage.getItem("user"))
       : null;
-    //const submissions = localStorage.getItem('submissions')?JSON.parse(localStorage.getItem('submissions')):[];
     if (user) {
       let payload = {
         role: null,
@@ -72,6 +84,7 @@ const actions = {
         payload.id= user.hacker.id;
       } else if (user.role === "client") {
         payload.id= user.companyUser.id;
+        payload.company  = user.company.id;
         if (user.type === "super_manager") {
           payload.role = "program_super_admin";
         } else {
@@ -79,21 +92,14 @@ const actions = {
         }
       } else if (user.role === "march1st") {
         payload.role = "march1st";
-        payload.id= user.march1st.id;
       }
       const mySubmissions = await SubmissionService.getMySubmissions(payload);
       await commit("SET_MY_SUBMISSIONS", mySubmissions);
     }
   },
   async GET_SUBMISSIONSTATUS_BY_SUBMISSION({ commit }, idSubmission) {
-    const allSubmissionStatus = localStorage.getItem("submissionStatus")
-      ? JSON.parse(localStorage.getItem("submissionStatus"))
-      : [];
-    console.log(allSubmissionStatus);
-    const data = await allSubmissionStatus.filter(
-      (submissionStatus) => submissionStatus.submission == idSubmission
-    );
-    return data;
+    const allSubmissionStatus = await SubmissionService.getSubmissionStatus(idSubmission);
+    return allSubmissionStatus;
   },
   async GET_ONE_SUBMISSION({commit}, submissionId){
     const submission = await SubmissionService.getOneSubmission(submissionId);

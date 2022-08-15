@@ -9,6 +9,7 @@ import {
   SUBMISSIONS_MANAGER,
   SUBMISSIONS_ADMIN,
   ONE_SUBMISSION_QUERY,
+  SUBMISSION_STATUS
 } from "./query";
 
 export class SubmissionService {
@@ -37,8 +38,7 @@ export class SubmissionService {
       CREATE_SUBMISSION_STATUS.context.headers.authorization =
         "Bearer " + token;
       const result = await apolloClient.mutate(CREATE_SUBMISSION_STATUS);
-      //console.log(submission);
-      resolve(result);
+      resolve(result.data.createSubmissionStatus.data.id);
     });
   }
 
@@ -110,7 +110,6 @@ export class SubmissionService {
   static getMySubmissions(payload) {
     return new Promise(async (resolve, reject) => {
       let token = localStorage.getItem("token");
-      SUBMISSIONS_HACKER.context.headers.authorization = "Bearer " + token;
       let result = [];
       let param = {
         id: payload.id,
@@ -121,17 +120,41 @@ export class SubmissionService {
       SUBMISSIONS_HACKER.variables.page = param.page;
       SUBMISSIONS_HACKER.variables.pageSize = param.pageSize;
 
+      SUBMISSIONS_ADMIN.variables.page = param.page;
+      SUBMISSIONS_ADMIN.variables.pageSize = param.pageSize;
+
+      SUBMISSIONS_SUPER_MANAGER.variables.page = param.page;
+      SUBMISSIONS_SUPER_MANAGER.variables.pageSize = param.pageSize;
+
       if (payload.role === "hacker") {
+        SUBMISSIONS_HACKER.context.headers.authorization = "Bearer " + token;
         result = await apolloClient.query(SUBMISSIONS_HACKER);
       } else if (payload.role === "march1st") {
+        SUBMISSIONS_ADMIN.context.headers.authorization = "Bearer " + token;
         result = await apolloClient.query(SUBMISSIONS_ADMIN);
       } else if (payload.role === "program_manager") {
+        SUBMISSIONS_MANAGER.context.headers.authorization = "Bearer " + token;
         result = await apolloClient.query(SUBMISSIONS_MANAGER);
       } else if (payload.role === "program_super_admin") {
+        SUBMISSIONS_SUPER_MANAGER.variables.companyId = payload.company;
+        SUBMISSIONS_SUPER_MANAGER.context.headers.authorization = "Bearer " + token;
         result = await apolloClient.query(SUBMISSIONS_SUPER_MANAGER);
       }
+      console.log("getMySubmissions /result = ", result);
       const submissionData = result.data.submissions.data;
       resolve(this.formatSubmissions(submissionData));
+    });
+  }
+  static getSubmissionStatus(payload){
+    return new Promise(async (resolve, reject) => {
+      let token = localStorage.getItem("token");
+      SUBMISSION_STATUS.variables.submissionId = payload;
+      SUBMISSION_STATUS.context.headers.authorization = "Bearer " + token;
+      const result = await apolloClient.query(SUBMISSION_STATUS);
+      const submissionStatusData = result.data.submissionStatuses.data;
+      const submissionStatus = this.formatSubmissionStatus(submissionStatusData);
+      console.log("getSubmissionStatus/submissionStatus = ", submissionStatus);
+      resolve(submissionStatus);
     });
   }
 
@@ -203,5 +226,18 @@ export class SubmissionService {
         medium: element.attributes.program.data.attributes.reward_range.medium,
       },
     };
+  }
+  static formatSubmissionStatus(submissionsData) {
+    const submissionsStatus = submissionsData.map(function (element) {
+      return {
+        id: element.id,
+        status: element.attributes.status,
+        status_title: element.attributes.status_title,
+        comment: element.attributes.comment,
+        createdAt:element.attributes.createdAt,
+        submission:element.attributes.submission.data.id
+      };
+    })
+    return submissionsStatus
   }
 }

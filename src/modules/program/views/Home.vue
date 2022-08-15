@@ -59,7 +59,7 @@
           bg-color="white"
           filled
           dense
-          :options="getCompanies"
+          :options="companies"
           v-model="company"
           label="All Companies"
           style="min-width: 200px"
@@ -196,10 +196,15 @@ export default {
       checkPrivate:true,
       checkPoint:true,
       checkCash:true,
-      isAscending:false
+      isAscending:false,
+      companies:[]
     };
   },
   watch:{
+    company:function(val){
+      console.log(val)
+      this.allMyPrograms = this.getMyPrograms.filter((program) => program.company==val.value)
+    },
     myPrograms:function(val){
       this.allMyPrograms=JSON.parse(JSON.stringify(val));
     },
@@ -338,6 +343,13 @@ export default {
     //console.log(localStorage.getItem('programs'))
   },
   async mounted(){
+    this.companies = this.getCompanies.map(function(element){
+      return {
+        ...element,
+        label:element.company_name,
+        value:element.id
+      }
+    })
     this.allMyPrograms = JSON.parse(JSON.stringify(this.getMyPrograms));
     try {
       this.$q.loading.show();

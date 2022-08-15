@@ -256,23 +256,55 @@ export default {
     ...mapActions("submission", [
       "GET_SUBMISSIONSTATUS_BY_SUBMISSION",
       "GET_ONE_SUBMISSION",
+      "CREATE_SUBMISSION_STATUS"
     ]),
-    onActionClick(num) {
+    async onActionClick(num) {
+      let param={
+        submission:this.submission.id,
+        comment:this.message
+      }
       switch (num) {
         case 1:
+        param.status="triaged";
+        param.status_title="Passed Triage";
           break;
         case 2:
+        param.status="accepted_unresolved";
+        param.status_title="Accept but still unresolve";
           break;
         case 3:
+        param.status="accepted_resolved";
+        param.status_title="Accept and resolve";
           break;
         case 4:
+        param.status="client_returned_for_review";
+        param.status_title="Return For Clarification";
           break;
         case 5:
+        param.status="m1_returned_for_review";
+        param.status_title="Return For Clarification";
           break;
         case 6:
+        param.status="rejected";
+        param.status_title="Rejected";
           break;
         default:
+        param.status="new";
+        param.status_title="New Report Submission";
           break;
+      }
+      try {
+        this.$q.loading.show();
+        await this.CREATE_SUBMISSION_STATUS(param);
+        this.$router.push("/new-dashboard");
+        this.$q.notify({
+          message:"The submission: "+param.status_title,
+          type:"positive",
+          position:"top"
+        })
+        this.$q.loading.hide();
+      } catch (error) {
+        this.$q.loading.hide();
       }
     },
   },

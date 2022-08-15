@@ -191,7 +191,7 @@ export default {
     async submitLoginForm() {
       try {
         // Submit login form to cognito
-        this.setLoadingMsg("Getting authentication challenge ...");
+        this.setLoadingMsg("Signin in ...");
         this.cognitoUser = await this.onSubmitLoginForm(this.formData);
 
         //direct submission with strapi

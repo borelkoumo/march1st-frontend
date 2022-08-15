@@ -149,6 +149,7 @@ const actions = {
       name: formatFullName(payload.fullName),
       locale: state.locale.value,
       "custom:role":payload.role,
+      //"custom:role":"m1_account_manager",
       "custom:companyName":payload.role==='client'?payload.companyName.trim():"",
       "custom:title":payload.role==='client'?payload.title.trim():"",
       "custom:userId": "",
@@ -292,7 +293,7 @@ const actions = {
         companyUser:data.user.company_user,
         company:data.user.company_user!=null?data.user.company_user.company:null,
         hacker:data.user.hacker,
-        march1st:data.user.march1st
+        march1st:data.user.march1st_user
       }
       localStorage.setItem("user",JSON.stringify(user));
       localStorage.setItem('token',data.jwtStrapi);
