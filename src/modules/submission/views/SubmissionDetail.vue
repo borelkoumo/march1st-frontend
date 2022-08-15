@@ -10,71 +10,14 @@
             no-caps
             label="Actions"
             outline
-            v-if="getUser.role == 'client' || getUser.role == 'march1st'"
+            v-if="(getUser.role == 'client' || getUser.role == 'march1st') && nextStatuses.length>0"
           >
-            <q-list>
-              <q-item
-                clickable
-                v-close-popup
-                @click="onActionClick(1)"
-                v-if="getUser.role == 'march1st'"
+            <q-list separator>
+              <q-item v-for="status in nextStatuses"
+              :key="status.key" clickable
+              @click="onActionClick(status)"
               >
-                <q-item-section>
-                  <q-item-label>Passed Triage</q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-item
-                clickable
-                v-close-popup
-                @click="onActionClick(2)"
-                v-if="getUser.role == 'client'"
-              >
-                <q-item-section>
-                  <q-item-label>Accept but still unresolve</q-item-label>
-                </q-item-section>
-              </q-item>
-
-              <q-item
-                clickable
-                v-close-popup
-                @click="onActionClick(3)"
-                v-if="getUser.role == 'client'"
-              >
-                <q-item-section>
-                  <q-item-label>Accept and resolve</q-item-label>
-                </q-item-section>
-              </q-item>
-
-              <q-item
-                clickable
-                v-close-popup
-                @click="onActionClick(4)"
-                v-if="getUser.role == 'client'"
-              >
-                <q-item-section>
-                  <q-item-label>Return For Clarification</q-item-label>
-                </q-item-section>
-              </q-item>
-
-              <q-item
-                clickable
-                v-close-popup
-                @click="onActionClick(5)"
-                v-if="getUser.role == 'march1st'"
-              >
-                <q-item-section>
-                  <q-item-label>Return For Clarification</q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-item
-                clickable
-                v-close-popup
-                @click="onActionClick(6)"
-                v-if="getUser.role == 'march1st'"
-              >
-                <q-item-section>
-                  <q-item-label>Reject</q-item-label>
-                </q-item-section>
+                {{status.action}}
               </q-item>
             </q-list>
           </q-btn-dropdown>
@@ -237,6 +180,7 @@ export default {
       submission: null,
       message: null,
       submissionStatus: [],
+      nextStatuses: [],
     };
   },
   watch: {
@@ -256,56 +200,103 @@ export default {
     ...mapActions("submission", [
       "GET_SUBMISSIONSTATUS_BY_SUBMISSION",
       "GET_ONE_SUBMISSION",
-      "CREATE_SUBMISSION_STATUS"
+      "CREATE_SUBMISSION_STATUS",
     ]),
-    async onActionClick(num) {
-      let param={
-        submission:this.submission.id,
-        comment:this.message
-      }
-      switch (num) {
-        case 1:
-        param.status="triaged";
-        param.status_title="Passed Triage";
-          break;
-        case 2:
-        param.status="accepted_unresolved";
-        param.status_title="Accept but still unresolve";
-          break;
-        case 3:
-        param.status="accepted_resolved";
-        param.status_title="Accept and resolve";
-          break;
-        case 4:
-        param.status="client_returned_for_review";
-        param.status_title="Return For Clarification";
-          break;
-        case 5:
-        param.status="m1_returned_for_review";
-        param.status_title="Return For Clarification";
-          break;
-        case 6:
-        param.status="rejected";
-        param.status_title="Rejected";
-          break;
-        default:
-        param.status="new";
-        param.status_title="New Report Submission";
-          break;
-      }
+    async onActionClick(statusSubmission) {
+      let param = {
+        submission: this.submission.id,
+        comment: this.message,
+        status:statusSubmission.key,
+        status_title:statusSubmission.label
+      };
       try {
         this.$q.loading.show();
         await this.CREATE_SUBMISSION_STATUS(param);
         this.$router.push("/new-dashboard");
         this.$q.notify({
-          message:"The submission: "+param.status_title,
-          type:"positive",
-          position:"top"
-        })
+          message: "The submission: " + param.status_title,
+          type: "positive",
+          position: "top",
+        });
         this.$q.loading.hide();
       } catch (error) {
         this.$q.loading.hide();
       }
+    },
+    getNextStatuses(role, currentSubmissionStatus) {
+      const statuseLabels = {
+        new: {
+          key: "new",
+          label: "New submission report",
+          action: "New submission report",
+        },
+        triaged: {
+          key: "triaged",
+          label: "Passed triage",
+          action: "Pass triage",
+        },
+        m1_returned_for_review: {
+          key: "m1_returned_for_review",
+          label: "March1st returned for review",
+          action: "Returned for review",
+        },
+        accepted_unresolved: {
+          key: "accepted_unresolved",
+          label: "Accepted but still Unresolved",
+          action: "Accept as Unresolved",
+        },
+        accepted_resolved: {
+          key: "accepted_resolved",
+          label: "Accepted and Resolved",
+          action: "Accept and Resolve",
+        },
+        client_returned_for_review: {
+          key: "client_returned_for_review",
+          label: "Returned for review",
+          action: "Return for review",
+        },
+        rejected: {
+          key: "rejected",
+          label: "Rejected",
+          action: "Reject submission",
+        },
+      };
+      const statusTransitions = {
+        march1st: {
+          new: [
+            statuseLabels.triaged,
+            statuseLabels.m1_returned_for_review,
+            statuseLabels.rejected,
+          ],
+          client_returned_for_review: [
+            statuseLabels.triaged,
+            statuseLabels.m1_returned_for_review,
+            statuseLabels.rejected,
+          ],
+        },
+        program_super_admin: {
+          triaged: [
+            statuseLabels.accepted_unresolved,
+            statuseLabels.client_returned_for_review,
+          ],
+          accepted_unresolved: [statuseLabels.accepted_resolved],
+        },
+        program_manager: {
+          triaged: [
+            statuseLabels.accepted_unresolved,
+            statuseLabels.client_returned_for_review,
+          ],
+          accepted_unresolved: [statuseLabels.accepted_resolved],
+        },
+        hacker: {
+          m1_returned_for_review: [statuseLabels.new],
+        },
+      };
+      console.log("statusTransitions/role =", role)
+      console.log("statusTransitions/currentSubmissionStatus =", currentSubmissionStatus)
+      return statusTransitions[role]?.[currentSubmissionStatus] !== undefined
+        ? statusTransitions[role]?.[currentSubmissionStatus]
+        : [];
     },
   },
   async beforeMount() {
@@ -316,6 +307,18 @@ export default {
       this.submissionStatus = await this.GET_SUBMISSIONSTATUS_BY_SUBMISSION(
         this.idSubmission
       );
+      console.log("beforeMount/submission =", this.submission)
+      this.nextStatuses = this.getNextStatuses(
+        this.getUser.role,
+        this.submission.submission_status
+      ).map(function (status) {
+        return {
+          label: status.label,
+          key: status.key,
+          action:status.action
+        };
+      });
+      console.log("beforeMount/nextStatuses = ",this.nextStatuses);
       this.$q.loading.hide();
     } catch (error) {
       this.$q.loading.hide();

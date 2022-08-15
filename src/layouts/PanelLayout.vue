@@ -5,9 +5,9 @@
       class="bg-primary text-white q-pt-lg"
       :width="292"
       style="overflow-y: hidden"
-    >
+    >{{rightDrawerOpen}}
       <div style="margin: auto; text-align: center; padding-top: 15px">
-        <q-img src="vectors/logo-02.svg" width="200px" @click="goHome()"/>
+        <q-img src="vectors/logo-02.svg" width="200px" @click="goHome()" class="cursor-pointer"/>
       </div>
       <q-scroll-area class="fit">
         <q-list class="pt-box menu-item" style="font-family: 'nunito'">
@@ -306,12 +306,12 @@ export default {
 
   setup() {
     const leftDrawerOpen = ref(true);
-    const rightDrawerOpen = ref(true);
+    //const rightDrawerOpen = ref(true);
     const tabElement = ref("task");
     const activeTask = ref(3);
 
     return {
-      rightDrawerOpen,
+      //rightDrawerOpen,
 
       leftDrawerOpen,
       tabElement,
@@ -371,7 +371,7 @@ export default {
   },
   data() {
     return {
-      //rightDrawerOpen:false,
+      rightDrawerOpen:true,
 
       roleUsers: [
         { label: "Hacker", value: 1 },
@@ -422,8 +422,11 @@ export default {
       });
     },
     "$route.name": function (val) {
-      if (val.name !== "home") this.rightDrawerOpen = false;
-      else this.rightDrawerOpen = true;
+      console.log("$route.name/val=",val)
+      console.log("before condition: $route.name/rightDrawerOpen=",this.rightDrawerOpen)
+      if (val.name === "home") this.rightDrawerOpen = true;
+      else this.rightDrawerOpen = false;
+      console.log("after condition: $route.name/rightDrawerOpen=",this.rightDrawerOpen)
     },
   },
   computed: {
@@ -567,8 +570,10 @@ export default {
   created(){
     if (this.$route.name === "home") {
       this.rightDrawerOpen = true;
+      console.log("Dans if Created/rightDrawerOpen =",this.rightDrawerOpen)
     } else {
       this.rightDrawerOpen = false;
+      console.log("Dans else Created/rightDrawerOpen =",this.rightDrawerOpen)
     }
   },
   mounted() {

@@ -114,7 +114,7 @@ export class SubmissionService {
       let param = {
         id: payload.id,
         page: 1,
-        pageSize: 10,
+        pageSize: 30,
       };
       SUBMISSIONS_HACKER.variables.hackerId = param.id;
       SUBMISSIONS_HACKER.variables.page = param.page;

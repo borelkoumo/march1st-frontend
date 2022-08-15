@@ -1,38 +1,38 @@
 <template>
   <q-page class="bg-home q-pl-md q-pr-md">
     <q-toolbar
-        class="bg-none flex q-gutter-sm toolbar-submission"
-        style="padding-top: 40px"
-      >
-        <q-select
-          bg-color="white"
-          filled
-          dense
-          :options="allMyPrograms"
-          v-model="selectProgram"
-          label="Select Program Name"
-          style="min-width: 400px;"
-          borderless
-        />
-        <q-select
-          bg-color="white"
-          dense
-          filled
-          label="Select Status"
-          :options="allStatus"
-          v-model="selectStatus"
-          style="min-width: 200px"
-          borderless
-        />
-        <q-space />
-        <q-btn
-          label="Submissions"
-          flat
-          no-caps
-          icon-right="import_export"
-          @click="isSorting = !isSorting"
-        />
-      </q-toolbar>
+      class="bg-none flex q-gutter-sm toolbar-submission"
+      style="padding-top: 40px"
+    >
+      <q-select
+        bg-color="white"
+        filled
+        dense
+        :options="selectAllPrograms"
+        v-model="selectProgram"
+        label="Select Program Name"
+        style="min-width: 400px"
+        borderless
+      />
+      <q-select
+        bg-color="white"
+        dense
+        filled
+        label="Select Status"
+        :options="allStatus"
+        v-model="selectStatus"
+        style="min-width: 200px"
+        borderless
+      />
+      <q-space />
+      <q-btn
+        label="Submissions"
+        flat
+        no-caps
+        icon-right="import_export"
+        @click="isSorting = !isSorting"
+      />
+    </q-toolbar>
     <div class="main-content">
       <div
         class="q-mt-lg q-gutter-md"
@@ -88,37 +88,63 @@ export default {
   },
   data() {
     return {
+      selectAllPrograms: [{ label: "All My Program", value: 0 }],
       allMyPrograms: [],
       selectProgram: null,
 
       allStatus: [
-        {label:"New Report submission",value:"new"},
-        {label:"Passed Triaged",value:"triaged"},
-        {label:"Accept Unresolved",value:"accepted_unresolved"},
-        {label:"Accept Resolved",value:"accepted_resolved"},
-        {label:"Client returned for review",value:"client_returned_for_review"},
-        {label:"March1st returned for review",value:"m1_returned_for_review"},
-        {label:"Rejected",value:"rejected"}
+        { label: "New Report submission", value: "new" },
+        { label: "Passed Triaged", value: "triaged" },
+        { label: "Accept Unresolved", value: "accepted_unresolved" },
+        { label: "Accept Resolved", value: "accepted_resolved" },
+        {
+          label: "Client returned for review",
+          value: "client_returned_for_review",
+        },
+        {
+          label: "March1st returned for review",
+          value: "m1_returned_for_review",
+        },
+        { label: "Rejected", value: "rejected" },
       ],
       selectStatus: null,
-      allSubmissions:[]
+      allSubmissions: [],
     };
   },
-  watch:{
-    selectProgram:function(val){
-      if(!this.selectStatus) this.allSubmissions = this.getMySubmissions.filter((submission)=>submission.program.id==val.value);
-      else{
-        this.allSubmissions = this.getMySubmissions.filter((submission)=>submission.submission_status==this.selectStatus.value);
-        this.allSubmissions = this.allSubmissions.filter((submission)=>submission.program.id==val.value);
+  watch: {
+    selectProgram: function (val) {
+      console.log("selectProgram/val = ", val);
+      if (val.value == 0) this.allSubmissions = this.getMySubmissions;
+      else {
+        if (!this.selectStatus)
+          this.allSubmissions = this.getMySubmissions.filter(
+            (submission) => submission.program.id == val.value
+          );
+        else {
+          this.allSubmissions = this.getMySubmissions.filter(
+            (submission) =>
+              submission.submission_status == this.selectStatus.value
+          );
+          this.allSubmissions = this.allSubmissions.filter(
+            (submission) => submission.program.id == val.value
+          );
+        }
       }
     },
-    selectStatus:function(val){
-      if(!this.selectProgram) this.allSubmissions = this.getMySubmissions.filter((submission)=>submission.submission_status==val.value);
-      else{
-        this.allSubmissions = this.getMySubmissions.filter((submission)=>submission.program.id==this.selectProgram.value);
-        this.allSubmissions = this.allSubmissions.filter((submission)=>submission.submission_status==val.value);
+    selectStatus: function (val) {
+      if (!this.selectProgram)
+        this.allSubmissions = this.getMySubmissions.filter(
+          (submission) => submission.submission_status == val.value
+        );
+      else {
+        this.allSubmissions = this.getMySubmissions.filter(
+          (submission) => submission.program.id == this.selectProgram.value
+        );
+        this.allSubmissions = this.allSubmissions.filter(
+          (submission) => submission.submission_status == val.value
+        );
       }
-    }
+    },
   },
   computed: {
     ...mapGetters("submission", ["getMySubmissions"]),
@@ -142,12 +168,16 @@ export default {
         };
         return item;
       });
+      this.selectAllPrograms = [
+        { label: "All My Program", value: 0 },
+        ...this.allMyPrograms,
+      ];
       this.$q.loading.hide();
     } catch (error) {
       this.$q.loading.hide();
     }
   },
-  async mounted(){
+  async mounted() {
     this.allSubmissions = JSON.parse(JSON.stringify(this.getMySubmissions));
     try {
       this.$q.loading.show();
@@ -156,7 +186,7 @@ export default {
     } catch (error) {
       this.$q.loading.hide();
     }
-  }
+  },
 };
 </script>
 

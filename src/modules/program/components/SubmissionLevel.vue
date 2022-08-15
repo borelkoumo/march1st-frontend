@@ -16,7 +16,7 @@
           track-color="white"
         />
       </q-item-section>
-      <q-item-section class="number" v-if="submissions.length>0">{{(accepted/submissions.length * 100).toFixed(2)}}</q-item-section>
+      <q-item-section class="number" v-if="submissions.length>0">{{getPourcentage(accepted/submissions.length * 100)}}</q-item-section>
       <q-item-section class="number" v-else>0</q-item-section>
     </q-item>
     <q-item>
@@ -29,7 +29,7 @@
           track-color="white"
         />
       </q-item-section>
-      <q-item-section class="number" v-if="submissions.length>0">{{(rejected/submissions.length * 100).toFixed(2)}}</q-item-section>
+      <q-item-section class="number" v-if="submissions.length>0">{{getPourcentage(rejected/submissions.length * 100)}}</q-item-section>
       <q-item-section class="number" v-else>0</q-item-section>
     </q-item>
     <q-item>
@@ -42,7 +42,7 @@
           track-color="white"
         />
       </q-item-section>
-      <q-item-section class="number" v-if="submissions.length>0">{{(pending/submissions.length * 100).toFixed(2)}}</q-item-section>
+      <q-item-section class="number" v-if="submissions.length>0">{{getPourcentage(pending/submissions.length * 100)}}</q-item-section>
       <q-item-section class="number" v-else>0</q-item-section>
     </q-item>
     <slot name="bottom">
@@ -62,26 +62,34 @@ export default {
     accepted:function(){
       let count = 0;
       this.submissions.forEach(element => {
-        if(element.submission_status ==="Accepted") count++;
+        if(element.submission_status ==="accepted_unresolved || accepted_resolved") count++;
       });
       return count;
     },
     rejected:function(){
       let count = 0;
       this.submissions.forEach(element => {
-        if(element.submission_status ==="Rejected") count++;
+        if(element.submission_status ==="rejected") count++;
       });
       return count;
     },
     pending:function(){
       let count = 0;
       this.submissions.forEach(element => {
-        if(element.submission_status ==="new") count++;
-        if(element.submission_status ==="Pending") count++;
+        if(element.submission_status ==="new"||
+        element.submission_status ==="triaged"||
+        element.submission_status ==="m1_returned_for_review"||
+        element.submission_status ==="client_returned_for_review"
+        ) count++;
       });
       return count;
     }
   },
+  methods:{
+    getPourcentage(pourcentage){
+      return pourcentage%1===0?parseInt(pourcentage)+"%":pourcentage.toFixed(2)+"%";
+    }
+  }
 };
 </script>
 <style scoped>

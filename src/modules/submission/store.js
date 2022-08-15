@@ -6,6 +6,7 @@ const state = {
   submissionsStatus: [],
 };
 const getters = {
+
   getAllSubmissions() {
     return state.submissions;
   },
@@ -106,7 +107,27 @@ const actions = {
     return submission;
   }
 };
-
+function getNextStatuses (role, currentSubmissionStatus) {
+  const statusTransitions = {
+    m1_account_manager: {
+      new: ["triaged", "m1_returned_for_review", "rejected"],
+      client_returned_for_review: ["triaged", "m1_returned_for_review", "rejected"],
+    },
+    program_super_admin: {
+      triaged: ["accepted_unresolved", "client_returned_for_review"],
+      accepted_unresolved: ["accepted_resolved",]
+    },
+    program_manager: {
+      triaged: ["accepted_unresolved", "client_returned_for_review"],
+      accepted_unresolved: ["accepted_resolved"]
+    },
+    hacker: {
+      m1_returned_for_review: ["new"]
+    }
+  }
+  return statusTransitions[role]?.[currentSubmissionStatus] !== undefined ?
+    statusTransitions[role]?.[currentSubmissionStatus] : []
+}
 export default {
   namespaced: true,
   state,
