@@ -43,7 +43,7 @@ const state = {
 }
 const getters = {
   getCompanies(state){
-    let companies = localStorage.getItem('companies')?JSON.parse(localStorage.getItem('companies')):[
+    /*let companies = localStorage.getItem('companies')?JSON.parse(localStorage.getItem('companies')):[
       {
         id:1,
         company_name:"Facebook France",
@@ -54,8 +54,8 @@ const getters = {
         company_name:"Twitter",
         companyUsers:[]
       }
-    ];
-    return companies;
+    ];*/
+    return state.companies;
   },
   getCompany(state){
     return(id)=>{
@@ -137,8 +137,8 @@ const mutations = {
   SET_HACKERS(state, hackers){
     state.myhackers = hackers;
   },
-  SET_COMPAGNIES(state,compagnies){
-    state.compagnies = compagnies;
+  SET_COMPAGNIES(state,companies){
+    state.companies = companies;
   }
 }
 const actions = {
@@ -379,8 +379,9 @@ const actions = {
 
   async GET_COMPAGNIES({commit}){
     try {
-      const compagnies = await _getCompanies();
-      commit('SET_COMPAGNIES',compagnies);
+      const companies = await _getCompanies();
+      console.log("GET_COMPAGNIES/companies =",companies)
+      commit('SET_COMPAGNIES',companies);
     } catch (error) {
 
     }

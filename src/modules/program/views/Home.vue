@@ -61,7 +61,7 @@
           dense
           :options="companies"
           v-model="company"
-          label="All Companies"
+          label="Select Company"
           style="min-width: 200px"
           v-if="getUser.role=='march1st'"
         />
@@ -202,8 +202,12 @@ export default {
   },
   watch:{
     company:function(val){
-      console.log(val)
-      this.allMyPrograms = this.getMyPrograms.filter((program) => program.company==val.value)
+      if(val.value==0){
+        this.allMyPrograms = this.getMyPrograms
+      }
+      else{
+        this.allMyPrograms = this.getMyPrograms.filter((program) => program.company==val.value)
+      }
     },
     myPrograms:function(val){
       this.allMyPrograms=JSON.parse(JSON.stringify(val));
@@ -333,6 +337,7 @@ export default {
   },
   methods: {
     ...mapActions('program',["GET_MY_PROGRAMS"]),
+    ...mapActions('auth',["GET_COMPAGNIES"]),
     onFilterClick(num){
 
     }
@@ -340,9 +345,11 @@ export default {
 
   async beforeMount() {
     this.allMyPrograms = JSON.parse(JSON.stringify(this.getMyPrograms));
+    await this.GET_COMPAGNIES();
     //console.log(localStorage.getItem('programs'))
   },
   async mounted(){
+    await this.GET_COMPAGNIES();
     this.companies = this.getCompanies.map(function(element){
       return {
         ...element,
@@ -350,6 +357,10 @@ export default {
         value:element.id
       }
     })
+    this.companies=[
+      {label:"All Companies", value:0},
+      ...this.companies
+    ]
     this.allMyPrograms = JSON.parse(JSON.stringify(this.getMyPrograms));
     try {
       this.$q.loading.show();

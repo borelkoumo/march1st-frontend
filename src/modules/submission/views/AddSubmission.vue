@@ -166,10 +166,22 @@ export default {
       'CREATE_SUBMISSION'
     ]),
     async onAddReport(){
-      this.formData.program_id=Number(this.idProgram);
-      this.formData.severity_level=this.level.value;
-      await this.CREATE_SUBMISSION(this.formData);
-      this.$router.push('/new-dashboard');
+      try {
+        this.$q.loading.show();
+        this.formData.program_id=Number(this.idProgram);
+        this.formData.severity_level=this.level.value;
+        await this.CREATE_SUBMISSION(this.formData);
+        this.$router.push('/new-dashboard/submissions');
+        this.$q.notify({
+          message:"Your submission send successfully",
+          position:"top",
+          type:"positive"
+        })
+        this.$q.loading.hide();
+      } catch (error) {
+        this.$q.loading.hide();
+      }
+
     }
   },
   async beforeMount(){
