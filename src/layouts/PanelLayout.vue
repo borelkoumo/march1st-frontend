@@ -7,7 +7,7 @@
       style="overflow-y: hidden"
     >
       <div style="margin: auto; text-align: center; padding-top: 15px">
-        <q-img src="vectors/logo-02.svg" width="200px" />
+        <q-img src="vectors/logo-02.svg" width="200px" @click="goHome()"/>
       </div>
       <q-scroll-area class="fit">
         <q-list class="pt-box menu-item" style="font-family: 'nunito'">
@@ -518,7 +518,9 @@ export default {
   methods: {
     ...mapActions("auth", ["register", "login","logOutUser"]),
     ...mapActions("program", ["allPrograms"]),
-
+    goHome(){
+      this.$router.push("/");
+    },
     async onSignout() {
       this.$router.push('/auth/login');
       await this.logOutUser();
