@@ -1,7 +1,7 @@
 <template>
   <q-page class="bg-home" v-if="program">
     <div class="main-content">
-      <q-toolbar class="header">
+      <q-toolbar class="header q-pt-lg">
         <q-toolbar-title class="title-header">Main Definition</q-toolbar-title>
         <q-space />
         <router-link
@@ -184,6 +184,7 @@
                 v-for="submission in program.submissions"
                 :key="submission.id"
                 class="cursor-pointer"
+                @click="gotoSubmission(submission.id)"
               >
                 <q-card-section class="q-pt-none">
                   <div class="recent-time">2 day ago , 3:45 pm</div>
@@ -250,7 +251,10 @@ export default {
   methods: {
     ...mapActions('program',[
       'GET_ONE_PROGRAM'
-    ])
+    ]),
+    gotoSubmission(id){
+      this.$router.push("/new-dashboard/submissions/submission-detail/"+id);
+    }
   },
   async beforeMount(){
     try {
@@ -535,7 +539,7 @@ export default {
 .main-content {
   padding-left: 24px;
   padding-right: 24px;
-  padding-top: 24px;
+  padding-top: 50px;
   padding-bottom: 24px;
 }
 .grid-content {
