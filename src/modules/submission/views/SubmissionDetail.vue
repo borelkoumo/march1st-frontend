@@ -304,6 +304,7 @@ export default {
       this.$q.loading.show();
       this.idSubmission = Number(this.$route.params.id);
       this.submission = await this.GET_ONE_SUBMISSION(this.idSubmission);
+      //console.log(`beforeMount/this.submission = ${this.submission}`);
       this.submissionStatus = await this.GET_SUBMISSIONSTATUS_BY_SUBMISSION(
         this.idSubmission
       );

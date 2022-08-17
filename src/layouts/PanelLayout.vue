@@ -1,11 +1,11 @@
 <template>
-  <q-layout view="lHh lpp fff" class="bg-grey-1">
+  <q-layout view="lHh LpR fff" class="bg-grey-1">
     <q-drawer
       v-model="leftDrawerOpen"
       class="bg-primary text-white q-pt-lg"
       :width="292"
       style="overflow-y: hidden"
-    >{{rightDrawerOpen}}
+    >
       <div style="margin: auto; text-align: center; padding-top: 15px">
         <q-img src="vectors/logo-02.svg" width="200px" @click="goHome()" class="cursor-pointer"/>
       </div>
@@ -306,12 +306,12 @@ export default {
 
   setup() {
     const leftDrawerOpen = ref(true);
-    //const rightDrawerOpen = ref(true);
+    const rightDrawerOpen = ref(true);
     const tabElement = ref("task");
     const activeTask = ref(3);
 
     return {
-      //rightDrawerOpen,
+      rightDrawerOpen,
 
       leftDrawerOpen,
       tabElement,
@@ -371,7 +371,7 @@ export default {
   },
   data() {
     return {
-      rightDrawerOpen:true,
+      //rightDrawerOpen:true,
 
       roleUsers: [
         { label: "Hacker", value: 1 },
@@ -423,10 +423,8 @@ export default {
     },
     "$route.name": function (val) {
       console.log("$route.name/val=",val)
-      console.log("before condition: $route.name/rightDrawerOpen=",this.rightDrawerOpen)
-      if (val.name === "home") this.rightDrawerOpen = true;
+      if (val === "home") this.rightDrawerOpen = true;
       else this.rightDrawerOpen = false;
-      console.log("after condition: $route.name/rightDrawerOpen=",this.rightDrawerOpen)
     },
   },
   computed: {

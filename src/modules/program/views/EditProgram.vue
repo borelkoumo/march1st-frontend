@@ -1,34 +1,6 @@
 <template>
   <q-page class="bg-home">
     <div class="main-content">
-      <q-toolbar
-        class="bg-none flex q-gutter-sm header"
-        style="padding-top: 40px"
-      >
-        <q-toolbar-title class="title-header">Edit A Program</q-toolbar-title>
-        <q-space />
-        <!-- <q-btn
-          no-caps
-          outline
-          class="bg-white text-secondary"
-          label="Cancel"
-          style="min-width: 160px"
-        />
-        <q-btn
-          no-caps
-          label="Save"
-          class="bg-positive text-white"
-          flat
-          style="min-width: 160px"
-        />
-        <q-btn
-          no-caps
-          label="Publish"
-          class="bg-secondary text-white"
-          flat
-          style="min-width: 160px"
-        /> -->
-      </q-toolbar>
       <q-card
         class="card-user q-mt-lg bg-transparent"
         flat
