@@ -415,5 +415,6 @@ export default {
 .main-content {
   padding-left: 24px;
   padding-right: 24px;
+  padding-top:50px;
 }
 </style>

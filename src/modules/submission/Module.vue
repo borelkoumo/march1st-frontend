@@ -41,8 +41,11 @@
       </q-btn-dropdown>
     </q-toolbar>
   </q-header>
-  <router-view
+  <!--<router-view
     v-if="getMyPrograms.length > 0 && getMySubmissions.length >= 0"
+  />-->
+  <router-view
+    v-if="getUser"
   />
 </template>
 
@@ -69,16 +72,13 @@ export default {
         case "submission-detail":
           this.title = "Submission Detail";
           break;
-        case "all-programs":
-          this.title = "All Programs";
-          break;
-        case "program-detail":
-          this.title = "Program Details";
-          break;
       }
     },
   },
   computed: {
+    ...mapGetters("auth",[
+      'getUser'
+    ]),
     ...mapGetters("submission", ["getMySubmissions"]),
     ...mapGetters("program", ["getMyPrograms"]),
   },

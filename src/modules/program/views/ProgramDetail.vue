@@ -226,7 +226,8 @@ export default {
     return {
       idProgram:null,
       program:null,
-      progress: [0.8, 0.2, 0.1]
+      progress: [0.8, 0.2, 0.1],
+      reports:[]
     }
   },
   watch:{
@@ -241,6 +242,9 @@ export default {
     ...mapGetters('program',[
       'getOneProgram'
     ]),
+    ...mapGetters('submission',[
+      'getMySubmissions'
+    ]),
     hasJoinProgram:function(){
       //const program = this.getOneProgram(this.idProgram);
       const program = this.program;
@@ -252,6 +256,9 @@ export default {
     ...mapActions('program',[
       'GET_ONE_PROGRAM'
     ]),
+    ...mapActions('submission',[
+      'GET_MY_SUBMISSIONS'
+    ]),
     gotoSubmission(id){
       this.$router.push("/new-dashboard/submissions/submission-detail/"+id);
     }
@@ -259,7 +266,10 @@ export default {
   async beforeMount(){
     try {
       this.$q.loading.show();
-      this.idProgram = this.$route.params.id;
+      this.idProgram = parseInt(this.$route.params.id);
+      await this.GET_MY_SUBMISSIONS();
+      console.log(this.getMySubmissions);
+      this.reports = this.getMySubmissions.filter((submission)=> submission.program.id === this.idProgram)
       this.program = await this.GET_ONE_PROGRAM(this.idProgram);
       this.$q.loading.hide();
     } catch (error) {
