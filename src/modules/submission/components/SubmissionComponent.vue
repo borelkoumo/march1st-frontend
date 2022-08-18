@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="'submissions/submission-detail/'+submission.id"
+  <router-link :to="'/new-dashboard/submissions/submission-detail/'+submission.id"
   v-if="submission"
   style="text-decoration:none"
   >

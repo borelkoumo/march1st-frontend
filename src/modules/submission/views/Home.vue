@@ -1,43 +1,42 @@
 <template>
-  <q-page class="bg-home q-pl-md q-pr-md">
-    <q-toolbar
-      class="bg-none flex q-gutter-sm toolbar-submission"
-      style="padding-top: 40px"
+  <q-page class="bg-home q-pr-md" v-if="allMyPrograms.length > 0 && getMySubmissions.length > 0">
+    <div
+      class="main-content"
     >
-      <q-select
-        bg-color="white"
-        filled
-        dense
-        :options="selectAllPrograms"
-        v-model="selectProgram"
-        label="Select Program Name"
-        style="min-width: 400px"
-        borderless
-      />
-      <q-select
-        bg-color="white"
-        dense
-        filled
-        label="Select Status"
-        :options="allStatus"
-        v-model="selectStatus"
-        style="min-width: 200px"
-        borderless
-      />
-      <q-space />
-      <q-btn
-        label="Submissions"
-        flat
-        no-caps
-        icon-right="import_export"
-        @click="isSorting = !isSorting"
-      />
-    </q-toolbar>
-    <div class="main-content">
-      <div
-        class="q-mt-lg q-gutter-md"
-        v-if="allMyPrograms.length > 0 && getMySubmissions.length > 0"
-      >
+      <div class="q-pb-lg q-gutter-md">
+        <q-toolbar
+          class="bg-none flex q-gutter-sm toolbar-submission"
+          style="padding-top: 50px"
+        >
+          <q-select
+            bg-color="white"
+            filled
+            dense
+            :options="selectAllPrograms"
+            v-model="selectProgram"
+            label="Select Program Name"
+            style="min-width: 400px"
+            borderless
+          />
+          <q-select
+            bg-color="white"
+            dense
+            filled
+            label="Select Status"
+            :options="allStatus"
+            v-model="selectStatus"
+            style="min-width: 200px"
+            borderless
+          />
+          <q-space />
+          <q-btn
+            label="Submissions"
+            flat
+            no-caps
+            icon-right="import_export"
+            @click="isSorting = !isSorting"
+          />
+        </q-toolbar>
         <submission-component
           :submission="submission"
           :program="submission.program"
@@ -65,16 +64,18 @@
           <q-pagination v-model="page" :max="totalPage" v-if="totalPage>1" color="secondary" />
         </div>-->
       </div>
-      <div v-else class="flex flex-center">
-        <div class="">
-          <q-img src="~assets/empty-program.svg" width="600px" />
-          <div class="title-1">No submission</div>
-          <div class="subtitle-1">You have no submissions</div>
-        </div>
-        <!--<div class="q-pa-lg flex flex-center" v-if="totalPage>1">
+    </div>
+  </q-page>
+  <q-page v-else class="bg-home flex flex-center">
+    <div >
+      <div class="">
+        <q-img src="~assets/empty-program.svg" width="600px" />
+        <div class="title-1">No submission</div>
+        <div class="subtitle-1">You have no submissions</div>
+      </div>
+      <!--<div class="q-pa-lg flex flex-center" v-if="totalPage>1">
           <q-pagination v-model="page" :max="totalPage" color="secondary" />
         </div>-->
-      </div>
     </div>
   </q-page>
 </template>
@@ -293,5 +294,6 @@ export default {
 .main-content {
   padding-left: 24px;
   padding-right: 24px;
+  padding-top: 24px;
 }
 </style>

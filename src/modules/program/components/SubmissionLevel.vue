@@ -60,9 +60,10 @@ export default {
   },
   computed: {
     accepted:function(){
+
       let count = 0;
       this.submissions.forEach(element => {
-        if(element.submission_status ==="accepted_unresolved || accepted_resolved") count++;
+        if(element.submission_status ==="accepted_unresolved" || element.submission_status ==="accepted_resolved") count++;
       });
       return count;
     },

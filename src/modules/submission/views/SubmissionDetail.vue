@@ -274,20 +274,20 @@ export default {
             statuseLabels.rejected,
           ],
         },
-        program_super_admin: {
+        client: {
           triaged: [
             statuseLabels.accepted_unresolved,
             statuseLabels.client_returned_for_review,
           ],
           accepted_unresolved: [statuseLabels.accepted_resolved],
         },
-        program_manager: {
+        /*program_manager: {
           triaged: [
             statuseLabels.accepted_unresolved,
             statuseLabels.client_returned_for_review,
           ],
           accepted_unresolved: [statuseLabels.accepted_resolved],
-        },
+        },*/
         hacker: {
           m1_returned_for_review: [statuseLabels.new],
         },
@@ -319,6 +319,7 @@ export default {
           action:status.action
         };
       });
+
       console.log("beforeMount/nextStatuses = ",this.nextStatuses);
       this.$q.loading.hide();
     } catch (error) {
