@@ -154,7 +154,12 @@ const SUBMISSIONS_HACKER = {
                   program_type
                   safe_harbour_type
                   reward_range
-                  program_picture_url
+                  program_picture_url,
+                  company{
+                    data{
+                      id
+                    }
+                  }
                 }
               }
             }
@@ -216,7 +221,12 @@ const SUBMISSIONS_SUPER_MANAGER = {
                   program_type
                   safe_harbour_type
                   reward_range
-                  program_picture_url
+                  program_picture_url,
+                  company{
+                    data{
+                      id
+                    }
+                  }
                 }
               }
             }
@@ -278,7 +288,12 @@ const SUBMISSIONS_MANAGER = {
                   program_type
                   safe_harbour_type
                   reward_range
-                  program_picture_url
+                  program_picture_url,
+                  company{
+                    data{
+                      id
+                    }
+                  }
                 }
               }
             }
@@ -332,7 +347,12 @@ const SUBMISSIONS_ADMIN = {
                   program_type
                   safe_harbour_type
                   reward_range
-                  program_picture_url
+                  program_picture_url,
+                  company{
+                    data{
+                      id
+                    }
+                  }
                 }
               }
             }

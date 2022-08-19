@@ -39,6 +39,121 @@
           </q-item>
         </q-list>
       </q-btn-dropdown>
+      <q-btn round class="text-dark" flat>
+        <q-avatar v-if="getUser.role === 'client'" size="30px">
+          <img :src="getUser.companyUser.profile_picture_url" v-if="getUser.companyUser.profile_picture_url"/>
+          <q-icon name="person" v-else/>
+        </q-avatar>
+        <q-avatar v-if="getUser.role === 'hacker'" size="30px">
+          <img :src="getUser.hacker.profile_picture_url" v-if="getUser.hacker.profile_picture_url"/>
+          <q-icon name="person" v-else/>
+        </q-avatar>
+        <q-avatar v-if="getUser.role === 'march1st'" size="30px">
+          <img :src="getUser.march1st.profile_picture_url" v-if="getUser.march1st.profile_picture_url"/>
+          <q-icon name="person" v-else/>
+        </q-avatar>
+        <q-menu
+          :offset="[20, 0]"
+          transition-show="jump-down"
+          transition-hide="jump-up"
+        >
+          <q-list style="min-width: 200px" class="bg-white">
+            <q-item clickable v-ripple class="q-pt-sm q-pb-sm">
+              <q-item-section avatar>
+                <q-avatar v-if="getUser.role === 'client'">
+                  <img :src="getUser.companyUser.profile_picture_url" />
+                </q-avatar>
+
+                <q-avatar v-if="getUser.role === 'hacker'">
+                  <img :src="getUser.hacker.profile_picture_url" />
+                </q-avatar>
+              </q-item-section>
+              <q-item-section v-if="getUser.role === 'client'">
+                <q-item-label class="text-bold text-primary">{{
+                  getUser.companyUser.first_name
+                }}</q-item-label>
+                <q-item-label caption lines="1">{{
+                  getUser.company.company_name
+                }}</q-item-label>
+              </q-item-section>
+              <q-item-section v-if="getUser.role === 'hacker'">
+                <q-item-label class="text-bold text-primary">{{
+                  getUser.hacker.first_name
+                }}</q-item-label>
+                <q-item-label caption lines="1">{{
+                  getUser.hacker.last_name
+                }}</q-item-label>
+              </q-item-section>
+              <q-item-section v-if="getUser.role === 'march1st'">
+                <q-item-label class="text-bold text-primary">{{
+                  getUser.march1st.name
+                }}</q-item-label>
+                <!--<q-item-label caption lines="1">{{
+                      getUser.march1st.last_name
+                    }}</q-item-label>-->
+              </q-item-section>
+            </q-item>
+            <q-separator color="info" />
+            <q-item
+              clickable
+              v-ripple
+              class="q-pt-xs q-pb-xs"
+              to="/new-dashboard"
+            >
+              <q-item-section avatar>
+                <q-avatar
+                  color="white"
+                  text-color="secondary"
+                  icon="person_outline"
+                  size="55px"
+                />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label class="text-primary">Dashboard</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator color="info" />
+            <q-item clickable v-ripple class="q-pt-xs q-pb-xs">
+              <q-item-section avatar>
+                <q-avatar
+                  color="white"
+                  text-color="secondary"
+                  icon="person_outline"
+                  size="55px"
+                />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label class="text-primary">My Profile</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator color="info" />
+            <q-item clickable v-ripple class="q-pt-xs q-pb-xs">
+              <q-item-section avatar>
+                <q-avatar
+                  color="white"
+                  text-color="secondary"
+                  icon="settings"
+                  size="55px"
+                />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label class="text-primary">Settings</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+          <div style="min-width: 150px; font-family: 'nunito'">
+            <q-btn
+              flat
+              class="text-primary"
+              style="background-color: #eaf5ff; width: 100%"
+              label="Sign out"
+              no-caps
+              icon="logout"
+              @click="logout()"
+            />
+          </div>
+        </q-menu>
+      </q-btn>
     </q-toolbar>
   </q-header>
   <!--<router-view
@@ -83,8 +198,20 @@ export default {
     ...mapGetters("program", ["getMyPrograms"]),
   },
   methods: {
+    ...mapActions("auth", ["logOutUser"]),
     ...mapActions("submission", ["GET_MY_SUBMISSIONS"]),
     ...mapActions("program", ["GET_MY_PROGRAMS"]),
+    async logout() {
+      try {
+        await this.logOutUser();
+        this.$q.notify({
+          message: `User logged out`,
+          type: "positive",
+          position: "top",
+        });
+        this.$router.push("/auth/login");
+      } catch (error) {}
+    },
   },
   async beforeMount() {
     try {

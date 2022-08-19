@@ -1,11 +1,12 @@
 <template>
-  <q-page class="bg-home q-pr-md" v-if="allMyPrograms.length > 0 && getMySubmissions.length > 0">
-    <div
-      class="main-content"
-    >
-      <div class="q-pb-lg q-gutter-md">
+  <q-page
+    class="bg-home"
+    v-if="allMyPrograms.length > 0 && getMySubmissions.length > 0"
+  >
+    <div class="main-content">
+      <div class="q-pb-lg">
         <q-toolbar
-          class="bg-none flex q-gutter-sm toolbar-submission"
+          class="q-pr-none q-pl-none q-pb-lg q-gutter-sm bg-none flex toolbar-submission"
           style="padding-top: 50px"
         >
           <q-select
@@ -20,6 +21,16 @@
           />
           <q-select
             bg-color="white"
+            filled
+            dense
+            :options="companies"
+            v-model="company"
+            label="Select Company"
+            style="min-width: 200px"
+            v-if="getUser.role == 'march1st'"
+          />
+          <q-select
+            bg-color="white"
             dense
             filled
             label="Select Status"
@@ -29,53 +40,51 @@
             borderless
           />
           <q-space />
-          <q-btn
+          <!--<q-btn
             label="Submissions"
             flat
             no-caps
             icon-right="import_export"
             @click="isSorting = !isSorting"
-          />
+          />-->
         </q-toolbar>
-        <submission-component
-          :submission="submission"
-          :program="submission.program"
-          class="submission-component cursor-pointer"
-          v-for="submission in allSubmissions"
-          :key="submission.submission_title"
-          ><!--  @click.prevent="showDetailsSubmission(submission.id)" -->
-          <template v-slot:header>
-            <q-card-section class="q-pa-none" style="padding-bottom: 27px">
-              <q-toolbar>
-                <div class="box-badge">
-                  <span class="title-badge">{{
-                    submission.submission_status
-                  }}</span>
-                </div>
-                <q-space />
-                <div class="title-badge-2"><span>2 day ago, 3:45 pm</span></div>
-              </q-toolbar>
-              <div class="title">{{ submission.submission_title }}</div>
-              <q-separator color="#E4E4E4" />
-            </q-card-section>
-          </template>
-        </submission-component>
-        <!--<div class="q-pa-lg flex flex-center">
-          <q-pagination v-model="page" :max="totalPage" v-if="totalPage>1" color="secondary" />
-        </div>-->
+        <div class="q-pl-sm q-pr-sm q-gutter-sm">
+          <submission-component
+            :submission="submission"
+            :program="submission.program"
+            class="submission-component cursor-pointer"
+            v-for="submission in allSubmissions"
+            :key="submission.submission_title"
+            ><!--  @click.prevent="showDetailsSubmission(submission.id)" -->
+            <template v-slot:header>
+              <q-card-section class="q-pa-none" style="padding-bottom: 27px">
+                <q-toolbar>
+                  <div class="box-badge" :style="{backgroundColor:getBoxColor(submission.submission_status)}">
+                    <span class="title-badge" :style="{color:getTitleColor(submission.submission_status)}">{{
+                      submission.submission_status_title
+                    }}</span>
+                  </div>
+                  <q-space />
+                  <div class="title-badge-2">
+                    <span>2 day ago, 3:45 pm</span>
+                  </div>
+                </q-toolbar>
+                <div class="title">{{ submission.submission_title }}</div>
+                <q-separator color="#E4E4E4" />
+              </q-card-section>
+            </template>
+          </submission-component>
+        </div>
       </div>
     </div>
   </q-page>
   <q-page v-else class="bg-home flex flex-center">
-    <div >
+    <div>
       <div class="">
         <q-img src="~assets/empty-program.svg" width="600px" />
         <div class="title-1">No submission</div>
         <div class="subtitle-1">You have no submissions</div>
       </div>
-      <!--<div class="q-pa-lg flex flex-center" v-if="totalPage>1">
-          <q-pagination v-model="page" :max="totalPage" color="secondary" />
-        </div>-->
     </div>
   </q-page>
 </template>
@@ -110,6 +119,8 @@ export default {
       ],
       selectStatus: null,
       allSubmissions: [],
+      companies: [],
+      company: null,
     };
   },
   watch: {
@@ -146,13 +157,87 @@ export default {
         );
       }
     },
+    company: function (val) {
+      if (val.value == 0) {
+        this.allSubmissions = JSON.parse(JSON.stringify(this.getMySubmissions));
+      } else {
+        this.allSubmissions = this.getMySubmissions.filter(
+          (submission) => submission.program.company.data.id == val.value
+        );
+      }
+    },
   },
   computed: {
     ...mapGetters("submission", ["getMySubmissions"]),
     ...mapGetters("program", ["getMyPrograms", "getOneProgram"]),
+    ...mapGetters("auth", ["getUser", "getCompanies"]),
+    getBoxColor() {
+      return (status) => {
+        let color = "";
+        switch (status) {
+          case "new":
+            color = "#ffb648";
+            break;
+          case "triaged":
+            color = "#ffb648";
+            break;
+          case "accepted_unresolved":
+            color = "rgba(71, 184, 129, 0.2)";
+            break;
+          case "accepted_resolved":
+            color = "rgba(71, 184, 129, 0.2)";
+            break;
+          case "client_returned_for_review":
+            color = "#ffb648";
+            break;
+          case "m1_returned_for_review":
+            color = "#ffb648";
+            break;
+          case "rejected":
+            color = "#f7d5d5";
+            break;
+          default:
+            break;
+        }
+        return color;
+      };
+    },
+    getTitleColor() {
+      return (status) => {
+        let color = "";
+        switch (status) {
+          case "new":
+            color = "#ffdfac";
+            break;
+          case "triaged":
+            color = "#ffdfac";
+            break;
+          case "accepted_unresolved":
+            color = "#47b881";
+            break;
+          case "accepted_resolved":
+            color = "#47b881";
+            break;
+          case "client_returned_for_review":
+            color = "#ffdfac";
+            break;
+          case "m1_returned_for_review":
+            color = "#ffdfac";
+            break;
+          case "rejected":
+            color = "#f55b5d";
+            break;
+          default:
+            break;
+        }
+        return color;
+      };
+    },
+
   },
   methods: {
     ...mapActions("submission", ["GET_MY_SUBMISSIONS"]),
+    ...mapActions("auth", ["GET_COMPAGNIES"]),
     showDetailsSubmission(idSubmission) {
       this.$router.push("submissions/submission-detail/" + idSubmission);
     },
@@ -160,7 +245,20 @@ export default {
   async beforeMount() {
     try {
       this.$q.loading.show();
-      if (this.getMySubmissions.length == 0) await this.GET_MY_SUBMISSIONS();
+      await this.GET_COMPAGNIES();
+      this.companies = this.getCompanies.map(function (element) {
+        return {
+          ...element,
+          label: element.company_name,
+          value: element.id,
+        };
+      });
+      this.companies = [
+        { label: "All Companies", value: 0 },
+        ...this.companies,
+      ];
+
+      await this.GET_MY_SUBMISSIONS();
       this.allSubmissions = JSON.parse(JSON.stringify(this.getMySubmissions));
       this.allMyPrograms = await this.getMyPrograms.map(function (program) {
         let item = {
@@ -179,7 +277,11 @@ export default {
     }
   },
   async mounted() {
+    await this.GET_MY_SUBMISSIONS();
     this.allSubmissions = JSON.parse(JSON.stringify(this.getMySubmissions));
+
+    this.allSubmissions = JSON.parse(JSON.stringify(this.getMySubmissions));
+
     try {
       this.$q.loading.show();
       await this.GET_MY_SUBMISSIONS();
@@ -218,7 +320,7 @@ export default {
   display: flex;
   align-items: center;
   letter-spacing: -0.015em;
-  color: #f55b5d;
+  /*color: #f55b5d;*/
 }
 .submission-component .title-badge-2 {
   font-family: "inter";
@@ -239,7 +341,7 @@ export default {
   padding: 0px 16px;
   min-width: 169px;
   height: 26px;
-  background: #f7d5d5;
+  /*background: #f7d5d5;*/
   border-radius: 5px;
 }
 .title-submission {

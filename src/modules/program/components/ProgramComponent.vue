@@ -64,7 +64,7 @@
             <span v-if="program.reward_type == 'points'">&nbsp;Points </span>
             <span>&nbsp; Per vulnerability</span>
           </div>
-          <div class="flex no-wrap">
+          <div class="flex no-wrap" v-if="program.managers.length>0">
             <div
               class="q-pr-md no-wrap flex flex-center"
               style="padding-left: 12px"

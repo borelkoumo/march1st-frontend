@@ -21,6 +21,7 @@
           />
         </q-toolbar>
         <div class="q-mt-lg submission-elt" v-if="program">
+          <program-component :program="program"/>
           <submission-component :programRequest="program"></submission-component>
         </div>
         <div class="q-mt-lg">
@@ -122,9 +123,12 @@
 <script>
 import { mapActions } from 'vuex';
 import submissionComponent from '../components/SubmissionComponent.vue';
+import ProgramComponent from '../../program/components/ProgramComponent.vue';
+
 export default {
   components:{
-    submissionComponent
+    submissionComponent,
+    ProgramComponent
   },
   data() {
     return {
@@ -286,6 +290,7 @@ export default {
   padding-left: 24px;
   padding-right: 24px;
   padding-top: 50px;
+  min-width: 100%;
 }
 .content-page {
   display: flex;

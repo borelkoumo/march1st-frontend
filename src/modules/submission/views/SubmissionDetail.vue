@@ -92,7 +92,7 @@
           </div>
         </div>
 
-        <div class="submission-form q-pt-md">
+        <div class="submission-form q-pt-md" v-if="nextStatuses.length>0">
           <div class="submission-title q-pb-sm">Leave your comment</div>
           <q-editor
             v-model="message"
@@ -133,7 +133,8 @@
               </q-item>
             </q-list>
           </div>
-          <q-btn
+          <div>
+            <q-btn
             label="Save"
             flat
             no-caps
@@ -142,6 +143,26 @@
             v-if="getUser.role == 'hacker'"
             @click="onActionClick(0)"
           />
+          <q-space/>
+          <q-btn-dropdown
+            color="secondary"
+            class="bg-white"
+            no-caps
+            label="Actions"
+            outline
+            v-if="(getUser.role == 'client' || getUser.role == 'march1st') && nextStatuses.length>0"
+          >
+            <q-list separator>
+              <q-item v-for="status in nextStatuses"
+              :key="status.key" clickable
+              @click="onActionClick(status)"
+              >
+                {{status.action}}
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+          </div>
+
         </div>
       </div>
       <div class="right-content bg-white">
@@ -152,7 +173,7 @@
             </q-timeline-entry>
             <q-timeline-entry
               tag="div"
-              v-for="timeline in submissionStatus"
+              v-for="timeline in submissionStatus.reverse()"
               :key="timeline.id"
             >
               <div class="subtitle-timeline">{{ timeline.createdAt }}</div>
@@ -344,6 +365,7 @@ export default {
   line-height: 25px;
   letter-spacing: -0.015em;
   color: #838181;
+  /*color: #ffdfac;*/
 }
 .content-timeline {
   font-family: "inter";
