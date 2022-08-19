@@ -29,7 +29,7 @@
       </div>
     </div>
   </q-page>
-  <q-page v-else class="bg-home q-pl-md q-pr-md">
+  <q-page v-else class="bg-home" style="height:100vh">
     <div class="main-content">
       <q-toolbar
         class="bg-none flex q-gutter-sm q-pl-none q-pr-none"
@@ -143,9 +143,9 @@
           to="programs/add-program"
           v-if="getUser.role === 'client' && getUser.type==='super_manager'"
         />
-        <q-btn label="Programs" flat no-caps icon-right="import_export" @click="isAscending=!isAscending"/>
+        <!--<q-btn label="Programs" flat no-caps icon-right="import_export" @click="isAscending=!isAscending"/>-->
       </q-toolbar>
-      <div class="q-mt-lg q-gutter-md q-pb-lg" v-if="getUser.role==='client' || getUser.role==='march1st'">
+      <div class="q-mt-md" v-if="getUser.role==='client' || getUser.role==='march1st'">
         <program-component v-for="program in allMyPrograms" :key="program.id" :program="program">
           <template v-slot:level>
             <q-card-section class="col-3 q-pl-lg q-pr-none">
@@ -157,7 +157,7 @@
           </template>
         </program-component>
       </div>
-      <div class="q-mt-lg q-pb-lg"
+      <div class="q-mt-lg"
           style="
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px,1fr));

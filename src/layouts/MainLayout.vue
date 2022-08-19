@@ -547,7 +547,8 @@ export default defineComponent({
           type: "positive",
           position: "top",
         });
-        this.$router.push("/auth/login");
+        this.$router.push("/");
+        location.reload();
       } catch (error) {}
     },
     goHome() {

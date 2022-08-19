@@ -1,7 +1,7 @@
 <template>
   <q-list class="bg-white">
     <q-item>
-      <q-item-section class="text-bold text-submission"
+      <q-item-section class="text-bold text-submission ellipsis"
         >Total Submissions</q-item-section
       >
       <q-item-section class="number text-bold">{{submissions.length}}</q-item-section>
@@ -104,6 +104,7 @@ export default {
   line-height: 32px;
   letter-spacing: -0.015em;
   color: #46516d;
+  /*min-width: 150px;*/
 }
 .q-item .number {
   font-family: "inter";

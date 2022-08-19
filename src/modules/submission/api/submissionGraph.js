@@ -9,7 +9,7 @@ import {
   SUBMISSIONS_MANAGER,
   SUBMISSIONS_ADMIN,
   ONE_SUBMISSION_QUERY,
-  SUBMISSION_STATUS
+  SUBMISSION_STATUS,
 } from "./query";
 
 export class SubmissionService {
@@ -137,7 +137,8 @@ export class SubmissionService {
         result = await apolloClient.query(SUBMISSIONS_MANAGER);
       } else if (payload.role === "program_super_admin") {
         SUBMISSIONS_SUPER_MANAGER.variables.companyId = payload.company;
-        SUBMISSIONS_SUPER_MANAGER.context.headers.authorization = "Bearer " + token;
+        SUBMISSIONS_SUPER_MANAGER.context.headers.authorization =
+          "Bearer " + token;
         result = await apolloClient.query(SUBMISSIONS_SUPER_MANAGER);
       }
       console.log("getMySubmissions /result = ", result);
@@ -145,14 +146,15 @@ export class SubmissionService {
       resolve(this.formatSubmissions(submissionData));
     });
   }
-  static getSubmissionStatus(payload){
+  static getSubmissionStatus(payload) {
     return new Promise(async (resolve, reject) => {
       let token = localStorage.getItem("token");
       SUBMISSION_STATUS.variables.submissionId = payload;
       SUBMISSION_STATUS.context.headers.authorization = "Bearer " + token;
       const result = await apolloClient.query(SUBMISSION_STATUS);
       const submissionStatusData = result.data.submissionStatuses.data;
-      const submissionStatus = this.formatSubmissionStatus(submissionStatusData);
+      const submissionStatus =
+        this.formatSubmissionStatus(submissionStatusData);
       console.log("getSubmissionStatus/submissionStatus = ", submissionStatus);
       resolve(submissionStatus);
     });
@@ -173,6 +175,9 @@ export class SubmissionService {
         createdAt: element.attributes.createdAt,
         submission_status:
           element.attributes.submission_statuses.data[0].attributes.status,
+        submission_status_title:
+          element.attributes.submission_statuses.data[0].attributes
+            .status_title,
         submission_statuses: element.attributes.submission_statuses.data.map(
           function (sub_statut) {
             return {
@@ -207,6 +212,8 @@ export class SubmissionService {
       createdAt: element.attributes.createdAt,
       submission_status:
         element.attributes.submission_statuses.data[0].attributes.status,
+      submission_status_title:
+        element.attributes.submission_statuses.data[0].attributes.status_title,
       submission_statuses: element.attributes.submission_statuses.data.map(
         function (sub_statut) {
           return {
@@ -234,10 +241,10 @@ export class SubmissionService {
         status: element.attributes.status,
         status_title: element.attributes.status_title,
         comment: element.attributes.comment,
-        createdAt:element.attributes.createdAt,
-        submission:element.attributes.submission.data.id
+        createdAt: element.attributes.createdAt,
+        submission: element.attributes.submission.data.id,
       };
-    })
-    return submissionsStatus
+    });
+    return submissionsStatus;
   }
 }

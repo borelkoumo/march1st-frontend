@@ -523,8 +523,9 @@ export default {
       this.$router.push("/");
     },
     async onSignout() {
-      this.$router.push('/auth/login');
       await this.logOutUser();
+      this.$router.push('/');
+      location.reload();
     },
 
     async onLoginUser() {
