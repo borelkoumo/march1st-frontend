@@ -115,6 +115,39 @@ const ONE_SUBMISSION_QUERY = {
                   status
                   status_title
                   createdAt
+                  comment
+                  created_by {
+                    data {
+                      id
+                      attributes {
+                        email
+                        hacker {
+                          data {
+                            id
+                            attributes {
+                              first_name
+                            }
+                          }
+                        }
+                        march1st_user {
+                          data {
+                            id
+                            attributes {
+                              name
+                            }
+                          }
+                        }
+                        company_user {
+                          data {
+                            id
+                            attributes {
+                              first_name
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -154,9 +187,9 @@ const SUBMISSIONS_HACKER = {
                   program_type
                   safe_harbour_type
                   reward_range
-                  program_picture_url,
-                  company{
-                    data{
+                  program_picture_url
+                  company {
+                    data {
                       id
                     }
                   }
@@ -170,6 +203,39 @@ const SUBMISSIONS_HACKER = {
                   status
                   status_title
                   createdAt
+                  comment
+                  created_by {
+                    data {
+                      id
+                      attributes {
+                        email
+                        hacker {
+                          data {
+                            id
+                            attributes {
+                              first_name
+                            }
+                          }
+                        }
+                        march1st_user {
+                          data {
+                            id
+                            attributes {
+                              name
+                            }
+                          }
+                        }
+                        company_user {
+                          data {
+                            id
+                            attributes {
+                              first_name
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -221,9 +287,9 @@ const SUBMISSIONS_SUPER_MANAGER = {
                   program_type
                   safe_harbour_type
                   reward_range
-                  program_picture_url,
-                  company{
-                    data{
+                  program_picture_url
+                  company {
+                    data {
                       id
                     }
                   }
@@ -237,6 +303,39 @@ const SUBMISSIONS_SUPER_MANAGER = {
                   status
                   status_title
                   createdAt
+                  comment
+                  created_by {
+                    data {
+                      id
+                      attributes {
+                        email
+                        hacker {
+                          data {
+                            id
+                            attributes {
+                              first_name
+                            }
+                          }
+                        }
+                        march1st_user {
+                          data {
+                            id
+                            attributes {
+                              name
+                            }
+                          }
+                        }
+                        company_user {
+                          data {
+                            id
+                            attributes {
+                              first_name
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -288,9 +387,9 @@ const SUBMISSIONS_MANAGER = {
                   program_type
                   safe_harbour_type
                   reward_range
-                  program_picture_url,
-                  company{
-                    data{
+                  program_picture_url
+                  company {
+                    data {
                       id
                     }
                   }
@@ -304,6 +403,39 @@ const SUBMISSIONS_MANAGER = {
                   status
                   status_title
                   createdAt
+                  comment
+                  created_by {
+                    data {
+                      id
+                      attributes {
+                        email
+                        hacker {
+                          data {
+                            id
+                            attributes {
+                              first_name
+                            }
+                          }
+                        }
+                        march1st_user {
+                          data {
+                            id
+                            attributes {
+                              name
+                            }
+                          }
+                        }
+                        company_user {
+                          data {
+                            id
+                            attributes {
+                              first_name
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -347,9 +479,9 @@ const SUBMISSIONS_ADMIN = {
                   program_type
                   safe_harbour_type
                   reward_range
-                  program_picture_url,
-                  company{
-                    data{
+                  program_picture_url
+                  company {
+                    data {
                       id
                     }
                   }
@@ -363,6 +495,39 @@ const SUBMISSIONS_ADMIN = {
                   status
                   status_title
                   createdAt
+                  comment
+                  created_by {
+                    data {
+                      id
+                      attributes {
+                        email
+                        hacker {
+                          data {
+                            id
+                            attributes {
+                              first_name
+                            }
+                          }
+                        }
+                        march1st_user {
+                          data {
+                            id
+                            attributes {
+                              name
+                            }
+                          }
+                        }
+                        company_user {
+                          data {
+                            id
+                            attributes {
+                              first_name
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -395,12 +560,46 @@ const SUBMISSION_STATUS = {
         data {
           id
           attributes {
-            status,
-            status_title,
-            comment,
-            createdAt,
-            submission{
-              data{id}
+            status
+            status_title
+            comment
+            createdAt
+            created_by {
+              data {
+                id
+                attributes {
+                  email
+                  hacker {
+                    data {
+                      id
+                      attributes {
+                        first_name
+                      }
+                    }
+                  }
+                  march1st_user {
+                    data {
+                      id
+                      attributes {
+                        name
+                      }
+                    }
+                  }
+                  company_user {
+                    data {
+                      id
+                      attributes {
+                        first_name
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            submission {
+              data {
+                id
+              }
             }
           }
         }
@@ -424,5 +623,5 @@ export {
   SUBMISSIONS_MANAGER,
   SUBMISSIONS_ADMIN,
   ONE_SUBMISSION_QUERY,
-  SUBMISSION_STATUS
+  SUBMISSION_STATUS,
 };

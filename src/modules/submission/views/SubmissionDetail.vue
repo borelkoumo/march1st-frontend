@@ -10,14 +10,19 @@
             no-caps
             label="Actions"
             outline
-            v-if="(getUser.role == 'client' || getUser.role == 'march1st') && nextStatuses.length>0"
+            v-if="
+              (getUser.role == 'client' || getUser.role == 'march1st') &&
+              nextStatuses.length > 0
+            "
           >
             <q-list separator>
-              <q-item v-for="status in nextStatuses"
-              :key="status.key" clickable
-              @click="onActionClick(status)"
+              <q-item
+                v-for="status in nextStatuses"
+                :key="status.key"
+                clickable
+                @click="onActionClick(status)"
               >
-                {{status.action}}
+                {{ status.action }}
               </q-item>
             </q-list>
           </q-btn-dropdown>
@@ -37,7 +42,7 @@
                   </div>
                   <q-space />
                   <div class="title-badge-2">
-                    <span>2 day ago, 3:45 pm</span>
+                    <span>{{getDuration(submission.createdAt)}} ago</span>
                   </div>
                 </q-toolbar>
                 <div class="title">{{ submission.submission_title }}</div>
@@ -91,10 +96,11 @@
             </q-card>
           </div>
         </div>
-
-        <div class="submission-form q-pt-md" v-if="nextStatuses.length>0">
-          <div class="submission-title q-pb-sm">Leave your comment</div>
+        <div class="submission-form q-pt-md" >
+          <div class="submission-title q-pb-sm" v-if="nextStatuses.length > 0">Leave your comment</div>
+          <div class="submission-title q-pb-sm" v-else>Comments</div>
           <q-editor
+            v-if="nextStatuses.length > 0"
             v-model="message"
             min-height="8rem"
             style="
@@ -107,62 +113,68 @@
             class="q-mb-md"
             placeholder=""
           />
+
           <div
             class="all-message bg-white q-pt-md q-pb-md q-mb-lg"
             style="border-radius: 16px"
-            v-if="getComments.length > 0"
+            v-if="submissionStatusComment.length > 0"
           >
             <q-list>
-              <q-item
-                clickable
-                v-ripple
-                v-for="comment in getComments"
-                :key="comment.id"
+              <div
+                v-for="submissionStatus in submissionStatusComment"
+                :key="submissionStatus.id"
               >
-                <q-item-section avatar>
-                  <q-avatar>
-                    <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-                  </q-avatar>
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label>{{
-                    getUser(comment.user_id).username
-                  }}</q-item-label>
-                  <q-item-label caption>{{ comment.message }}</q-item-label>
-                </q-item-section>
-              </q-item>
+                <q-item>
+                  <q-item-section avatar>
+                    <q-avatar>
+                      <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+                    </q-avatar>
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label>User</q-item-label>
+                    <q-item-label caption>{{
+                      submissionStatus.comment
+                    }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+                <q-separator/>
+              </div>
             </q-list>
           </div>
           <div>
             <q-btn
-            label="Save"
-            flat
-            no-caps
-            class="bg-secondary text-white"
-            style="width: 160px"
-            v-if="getUser.role == 'hacker'"
-            @click="onActionClick(0)"
-          />
-          <q-space/>
-          <q-btn-dropdown
-            color="secondary"
-            class="bg-white"
-            no-caps
-            label="Actions"
-            outline
-            v-if="(getUser.role == 'client' || getUser.role == 'march1st') && nextStatuses.length>0"
-          >
-            <q-list separator>
-              <q-item v-for="status in nextStatuses"
-              :key="status.key" clickable
-              @click="onActionClick(status)"
-              >
-                {{status.action}}
-              </q-item>
-            </q-list>
-          </q-btn-dropdown>
+              label="Save"
+              flat
+              no-caps
+              class="bg-secondary text-white"
+              style="width: 160px"
+              v-if="getUser.role == 'hacker' && nextStatuses.length > 0"
+              @click="onActionClick(0)"
+            />
+            <q-space />
+            <q-btn-dropdown
+              color="secondary"
+              class="bg-white"
+              no-caps
+              label="Actions"
+              outline
+              v-if="
+                (getUser.role == 'client' || getUser.role == 'march1st') &&
+                nextStatuses.length > 0
+              "
+            >
+              <q-list separator>
+                <q-item
+                  v-for="status in nextStatuses"
+                  :key="status.key"
+                  clickable
+                  @click="onActionClick(status)"
+                >
+                  {{ status.action }}
+                </q-item>
+              </q-list>
+            </q-btn-dropdown>
           </div>
-
         </div>
       </div>
       <div class="right-content bg-white">
@@ -202,6 +214,7 @@ export default {
       message: null,
       submissionStatus: [],
       nextStatuses: [],
+      submissionStatusComment:[]
     };
   },
   watch: {
@@ -211,7 +224,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("auth", ["getUser"]),
+    ...mapGetters("auth", ["getUser","getDuration"]),
     ...mapGetters("submission", ["getOneSubmission"]),
     getComments() {
       return [];
@@ -227,8 +240,8 @@ export default {
       let param = {
         submission: this.submission.id,
         comment: this.message,
-        status:statusSubmission.key,
-        status_title:statusSubmission.label
+        status: statusSubmission.key,
+        status_title: statusSubmission.label,
       };
       try {
         this.$q.loading.show();
@@ -313,8 +326,7 @@ export default {
           m1_returned_for_review: [statuseLabels.new],
         },
       };
-      console.log("statusTransitions/role =", role)
-      console.log("statusTransitions/currentSubmissionStatus =", currentSubmissionStatus)
+
       return statusTransitions[role]?.[currentSubmissionStatus] !== undefined
         ? statusTransitions[role]?.[currentSubmissionStatus]
         : [];
@@ -325,11 +337,10 @@ export default {
       this.$q.loading.show();
       this.idSubmission = Number(this.$route.params.id);
       this.submission = await this.GET_ONE_SUBMISSION(this.idSubmission);
-      //console.log(`beforeMount/this.submission = ${this.submission}`);
+      this.submissionStatusComment = this.submission.submission_statuses.filter((submissionStatus)=> submissionStatus.comment!=="" || submissionStatus.comment!==" ").reverse();
       this.submissionStatus = await this.GET_SUBMISSIONSTATUS_BY_SUBMISSION(
         this.idSubmission
       );
-      console.log("beforeMount/submission =", this.submission)
       this.nextStatuses = this.getNextStatuses(
         this.getUser.role,
         this.submission.submission_status
@@ -337,11 +348,11 @@ export default {
         return {
           label: status.label,
           key: status.key,
-          action:status.action
+          action: status.action,
         };
       });
 
-      console.log("beforeMount/nextStatuses = ",this.nextStatuses);
+      console.log("beforeMount/nextStatuses = ", this.nextStatuses);
       this.$q.loading.hide();
     } catch (error) {
       this.$q.loading.hide();

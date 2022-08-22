@@ -45,6 +45,7 @@ const actions = {
         comment: "",
         status: "new",
         submission: submissionId,
+        created_by:user.id
       };
       const result = await SubmissionService.createSubmissionStatus(
         submissionStatus
@@ -58,6 +59,7 @@ const actions = {
       ? JSON.parse(localStorage.getItem("user"))
       : null;
     if (user) {
+      formData.created_by=user.id
       const result = await SubmissionService.createSubmissionStatus(formData);
       await dispatch('GET_MY_SUBMISSIONS');
       return result;

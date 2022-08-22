@@ -173,17 +173,18 @@ export class SubmissionService {
         submission_target: element.attributes.submission_target,
         submission_text: element.attributes.submission_text,
         createdAt: element.attributes.createdAt,
-        submission_status:
-          element.attributes.submission_statuses.data[0].attributes.status,
-        submission_status_title:
+        submission_status:element.attributes.submission_statuses.data[0]?
+          element.attributes.submission_statuses.data[0].attributes.status:"Undefined",
+        submission_status_title:element.attributes.submission_statuses.data[0]?
           element.attributes.submission_statuses.data[0].attributes
-            .status_title,
+            .status_title:"Undefined",
         submission_statuses: element.attributes.submission_statuses.data.map(
           function (sub_statut) {
             return {
               id: sub_statut.id,
               status: sub_statut.attributes.status,
               status_title: sub_statut.attributes.status_title,
+              comment:sub_statut.attributes.comment
             };
           }
         ),
@@ -220,6 +221,7 @@ export class SubmissionService {
             id: sub_statut.id,
             status: sub_statut.attributes.status,
             status_title: sub_statut.attributes.status_title,
+            comment:sub_statut.attributes.comment
           };
         }
       ),
