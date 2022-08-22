@@ -14,7 +14,7 @@ export default async ({ app, router, store }) => {
       app.Auth = Auth;
     },
   };
-
+  await store.dispatch("auth/GET_LOCALDATE");
   app.use(plugin);
 
   router.beforeEach((to, from, next) => {

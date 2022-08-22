@@ -22,7 +22,7 @@ routes.forEach((route)=>{
     //console.log(route);
   }
 })
-console.log(routes);
+//console.log(routes);
 export default route(function (/* { store, ssrContext } */) {
   const createHistory = process.env.SERVER
     ? createMemoryHistory

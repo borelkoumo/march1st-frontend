@@ -7,7 +7,12 @@
       style="overflow-y: hidden"
     >
       <div style="margin: auto; text-align: center; padding-top: 15px">
-        <q-img src="vectors/logo-02.svg" width="200px" @click="goHome()" class="cursor-pointer"/>
+        <q-img
+          src="vectors/logo-02.svg"
+          width="200px"
+          @click="goHome()"
+          class="cursor-pointer"
+        />
       </div>
       <q-scroll-area class="fit">
         <q-list class="pt-box menu-item" style="font-family: 'nunito'">
@@ -74,7 +79,7 @@
             <div class="q-mt-sm title">
               {{ getUser.company.company_name }}
             </div>
-            <div class="subtitle">Joined 6 months ago</div>
+            <div class="subtitle">Joined {{getDuration(getUser.createdAt)}} ago</div>
           </q-card-section>
           <q-card-section
             class="q-pt-xs"
@@ -84,7 +89,7 @@
               {{ getUser.hacker.first_name }}
               {{ getUser.hacker.last_name }}
             </div>
-            <div class="subtitle">Joined 6 months ago</div>
+            <div class="subtitle">Joined {{getDuration(getUser.createdAt)}} ago</div>
             <div class="subtitle">Current Rank: 70</div>
             <div class="subtitle">Average Rank: 7</div>
             <div class="subtitle">Average Vulnerability Severity</div>
@@ -380,8 +385,8 @@ export default {
       ],
 
       typeUsers: [
-        { label: "Super Manager", value: 'super_manager' },
-        { label: "Manager", value: 'manager' },
+        { label: "Super Manager", value: "super_manager" },
+        { label: "Manager", value: "manager" },
       ],
       formUser: {
         username: null,
@@ -412,7 +417,7 @@ export default {
       this.connectUser = val;
     },
     mesusers: function (val) {
-      this.allUsers=[];
+      this.allUsers = [];
       this.allUsers = val.map(function (user) {
         let item = {
           label: user.username,
@@ -422,7 +427,7 @@ export default {
       });
     },
     "$route.name": function (val) {
-      console.log("$route.name/val=",val)
+      console.log("$route.name/val=", val);
       if (val === "home") this.rightDrawerOpen = true;
       else this.rightDrawerOpen = false;
     },
@@ -431,9 +436,10 @@ export default {
     ...mapGetters("auth", [
       "getUser",
       "getAllUsers",
-      "getCompanies"
-      ]),
-    ...mapState("auth", ["companies", "mesusers","myuser"]),
+      "getCompanies",
+      "getDuration"
+    ]),
+    ...mapState("auth", ["companies", "mesusers", "myuser"]),
 
     getMenus: () => {
       let menus = [
@@ -514,17 +520,17 @@ export default {
         },
       ];
       return menus;
-    },
+    }
   },
   methods: {
-    ...mapActions("auth", ["register", "login","logOutUser"]),
+    ...mapActions("auth", ["register", "login", "logOutUser", "GET_LOCALDATE"]),
     ...mapActions("program", ["allPrograms"]),
-    goHome(){
+    goHome() {
       this.$router.push("/");
     },
     async onSignout() {
       await this.logOutUser();
-      this.$router.push('/');
+      this.$router.push("/");
       location.reload();
     },
 
@@ -558,27 +564,29 @@ export default {
       }
     },
   },
-  beforeCreate() {
-    console.log(localStorage.getItem('token'))
+  async beforeMount(){
+
+  },
+  async beforeCreate() {
+    /*console.log(localStorage.getItem("token"));
     /*localStorage.removeItem('users');
     localStorage.removeItem('companies');
     localStorage.removeItem('programs');
     localStorage.removeItem('submissions');
     localStorage.removeItem('submissionStatus');*/
   },
-  created(){
+  created() {
     if (this.$route.name === "home") {
       this.rightDrawerOpen = true;
-      console.log("Dans if Created/rightDrawerOpen =",this.rightDrawerOpen)
+      console.log("Dans if Created/rightDrawerOpen =", this.rightDrawerOpen);
     } else {
       this.rightDrawerOpen = false;
-      console.log("Dans else Created/rightDrawerOpen =",this.rightDrawerOpen)
+      console.log("Dans else Created/rightDrawerOpen =", this.rightDrawerOpen);
     }
   },
-  mounted() {
-
-    if(localStorage.getItem('user')==null) this.$router.push("/");
-    else this.connectUser = JSON.parse(localStorage.getItem('user'));
+  async mounted() {
+    if (localStorage.getItem("user") == null) this.$router.push("/");
+    else this.connectUser = JSON.parse(localStorage.getItem("user"));
 
     this.allCompanies = this.getCompanies.map(function (company) {
       let item = {
@@ -591,7 +599,7 @@ export default {
     this.allUsers = this.getAllUsers.map(function (user) {
       let item = {
         label: user.username,
-        value: user.id
+        value: user.id,
       };
       return item;
     });

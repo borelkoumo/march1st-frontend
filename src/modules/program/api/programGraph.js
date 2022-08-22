@@ -204,8 +204,8 @@ export class ProgramService {
             submission_title: sub.attributes.submission_title,
             severity_level: sub.attributes.severity_level,
             submission_target: sub.attributes.submission_target,
-            submission_status:
-              sub.attributes.submission_statuses.data[0].attributes.status,
+            submission_status:sub.attributes.submission_statuses.data[0]?
+              sub.attributes.submission_statuses.data[0].attributes.status:"Undefined",
             submission_statuses: sub.attributes.submission_statuses.data.map(
               function (sub_statut) {
                 return {

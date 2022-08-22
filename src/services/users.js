@@ -141,10 +141,10 @@ const _getCompany = async function (credentials) {
     const company = {
       id: result.data.companyUsers.data[0].attributes.company.data.id,
       company_name:
-      result.data.companyUsers.data[0].attributes.company.data.attributes
+        result.data.companyUsers.data[0].attributes.company.data.attributes
           .company_name,
       company_logo:
-      result.data.companyUsers.data[0].attributes.company.data.attributes
+        result.data.companyUsers.data[0].attributes.company.data.attributes
           .company_logo,
     };
     return Promise.resolve(company);
@@ -164,7 +164,7 @@ const _getHacker = async function (credentials) {
       first_name: result.data.hackers.data[0].attributes.first_name,
       last_name: result.data.hackers.data[0].attributes.last_name,
       profile_picture_url:
-      result.data.hackers.data[0].attributes.profile_picture_url,
+        result.data.hackers.data[0].attributes.profile_picture_url,
       phone: result.data.hackers.data[0].attributes.phone,
     };
     return Promise.resolve(hacker);
@@ -174,7 +174,8 @@ const _getHacker = async function (credentials) {
 };
 const _getMarch1st = async function (credentials) {
   try {
-    MARCH1st_QUERY.context.headers.authorization = "Bearer " + credentials.token;
+    MARCH1st_QUERY.context.headers.authorization =
+      "Bearer " + credentials.token;
     MARCH1st_QUERY.variables.userId = credentials.id;
 
     const result = await apolloClient.query(MARCH1st_QUERY);
@@ -182,7 +183,7 @@ const _getMarch1st = async function (credentials) {
       id: result.data.march1stUsers.data[0].id,
       first_name: result.data.march1stUsers.data[0].attributes.name,
 
-      profile_picture_url:"",
+      profile_picture_url: "",
       phone: result.data.march1stUsers.data[0].attributes.phone,
     };
     return Promise.resolve(march1st);
@@ -200,53 +201,62 @@ const _getMyRole = async function (credentials) {
     let type = result.data.me.role.type;
     let role = "public";
     let company = null;
-    let user={
-      company:null,
-      companyUser:null,
-      hacker:null,
-      march1st:null,
-      role:null,
-      type:null
+    let user = {
+      company: null,
+      companyUser: null,
+      hacker: null,
+      march1st: null,
+      role: null,
+      type: null,
     };
     if (type === "m1_account_manager") {
-      console.log(result.data.march1stUsers)
+      console.log(result.data.march1stUsers);
     } else if (type === "hacker") {
-
-      user.hacker={
-        role:"hacker",
-        id:result.data.hackers.data[0].id,
-        first_name:result.data.hackers.data[0].attributes.first_name,
-        last_name:result.data.hackers.data[0].attributes.last_name,
-        profile_picture_url:result.data.hackers.data[0].attributes.profile_picture_url,
-        phone:result.data.hackers.data[0].attributes.phone,
-        adress:result.data.hackers.data[0].attributes.adress
-      }
-      user.role="hacker";
+      user.hacker = {
+        role: "hacker",
+        id: result.data.hackers.data[0].id,
+        first_name: result.data.hackers.data[0].attributes.first_name,
+        last_name: result.data.hackers.data[0].attributes.last_name,
+        profile_picture_url:
+          result.data.hackers.data[0].attributes.profile_picture_url,
+        phone: result.data.hackers.data[0].attributes.phone,
+        adress: result.data.hackers.data[0].attributes.adress,
+      };
+      user.role = "hacker";
     } else if (type === "program_manager" || type === "program_super_admin") {
       user.companyUser = {
-        id:result.data.companyUsers.data[0].id,
-        first_name:result.data.companyUsers.data[0].attributes.first_name,
-        last_name:result.data.companyUsers.data[0].attributes.last_name,
-        profile_picture_url:result.data.companyUsers.data[0].attributes.profile_picture_url,
-        title:result.data.companyUsers.data[0].attributes.title,
-        user:{
-          id:result.data.companyUsers.data[0].attributes.user.data.id,
-          role:"client",
-          type:type=="program_super_admin"?"super_manager":"manager",
+        id: result.data.companyUsers.data[0].id,
+        first_name: result.data.companyUsers.data[0].attributes.first_name,
+        last_name: result.data.companyUsers.data[0].attributes.last_name,
+        profile_picture_url:
+          result.data.companyUsers.data[0].attributes.profile_picture_url,
+        title: result.data.companyUsers.data[0].attributes.title,
+        user: {
+          id: result.data.companyUsers.data[0].attributes.user.data.id,
+          role: "client",
+          type: type == "program_super_admin" ? "super_manager" : "manager",
         },
-        company:{
-          id:result.data.companyUsers.data[0].attributes.company.data.id,
-          company_name:result.data.companyUsers.data[0].attributes.company.data.attributes.company_name,
-          company_logo:result.data.companyUsers.data[0].attributes.company.data.attributes.company_logo
-        }
-      }
-      user.company={
-          id:result.data.companyUsers.data[0].attributes.company.data.id,
-          company_name:result.data.companyUsers.data[0].attributes.company.data.attributes.company_name,
-          company_logo:result.data.companyUsers.data[0].attributes.company.data.attributes.company_logo
-      }
-      user.role="client";
-      user.type = type=="program_super_admin"?"super_manager":"manager";
+        company: {
+          id: result.data.companyUsers.data[0].attributes.company.data.id,
+          company_name:
+            result.data.companyUsers.data[0].attributes.company.data.attributes
+              .company_name,
+          company_logo:
+            result.data.companyUsers.data[0].attributes.company.data.attributes
+              .company_logo,
+        },
+      };
+      user.company = {
+        id: result.data.companyUsers.data[0].attributes.company.data.id,
+        company_name:
+          result.data.companyUsers.data[0].attributes.company.data.attributes
+            .company_name,
+        company_logo:
+          result.data.companyUsers.data[0].attributes.company.data.attributes
+            .company_logo,
+      };
+      user.role = "client";
+      user.type = type == "program_super_admin" ? "super_manager" : "manager";
     } else {
       throw new Error(type + " not pris en charge");
     }
@@ -280,6 +290,7 @@ const _loginUser = async function (payload) {
     return Promise.reject(0);
   }
 };
+
 export {
   _getHackers,
   _loginUser,
@@ -289,5 +300,5 @@ export {
   _getCompanyUsers,
   _getCompany,
   _getHacker,
-  _getMarch1st
+  _getMarch1st,
 };

@@ -20,7 +20,7 @@
             {{program.program_description}}
           </div>
           <q-toolbar class="subtitle-3">
-            <div>Submitted on 22 May 2021 , 3:45 pm</div>
+            <div>{{submission.createdAt}}</div>
             <q-space />
             <div>$ {{program.low.min}} - $ {{program.critical.max}} Per vulnerability</div>
           </q-toolbar>
@@ -30,7 +30,7 @@
   </router-link>
 </template>
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 export default {
   props: ["submission","programRequest"],
   data(){

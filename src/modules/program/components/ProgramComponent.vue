@@ -47,7 +47,7 @@
               >Active</q-badge
             >
             <q-badge class="q-pt-xs q-pb-xs bg-transparent time-program"
-              >Active since 9 days ago</q-badge
+              >Active since {{getDuration(program.createdAt)}} ago</q-badge
             >
           </div>
           <div class="title-program">
@@ -98,6 +98,7 @@
   </router-link>
 </template>
 <script>
+import { mapGetters } from 'vuex';
 export default {
   components: {},
   props: ["program"],
@@ -107,6 +108,9 @@ export default {
     };
   },
   computed: {
+    ...mapGetters('auth',[
+      'getDuration'
+    ]),
     getManagersText: function () {
       let managers = this.program.managers;
       let text1 = "";

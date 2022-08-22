@@ -66,7 +66,7 @@
                   </div>
                   <q-space />
                   <div class="title-badge-2">
-                    <span>2 day ago, 3:45 pm</span>
+                    <span>{{getDuration(submission.createdAt)}} ago</span>
                   </div>
                 </q-toolbar>
                 <div class="title">{{ submission.submission_title }}</div>
@@ -170,7 +170,7 @@ export default {
   computed: {
     ...mapGetters("submission", ["getMySubmissions"]),
     ...mapGetters("program", ["getMyPrograms", "getOneProgram"]),
-    ...mapGetters("auth", ["getUser", "getCompanies"]),
+    ...mapGetters("auth", ["getUser", "getCompanies","getDuration"]),
     getBoxColor() {
       return (status) => {
         let color = "";

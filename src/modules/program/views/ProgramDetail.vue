@@ -187,7 +187,7 @@
                 @click="gotoSubmission(submission.id)"
               >
                 <q-card-section class="q-pt-none">
-                  <div class="recent-time">2 day ago , 3:45 pm</div>
+                  <div class="recent-time">{{getDuration(submission.createdAt)}} ago</div>
                   <div class="recent-content q-pb-md">
                     {{ submission.submission_title }}
                   </div>
@@ -237,7 +237,8 @@ export default {
   },
   computed: {
     ...mapGetters('auth',[
-      'getUser'
+      'getUser',
+      "getDuration"
     ]),
     ...mapGetters('program',[
       'getOneProgram'

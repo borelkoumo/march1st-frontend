@@ -1,5 +1,7 @@
 import { webAuthnServer } from "../../boot/axios";
-import {_postQueryServer} from "src/store/utils/helper";
+import moment from "moment/moment";
+//import {_postQueryServer,} from "src/store/utils/helper";
+import { _postQueryServer, _getQueryServer } from "./restmethod";
 import { getUserRole } from "./helper";
 import {
   base64UrlEncode,
@@ -9,21 +11,23 @@ import {
   getAuthConfig,
 } from "../../store/utils/base64";
 
-import {_getMyRole,
+import {
+  _getMyRole,
   _loginUser,
-   _getCompanies,
-   _getHackers,
-   _getCompanyUsers
-  } from "../../services/users";
+  _getCompanies,
+  _getHackers,
+  _getCompanyUsers,
+} from "../../services/users";
 
 // Amplify libraries
 import { Auth } from "@aws-amplify/auth";
 
-
 const state = {
   locale: { label: "English (United States)", value: "en-US" },
-  userData:null,
-  myuser:localStorage.getItem('user')?JSON.parse(localStorage.getItem('user')):null,
+  userData: null,
+  myuser: localStorage.getItem("user")
+    ? JSON.parse(localStorage.getItem("user"))
+    : null,
   //myuser:null,
   /*user:{
     username:"",
@@ -36,13 +40,17 @@ const state = {
     companyUser:null,
     march1st:null
   },*/
-  mesusers:localStorage.getItem('users')?JSON.parse(localStorage.getItem('users')):[],
+  mesusers: localStorage.getItem("users")
+    ? JSON.parse(localStorage.getItem("users"))
+    : [],
 
-  companies:[],
-  myhackers:[],
-}
+  companies: [],
+  myhackers: [],
+
+  localDate: null,
+};
 const getters = {
-  getCompanies(state){
+  getCompanies(state) {
     /*let companies = localStorage.getItem('companies')?JSON.parse(localStorage.getItem('companies')):[
       {
         id:1,
@@ -57,90 +65,103 @@ const getters = {
     ];*/
     return state.companies;
   },
-  getCompany(state){
-    return(id)=>{
-      const companyData = getters.getCompanies().filter((company)=> company.id==id);
-      if(companyData.length>0) return companyData[0];
+  getCompany(state) {
+    return (id) => {
+      const companyData = getters
+        .getCompanies()
+        .filter((company) => company.id == id);
+      if (companyData.length > 0) return companyData[0];
       return null;
-    }
+    };
   },
-  getAllUsers(state){
-    let users = localStorage.getItem('users')?JSON.parse(localStorage.getItem('users')):[];
+  getAllUsers(state) {
+    let users = localStorage.getItem("users")
+      ? JSON.parse(localStorage.getItem("users"))
+      : [];
     return users;
   },
-  getUser(state){
+  getUser(state) {
     //let user = localStorage.getItem('user')?JSON.parse(localStorage.getItem('user')):null;
     let user = state.myuser;
     return user;
   },
-  getUserData(state){
+  getUserData(state) {
     return state.userData;
   },
-  getRole(state){
+  getRole(state) {
     let user = this.getUser();
     return user.role;
   },
-  getHackers(state){
+  getHackers(state) {
     return state.myhackers;
   },
-  getHacker(state,id){
-    return(id)=>{
-      const hacker = state.myhackers.find((hacker)=> hacker.id==id);
+  getHacker(state, id) {
+    return (id) => {
+      const hacker = state.myhackers.find((hacker) => hacker.id == id);
       return hacker;
-    }
-  }
-
-}
+    };
+  },
+  getLocalDate(state) {
+    return state.localDate;
+  },
+  getDuration(state, date) {
+    return (date) => {
+      const dateOne = moment(date);
+      const dateTwo = moment(state.localDate.date)
+      return dateOne.from(dateTwo,"true");
+    };
+  },
+};
 const mutations = {
-  ADD_USER(state,user){
-    let id = state.mesusers.length+1;
+  ADD_USER(state, user) {
+    let id = state.mesusers.length + 1;
     user.id = id;
-    const users = localStorage.getItem('users')?JSON.parse(localStorage.getItem('users')):[];
+    const users = localStorage.getItem("users")
+      ? JSON.parse(localStorage.getItem("users"))
+      : [];
 
-
-    if(user.company){
-      const companies = getters.getCompanies().map(function(company){
-        if(company.id==user.company.id){
-          let company_user={
-            id:company.companyUsers.length+1,
-            first_name:user.first_name,
-            user:user
-          }
+    if (user.company) {
+      const companies = getters.getCompanies().map(function (company) {
+        if (company.id == user.company.id) {
+          let company_user = {
+            id: company.companyUsers.length + 1,
+            first_name: user.first_name,
+            user: user,
+          };
           //user.companyUser=company_user;
           company.companyUsers.push(company_user);
         }
         return company;
-      })
-      state.companies=companies;
-      localStorage.setItem('companies',JSON.stringify(companies));
-    }
-    else if(user.hacker){
-      user.hacker.id=id
-    }
-    else if(user.march1st){
-      user.march1st.id=id
+      });
+      state.companies = companies;
+      localStorage.setItem("companies", JSON.stringify(companies));
+    } else if (user.hacker) {
+      user.hacker.id = id;
+    } else if (user.march1st) {
+      user.march1st.id = id;
     }
     users.push(user);
     state.mesusers = users;
-    localStorage.setItem('users',JSON.stringify(state.mesusers));
+    localStorage.setItem("users", JSON.stringify(state.mesusers));
   },
-  SET_USER(state,user){
-    localStorage.setItem('user',JSON.stringify(user));
-    state.myuser=user;
+  SET_USER(state, user) {
+    localStorage.setItem("user", JSON.stringify(user));
+    state.myuser = user;
   },
-  SET_USER_DATA(state,user){
-    state.userData=user;
+  SET_USER_DATA(state, user) {
+    state.userData = user;
   },
-  SET_USERS(state,users){
-
-  },
-  SET_HACKERS(state, hackers){
+  SET_USERS(state, users) {},
+  SET_HACKERS(state, hackers) {
     state.myhackers = hackers;
   },
-  SET_COMPAGNIES(state,companies){
+  SET_COMPAGNIES(state, companies) {
     state.companies = companies;
-  }
-}
+  },
+  SET_LOCALDATE(state, date) {
+    state.localDate = date;
+  },
+};
 const actions = {
   async onSubmitSignUpForm({ commit, state }, payload) {
     printLog("onSubmitSignUpForm payload", payload);
@@ -148,21 +169,22 @@ const actions = {
     const userAttr = {
       name: formatFullName(payload.fullName),
       locale: state.locale.value,
-      "custom:role":payload.role,
+      "custom:role": payload.role,
       //"custom:role":"m1_account_manager",
-      "custom:companyName":payload.role==='client'?payload.companyName.trim():"",
-      "custom:title":payload.role==='client'?payload.title.trim():"",
+      "custom:companyName":
+        payload.role === "client" ? payload.companyName.trim() : "",
+      "custom:title": payload.role === "client" ? payload.title.trim() : "",
       "custom:userId": "",
       "custom:joinedOn": new Date().toISOString().substring(0, 10),
     };
 
     const userData = {
       email: payload.email.trim(),
-      username:payload.email.trim(),
+      username: payload.email.trim(),
       password: payload.password,
       attributes: userAttr,
     };
-    console.log("La valeur de userData = ",userData);
+    console.log("La valeur de userData = ", userData);
 
     try {
       const cognitoUser = await Auth.signUp(userData);
@@ -176,7 +198,7 @@ const actions = {
       throw new Error(error);
     }
   },
-  async onSubmitValidationCode({ state, dispatch}, code) {
+  async onSubmitValidationCode({ state, dispatch }, code) {
     printLog(`Code = ${code}`);
     /**
      * User confirm signUp in cognito user pool
@@ -187,51 +209,51 @@ const actions = {
       const status = await Auth.confirmSignUp(userData.email, code);
       // User is confirmed.
       printLog(`Auth.confirmSignUp status = ${status}`);
-      printLog("onSubmitValidationCode/userData",userData);
+      printLog("onSubmitValidationCode/userData", userData);
 
-      dispatch('strapiSignUp',getters.getUserData(state))
+      dispatch("strapiSignUp", getters.getUserData(state));
       return "Cognito account created.";
     } catch (error) {
       printLog(`Error in Auth.confirmSignUp`, error);
       throw new Error(error);
     }
   },
-  async strapiSignUp({state},userData){
+  async strapiSignUp({ state }, userData) {
     try {
-      printLog("strapiSignUp/userData",userData)
-      const role = userData.attributes['custom:role'];
-      const url=role==='client'?"/custom/signup-client":"/custom/signup-hacker";
-      let strapiUser={};
-      if(role==='client'){
-        strapiUser={
-          username:userData.username,
-          email:userData.email,
-          provider:"local",
-          password:"",
-          confirm:true,
-          blocked:false,
-          companyName:userData.attributes['custom:companyName'],
-          fullName:userData.attributes.name,
-          title:userData.attributes['custom:title']
-        }
+      printLog("strapiSignUp/userData", userData);
+      const role = userData.attributes["custom:role"];
+      const url =
+        role === "client" ? "/custom/signup-client" : "/custom/signup-hacker";
+      let strapiUser = {};
+      if (role === "client") {
+        strapiUser = {
+          username: userData.username,
+          email: userData.email,
+          provider: "local",
+          password: "",
+          confirm: true,
+          blocked: false,
+          companyName: userData.attributes["custom:companyName"],
+          fullName: userData.attributes.name,
+          title: userData.attributes["custom:title"],
+        };
+      } else {
+        strapiUser = {
+          username: userData.username,
+          email: userData.email,
+          fullName: userData.attributes.name,
+          provider: "local",
+          password: "",
+          confirm: true,
+          blocked: false,
+        };
       }
-      else{
-        strapiUser={
-          username:userData.username,
-          email:userData.email,
-          fullName:userData.attributes.name,
-          provider:"local",
-          password:"",
-          confirm:true,
-          blocked:false
-        }
-      }
-      console.log('strapiSignUp/strapiUser',strapiUser);
+      console.log("strapiSignUp/strapiUser", strapiUser);
       //printLog('strapiSignUp/strapiUser',strapiUser);
-      const data = await _postQueryServer(url,strapiUser);
-      console.log("La valeur de data dans = "+ data);
+      const data = await _postQueryServer(url, strapiUser);
+      console.log("La valeur de data dans = " + data);
       return data;
-    }catch (e) {
+    } catch (e) {
       console.log(`Erreur dans strapiSignUp ${e}`);
     }
   },
@@ -243,38 +265,37 @@ const actions = {
       const cognitoUser = await Auth.signIn(payload.email, payload.password);
       printLog("SignIn result. User=", cognitoUser);
       let jwtToken = cognitoUser.signInUserSession.idToken.jwtToken;
-      dispatch('strapiSignIn',jwtToken);
+      dispatch("strapiSignIn", jwtToken);
     } catch (error) {
       printLog(`Unable to sign in`, error);
       throw new Error(error);
     }
   },
 
-  async strapiSignIn2({commit,dispatch},userData){
+  async strapiSignIn2({ commit, dispatch }, userData) {
     try {
       const credentials = await _loginUser({
         identifier: userData.email,
-        password: userData.password
+        password: userData.password,
       });
-      localStorage.setItem("token",credentials.token);
-      dispatch('GET_COMPAGNIES')
+      localStorage.setItem("token", credentials.token);
+      dispatch("GET_COMPAGNIES");
       const roleUser = await _getMyRole(credentials);
       let user = {
-        id:credentials.user.id,
-        email:credentials.user.email,
-        username:credentials.user.username,
-        role:roleUser.role,
-        type:roleUser.type,
-        companyUser:roleUser.companyUser,
-        company:roleUser.company,
-        hacker:roleUser.hacker,
-        march1st:roleUser.march1st
-      }
-      console.log("strapiSignIn2/user :",user);
-      commit('SET_USER',user);
-    } catch (error) {
-
-    }
+        id: credentials.user.id,
+        email: credentials.user.email,
+        username: credentials.user.username,
+        createdAt: roleUser.createdAt,
+        role: roleUser.role,
+        type: roleUser.type,
+        companyUser: roleUser.companyUser,
+        company: roleUser.company,
+        hacker: roleUser.hacker,
+        march1st: roleUser.march1st,
+      };
+      console.log("strapiSignIn2/user :", user);
+      commit("SET_USER", user);
+    } catch (error) {}
   },
   async strapiSignIn({ commit }, jwtToken) {
     try {
@@ -285,19 +306,23 @@ const actions = {
       const data = await _postQueryServer(url, token);
       console.log("strapiSignIn/data = ", data);
       let user = {
-        id:data.user.id,
-        email:data.user.email,
-        username:data.user.username,
-        role:getUserRole(data.user.role.type).role,
-        type:getUserRole(data.user.role.type).type,
-        companyUser:data.user.company_user,
-        company:data.user.company_user!=null?data.user.company_user.company:null,
-        hacker:data.user.hacker,
-        march1st:data.user.march1st_user
-      }
-      localStorage.setItem("user",JSON.stringify(user));
-      localStorage.setItem('token',data.jwtStrapi);
-      commit('SET_USER',user);
+        id: data.user.id,
+        email: data.user.email,
+        username: data.user.username,
+        createdAt: data.user.createdAt,
+        role: getUserRole(data.user.role.type).role,
+        type: getUserRole(data.user.role.type).type,
+        companyUser: data.user.company_user,
+        company:
+          data.user.company_user != null
+            ? data.user.company_user.company
+            : null,
+        hacker: data.user.hacker,
+        march1st: data.user.march1st_user,
+      };
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", data.jwtStrapi);
+      commit("SET_USER", user);
     } catch (error) {
       let errorData = {
         token: null,
@@ -307,91 +332,96 @@ const actions = {
       return Promise.reject(0);
     }
   },
-  async logOutUser({commit}){
+  async logOutUser({ commit }) {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
   },
 
-  register({commit},formData){
-    let user = JSON.parse(JSON.stringify(formData))
-    if(user.roleUser.value==3){
-      user.role="client",
-      user.type = user.typeUser.value;
+  register({ commit }, formData) {
+    let user = JSON.parse(JSON.stringify(formData));
+    if (user.roleUser.value == 3) {
+      (user.role = "client"), (user.type = user.typeUser.value);
 
-      user.company.id=user.company.value;
-      user.company.company_name=user.company.label
+      user.company.id = user.company.value;
+      user.company.company_name = user.company.label;
 
       delete user.company.value;
       delete user.company.label;
+    } else if (user.roleUser.value == 2) {
+      user.role = "march1st";
+      user.march1st = {
+        first_name: user.first_name,
+        profile_picture_url: "",
+        last_name: "",
+        id: null,
+      };
+    } else {
+      user.role = "hacker";
+      user.hacker = {
+        first_name: user.first_name,
+        profile_picture_url: "",
+        last_name: "",
+        id: null,
+      };
     }
-    else if(user.roleUser.value==2){
-      user.role="march1st"
-      user.march1st={
-        first_name:user.first_name,
-        profile_picture_url:"",
-        last_name:"",
-        id:null
-      }
-    }
-    else{
-      user.role="hacker"
-      user.hacker={
-        first_name:user.first_name,
-        profile_picture_url:"",
-        last_name:"",
-        id:null
-      }
-    }
-    commit('ADD_USER',user);
+    commit("ADD_USER", user);
   },
-  login({commit},user){
+  login({ commit }, user) {
     const users = getters.getAllUsers();
-    const data = users.filter((existUser)=> existUser.id==user.value);
-    commit('SET_USER',data[0])
+    const data = users.filter((existUser) => existUser.id == user.value);
+    commit("SET_USER", data[0]);
+  },
+  async GET_LOCALDATE({ commit }) {
+    const url = "/custom/localdate";
+    const data = await _getQueryServer(url);
+    commit("SET_LOCALDATE", data);
+    console.log("GET_LOCALDATE/data =", data);
   },
 
-  async GET_USERS({commit}){
-    const users = localStorage.getItem('users')?JSON.parse(localStorage.getItem('users')):[]
-    commit('SET_USERS',users);
+  async GET_USERS({ commit }) {
+    const users = localStorage.getItem("users")
+      ? JSON.parse(localStorage.getItem("users"))
+      : [];
+    commit("SET_USERS", users);
   },
 
-  async GET_HACKERS({commit}){
+  async GET_HACKERS({ commit }) {
     //const users = localStorage.getItem('users')?JSON.parse(localStorage.getItem('users')):[];
     //const hackers = users.filter((user) => user.role==='hacker');
     try {
       const hackers = await _getHackers();
-      commit('SET_HACKERS',hackers);
+      commit("SET_HACKERS", hackers);
       return hackers;
-    } catch (error) {
-
-    }
+    } catch (error) {}
   },
 
-  async GET_MY_COMPANYUSERS({commit}){
-    const user = localStorage.getItem('user')?JSON.parse(localStorage.getItem('user')):null;
-    let companyUsers=[];
-    if(user && user.company){
+  async GET_MY_COMPANYUSERS({ commit }) {
+    const user = localStorage.getItem("user")
+      ? JSON.parse(localStorage.getItem("user"))
+      : null;
+    let companyUsers = [];
+    if (user && user.company) {
       companyUsers = await _getCompanyUsers(user.company.id);
-      companyUsers = companyUsers.filter((company_user) => company_user.user.email!=user.email);
+      companyUsers = companyUsers.filter(
+        (company_user) => company_user.user.email != user.email
+      );
     }
     return companyUsers;
   },
 
-  async GET_COMPAGNIES({commit}){
+  async GET_COMPAGNIES({ commit }) {
     try {
       const companies = await _getCompanies();
-      console.log("GET_COMPAGNIES/companies =",companies)
-      commit('SET_COMPAGNIES',companies);
-    } catch (error) {
+      console.log("GET_COMPAGNIES/companies =", companies);
+      commit("SET_COMPAGNIES", companies);
+    } catch (error) {}
+  },
+};
 
-    }
-  }
-}
-
-export default{
-  namespaced:true,
+export default {
+  namespaced: true,
   state,
   getters,
   mutations,
-  actions
-}
+  actions,
+};
