@@ -31,6 +31,36 @@ const _postQueryServer = async (path, payload = {}, token = null) => {
     });
 };
 
+const _postQueryWithFile = async(path, payload = {}, token = null) => {
+
+  if(token)
+    api.defaults.headers.common = { Authorization: `Bearer ${token}` };
+  return api({
+    mode: "cors",
+    url: path,
+    method: "POST",
+    data: payload,
+    config: {
+      headers: {
+        "Content-Type": "application/json"
+      },
+    },
+  })
+    .then((response) => {
+      //console.log(response);
+      return Promise.resolve(response.data);
+      /*if (response.data.status === "OK") {
+        return Promise.resolve(response.data);
+      } else {
+        return Promise.reject(response.data.message);
+      }*/
+    })
+    .catch((e) => {
+      return Promise.reject(e);
+    });
+};
+
+
 const _getQueryServer = async (path, payload = {}, token = null) => {
   if(token)
     api.defaults.headers.common = { Authorization: `Bearer ${token}` };
@@ -107,6 +137,7 @@ const _deleteQueryServer = async (path, payload = {}, token = null) => {
 
 export {
   _postQueryServer,
+  _postQueryWithFile,
   _getQueryServer,
   _putQueryServer,
   _deleteQueryServer,

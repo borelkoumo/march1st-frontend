@@ -6,7 +6,6 @@
         style="padding-top: 40px"
       >
         <q-toolbar-title class="title-header">Add A Program</q-toolbar-title>
-
       </q-toolbar>
       <q-card
         class="card-user q-mt-lg bg-transparent"
@@ -14,12 +13,17 @@
         style="border-radius: 10px"
       >
         <div class="wrap-card q-pa-lg flex flex-center bg-white">
-          <div class="wrap-image flex flex-center">
-            <div class="card-image">
+          <div class="wrap-image flex flex-center drop-zone cursor-pointer">
+            <div class="card-image drop-zone__prompt">
               <q-img src="~assets/local/file_copy.png" width="32px" />
               <div class="subtitle">Program picture</div>
               <div class="subtitle-2">Drop your file here</div>
             </div>
+            <div
+              class="drop-zone__thumb drop-zone__thumb-hidden"
+              data-label="myfile.txt"
+            ></div>
+            <input type="file" name="program_picture" id="" hidden class="drop-zone__input" />
           </div>
           <div class="flex col content-card">
             <div style="width: 100%">
@@ -221,7 +225,6 @@
               />
             </div>
           </q-card-section>
-
         </q-card>
       </div>
       <div class="card-invite">
@@ -232,7 +235,12 @@
           >
             <div class="title">Assign Managers</div>
             <q-space />
-            <q-input dense v-model="search_manager" placeholder="Search" borderless>
+            <q-input
+              dense
+              v-model="search_manager"
+              placeholder="Search"
+              borderless
+            >
               <template v-slot:append>
                 <q-icon name="search" />
               </template>
@@ -306,7 +314,12 @@
           >
             <div class="title">Invite Hackers</div>
             <q-space />
-            <q-input dense v-model="search_hacker" placeholder="Search" borderless>
+            <q-input
+              dense
+              v-model="search_hacker"
+              placeholder="Search"
+              borderless
+            >
               <template v-slot:append>
                 <q-icon name="search" />
               </template>
@@ -402,76 +415,77 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters } from "vuex";
 export default {
   data() {
     return {
-      fonts:{
-        arial: 'Arial',
-        arial_black: 'Arial Black',
-        comic_sans: 'Comic Sans MS',
-        courier_new: 'Courier New',
-        impact: 'Impact',
-        lucida_grande: 'Lucida Grande',
-        times_new_roman: 'Times New Roman',
-        verdana: 'Verdana'
+      fonts: {
+        arial: "Arial",
+        arial_black: "Arial Black",
+        comic_sans: "Comic Sans MS",
+        courier_new: "Courier New",
+        impact: "Impact",
+        lucida_grande: "Lucida Grande",
+        times_new_roman: "Times New Roman",
+        verdana: "Verdana",
       },
-      toolbar:[
+      toolbar: [
         [
           {
             label: this.$q.lang.editor.align,
             icon: this.$q.iconSet.editor.align,
             fixedLabel: true,
-            list: 'only-icons',
-            options: ['left', 'center', 'right', 'justify']
-          }
+            list: "only-icons",
+            options: ["left", "center", "right", "justify"],
+          },
         ],
-      ['bold', 'italic'],
-    ['token', 'hr', 'link', 'custom_btn'],
-      [
-        {
-          label: this.$q.lang.editor.fontSize,
-          icon: this.$q.iconSet.editor.fontSize,
-          fixedLabel: true,
-          fixedIcon: true,
-          list: 'no-icons',
-          options: [
-            'size-1',
-            'size-2',
-            'size-3',
-            'size-4',
-            'size-5',
-            'size-6',
-            'size-7'
-          ]
-        },
-        {
-          label: this.$q.lang.editor.defaultFont,
-          icon: this.$q.iconSet.editor.font,
-          fixedIcon: true,
-          list: 'no-icons',
-          options: [
-            'default_font',
-            'arial',
-            'arial_black',
-            'comic_sans',
-            'courier_new',
-            'impact',
-            'lucida_grande',
-            'times_new_roman',
-            'verdana'
-          ]
-        },
-      ],
-      ['unordered', 'ordered'],
+        ["bold", "italic"],
+        ["token", "hr", "link", "custom_btn"],
+        [
+          {
+            label: this.$q.lang.editor.fontSize,
+            icon: this.$q.iconSet.editor.fontSize,
+            fixedLabel: true,
+            fixedIcon: true,
+            list: "no-icons",
+            options: [
+              "size-1",
+              "size-2",
+              "size-3",
+              "size-4",
+              "size-5",
+              "size-6",
+              "size-7",
+            ],
+          },
+          {
+            label: this.$q.lang.editor.defaultFont,
+            icon: this.$q.iconSet.editor.font,
+            fixedIcon: true,
+            list: "no-icons",
+            options: [
+              "default_font",
+              "arial",
+              "arial_black",
+              "comic_sans",
+              "courier_new",
+              "impact",
+              "lucida_grande",
+              "times_new_roman",
+              "verdana",
+            ],
+          },
+        ],
+        ["unordered", "ordered"],
 
-      ['undo', 'redo'],
-      ['viewsource']
+        ["undo", "redo"],
+        ["viewsource"],
       ],
       formData: {
         //id: null,
         //user_id: 1,
         //picture: "https://cdn.quasar.dev/img/parallax2.jpg",
+        picture:null,
         program_title: "Lorem ipsum dolor sit amet,",
         program_description:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rutrum congue leo eget malesuada. Cras ultricies ligula sed magna dictum porta.",
@@ -498,20 +512,20 @@ export default {
         //date_post: "10/04/2021",
         invitations: [],
 
-        company:null
+        company: null,
       },
-      allHackers:[],
-      search_hacker:null,
-      checkAllHackers:false,
+      allHackers: [],
+      search_hacker: null,
+      checkAllHackers: false,
 
-      search_manager:null,
-      checkAllManagers:false,
-      allManagers:[],
-      privileges:[]
-    }
+      search_manager: null,
+      checkAllManagers: false,
+      allManagers: [],
+      privileges: [],
+    };
   },
-  watch:{
-    checkAllHackers:function(val){
+  watch: {
+    checkAllHackers: function (val) {
       if (val) {
         this.allHackers.forEach((hacker) => {
           this.formData.invitations.push(hacker.id);
@@ -520,87 +534,142 @@ export default {
         this.formData.invitations = [];
       }
     },
-    checkAllManagers:function(val){
+    checkAllManagers: function (val) {
       if (val) {
         this.allManagers.forEach((manager) => {
-          manager.isCheck=true;
+          manager.isCheck = true;
         });
       } else {
         this.allManagers.forEach((manager) => {
-          manager.isCheck=false;
+          manager.isCheck = false;
         });
       }
-    }
+    },
   },
   computed: {
-    ...mapGetters('auth',[
-      'getUser',
-      'getHackers'
-    ])
+    ...mapGetters("auth", ["getUser", "getHackers"]),
   },
   methods: {
-    ...mapActions('program',[
-      'CREATE_PROGRAM'
-    ]),
-    ...mapActions('auth',[
-      'GET_HACKERS',
-      'GET_MY_COMPANYUSERS'
-    ]),
+    ...mapActions("program", ["CREATE_PROGRAM"]),
+    ...mapActions("auth", ["GET_HACKERS", "GET_MY_COMPANYUSERS"]),
     async onSaveProgram() {
       try {
         this.$q.loading.show();
-        this.formData.managers = this.allManagers.filter((m) => m.isCheck == true);
-        this.formData.company=this.getUser.company.id;
+        this.formData.managers = this.allManagers.filter(
+          (m) => m.isCheck == true
+        );
+        this.formData.company = this.getUser.company.id;
         await this.CREATE_PROGRAM(this.formData);
         this.$router.push("/new-dashboard");
         this.$q.notify({
-          message:"Create successfully Program",
-          type:"positive",
-          position:"top"
-        })
+          message: "Create successfully Program",
+          type: "positive",
+          position: "top",
+        });
         this.$q.loading.hide();
-      }catch (e) {
+      } catch (e) {
         console.log("error where create program", e.message());
         this.$q.loading.hide();
       }
     },
-  },
-  async mounted(){
-    const companyUserData = await this.GET_MY_COMPANYUSERS();
-    this.allManagers = companyUserData.map(function(companyUser){
-      let manager={
-        first_name:companyUser.first_name,
-        id:companyUser.id,
-        last_name:companyUser.last_name,
-        user:companyUser.user,
-        isCheck:false
+    dragAndDrop() {
+      document.querySelectorAll(".drop-zone__input").forEach((inputElement) => {
+        const dropZoneElement = inputElement.closest(".drop-zone");
+
+        dropZoneElement.addEventListener("click", e => {
+          inputElement.click();
+        })
+        inputElement.addEventListener("change",e => {
+          if(inputElement.files.length){
+            updateThumbnail(dropZoneElement,inputElement.files[0]);
+          }
+        })
+
+        dropZoneElement.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          dropZoneElement.classList.add("drop-zone--over");
+        });
+        ["dragleave", "dragend"].forEach((type) => {
+          dropZoneElement.addEventListener(type, (e) => {
+            dropZoneElement.classList.remove("drop-zone--over");
+          });
+        });
+
+        dropZoneElement.addEventListener("drop", (e) => {
+          e.preventDefault();
+          if (e.dataTransfer.files.length) {
+            inputElement.files = e.dataTransfer.files;
+            updateThumbnail(dropZoneElement, e.dataTransfer.files[0]);
+            this.formData.picture = e.dataTransfer.files[0];
+            //console.log(this.formData);
+          }
+          else{
+
+          }
+          dropZoneElement.classList.remove("drop-zone--over");
+        });
+      });
+      function updateThumbnail(dropZoneElement, file) {
+        let thumbnailElement =
+          dropZoneElement.querySelector(".drop-zone__thumb");
+        if (dropZoneElement.querySelector(".drop-zone__prompt")) {
+          dropZoneElement.querySelector(".drop-zone__prompt").remove();
+        }
+        thumbnailElement.classList.remove("drop-zone__thumb-hidden");
+        thumbnailElement.dataset.label = file.name;
+        if (file.type.startsWith("image/")) {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => {
+            thumbnailElement.style.backgroundImage = `url('${reader.result}')`
+          };
+        }
       }
+    },
+  },
+  async mounted() {
+    const companyUserData = await this.GET_MY_COMPANYUSERS();
+    this.allManagers = companyUserData.map(function (companyUser) {
+      let manager = {
+        first_name: companyUser.first_name,
+        id: companyUser.id,
+        last_name: companyUser.last_name,
+        user: companyUser.user,
+        isCheck: false,
+      };
       return manager;
     });
     await this.GET_HACKERS();
-    this.allHackers = this.getHackers.map(function(element){
-      let hacker={
-        email:element.email,
-        first_name:element.first_name,
-        id:element.id,
-        last_name:element.last_name
-      }
+    this.allHackers = this.getHackers.map(function (element) {
+      let hacker = {
+        email: element.email,
+        first_name: element.first_name,
+        id: element.id,
+        last_name: element.last_name,
+      };
       return hacker;
-    })
+    });
     //this.allHackers = this.getHackers;
-  }
+
+    this.dragAndDrop();
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-  .wrap-image {
-  width: 300px;
+.wrap-image {
+  width: 250px;
+  height: 250px;
   background: #f5f5f5;
   border: 1px dashed #b0b0b0;
   box-sizing: border-box;
   border-radius: 12px;
-  padding-top: 50px;
-  padding-bottom: 50px;
+  /*padding-top: 50px;
+  padding-bottom: 50px;*/
+  padding: 25px;
+}
+.drop-zone--over {
+  border-style: solid;
 }
 .wrap-image .card-image {
   text-align: center;
@@ -624,6 +693,32 @@ export default {
   text-align: center;
   letter-spacing: -0.015em;
   color: #838181;
+}
+.drop-zone__thumb {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  background-color: #cccccc;
+  background-size: cover;
+  position: relative;
+}
+.drop-zone__thumb::after {
+  content: attr(data-label);
+  //content: "attr(data-label)";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 5px 0;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.75);
+  font-size: 14px;
+  text-align: center;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+.drop-zone__thumb-hidden {
+  display: none;
 }
 .wrap-card {
   border-radius: 10px;

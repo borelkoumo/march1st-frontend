@@ -1,4 +1,5 @@
 import { ProgramService } from "./api/programGraph";
+import { ProgramServiceRest } from './api/programRest';
 const state = {
   programs: [],
   myPrograms: [],
@@ -35,6 +36,11 @@ const mutations = {
 };
 const actions = {
   async CREATE_PROGRAM({ state, dispatch }, programData) {
+    const formData = new FormData();
+
+    const file = programData.picture;
+    delete programData.picture;
+    console.log(file)
     let program = {
       ...programData,
       reward_range: {
@@ -50,7 +56,12 @@ const actions = {
         return Number(manager.id);
       }),
     };
-    const programId = await ProgramService.createProgram(program);
+    if(file){
+      formData.append('files.program_picture',file)
+    }
+    console.log(program)
+    formData.append('data', JSON.stringify(program));
+    /*const programId = await ProgramService.createProgram(program);
 
     program.invitations.forEach(async (i) => {
       let invitation = {
@@ -59,8 +70,8 @@ const actions = {
         accepted: false,
       };
       await ProgramService.createInvitation(invitation);
-    });
-
+    });*/
+    await ProgramServiceRest.createProgram(formData);
     dispatch("GET_PROGRAMS");
     dispatch("GET_MY_PROGRAMS");
   },
