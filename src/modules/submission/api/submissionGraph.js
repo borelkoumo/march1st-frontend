@@ -165,6 +165,7 @@ export class SubmissionService {
   /*======================================================================*/
 
   static formatSubmissions(submissionsData) {
+    const url = "https://strapi.march1st.com"
     const submissions = submissionsData.map(function (element) {
       return {
         id: element.id,
@@ -173,6 +174,14 @@ export class SubmissionService {
         submission_target: element.attributes.submission_target,
         submission_text: element.attributes.submission_text,
         createdAt: element.attributes.createdAt,
+        attachments:element.attributes.attachment.data.map((attachment)=>{
+          return{
+            id:attachment.id,
+            name:attachment.attributes.name,
+            url:url+attachment.attributes.url,
+            size:attachment.attributes.size
+          }
+        }),
         submission_status:element.attributes.submission_statuses.data[0]?
           element.attributes.submission_statuses.data[0].attributes.status:"Undefined",
         submission_status_title:element.attributes.submission_statuses.data[0]?
@@ -199,11 +208,13 @@ export class SubmissionService {
           medium:
             element.attributes.program.data.attributes.reward_range.medium,
         },
+
       };
     });
     return submissions;
   }
   static formatSubmission(element) {
+    const url = "https://strapi.march1st.com"
     return {
       id: element.id,
       submission_title: element.attributes.submission_title,
@@ -211,6 +222,14 @@ export class SubmissionService {
       submission_target: element.attributes.submission_target,
       submission_text: element.attributes.submission_text,
       createdAt: element.attributes.createdAt,
+      attachments:element.attributes.attachment.data.map((attachment)=>{
+        return{
+          id:attachment.id,
+          name:attachment.attributes.name,
+          url:url+attachment.attributes.url,
+          size:attachment.attributes.size
+        }
+      }),
       submission_status:
         element.attributes.submission_statuses.data[0].attributes.status,
       submission_status_title:
