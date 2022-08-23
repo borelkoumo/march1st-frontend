@@ -21,8 +21,10 @@
           />
         </q-toolbar>
         <div class="q-mt-lg submission-elt" v-if="program">
-          <program-component :program="program"/>
-          <submission-component :programRequest="program"></submission-component>
+          <program-component :program="program" />
+          <submission-component
+            :programRequest="program"
+          ></submission-component>
         </div>
         <div class="q-mt-lg">
           <q-card class="my-card card-description q-pb-md" flat>
@@ -80,65 +82,71 @@
             </q-card-section>
           </q-card>
         </div>
-        <div class="q-mt-lg q-pb-lg" style="border:1px solid red">
-          <q-card class="my-card q-pa-md" flat>
-            <div class="flex flex-center attachment">
+        <div class="q-mt-lg q-pb-lg">
+          <q-card class="my-card q-pa-md drop-zone cursor-pointer" flat>
+            <div class="flex flex-center attachment drop-zone__prompt">
               <div>
                 <div class="title">Attachments</div>
                 <div class="subtitle">Drop your files here</div>
               </div>
             </div>
+            <input
+              type="file"
+              name="attachment"
+              id=""
+              hidden
+              class="drop-zone__input"
+              multiple
+            />
+          </q-card>
+        </div>
+        <div class="wrap-thumb q-mb-lg">
+          <q-card class="wrap-thumb__card" flat v-for="(thumb,i) in thumbs" :key="i">
+            <q-toolbar class="q-pt-sm q-pb-none">
+              <q-space />
+              <q-btn icon="close" flat class="btn-close" size="10px"/>
+            </q-toolbar>
+            <q-item class="wrap-thumb__content">
+              <q-item-section side>
+                <q-img src="images/admin/pdf-img.png" width="41px" />
+              </q-item-section>
+              <q-item-section class="">
+                <div class="filename">{{thumb.name}}</div>
+                <div class="filesize">{{convertToMB(thumb.size)}}</div>
+              </q-item-section>
+            </q-item>
+            <div
+              class="drop-zone__thumb drop-zone__thumb-hidden"
+              data-label="myfile.txt"
+            ></div>
           </q-card>
         </div>
       </div>
-      <!-- <div class="right-content bg-white">
-        <q-card class="card-timeline q-pt-sm q-pb-sm q-pl-md q-pr-md" flat>
-          <q-timeline color="secondary">
-            <q-timeline-entry tag="div" heading class="title-timeline">
-              Status timeline
-            </q-timeline-entry>
-            <q-timeline-entry tag="div">
-              <div class="subtitle-timeline">4 June 2021 5:00pm</div>
-              <div class="content-timeline">
-                Waiting for hacker clarifications
-              </div>
-            </q-timeline-entry>
-
-            <q-timeline-entry tag="div">
-              <div class="subtitle-timeline">5 June 2021 5:00pm</div>
-              <div class="content-timeline">M1 Returned for clarifications</div>
-            </q-timeline-entry>
-
-            <q-timeline-entry tag="div">
-              <div class="subtitle-timeline">4 June 2021 5:00pm</div>
-              <div class="content-timeline">New Report Submission</div>
-            </q-timeline-entry>
-          </q-timeline>
-        </q-card>
-      </div> -->
     </div>
   </q-page>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-import submissionComponent from '../components/SubmissionComponent.vue';
-import ProgramComponent from '../../program/components/ProgramComponent.vue';
+import { mapActions } from "vuex";
+import submissionComponent from "../components/SubmissionComponent.vue";
+import ProgramComponent from "../../program/components/ProgramComponent.vue";
 
 export default {
-  components:{
+  components: {
     submissionComponent,
-    ProgramComponent
+    ProgramComponent,
   },
   data() {
     return {
-      idProgram:null,
-      program:null,
+      thumbs:[],
+
+      idProgram: null,
+      program: null,
 
       formData: {
-        id:null,
+        id: null,
         submission_title: "Curabitur non nulla sit amet nisl",
-        severity_level: 'low',
+        severity_level: "low",
         submission_target: "http://localhost:8080/main/my-submissions",
         submission_text:
           "Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Quisque velit nisi, pretium ut lacinia in, elementum id enim.",
@@ -146,7 +154,8 @@ export default {
         hacker_id: null,
         etat: null,
         submission_status: "Pending",
-        submission_statuses:[]
+        submission_statuses: [],
+        attachments:null
       },
       levels: [
         { label: "Low", value: "low" },
@@ -155,48 +164,130 @@ export default {
         { label: "High", value: "high" },
       ],
       level: { label: "Low", value: "low" },
-    }
+    };
   },
-  watch:{
-    "$route.params.programId":function(val){
-      this.idProgram=val;
-    }
+  watch: {
+    "$route.params.programId": function (val) {
+      this.idProgram = val;
+    },
+  },
+  computed: {
+
   },
   methods: {
-    ...mapActions('program',[
-      'GET_ONE_PROGRAM'
-    ]),
-    ...mapActions('submission',[
-      'CREATE_SUBMISSION'
-    ]),
-    async onAddReport(){
+    ...mapActions("program", ["GET_ONE_PROGRAM"]),
+    ...mapActions("submission", ["CREATE_SUBMISSION"]),
+    async onAddReport() {
       try {
         this.$q.loading.show();
-        this.formData.program_id=Number(this.idProgram);
-        this.formData.severity_level=this.level.value;
+        this.formData.program_id = Number(this.idProgram);
+        this.formData.severity_level = this.level.value;
         await this.CREATE_SUBMISSION(this.formData);
-        this.$router.push('/new-dashboard/submissions');
+        this.$router.push("/new-dashboard/submissions");
         this.$q.notify({
-          message:"Your submission send successfully",
-          position:"top",
-          type:"positive"
-        })
+          message: "Your submission send successfully",
+          position: "top",
+          type: "positive",
+        });
         this.$q.loading.hide();
       } catch (error) {
         this.$q.loading.hide();
       }
+    },
+    dragAndDrop() {
+      document.querySelectorAll(".drop-zone__input").forEach((inputElement) => {
+        const dropZoneElement = inputElement.closest(".drop-zone");
 
+        dropZoneElement.addEventListener("click", (e) => {
+          inputElement.click();
+        });
+        inputElement.addEventListener("change", (e) => {
+          if (inputElement.files.length) {
+            console.log(inputElement.files);
+            this.thumbs = inputElement.files;
+            for(let i =0; i<inputElement.files.length; i++){
+              updateThumbnail(dropZoneElement, inputElement.files[i]);
+            }
+            this.formData.attachments = inputElement.files;
+            //updateThumbnail(dropZoneElement, inputElement.files[0]);
+            //this.formData.picture = inputElement.files[0];
+          }
+        });
+
+        dropZoneElement.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          dropZoneElement.classList.add("drop-zone--over");
+        });
+        ["dragleave", "dragend"].forEach((type) => {
+          dropZoneElement.addEventListener(type, (e) => {
+            dropZoneElement.classList.remove("drop-zone--over");
+          });
+        });
+
+        dropZoneElement.addEventListener("drop", (e) => {
+          e.preventDefault();
+          if (e.dataTransfer.files.length) {
+            inputElement.files = e.dataTransfer.files;
+            this.thumbs = e.dataTransfer.files;
+            for(let i =0; i<e.dataTransfer.files.length; i++){
+              updateThumbnail(dropZoneElement, e.dataTransfer.files[i]);
+            }
+            this.formData.attachments = e.dataTransfer.files;
+            //console.log(this.formData);
+          } else {
+          }
+          dropZoneElement.classList.remove("drop-zone--over");
+        });
+      });
+      function updateThumbnail(dropZoneElement, file) {
+        /*let thumbnailElement =
+          dropZoneElement.querySelector(".drop-zone__thumb");
+        if (dropZoneElement.querySelector(".drop-zone__prompt")) {
+          dropZoneElement.querySelector(".drop-zone__prompt").remove();
+        }
+        thumbnailElement.classList.remove("drop-zone__thumb-hidden");*/
+        console.log(file);
+        //thumbnailElement.dataset.label = file.name;
+        /*if (file.type.startsWith("image/")) {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => {
+            thumbnailElement.style.backgroundImage = `url('${reader.result}')`;
+          };
+        }*/
+      }
+    },
+    convertToMB(octet){
+      let result =octet;
+      console.log(octet)
+      if(octet<1024*1024){
+        result = octet/1024;
+        return result.toFixed(2)+"ko"
+      }
+      else if(octet<1024*1024*1024){
+        //on met en mo
+        result = octet/1024/1024;
+        return result.toFixed(2)+"mo";
+      }
+      else{
+        //on met en Go
+        result = octet/1024/1024/1024;
+        return result.toFixed(2)+"go"
+      }
     }
   },
-  async beforeMount(){
+  async beforeMount() {
     this.idProgram = this.$route.params.programId;
     this.program = await this.GET_ONE_PROGRAM(this.idProgram);
-  }
-}
+  },
+  async mounted() {
+    this.dragAndDrop();
+  },
+};
 </script>
 
-<style lang="css" scoped>
-  .subtitle-timeline {
+<style lang="scss" scoped>
+.subtitle-timeline {
   font-family: Inter;
   font-style: normal;
   font-weight: normal;
@@ -252,6 +343,58 @@ export default {
   padding-bottom: 32px;
   padding-top: 32px;
 }
+.drop-zone--over {
+  border-style: solid;
+}
+
+.wrap-thumb {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-gap:15px;
+  .btn-close {
+    width: 12px;
+    height: 12px;
+    color: #5887ff;
+    background-color: rgba(88, 135, 255, 0.2);
+  }
+  .wrap-thumb__card{
+    border-radius: 16px;
+    .q-toolbar{
+      min-height: 20px;
+    }
+  }
+  .wrap-thumb__content {
+    .filename {
+      font-family: "Inter";
+      font-style: normal;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 17px;
+      /* identical to box height */
+
+      display: flex;
+      align-items: center;
+      letter-spacing: -0.015em;
+
+      color: #46516d;
+    }
+    .filesize {
+      font-family: "Inter";
+      font-style: normal;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 17px;
+      /* identical to box height */
+
+      display: flex;
+      align-items: center;
+      letter-spacing: -0.015em;
+
+      color: #949090;
+    }
+  }
+}
+
 .card-description .subtitle {
   font-family: "inter";
   font-style: normal;

@@ -101,6 +101,7 @@ const ONE_SUBMISSION_QUERY = {
                 attributes{
                   name
                   url
+                  size
                 }
               }
             }
@@ -193,6 +194,7 @@ const SUBMISSIONS_HACKER = {
                 attributes{
                   name
                   url
+                  size
                 }
               }
             }
@@ -302,6 +304,7 @@ const SUBMISSIONS_SUPER_MANAGER = {
                 attributes{
                   name
                   url
+                  size
                 }
               }
             }
@@ -411,6 +414,7 @@ const SUBMISSIONS_MANAGER = {
                 attributes{
                   name
                   url
+                  size
                 }
               }
             }
@@ -512,6 +516,7 @@ const SUBMISSIONS_ADMIN = {
                 attributes{
                   name
                   url
+                  size
                 }
               }
             }

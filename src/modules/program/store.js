@@ -39,8 +39,10 @@ const actions = {
     const formData = new FormData();
 
     const file = programData.picture;
+    const invitations = programData.invitations;
+
     delete programData.picture;
-    console.log(file)
+    delete programData.invitations;
     let program = {
       ...programData,
       reward_range: {
@@ -61,17 +63,17 @@ const actions = {
     }
     //console.log(program)
     formData.append('data', JSON.stringify(program));
-    /*const programId = await ProgramService.createProgram(program);
+    const programResult = await ProgramServiceRest.createProgram(formData);
 
-    program.invitations.forEach(async (i) => {
+    invitations.forEach(async (i) => {
       let invitation = {
-        program: programId,
+        program: programResult.data.id,
         hacker: i,
         accepted: false,
       };
       await ProgramService.createInvitation(invitation);
-    });*/
-    await ProgramServiceRest.createProgram(formData);
+    });
+
     dispatch("GET_PROGRAMS");
     dispatch("GET_MY_PROGRAMS");
   },

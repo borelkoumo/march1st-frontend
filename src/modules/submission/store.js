@@ -1,4 +1,5 @@
 import { SubmissionService } from "./api/submissionGraph";
+import { SubmissionServiceRest } from './api/submissionRest';
 
 const state = {
   submissions: [],
@@ -32,19 +33,37 @@ const mutations = {
   },
 };
 const actions = {
-  async CREATE_SUBMISSION({ commit, dispatch }, formData) {
+  async CREATE_SUBMISSION({ commit, dispatch }, payload) {
     const user = localStorage.getItem("user")
       ? JSON.parse(localStorage.getItem("user"))
       : null;
     if (user) {
-      formData.hacker_id = user.hacker.id;
-      const submissionId = await SubmissionService.createSubmission(formData);
+      payload.hacker_id = user.hacker.id;
+      const files = payload.attachments;
+      delete payload.attachments;
+      let submission = {
+        submission_title: payload.submission_title,
+        submission_target: payload.submission_target,
+        submission_text: payload.submission_text,
+        severity_level: payload.severity_level,
+        program: payload.program_id,
+        hacker: payload.hacker_id,
+      }
+      let formData = new FormData();
+      if(files && files.length>0){
+        for(let i=0; i<files.length; i++){
+          formData.append('files.attachment',files[i],files[i].name)
+        }
+      }
+      formData.append('data',JSON.stringify(submission));
+      //const submissionId = await SubmissionService.createSubmission(formData);
+      const submissionResult = await SubmissionServiceRest.createSubmission(formData);
       //create submissionStatus
       let submissionStatus = {
         status_title: "New Report Submission",
         comment: "",
         status: "new",
-        submission: submissionId,
+        submission: submissionResult.data.id,
         created_by:user.id
       };
       const result = await SubmissionService.createSubmissionStatus(
