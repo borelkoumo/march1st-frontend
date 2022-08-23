@@ -582,6 +582,7 @@ export default {
         inputElement.addEventListener("change",e => {
           if(inputElement.files.length){
             updateThumbnail(dropZoneElement,inputElement.files[0]);
+            this.formData.picture = inputElement.files[0];
           }
         })
 
