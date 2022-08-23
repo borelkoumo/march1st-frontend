@@ -1,5 +1,5 @@
 import { ProgramService } from "./api/programGraph";
-import { ProgramServiceRest } from './api/programRest';
+import { ProgramServiceRest } from "./api/programRest";
 const state = {
   programs: [],
   myPrograms: [],
