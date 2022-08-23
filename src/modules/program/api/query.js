@@ -17,6 +17,14 @@ const PROGRAMS_QUERY = {
             program_scope
             legal_terms
             program_picture_url
+            program_picture{
+              data{
+                id
+                attributes{
+                  url
+                }
+              }
+            }
             is_closed
             closed_at
             createdAt
@@ -117,6 +125,14 @@ const SUPER_MANAGER_PROGRAM = {
             program_scope
             legal_terms
             program_picture_url
+            program_picture{
+              data{
+                id
+                attributes{
+                  url
+                }
+              }
+            }
             is_closed
             closed_at
             createdAt
@@ -218,6 +234,14 @@ const HACKER_PROGRAM = {
             program_scope
             legal_terms
             program_picture_url
+            program_picture{
+              data{
+                id
+                attributes{
+                  url
+                }
+              }
+            }
             is_closed
             closed_at
             createdAt
@@ -321,6 +345,14 @@ const ONE_PROGRAM_QUERY = {
             program_scope
             legal_terms
             program_picture_url
+            program_picture{
+              data{
+                id
+                attributes{
+                  url
+                }
+              }
+            }
             is_closed
             closed_at
             createdAt

@@ -21,9 +21,9 @@ const getUserRole = function (element) {
     throw new Error("Non pris en compte");
   }
 };
-const getDuration = function (localDate, date) {
-  const timestamp = moment(date, 'ddd MMM DD YYYY HH:mm:ss GMT Z').diff(localDate, 'hours');
-  return timestamp;
-};
 
-export { getUserRole, getDuration };
+const dragOverHandler = function (event){
+  console.log('File(s) in drop zone');
+}
+
+export { getUserRole, dragOverHandler };

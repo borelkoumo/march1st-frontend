@@ -155,7 +155,7 @@ export class ProgramService {
   /*======================================================================*/
 
   static formatPrograms(programsData) {
-    console.log("formatPrograms/programsData.length = ", programsData.length);
+    const url = "https://strapi.march1st.com"
     const programs = programsData.map(function (element) {
       let program = {
         id: element.id,
@@ -185,7 +185,8 @@ export class ProgramService {
         program_description: element.attributes.program_description,
         program_guidelines_1: element.attributes.program_guidelines_1,
         program_guidelines_2: element.attributes.program_guidelines_2,
-        program_picture_url: element.attributes.program_picture_url,
+        //program_picture_url: element.attributes.program_picture_url,
+        program_picture_url:element.attributes.program_picture.data?url+element.attributes.program_picture.data.attributes.url:null,
         program_scope: element.attributes.program_scope,
         program_title: element.attributes.program_title,
         program_type: element.attributes.program_type,
@@ -224,6 +225,7 @@ export class ProgramService {
     return programs;
   }
   static formatProgram(element) {
+    const url = "https://strapi.march1st.com"
     return {
       id: element.id,
       closed_at: null,
@@ -251,7 +253,8 @@ export class ProgramService {
       program_description: element.attributes.program_description,
       program_guidelines_1: element.attributes.program_guidelines_1,
       program_guidelines_2: element.attributes.program_guidelines_2,
-      program_picture_url: element.attributes.program_picture_url,
+      //program_picture_url: element.attributes.program_picture_url,
+      program_picture_url:element.attributes.program_picture.data?url+element.attributes.program_picture.data.attributes.url:null,
       program_scope: element.attributes.program_scope,
       program_title: element.attributes.program_title,
       program_type: element.attributes.program_type,
