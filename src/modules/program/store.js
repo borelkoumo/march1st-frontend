@@ -59,7 +59,7 @@ const actions = {
     if(file){
       formData.append('files.program_picture',file)
     }
-    console.log(program)
+    //console.log(program)
     formData.append('data', JSON.stringify(program));
     /*const programId = await ProgramService.createProgram(program);
 

@@ -80,7 +80,7 @@
             </q-card-section>
           </q-card>
         </div>
-        <div class="q-mt-lg q-pb-lg">
+        <div class="q-mt-lg q-pb-lg" style="border:1px solid red">
           <q-card class="my-card q-pa-md" flat>
             <div class="flex flex-center attachment">
               <div>

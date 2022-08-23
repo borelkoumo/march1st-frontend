@@ -95,6 +95,15 @@ const ONE_SUBMISSION_QUERY = {
             submission_target
             severity_level
             createdAt
+            attachment{
+              data{
+                id
+                attributes{
+                  name
+                  url
+                }
+              }
+            }
             program {
               data {
                 id
@@ -178,6 +187,15 @@ const SUBMISSIONS_HACKER = {
             submission_target
             severity_level
             createdAt
+            attachment{
+              data{
+                id
+                attributes{
+                  name
+                  url
+                }
+              }
+            }
             program {
               data {
                 id
@@ -278,6 +296,15 @@ const SUBMISSIONS_SUPER_MANAGER = {
             submission_target
             severity_level
             createdAt
+            attachment{
+              data{
+                id
+                attributes{
+                  name
+                  url
+                }
+              }
+            }
             program {
               data {
                 id
@@ -378,6 +405,15 @@ const SUBMISSIONS_MANAGER = {
             submission_target
             severity_level
             createdAt
+            attachment{
+              data{
+                id
+                attributes{
+                  name
+                  url
+                }
+              }
+            }
             program {
               data {
                 id
@@ -470,6 +506,15 @@ const SUBMISSIONS_ADMIN = {
             submission_target
             severity_level
             createdAt
+            attachment{
+              data{
+                id
+                attributes{
+                  name
+                  url
+                }
+              }
+            }
             program {
               data {
                 id
