@@ -107,8 +107,8 @@ const getters = {
   getDuration(state, date) {
     return (date) => {
       const dateOne = moment(date);
-      const dateTwo = moment(state.localDate.date)
-      return dateOne.from(dateTwo,"true");
+      const dateTwo = moment(state.localDate.date);
+      return dateOne.from(dateTwo, "true");
     };
   },
 };
@@ -305,6 +305,7 @@ const actions = {
       };
       const data = await _postQueryServer(url, token);
       console.log("strapiSignIn/data = ", data);
+      const default_profile = "https://march1st.com/images/admin/default_profile.png";
       let user = {
         id: data.user.id,
         email: data.user.email,
@@ -320,6 +321,27 @@ const actions = {
         hacker: data.user.hacker,
         march1st: data.user.march1st_user,
       };
+      if (
+        data.user.company_user &&
+        (!data.user.company_user.profile_picture_url ||
+          data.user.company_user.profile_picture_url === "")
+      ) {
+        user.companyUser.profile_picture_url=default_profile;
+      }
+      if (
+        data.user.hacker &&
+        (!data.user.hacker.profile_picture_url ||
+          data.user.hacker.profile_picture_url === "")
+      ){
+        user.hacker.profile_picture_url=default_profile;
+      }
+      if (
+        data.user.march1st &&
+        (!data.user.march1st.profile_picture_url ||
+          data.user.march1st.profile_picture_url === "")
+      ){
+        user.march1st.profile_picture_url=default_profile;
+      }
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", data.jwtStrapi);
       commit("SET_USER", user);
