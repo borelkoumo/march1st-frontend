@@ -336,9 +336,9 @@ const actions = {
         user.hacker.profile_picture_url=default_profile;
       }
       if (
-        data.user.march1st &&
-        (!data.user.march1st.profile_picture_url ||
-          data.user.march1st.profile_picture_url === "")
+        data.user.march1st_user &&
+        (!data.user.march1st_user.profile_picture_url ||
+          data.user.march1st_user.profile_picture_url === "")
       ){
         user.march1st.profile_picture_url=default_profile;
       }

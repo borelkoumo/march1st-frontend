@@ -119,9 +119,11 @@
                     <q-avatar v-if="getUser.role==='client'">
                       <img :src="getUser.companyUser.profile_picture_url" />
                     </q-avatar>
-
                     <q-avatar v-if="getUser.role==='hacker'">
                       <img :src="getUser.hacker.profile_picture_url" />
+                    </q-avatar>
+                    <q-avatar v-if="getUser.role==='march1st'">
+                      <img :src="getUser.march1st.profile_picture_url" />
                     </q-avatar>
                   </q-item-section>
                   <q-item-section v-if="getUser.role==='client'">
