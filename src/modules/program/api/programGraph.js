@@ -127,6 +127,7 @@ export class ProgramService {
       const result = await apolloClient.query(ONE_PROGRAM_QUERY);
       const programData = result.data.program.data;
       const program = this.formatProgram(programData);
+      console.log('getOneProgram/program=',program)
       resolve(program);
     });
   }
@@ -156,6 +157,7 @@ export class ProgramService {
 
   static formatPrograms(programsData) {
     const url = "https://strapi.march1st.com"
+    const default_program_picture = "https://march1st.com/images/admin/default_program.png"
     const programs = programsData.map(function (element) {
       let program = {
         id: element.id,
@@ -186,7 +188,7 @@ export class ProgramService {
         program_guidelines_1: element.attributes.program_guidelines_1,
         program_guidelines_2: element.attributes.program_guidelines_2,
         //program_picture_url: element.attributes.program_picture_url,
-        program_picture_url:element.attributes.program_picture.data?url+element.attributes.program_picture.data.attributes.url:null,
+        program_picture_url:element.attributes.program_picture.data?url+element.attributes.program_picture.data.attributes.url:default_program_picture,
         program_scope: element.attributes.program_scope,
         program_title: element.attributes.program_title,
         program_type: element.attributes.program_type,
@@ -226,6 +228,8 @@ export class ProgramService {
   }
   static formatProgram(element) {
     const url = "https://strapi.march1st.com"
+    const default_program_picture = "https://march1st.com/images/admin/default_program.png"
+    console.log(element.attributes.program_picture)
     return {
       id: element.id,
       closed_at: null,
@@ -254,7 +258,7 @@ export class ProgramService {
       program_guidelines_1: element.attributes.program_guidelines_1,
       program_guidelines_2: element.attributes.program_guidelines_2,
       //program_picture_url: element.attributes.program_picture_url,
-      program_picture_url:element.attributes.program_picture.data?url+element.attributes.program_picture.data.attributes.url:null,
+      program_picture_url:element.attributes.program_picture.data?url+element.attributes.program_picture.data.attributes.url:default_program_picture,
       program_scope: element.attributes.program_scope,
       program_title: element.attributes.program_title,
       program_type: element.attributes.program_type,
