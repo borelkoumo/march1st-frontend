@@ -58,7 +58,7 @@
           <q-card-section class="col-4 flex flex-center">
             <q-img
               class="rounded-borders"
-              :src="getUser.company.company_logo"
+              :src="getUser.companyUser.profile_picture_url"
               v-if="getUser && getUser.role == 'client'"
             />
             <q-img
@@ -613,7 +613,7 @@ export default {
   border-right:1px solid white
 
 .card-identification
-  height:200px
+  height:250px
   .title
     font-family: 'nunito'
     font-style: normal
