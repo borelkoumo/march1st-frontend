@@ -193,24 +193,41 @@
           <q-card-section class="q-pb-sm">
             <div class="subtitle q-pb-sm">Program Guidelines</div>
             <div class="">
+              <q-editor
+                v-model="formData.program_guidelines_1"
+                :dense="$q.screen.lt.md"
+                :toolbar="toolbar"
+                :fonts="fonts"
+              />
+            </div>
+            <!--<div class="">
+
               <q-input
                 type=""
                 v-model="formData.program_guidelines_1"
                 label=""
                 borderless
               />
-            </div>
+            </div>-->
           </q-card-section>
           <q-card-section class="q-pb-sm">
             <div class="subtitle q-pb-sm">Rewards Guidelines</div>
             <div class="">
+              <q-editor
+                v-model="formData.program_guidelines_2"
+                :dense="$q.screen.lt.md"
+                :toolbar="toolbar"
+                :fonts="fonts"
+              />
+            </div>
+            <!--<div class="">
               <q-input
                 type=""
                 v-model="formData.program_guidelines_2"
                 label=""
                 borderless
               />
-            </div>
+            </div>-->
           </q-card-section>
           <q-card-section class="q-pb-sm">
             <div class="subtitle q-pb-sm">Legal Terms</div>
@@ -276,6 +293,68 @@ export default {
   name: "programs",
   data() {
     return {
+      fonts: {
+        arial: "Arial",
+        arial_black: "Arial Black",
+        comic_sans: "Comic Sans MS",
+        courier_new: "Courier New",
+        impact: "Impact",
+        lucida_grande: "Lucida Grande",
+        times_new_roman: "Times New Roman",
+        verdana: "Verdana",
+      },
+      toolbar: [
+        [
+          {
+            label: this.$q.lang.editor.align,
+            icon: this.$q.iconSet.editor.align,
+            fixedLabel: true,
+            list: "only-icons",
+            options: ["left", "center", "right", "justify"],
+          },
+        ],
+        ["bold", "italic"],
+        ["token", "hr", "link", "custom_btn"],
+        [
+          {
+            label: this.$q.lang.editor.fontSize,
+            icon: this.$q.iconSet.editor.fontSize,
+            fixedLabel: true,
+            fixedIcon: true,
+            list: "no-icons",
+            options: [
+              "size-1",
+              "size-2",
+              "size-3",
+              "size-4",
+              "size-5",
+              "size-6",
+              "size-7",
+            ],
+          },
+          {
+            label: this.$q.lang.editor.defaultFont,
+            icon: this.$q.iconSet.editor.font,
+            fixedIcon: true,
+            list: "no-icons",
+            options: [
+              "default_font",
+              "arial",
+              "arial_black",
+              "comic_sans",
+              "courier_new",
+              "impact",
+              "lucida_grande",
+              "times_new_roman",
+              "verdana",
+            ],
+          },
+        ],
+        ["unordered", "ordered"],
+
+        ["undo", "redo"],
+        ["viewsource"],
+      ],
       formData: {
         id: null,
         user_id: 1,

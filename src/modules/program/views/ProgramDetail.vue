@@ -161,7 +161,7 @@
               </div>
               <q-card class="my-card shadow-3">
                 <q-card-section class="description-content">
-                  {{ program.program_guidelines_1 }}
+                  <div v-html="program.program_guidelines_1"></div>
                 </q-card-section>
               </q-card>
             </div>
@@ -174,14 +174,14 @@
             class="q-pa-md"
             style="border-radius: 16px"
           />
-          <div class="q-pt-lg">
+          <div class="q-pt-lg" v-if="reports.length>0">
             <q-card flat style="border-radius: 16px" class="card-recent">
               <q-card-section class="recent-title"
                 >Recent Submissions</q-card-section
               >
               <q-separator />
               <div
-                v-for="submission in program.submissions"
+                v-for="submission in reports"
                 :key="submission.id"
                 class="cursor-pointer"
                 @click="gotoSubmission(submission.id)"
@@ -270,7 +270,7 @@ export default {
       this.idProgram = parseInt(this.$route.params.id);
       await this.GET_MY_SUBMISSIONS();
       console.log(this.getMySubmissions);
-      this.reports = this.getMySubmissions.filter((submission)=> submission.program.id === this.idProgram)
+      this.reports = this.getMySubmissions.filter((submission)=> submission.program.id == this.idProgram)
       this.program = await this.GET_ONE_PROGRAM(this.idProgram);
       this.$q.loading.hide();
     } catch (error) {

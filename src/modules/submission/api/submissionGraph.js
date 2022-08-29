@@ -167,6 +167,8 @@ export class SubmissionService {
   static formatSubmissions(submissionsData) {
     const url = "https://strapi.march1st.com"
     const submissions = submissionsData.map(function (element) {
+      console.log("element = ", element);
+      console.log("element.attributes.program = ",element.attributes.program);
       return {
         id: element.id,
         submission_title: element.attributes.submission_title,
