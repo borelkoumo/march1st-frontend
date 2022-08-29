@@ -62,8 +62,7 @@
             <q-separator />
             <q-card-section>
               <div class="submission-title">Submission Text</div>
-              <div class="submission-content">
-                {{ submission.submission_text }}
+              <div class="submission-content" v-html="submission.submission_text">
               </div>
             </q-card-section>
           </q-card>
