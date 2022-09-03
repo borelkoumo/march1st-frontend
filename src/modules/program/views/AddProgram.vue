@@ -23,7 +23,13 @@
               class="drop-zone__thumb drop-zone__thumb-hidden"
               data-label="myfile.txt"
             ></div>
-            <input type="file" name="program_picture" id="" hidden class="drop-zone__input" />
+            <input
+              type="file"
+              name="program_picture"
+              id=""
+              hidden
+              class="drop-zone__input"
+            />
           </div>
           <div class="flex col content-card">
             <div style="width: 100%">
@@ -193,17 +199,39 @@
             >Detailed Description</q-card-section
           >
           <q-card-section class="q-pb-sm">
-            <div class="subtitle q-pb-sm">Program Guidelines</div>
-            <div class="">
+            <!--<div class="subtitle q-pb-sm">Program Guidelines</div>-->
+            <div class="relative-position">
+              <!--<q-popup-proxy v-model="editColor">
+                  <q-color v-model="textColor" @change="applyColor"></q-color>
+                </q-popup-proxy>-->
               <q-editor
+                ref="program_editor"
                 v-model="formData.program_guidelines_1"
                 :dense="$q.screen.lt.md"
                 :toolbar="toolbar"
                 :fonts="fonts"
-              />
+                :definitions="{
+                  fontColor: {
+                    tip: 'Change font color',
+                    icon: 'colorize',
+                    label: 'Font Color',
+                    handler: showChangeColor,
+                  },
+                }"
+              >
+
+              </q-editor>
+              <q-color
+                  v-model="textColor"
+                  @change="applyColor"
+                  v-if="editColor"
+                  no-header
+                  style="width: 90px; position:absolute; top:0; right: 0;"
+                  no-footer
+                />
             </div>
           </q-card-section>
-          <q-card-section class="q-pb-sm">
+          <!--<q-card-section class="q-pb-sm">
             <div class="subtitle q-pb-sm">Rewards Guidelines</div>
             <div class="">
               <q-editor
@@ -224,7 +252,7 @@
                 :fonts="fonts"
               />
             </div>
-          </q-card-section>
+          </q-card-section>-->
         </q-card>
       </div>
       <div class="card-invite">
@@ -419,6 +447,8 @@ import { mapActions, mapGetters } from "vuex";
 export default {
   data() {
     return {
+      textColor: "#000",
+      editColor: false,
       fonts: {
         arial: "Arial",
         arial_black: "Arial Black",
@@ -439,7 +469,7 @@ export default {
             options: ["left", "center", "right", "justify"],
           },
         ],
-        ["bold", "italic"],
+        ["bold", "italic", "fontColor"],
         ["token", "hr", "link", "custom_btn"],
         [
           {
@@ -476,7 +506,7 @@ export default {
             ],
           },
         ],
-        ["unordered", "ordered"],
+        ["unordered", "ordered", "outdent", "indent"],
 
         ["undo", "redo"],
         ["viewsource"],
@@ -485,7 +515,7 @@ export default {
         //id: null,
         //user_id: 1,
         //picture: "https://cdn.quasar.dev/img/parallax2.jpg",
-        picture:null,
+        picture: null,
         program_title: "Lorem ipsum dolor sit amet,",
         program_description:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rutrum congue leo eget malesuada. Cras ultricies ligula sed magna dictum porta.",
@@ -493,8 +523,7 @@ export default {
         safe_harbour_type: "full",
         reward_type: "points",
         reward_range: false,
-        program_guidelines_1:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rutrum congue leo eget malesuada.",
+        program_guidelines_1:'<div style="text-align: justify;"><b style=""><font color="#fc0505" size="5">Program Guidelines</font></b></div><div style="text-align: justify;"><font size="3"><br></font></div><div><div style="text-align: justify;"><font size="3">Proin eget tortor risus. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Nulla quis lorem ut libero malesuada feugiat. Pellentesque in ipsum id orci porta dapibus.</font></div><div style="text-align: justify;"><font size="3"><br></font></div><div style="text-align: justify;"><font size="3">Curabitur aliquet quam id dui posuere blandit. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem.</font></div><div style="text-align: justify;"><font size="3"><br></font></div><div style="text-align: justify;"><font size="3">Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Nulla porttitor accumsan tincidunt. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula.</font></div><div style="text-align: justify;"><font size="3"><br></font></div><div style="text-align: justify;"><font size="3">Cras ultricies ligula sed magna dictum porta. Cras ultricies ligula sed magna dictum porta. Cras ultricies ligula sed magna dictum porta. Donec rutrum congue leo eget malesuada.</font></div><div style="text-align: justify;"><font size="3"><br></font></div><div style="text-align: justify;"><font size="3">Sed porttitor lectus nibh. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Donec sollicitudin molestie malesuada. Quisque velit nisi, pretium ut lacinia in, elementum id enim.</font></div><div style="text-align: justify;"><font size="3"><br></font></div><div style="text-align: justify;"><b style=""><font color="#fc0505" size="5">Rewards Guidelines</font></b></div><div><p style="text-align: justify; margin-top: 1.1875em; margin-bottom: 1.1875em; letter-spacing: -0.21px; color: rgb(7, 7, 7); font-family: InriaSans, Arial, sans-serif;"><font size="3">Rewards are given based on CVSS scoring and actual business impact.</font></p><table style="font-size: 0.875rem; letter-spacing: -0.21px; margin-bottom: 0px; margin-top: 1.1875em; width: auto; max-width: 100%; overflow-x: auto; line-height: 1.28571; color: rgb(7, 7, 7); font-family: InriaSans, Arial, sans-serif;"><thead><tr><th style="padding: 1.21429em 1.21429em 1.21429em 0px; border-bottom: 0.0625rem solid rgb(224, 224, 224); color: rgb(155, 155, 155); text-transform: uppercase;">RATING</th><th style="padding: 1.21429em; border-bottom: 0.0625rem solid rgb(224, 224, 224); color: rgb(155, 155, 155); text-transform: uppercase;">CVSS SCORE</th><th style="padding: 1.21429em 0px 1.21429em 1.21429em; border-bottom: 0.0625rem solid rgb(224, 224, 224); color: rgb(155, 155, 155); text-transform: uppercase;">BOUNTY</th></tr></thead><tbody><tr><td style="padding: 1.21429em 1.21429em 1.21429em 0px; border-bottom: 0.0625rem solid rgb(224, 224, 224);">None</td><td style="padding: 1.21429em; border-bottom: 0.0625rem solid rgb(224, 224, 224);">0.0</td><td style="padding: 1.21429em 0px 1.21429em 1.21429em; border-bottom: 0.0625rem solid rgb(224, 224, 224);">No bounty</td></tr><tr><td style="padding: 1.21429em 1.21429em 1.21429em 0px; border-bottom: 0.0625rem solid rgb(224, 224, 224);"><span style="font-weight: bolder;">Low</span></td><td style="padding: 1.21429em; border-bottom: 0.0625rem solid rgb(224, 224, 224);">0.1 - 3.9</td><td style="padding: 1.21429em 0px 1.21429em 1.21429em; border-bottom: 0.0625rem solid rgb(224, 224, 224);">$30 - 100</td></tr><tr><td style="padding: 1.21429em 1.21429em 1.21429em 0px; border-bottom: 0.0625rem solid rgb(224, 224, 224);"><span style="font-weight: bolder;">Medium</span></td><td style="padding: 1.21429em; border-bottom: 0.0625rem solid rgb(224, 224, 224);">4.0 - 6.9</td><td style="padding: 1.21429em 0px 1.21429em 1.21429em; border-bottom: 0.0625rem solid rgb(224, 224, 224);">$100 - 500</td></tr><tr><td style="padding: 1.21429em 1.21429em 1.21429em 0px; border-bottom: 0.0625rem solid rgb(224, 224, 224);"><span style="font-weight: bolder;">High</span></td><td style="padding: 1.21429em; border-bottom: 0.0625rem solid rgb(224, 224, 224);">7.0 - 8.9</td><td style="padding: 1.21429em 0px 1.21429em 1.21429em; border-bottom: 0.0625rem solid rgb(224, 224, 224);">$500 – 2500</td></tr><tr><td style="padding: 1.21429em 1.21429em 1.21429em 0px; border-bottom: 0.0625rem solid rgb(224, 224, 224);"><span style="font-weight: bolder;">Critical</span></td><td style="padding: 1.21429em; border-bottom: 0.0625rem solid rgb(224, 224, 224);">9.0 - 10.0</td><td style="padding: 1.21429em 0px 1.21429em 1.21429em; border-bottom: 0.0625rem solid rgb(224, 224, 224);">$1000 - 10000</td></tr></tbody></table></div><div><br></div><div><font color="#fc0505" size="5"><b style="">Legal Terms</b></font></div><div><div><br></div><div style="text-align: justify;"><font size="3">Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Vivamus suscipit tortor eget felis porttitor volutpat. Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem.</font></div><div style="text-align: justify;"><font size="3"><br></font></div><div style="text-align: justify;"><font size="3">Sed porttitor lectus nibh. Pellentesque in ipsum id orci porta dapibus. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Curabitur non nulla sit amet nisl tempus convallis quis ac lectus.</font></div><div style="text-align: justify;"><font size="3"><br></font></div><div style="text-align: justify;"><font size="3">Donec sollicitudin molestie malesuada. Vivamus suscipit tortor eget felis porttitor volutpat. Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Cras ultricies ligula sed magna dictum porta.</font></div></div><div><br></div><div><br></div></div>',
         program_guidelines_2:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rutrum congue leo eget malesuada.",
         legal_terms:
@@ -552,6 +581,13 @@ export default {
   methods: {
     ...mapActions("program", ["CREATE_PROGRAM"]),
     ...mapActions("auth", ["GET_HACKERS", "GET_MY_COMPANYUSERS"]),
+    applyColor() {
+      document.execCommand("foreColor", false, this.textColor);
+      this.editColor = false;
+    },
+    showChangeColor() {
+      this.editColor = true;
+    },
     async onSaveProgram() {
       try {
         this.$q.loading.show();
@@ -576,15 +612,15 @@ export default {
       document.querySelectorAll(".drop-zone__input").forEach((inputElement) => {
         const dropZoneElement = inputElement.closest(".drop-zone");
 
-        dropZoneElement.addEventListener("click", e => {
+        dropZoneElement.addEventListener("click", (e) => {
           inputElement.click();
-        })
-        inputElement.addEventListener("change",e => {
-          if(inputElement.files.length){
-            updateThumbnail(dropZoneElement,inputElement.files[0]);
+        });
+        inputElement.addEventListener("change", (e) => {
+          if (inputElement.files.length) {
+            updateThumbnail(dropZoneElement, inputElement.files[0]);
             this.formData.picture = inputElement.files[0];
           }
-        })
+        });
 
         dropZoneElement.addEventListener("dragover", (e) => {
           e.preventDefault();
@@ -603,9 +639,7 @@ export default {
             updateThumbnail(dropZoneElement, e.dataTransfer.files[0]);
             this.formData.picture = e.dataTransfer.files[0];
             //console.log(this.formData);
-          }
-          else{
-
+          } else {
           }
           dropZoneElement.classList.remove("drop-zone--over");
         });
@@ -622,7 +656,7 @@ export default {
           const reader = new FileReader();
           reader.readAsDataURL(file);
           reader.onload = () => {
-            thumbnailElement.style.backgroundImage = `url('${reader.result}')`
+            thumbnailElement.style.backgroundImage = `url('${reader.result}')`;
           };
         }
       }
