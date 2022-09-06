@@ -79,7 +79,9 @@
             <div class="q-mt-sm title">
               {{ getUser.company.company_name }}
             </div>
-            <div class="subtitle">Joined {{getDuration(getUser.createdAt)}} ago</div>
+            <div class="subtitle">
+              Joined {{ getDuration(getUser.createdAt) }} ago
+            </div>
           </q-card-section>
           <q-card-section
             class="q-pt-xs"
@@ -89,7 +91,9 @@
               {{ getUser.hacker.first_name }}
               {{ getUser.hacker.last_name }}
             </div>
-            <div class="subtitle">Joined {{getDuration(getUser.createdAt)}} ago</div>
+            <div class="subtitle">
+              Joined {{ getDuration(getUser.createdAt) }} ago
+            </div>
             <div class="subtitle">Current Rank: 70</div>
             <div class="subtitle">Average Rank: 7</div>
             <div class="subtitle">Average Vulnerability Severity</div>
@@ -177,7 +181,7 @@
           <q-tab-panel name="notification" style="height: calc(100vh - 50px)">
             <q-scroll-area class="fit">
               <q-list separator padding>
-                <list-item
+                <notification-item
                   v-for="task in tasks"
                   :key="task.id"
                   class="q-pt-lg q-pb-lg"
@@ -185,20 +189,9 @@
                     'close-item': task.indicator == false,
                     'active-item': activeTask == task.id,
                   }"
+                  :notification="task"
                 >
-                  <template v-slot:title>
-                    {{ task.title }}
-                  </template>
-                  <template v-slot:caption>
-                    {{ task.content }}
-                  </template>
-                  <template v-slot:time>
-                    {{ task.time }}
-                  </template>
-                  <template v-slot:indicator v-if="task.indicator">
-                    <q-badge rounded color="secondary" />
-                  </template>
-                </list-item>
+                </notification-item>
               </q-list>
             </q-scroll-area>
           </q-tab-panel>
@@ -300,6 +293,7 @@
 <script>
 import { ref } from "vue";
 import ListItem from "../components/list-item.vue";
+import NotificationItem from "../modules/notification/components/notification-item.vue";
 
 import { mapState, mapGetters, mapActions } from "vuex";
 
@@ -307,6 +301,7 @@ export default {
   name: "MyLayout",
   components: {
     ListItem,
+    NotificationItem,
   },
 
   setup() {
@@ -437,7 +432,7 @@ export default {
       "getUser",
       "getAllUsers",
       "getCompanies",
-      "getDuration"
+      "getDuration",
     ]),
     ...mapState("auth", ["companies", "mesusers", "myuser"]),
 
@@ -520,7 +515,7 @@ export default {
         },
       ];
       return menus;
-    }
+    },
   },
   methods: {
     ...mapActions("auth", ["register", "login", "logOutUser", "GET_LOCALDATE"]),
@@ -564,9 +559,7 @@ export default {
       }
     },
   },
-  async beforeMount(){
-
-  },
+  async beforeMount() {},
   async beforeCreate() {
     /*console.log(localStorage.getItem("token"));
     /*localStorage.removeItem('users');

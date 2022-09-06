@@ -42,7 +42,7 @@
                   </div>
                   <q-space />
                   <div class="title-badge-2">
-                    <span>{{getDuration(submission.createdAt)}} ago</span>
+                    <span>{{ getDuration(submission.createdAt) }} ago</span>
                   </div>
                 </q-toolbar>
                 <div class="title">{{ submission.submission_title }}</div>
@@ -62,29 +62,43 @@
             <q-separator />
             <q-card-section>
               <div class="submission-title">Submission Text</div>
-              <div class="submission-content" v-html="submission.submission_text">
-              </div>
+              <div
+                class="submission-content"
+                v-html="submission.submission_text"
+              ></div>
             </q-card-section>
           </q-card>
         </div>
         <div class="submission-attachment q-pt-md flex q-gutter-md">
-          <div class="q-pa-sm bg-white cursor-pointer" style="border-radius: 10px" v-for="attachment in submission.attachments" :key="attachment.id">
-            <q-card class="card-attachment flex" flat @click="openFile(attachment.url)">
+          <div
+            class="q-pa-sm bg-white cursor-pointer"
+            style="border-radius: 10px"
+            v-for="attachment in submission.attachments"
+            :key="attachment.id"
+          >
+            <q-card
+              class="card-attachment flex"
+              flat
+              @click="openFile(attachment.url)"
+            >
               <div>
                 <q-img src="~assets/file-pdf.svg" width="50px" />
               </div>
               <div class="q-pl-md q-pr-md flex flex-center" style="">
                 <div>
-                  <div class="attachment-name">{{attachment.name}}</div>
-                  <div class="attachment-size">{{convertToMB(attachment.size)}}</div>
+                  <div class="attachment-name">{{ attachment.name }}</div>
+                  <div class="attachment-size">
+                    {{ convertToMB(attachment.size) }}
+                  </div>
                 </div>
               </div>
             </q-card>
           </div>
-
         </div>
-        <div class="submission-form q-pt-md" >
-          <div class="submission-title q-pb-sm" v-if="nextStatuses.length > 0">Leave your comment</div>
+        <div class="submission-form q-pt-md">
+          <div class="submission-title q-pb-sm" v-if="nextStatuses.length > 0">
+            Leave your comment
+          </div>
           <div class="submission-title q-pb-sm" v-else>Comments</div>
           <q-editor
             v-if="nextStatuses.length > 0"
@@ -124,7 +138,7 @@
                     }}</q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-separator/>
+                <q-separator />
               </div>
             </q-list>
           </div>
@@ -201,7 +215,7 @@ export default {
       message: null,
       submissionStatus: [],
       nextStatuses: [],
-      submissionStatusComment:[]
+      submissionStatusComment: [],
     };
   },
   watch: {
@@ -211,7 +225,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("auth", ["getUser","getDuration"]),
+    ...mapGetters("auth", ["getUser", "getDuration"]),
     ...mapGetters("submission", ["getOneSubmission"]),
     getComments() {
       return [];
@@ -318,32 +332,30 @@ export default {
         ? statusTransitions[role]?.[currentSubmissionStatus]
         : [];
     },
-    convertToMB(octet){
-      let result =octet;
-      if(1024*1024<octet && octet<1024*1024*1024){
+    convertToMB(octet) {
+      let result = octet;
+      if (1024 * 1024 < octet && octet < 1024 * 1024 * 1024) {
         //on met en mo
-        result = octet/1024/1024;
-        return result.toFixed(2)+"mo";
-      }
-      else if(octet>=1024*1024*1024){
+        result = octet / 1024 / 1024;
+        return result.toFixed(2) + "mo";
+      } else if (octet >= 1024 * 1024 * 1024) {
         //on met en Go
-        result = octet/1024/1024/1024;
-        return result.toFixed(2)+"go"
-      }
-      else{
-        return result.toFixed(2)+"ko"
+        result = octet / 1024 / 1024 / 1024;
+        return result.toFixed(2) + "go";
+      } else {
+        return result.toFixed(2) + "ko";
       }
     },
-    openFile(url){
-      window.open(url,"_blank");
-    }
+    openFile(url) {
+      window.open(url, "_blank");
+    },
   },
   async beforeMount() {
     try {
       this.$q.loading.show();
       this.idSubmission = Number(this.$route.params.id);
       this.submission = await this.GET_ONE_SUBMISSION(this.idSubmission);
-      this.submissionStatusComment = this.submission.submission_statuses.filter((submissionStatus)=> submissionStatus.comment!=="" || submissionStatus.comment!==" ").reverse();
+      //this.submissionStatusComment = this.submission.submission_statuses.filter((submissionStatus)=> submissionStatus.comment!=="" || submissionStatus.comment!==" ").reverse();
       this.submissionStatus = await this.GET_SUBMISSIONSTATUS_BY_SUBMISSION(
         this.idSubmission
       );
@@ -357,8 +369,6 @@ export default {
           action: status.action,
         };
       });
-
-      console.log("beforeMount/nextStatuses = ", this.nextStatuses);
       this.$q.loading.hide();
     } catch (error) {
       this.$q.loading.hide();
